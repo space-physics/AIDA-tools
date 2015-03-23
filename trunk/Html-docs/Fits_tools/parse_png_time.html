@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of parse_png_time</title>
+  <meta name="keywords" content="parse_png_time">
+  <meta name="description" content="PARSE_PNG_TIME - parse miracle png time">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>parse_png_time
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>PARSE_PNG_TIME - parse miracle png time</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [my, mm, md, mh, mmin, ms] = parse_png_time(time) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> PARSE_PNG_TIME - parse miracle png time
+ SYNOPSIS
+   [my, mm, md, mh, mmin, ms] = parse_png_time(time)
+
+ DESCRIPTION
+   time must be in format yyyy-mm-ddHH:MM:SS.FF milliseconds are 
+   indicated as fractions of seconds, AND MUST BE INCLUDED. 
+   in more practical terms, the time string is 21 characters long.
+   the time string IS 21 characters long and in the format
+   described above.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [my, mm, md, mh, mmin, ms] = parse_png_time(time)</a>
+0002 <span class="comment">% PARSE_PNG_TIME - parse miracle png time</span>
+0003 <span class="comment">% SYNOPSIS</span>
+0004 <span class="comment">%   [my, mm, md, mh, mmin, ms] = parse_png_time(time)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% DESCRIPTION</span>
+0007 <span class="comment">%   time must be in format yyyy-mm-ddHH:MM:SS.FF milliseconds are</span>
+0008 <span class="comment">%   indicated as fractions of seconds, AND MUST BE INCLUDED.</span>
+0009 <span class="comment">%   in more practical terms, the time string is 21 characters long.</span>
+0010 <span class="comment">%   the time string IS 21 characters long and in the format</span>
+0011 <span class="comment">%   described above.</span>
+0012 <span class="comment">%</span>
+0013 
+0014 my   = double(str2double(time(1:4)));
+0015 mm   = double(str2double(time(6:7)));
+0016 md   = double(str2double(time(9:10)));
+0017 mh   = double(str2double(time(11:12)));
+0018 mmin = double(str2double(time(14:15)));
+0019 ms   = double(str2double(time(17:21)));</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

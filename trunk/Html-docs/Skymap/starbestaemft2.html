@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of starbestaemft2</title>
+  <meta name="keywords" content="starbestaemft2">
+  <meta name="description" content="STARBESTAEMFT2 determines the possition of stars relative to axis">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>starbestaemft2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STARBESTAEMFT2 determines the possition of stars relative to axis</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [fi,taeta] = starbestaemft2(az,el,e1,e2,e3) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STARBESTAEMFT2 determines the possition of stars relative to axis
+ axis e1, e2, e3 in cylindrical (?) coordinates, with the polar angle as
+ radial distance. Fi is currently taken counterclockwise from e1.
+ 
+ Calling:
+ [fi,taeta] = starbestaemft2(az,el,e1,e2,e3)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="infov2.html" class="code" title="function [infovstars,SkMp] = infov2(possiblestars,az0,ze0,rot0,fov,SkMp)">infov2</a>	INFOV2 finds stars inside a specified field of view</li><li><a href="plotgrid.html" class="code" title="function [ok] = plotgrid(az0,ze0,rot0,date,utc,lat,long,radecl_or_azze)">plotgrid</a>	PLOTGRID - plots Azimuth-Zenith or Rect acsention-Declination grid.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [fi,taeta] = starbestaemft2(az,el,e1,e2,e3)</a>
+0002 <span class="comment">% STARBESTAEMFT2 determines the possition of stars relative to axis</span>
+0003 <span class="comment">% axis e1, e2, e3 in cylindrical (?) coordinates, with the polar angle as</span>
+0004 <span class="comment">% radial distance. Fi is currently taken counterclockwise from e1.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% [fi,taeta] = starbestaemft2(az,el,e1,e2,e3)</span>
+0008 
+0009 
+0010 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0011 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0012 
+0013 
+0014 raz = az*pi/180;
+0015 rel = el*pi/180;
+0016 rze = pi/2-rel;
+0017 
+0018 es(1,:) = sin(rze)'.*sin(raz)';
+0019 es(2,:) = sin(rze)'.*cos(raz)';
+0020 es(3,:) = cos(rze)';
+0021 
+0022 ese1(1,:) = es(1,:)*e1(1);
+0023 ese1(2,:) = es(2,:)*e1(2);
+0024 ese1(3,:) = es(3,:)*e1(3);
+0025 sese1 = sum(ese1);
+0026 
+0027 ese2(1,:) = es(1,:)*e2(1);
+0028 ese2(2,:) = es(2,:)*e2(2);
+0029 ese2(3,:) = es(3,:)*e2(3);
+0030 sese2 = sum(ese2);
+0031 
+0032 ese3(1,:) = es(1,:)*e3(1);
+0033 ese3(2,:) = es(2,:)*e3(2);
+0034 ese3(3,:) = es(3,:)*e3(3);
+0035 sese3 = sum(ese3);
+0036 
+0037 taeta = atan(((sese1).^2+(sese2).^2).^.5./(sese3));
+0038 fi = atan2( sese2 , sese1 );</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

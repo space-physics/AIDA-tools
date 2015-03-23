@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of colorbar_labeled</title>
+  <meta name="keywords" content="colorbar_labeled">
+  <meta name="description" content="COLORBAR_LABELED - colorbar with label for range linear or log">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>colorbar_labeled
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>COLORBAR_LABELED - colorbar with label for range linear or log</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function handle=colorbar_labeled(label,lg,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> COLORBAR_LABELED - colorbar with label for range linear or log
+ scale. 
+ 
+ Calling:
+   handle=colorbar_labeled(label,lg)
+ Input:
+   label - string with text
+   lg    - string [ {'linear'} | 'log' ] for scale type</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="find_in_cellstr.html" class="code" title="function ind_true = find_in_cellstr(in_str,in_cellstr)">find_in_cellstr</a>	FIND_IN_CELLSTR - search for string in cellstrings</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ASK/HSOFT/ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li><li><a href="../ASK/HSOFT/ASK_play_keolines2.html" class="code" title="function [M,Xs] = ASK_play_keolines2(Keos,time_V,OPS)">ASK_play_keolines2</a>	ASK_PLAY_KEOLINES -</li><li><a href="../ASK/IC/askChem2em_TAVplot.html" class="code" title="function [ph,Ems,emissions] = askChem2em_TAVplot(emissions,OPS,varargin)">askChem2em_TAVplot</a>	ASKCHEM2EM_AVPLOT - plot time-altitude variation of emission rates</li><li><a href="../ASK/IC/density_plotter.html" class="code" title="">density_plotter</a>	Scaffolding/pattern for plotting density outputs from the</li><li><a href="../ASK/IC/sotonChem2em_TAVplot.html" class="code" title="function [ph,Ems,emissions] = sotonChem2em_TAVplot(emissions,OPS,varargin)">sotonChem2em_TAVplot</a>	sotonChem2em_TAVplot - plot time-altitude variation of emission rates</li><li><a href="../ASK/IC/sotonICdensity_plotter.html" class="code" title="">sotonICdensity_plotter</a>	Scaffolding/pattern for plotting density outputs from the</li><li><a href="../Imgtools/img_splinefilter.html" class="code" title="function [varargout] = img_splinefilter(img_in,OPS)">img_splinefilter</a>	IMG_SPLINEFILTER - spline fitting filter optimum statistical filter</li><li><a href="../Imgtools/img_svdfilter.html" class="code" title="function [varargout] = img_svdfilter(img_in,OPS)">img_svdfilter</a>	IMG_SVDFILTER - SVD fitting filter optimum statistical filter</li><li><a href="../Imgtools/imgs_plot.html" class="code" title="function out_var = imgs_plot(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot</a>	imgs_plot - Plot a row of images</li><li><a href="../Imgtools/imgs_plot_bg_red1l.html" class="code" title="function out_var = imgs_plot_bg_red1l(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot_bg_red1l</a>	imgs_plot_bg_red1l - Plot a row of  background reduced images, one colorlabel</li><li><a href="../Imgtools/imgs_plot_bg_red_clall.html" class="code" title="function out_var = imgs_plot_bg_red_clall(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot_bg_red_clall</a>	imgs_plot_bg_red - Plot a row of background reduced images with colorbars</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function handle=colorbar_labeled(label,lg,varargin)</a>
+0002 <span class="comment">% COLORBAR_LABELED - colorbar with label for range linear or log</span>
+0003 <span class="comment">% scale.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%   handle=colorbar_labeled(label,lg)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%   label - string with text</span>
+0009 <span class="comment">%   lg    - string [ {'linear'} | 'log' ] for scale type</span>
+0010 
+0011 <span class="keyword">if</span> nargin&lt;2 | isempty(lg),
+0012   lg=<span class="string">'linear'</span>;
+0013 <span class="keyword">end</span>
+0014 
+0015 <span class="comment">% Determine color limits by context.  If any axes child is an image</span>
+0016 <span class="comment">% use scale based on size of colormap, otherwise use current CAXIS.</span>
+0017 
+0018 t=caxis;
+0019 
+0020 h=gca;
+0021 
+0022 <span class="comment">% Search for existing colorbar</span>
+0023 ch=get(gcf,<span class="string">'children'</span>);
+0024 ax=[];
+0025 <span class="keyword">try</span>
+0026   <span class="keyword">for</span> i=1:length(ch),
+0027     d=get(ch(i),<span class="string">'userdata'</span>);
+0028     <span class="keyword">if</span> prod(size(d))==1 &amp; d==h
+0029       ax=ch(i);
+0030       <span class="keyword">break</span>
+0031     <span class="keyword">end</span>
+0032   <span class="keyword">end</span>
+0033 <span class="keyword">catch</span>
+0034   <span class="comment">% Dont know what to do around here...</span>
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="keyword">if</span> strcmp(get(gcf,<span class="string">'NextPlot'</span>),<span class="string">'replace'</span>),
+0038   set(gcf,<span class="string">'NextPlot'</span>,<span class="string">'add'</span>)
+0039 <span class="keyword">end</span>
+0040 
+0041 
+0042 <span class="keyword">if</span> isempty(ax)
+0043   pos=get(h,<span class="string">'Position'</span>);
+0044 <span class="comment">% stripe=0.03; edge=0.08;</span>
+0045 <span class="comment">% [az,el]=view;</span>
+0046 <span class="comment">% if all([az,el]==[0 90]), space=0.02; else, space=.1; end</span>
+0047 <span class="comment">% set(h,'Position',[pos(1) pos(2) pos(3)*(1-stripe-edge-space) pos(4)])</span>
+0048 <span class="comment">% rect=[pos(1)+(1-stripe-edge)*pos(3) pos(2) stripe*pos(3) pos(4)];</span>
+0049   rect=[pos(1)+1.02*pos(3) pos(2) .035*pos(3) pos(4)];
+0050 
+0051   <span class="comment">% Create axes for stripe</span>
+0052   ax=axes(<span class="string">'Position'</span>, rect);
+0053 <span class="keyword">else</span>
+0054   axes(ax)
+0055 <span class="keyword">end</span>
+0056 
+0057 <span class="keyword">if</span> ~isempty(varargin)
+0058   fszi = <a href="find_in_cellstr.html" class="code" title="function ind_true = find_in_cellstr(in_str,in_cellstr)">find_in_cellstr</a>(<span class="string">'fontsize'</span>,varargin);
+0059   <span class="keyword">if</span> ~isempty(fszi)
+0060     fsz = varargin{fszi+1}-2;
+0061   <span class="keyword">else</span>
+0062     fsz = get(gca,<span class="string">'fontsize'</span>);
+0063   <span class="keyword">end</span>
+0064 <span class="keyword">else</span>
+0065   fsz = get(gca,<span class="string">'fontsize'</span>);
+0066 <span class="keyword">end</span>
+0067 <span class="comment">% Create color stripe</span>
+0068 cmap = colormap;
+0069 n=size(cmap,1);
+0070 <span class="keyword">if</span> strcmp(lg,<span class="string">'log'</span>)
+0071   tt=((0:n)-.5)'*diff(t)/(n-1)+t(1);
+0072   surface([0 1],10.^tt,[tt tt]),shading flat
+0073   set(ax,<span class="string">'CLim'</span>,t,<span class="string">'ylim'</span>,10.^t,<span class="string">'yscale'</span>,<span class="string">'log'</span>,<span class="string">'layer'</span>,<span class="string">'top'</span>,<span class="string">'fontsize'</span>,fsz)
+0074   <span class="comment">%surface([0 1],tt,[tt tt]),shading flat</span>
+0075   <span class="comment">%set(ax,'CLim',t,'ylim',t,'yscale','log','layer','top','fontsize',fsz)</span>
+0076 <span class="keyword">else</span>
+0077   <span class="comment">%image([0 1],t,[1:n]'),</span>
+0078   tt=((0:n)-.5)'*diff(t)/(n-1)+t(1);
+0079   surface([0 1],tt,[tt tt]),shading flat
+0080   set(ax,<span class="string">'CLim'</span>,t,<span class="string">'ylim'</span>,t,<span class="string">'yscale'</span>,<span class="string">'linear'</span>,<span class="string">'layer'</span>,<span class="string">'top'</span>,<span class="string">'fontsize'</span>,fsz)
+0081 <span class="comment">% set(ax,'TickDir','in')</span>
+0082   set(ax,<span class="string">'ylim'</span>,t,<span class="string">'Ydir'</span>,<span class="string">'normal'</span>)
+0083 <span class="comment">% Justify color axis</span>
+0084 <span class="comment">% set(ax,'yticklabel',strjust(get(ax,'yticklabel')))</span>
+0085 <span class="keyword">end</span>
+0086 
+0087 set(ax,<span class="string">'userdata'</span>,h,<span class="string">'YaxisLoc'</span>,<span class="string">'right'</span>,<span class="string">'xtick'</span>,[])
+0088   ylabel(label,<span class="string">'Rotation'</span>,-90,<span class="string">'VerticalAlignment'</span>,<span class="string">'baseline'</span>,varargin{:})
+0089 <span class="comment">% $$$ try</span>
+0090 <span class="comment">% $$$ catch</span>
+0091 <span class="comment">% $$$   ylabel(label,'Rotation',-90,'VerticalAlignment','baseline')</span>
+0092 <span class="comment">% $$$ end</span>
+0093 set(gcf,<span class="string">'CurrentAxes'</span>,h)
+0094 set(gcf,<span class="string">'Nextplot'</span>,<span class="string">'Replace'</span>)
+0095 
+0096 <span class="keyword">if</span> nargout&gt;0, 
+0097   handle=ax;
+0098 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

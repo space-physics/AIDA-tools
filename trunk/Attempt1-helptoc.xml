@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!-- $Revision: 1.1.6.1.40.1 $ $Date: 2007/08/02 17:20:57 $ -->
+
+<toc version="3.1000">
+
+<tocitem target="index.html">AIDA-tools
+
+<!-- <tocitem target="getting-started.html">Getting started with AIDA-tools</tocitem> -->
+<!-- <tocitem target="starcal.html">Geometric calibration</tocitem> -->
+<!-- <!-- <tocitem target="guide3.html">Intensity calibration</tocitem> --> -->
+<!-- <!-- <tocitem target="guide4.html">Projection of images</tocitem> --> -->
+<!-- <tocitem target="stereo.html">Triangulation</tocitem> -->
+<!-- <tocitem target="../Html-exmpls/tomo_EXMPL970216.html">Volume emission rate estimation</tocitem> -->
+<!-- <!-- <tocitem target="guide7.html">Optical flow</tocitem> --> -->
+<!-- <!-- <tocitem target="guide8.html">AIDA-tools preferences</tocitem> --> -->
+<!-- <!-- <tocitem target="guide9.html"></tocitem> --> -->
+<!-- <!-- <tocitem target="guide10.html">Infinite intervals, infinite function values, and singularities</tocitem> --> -->
+<!-- <!-- <tocitem target="guide11.html">Nonlinear boundary value problems and Automatic Differentiation</tocitem> --> -->
+<!-- <!-- <tocitem target="guideindex.html">Index</tocitem> --> -->
+
+</tocitem>
+</toc>

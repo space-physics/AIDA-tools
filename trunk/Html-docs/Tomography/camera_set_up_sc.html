@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of camera_set_up_sc</title>
+  <meta name="keywords" content="camera_set_up_sc">
+  <meta name="description" content="CAMERA_SET_UP_SC - Calculates the projection matrix from 3-D simple cubic grid">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>camera_set_up_sc
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>CAMERA_SET_UP_SC - Calculates the projection matrix from 3-D simple cubic grid</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> CAMERA_SET_UP_SC - Calculates the projection matrix from 3-D simple cubic grid 
+ to image coordinates the distance from the grid points to the
+ camera position and it also divides the 3D grid into size clases
+ and give indices to the base functions in each size class as well
+ as the corresponding base-function-footproints. R is the 3D
+ position of the grid-points. XI, YI and ZI is 3-D index arrays of
+ the grid-points. OPTPAR are the optical parameters of the camera
+ OPTPAR(3:5) is the camera rotation angles in degrees - see
+ CAMERA_ROT. ROBS are the 3-D coordinate of the
+ camera-position. IMGSIZE is the image-size [sx sy]. NR_LAYERS are
+ the number of size-classes the 3-D grid is divided into.
+ 
+ Calling:
+ [uv,d,l_cl,bfk] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers)
+
+ See also <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">FASTPROJECTION</a>, CAMERA_SET_UP_FCC</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>	PROJECT_POINT - project a point in space R down onto an image</li><li><a href="base_fcn_kernel.html" class="code" title="function bfk = base_fcn_kernel(ks)">base_fcn_kernel</a>	BASE_FCN_KERNEL - gives 1-D footprints of 3-D base functions</li><li><a href="sc_grouping.html" class="code" title="function [l_cl,cl_sz] = sc_grouping(vs,nr_layers)">sc_grouping</a>	SC_GROUPING - divides base functions into NR_LAYER groups</li><li><a href="sc_sizing.html" class="code" title="function [vs] = sc_sizing(u,v,vsize)">sc_sizing</a>	SC_SIZING - calculates the approximate size in the image plane</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Aurora/projection_setup0H.html" class="code" title="">projection_setup0H</a>	% 1 Optical parameters</li><li><a href="hh_tomo1234_New01.html" class="code" title="">hh_tomo1234_New01</a>	HH_TOMO1234_NEW01 - script for tomographing 2007 HIPAS-observations</li><li><a href="tomo20061212ariel3.html" class="code" title="">tomo20061212ariel3</a>	TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</li><li><a href="tomo20080305FinalIR_082011.html" class="code" title="">tomo20080305FinalIR_082011</a>	TOMO20080305FinalIR_082011 - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="tomo20080305NewBeginnings.html" class="code" title="">tomo20080305NewBeginnings</a>	TOMO20080305NewBeginnings - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="tomo_EXMPL970216.html" class="code" title="">tomo_EXMPL970216</a>	% TOMO_EXMPL970216 - Template/example script for auroral tomography,</li><li><a href="tomo_skeleton.html" class="code" title="">tomo_skeleton</a>	% TOMO_SKELETON - Template/example script for auroral tomography,</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)</a>
+0002 <span class="comment">% CAMERA_SET_UP_SC - Calculates the projection matrix from 3-D simple cubic grid</span>
+0003 <span class="comment">% to image coordinates the distance from the grid points to the</span>
+0004 <span class="comment">% camera position and it also divides the 3D grid into size clases</span>
+0005 <span class="comment">% and give indices to the base functions in each size class as well</span>
+0006 <span class="comment">% as the corresponding base-function-footproints. R is the 3D</span>
+0007 <span class="comment">% position of the grid-points. XI, YI and ZI is 3-D index arrays of</span>
+0008 <span class="comment">% the grid-points. OPTPAR are the optical parameters of the camera</span>
+0009 <span class="comment">% OPTPAR(3:5) is the camera rotation angles in degrees - see</span>
+0010 <span class="comment">% CAMERA_ROT. ROBS are the 3-D coordinate of the</span>
+0011 <span class="comment">% camera-position. IMGSIZE is the image-size [sx sy]. NR_LAYERS are</span>
+0012 <span class="comment">% the number of size-classes the 3-D grid is divided into.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Calling:</span>
+0015 <span class="comment">% [uv,d,l_cl,bfk] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers)</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% See also FASTPROJECTION, CAMERA_SET_UP_FCC</span>
+0018 
+0019 <span class="comment">%   Copyright � 2001 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0020 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0021 
+0022 <span class="comment">% Should be depreciated and removed, but I'll keep it for this</span>
+0023 <span class="comment">% release too:</span>
+0024 <span class="keyword">global</span> bxy bx by
+0025 <span class="comment">% Get the image dimensions:</span>
+0026 bxy = imgsize;
+0027 bx = bxy(2);
+0028 by = bxy(1);
+0029 
+0030 <span class="comment">% And the dimensions of the 3-D block-o-blobbs:</span>
+0031 sx = size(xi,2);
+0032 sy = size(xi,1);
+0033 sz = size(xi,3);
+0034 
+0035 <span class="comment">% Scale the volume emission rates with the volume of the base-functions:</span>
+0036 <span class="keyword">if</span> nargin &lt; 10
+0037   ds = 1;
+0038 <span class="keyword">end</span>
+0039 
+0040 <span class="comment">% Calculate the image projections of the base-function-centroids:</span>
+0041 <span class="keyword">if</span> nargin &gt; 8
+0042   [u,v,d] = <a href="../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(robs,optpar,r,cmtr,bxy);
+0043 <span class="keyword">else</span>
+0044   [u,v,d] = <a href="../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(robs,optpar,r,[],bxy);
+0045 <span class="keyword">end</span>
+0046 <span class="comment">% U is the horizontal image position, V is the vertical, and D is</span>
+0047 <span class="comment">% the distance to the base-function centroid.</span>
+0048 
+0049 <span class="comment">% Calculate the image sizes of the base-functions</span>
+0050 vs = max(min(<a href="sc_sizing.html" class="code" title="function [vs] = sc_sizing(u,v,vsize)">sc_sizing</a>(u,v,size(xi)),max(imgsize)),1);
+0051 
+0052 <span class="comment">% Here we fix for voxels outside the camera field-of-view</span>
+0053 notinimgindx = find(u&lt;1|u&gt;imgsize(1)|v&lt;1|v&gt;imgsize(2)|~isfinite(u)|~isfinite(v));
+0054 <span class="comment">% Just set the image point to the [1,1] corner pixel:</span>
+0055 u(notinimgindx) = 1;
+0056 v(notinimgindx) = 1;
+0057 <span class="comment">% And throw the base-functions away to infinity:</span>
+0058 d(notinimgindx) = inf;
+0059 <span class="comment">% d(notinimgindx) makes sure that the projections to [u,v] = 1,1 do not</span>
+0060 <span class="comment">% contribute to the projected image.</span>
+0061 <span class="comment">% $$$ why is this stuff done twice?</span>
+0062 
+0063 <span class="comment">% Divide the base-functions into NR_LAYERS number of layers:</span>
+0064 [l_cl,cl_sz] = <a href="sc_grouping.html" class="code" title="function [l_cl,cl_sz] = sc_grouping(vs,nr_layers)">sc_grouping</a>(vs,nr_layers);
+0065 <span class="comment">% Create the corresponding number of 1-D base-function</span>
+0066 <span class="comment">% shapes/filter-kernels:</span>
+0067 bfk = <a href="base_fcn_kernel.html" class="code" title="function bfk = base_fcn_kernel(ks)">base_fcn_kernel</a>(ceil(cl_sz));
+0068 bfk{nr_layers+1} = 0;   <span class="comment">% set the &quot;spread filter&quot; for the final layer to zero as these blobs do not project to the image</span>
+0069  
+0070 <span class="comment">% u(notinimgindx) = 1;</span>
+0071 <span class="comment">% v(notinimgindx) = 1;</span>
+0072 <span class="comment">% d(notinimgindx) = inf;</span>
+0073 
+0074 
+0075 <span class="comment">% Create the sparse projection matrix M for projecting the</span>
+0076 <span class="comment">% base-function centroids to the image plane (I_centroids = UV*I3D(:);):</span>
+0077 uv =      sparse( ceil(v(:)) + (ceil(u(:)) - 1 ) * by, <span class="keyword">...</span>
+0078           yi(:) + sy * (xi(:)-1) + sx * sy * (zi(:)-1), <span class="keyword">...</span>
+0079          ( v(:) - floor(v(:)) + ( v(:) == floor(v(:)) ) ) .* ( u(:) - floor(u(:)) + (u(:) == floor(u(:)) ) ), <span class="keyword">...</span>
+0080          prod(bxy),prod(size(xi(:))));
+0081 
+0082 uv = uv + sparse( floor(v(:)) + (ceil(u(:))-1) * by, <span class="keyword">...</span>
+0083           yi(:) + sy * (xi(:)-1) + sx * sy * (zi(:)-1), <span class="keyword">...</span>
+0084          ( ceil(v(:)) - v(:)) .* (u(:) - floor(u(:)) + ( u(:) == floor(u(:)) ) ), <span class="keyword">...</span>
+0085          prod(bxy),prod(size(xi(:))));
+0086 
+0087 uv = uv + sparse(ceil(v(:))+(floor(u(:))-1)*by, <span class="keyword">...</span>
+0088          yi(:)+sy*(xi(:)-1)+sx*sy*(zi(:)-1), <span class="keyword">...</span><span class="comment"> </span>
+0089          (v(:)-floor(v(:))+(v(:)==floor(v(:)))).*(ceil(u(:))-u(:)), <span class="keyword">...</span>
+0090          prod(bxy),prod(size(xi(:))));
+0091 
+0092 uv = uv + sparse(floor(v(:))+(floor(u(:))-1)*by, <span class="keyword">...</span><span class="comment"> </span>
+0093          yi(:)+sy*(xi(:)-1)+sx*sy*(zi(:)-1), <span class="keyword">...</span>
+0094          (ceil(v(:))-v(:)).*(ceil(u(:))-u(:)), <span class="keyword">...</span>
+0095          prod(bxy),prod(size(xi(:))));
+0096 
+0097 <span class="comment">% Scale d:</span>
+0098 d = d / ds^(3/2);
+0099 <span class="comment">% That way the product I3D(:)./d.^2 becomes I3D(:)./d^2*ds^3</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_slice_i</title>
+  <meta name="keywords" content="tomo_slice_i">
+  <meta name="description" content="TOMO_SLICE_I - slice with arbitrary X, Y, and Z,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_slice_i
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TOMO_SLICE_I - slice with arbitrary X, Y, and Z,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function h = tomo_slice_i(X,Y,Z,V,ix,iy,iz) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TOMO_SLICE_I - slice with arbitrary X, Y, and Z,
+  the generalized slices is taken at row/column/layer indices.
+
+ Calling:
+  h = tomo_slice_i(X,Y,Z,V,ix,iy,iz)
+ Input:
+  X - x-coordinate of 3-D grid; sized (n1,n2,n3) double
+  Y - y-coordinate of 3-D grid; sized (n1,n2,n3) double
+  Z - z-coordinate of 3-D grid; sized (n1,n2,n3) double
+  V - volume distribution; sized (n1,n2,n3) double
+  ix - indices to make cuts for in x-direction [1 x n], integer
+  iy - indices to make cuts for in y-direction [1 x n], integer
+  iz - indices to make cuts for in z-direction [1 x n], integer
+ Output:
+  h - handle graphics handle to the displayed cuts,</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="tomo20080305NewBeginnings.html" class="code" title="">tomo20080305NewBeginnings</a>	TOMO20080305NewBeginnings - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="tomo_cal0.html" class="code" title="function [CalFactors,stns,calimgs] = tomo_cal0(stns,XfI,YfI,ZfI,OPS)">tomo_cal0</a>	tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</li><li><a href="tomo_start_guessGACT.html" class="code" title="function [Vem,I2D] = tomo_start_guessGACT(stns,Energy,Ie2H,Xslice,Yslice,Zslice,M2Dto1D,U,V,I_cuts,iPeaks,X3D,Y3D,Z3D,ops)">tomo_start_guessGACT</a>	tomo_start_guessGACT - makes 3-D distribution of volume emission rates</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function h = tomo_slice_i(X,Y,Z,V,ix,iy,iz)</a>
+0002 <span class="comment">% TOMO_SLICE_I - slice with arbitrary X, Y, and Z,</span>
+0003 <span class="comment">%  the generalized slices is taken at row/column/layer indices.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%  h = tomo_slice_i(X,Y,Z,V,ix,iy,iz)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%  X - x-coordinate of 3-D grid; sized (n1,n2,n3) double</span>
+0009 <span class="comment">%  Y - y-coordinate of 3-D grid; sized (n1,n2,n3) double</span>
+0010 <span class="comment">%  Z - z-coordinate of 3-D grid; sized (n1,n2,n3) double</span>
+0011 <span class="comment">%  V - volume distribution; sized (n1,n2,n3) double</span>
+0012 <span class="comment">%  ix - indices to make cuts for in x-direction [1 x n], integer</span>
+0013 <span class="comment">%  iy - indices to make cuts for in y-direction [1 x n], integer</span>
+0014 <span class="comment">%  iz - indices to make cuts for in z-direction [1 x n], integer</span>
+0015 <span class="comment">% Output:</span>
+0016 <span class="comment">%  h - handle graphics handle to the displayed cuts,</span>
+0017 
+0018 
+0019 
+0020 <span class="comment">%   Copyright � 2010 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0021 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0022 
+0023 is_hold = ishold;
+0024 <span class="keyword">if</span> ~is_hold
+0025   hold on
+0026 <span class="keyword">end</span>
+0027 
+0028 H = [];
+0029 <span class="keyword">for</span> i1 = 1:length(ix),
+0030   
+0031   H(end+1) = surf(squeeze(X(:,ix(i1),:)),<span class="keyword">...</span>
+0032                   squeeze(Y(:,ix(i1),:)),<span class="keyword">...</span>
+0033                   squeeze(Z(:,ix(i1),:)),<span class="keyword">...</span>
+0034                   squeeze(V(:,ix(i1),:)));
+0035   
+0036 <span class="keyword">end</span>
+0037 <span class="keyword">for</span> i1 = 1:length(iy),
+0038   
+0039   H(end+1) = surf(squeeze(X(iy(i1),:,:)),<span class="keyword">...</span>
+0040                   squeeze(Y(iy(i1),:,:)),<span class="keyword">...</span>
+0041                   squeeze(Z(iy(i1),:,:)),<span class="keyword">...</span>
+0042                   squeeze(V(iy(i1),:,:)));
+0043   
+0044 <span class="keyword">end</span>
+0045 <span class="keyword">for</span> i1 = 1:length(iz),
+0046   
+0047   H(end+1) = surf((X(:,:,iz(i1))),<span class="keyword">...</span>
+0048                   (Y(:,:,iz(i1))),<span class="keyword">...</span>
+0049                   (Z(:,:,iz(i1))),<span class="keyword">...</span>
+0050                   (V(:,:,iz(i1))));
+0051   
+0052 <span class="keyword">end</span>
+0053 shading interp
+0054 view(-37.5,30)<span class="comment">% Seems to be the default matlab view for slice</span>
+0055 <span class="keyword">if</span> ~is_hold
+0056   hold off
+0057 <span class="keyword">end</span>
+0058 <span class="keyword">if</span> nargout
+0059   h = H;
+0060 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

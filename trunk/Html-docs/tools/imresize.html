@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of imresize</title>
+  <meta name="keywords" content="imresize">
+  <meta name="description" content="IMRESIZE - binning/resizing of image.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>imresize
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>IMRESIZE - binning/resizing of image.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function imOut = imresize(imIn,imsizOut) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> IMRESIZE - binning/resizing of image.
+  Simplistic fall-back to Mathworks imresize function. This
+  version only handles resizing in even powers of 2 by binning of
+  the input image.
+ 
+ Calling:
+  imOut = imresize(imIn,imsizOut)
+ Input:
+  imIn - input image [N1 x N2]
+  imsizOut - desired size of output image
+ Output:
+  imOut - output image</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ASK/HSOFT/ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function imOut = imresize(imIn,imsizOut)</a>
+0002 <span class="comment">% IMRESIZE - binning/resizing of image.</span>
+0003 <span class="comment">%  Simplistic fall-back to Mathworks imresize function. This</span>
+0004 <span class="comment">%  version only handles resizing in even powers of 2 by binning of</span>
+0005 <span class="comment">%  the input image.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%  imOut = imresize(imIn,imsizOut)</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%  imIn - input image [N1 x N2]</span>
+0011 <span class="comment">%  imsizOut - desired size of output image</span>
+0012 <span class="comment">% Output:</span>
+0013 <span class="comment">%  imOut - output image</span>
+0014 
+0015 imsizIn = size(imIn),
+0016 
+0017 nrAddLoops = log2(imsizIn./imsizOut)
+0018 
+0019 imOut = imIn;
+0020 <span class="keyword">for</span> i1 = 1:nrAddLoops(1),
+0021   imOut = imOut(1:2:<span class="keyword">end</span>,:) + imOut(2:2:<span class="keyword">end</span>,:);
+0022 <span class="keyword">end</span>
+0023 <span class="keyword">for</span> i1 = 1:nrAddLoops(2),
+0024   imOut = imOut(:,1:2:end) + imOut(:,2:2:end);
+0025 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

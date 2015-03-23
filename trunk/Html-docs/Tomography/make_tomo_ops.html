@@ -1,0 +1,266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of make_tomo_ops</title>
+  <meta name="keywords" content="make_tomo_ops">
+  <meta name="description" content="MAKE_TOMO_OPS - User interface to set some parameters for the">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>make_tomo_ops
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>MAKE_TOMO_OPS - User interface to set some parameters for the</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function tomo_ops = make_tomo_ops(stns) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MAKE_TOMO_OPS - User interface to set some parameters for the
+ tomographic inversion. 
+ These options are: 
+ 1, 'quiet border' the frame around the images where the ratio
+     between observed image and current projection is set to 1
+     this is to avoid problems with edge effects an porly known
+     flat-field sensitivity corrections; 
+ 2, relative scaling of images and the normalization region to
+    avoid problems with absolute sensitivity uncertainties and
+    such; 
+ 3, choice of itterative method; 
+ 4, choise of 3-D filtering method and filter kernel.
+ 5, display images and intermediate projections of
+    reconstruction. [ {'no-disp'} | 'disp' ]
+ Input parameter: 
+ STNS - a station-struct array
+ 
+ Calling:
+ tomo_ops = make_tomo_ops(stns)
+
+ See also: <a href="tomo_inp_images.html" class="code" title="function stns = tomo_inp_images(file_list,stns,img_ops)">TOMO_INP_IMAGES</a>, <a href="tomo_skeleton.html" class="code" title="">TOMO_SKELETON</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>	x = xx( phi, lambda , alt )</li><li><a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>	y = yy( phi, lambda, alt)</li><li><a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>	imgs_smart_caxis - alpha-percentile setting of color-axis,</li><li><a href="fix_subplots_tomo.html" class="code" title="function SP = fix_subplots_tomo(nrimages)">fix_subplots_tomo</a>	FIX_SUBPLOTS_TOMO - determine useful subplot orientation</li><li><a href="../tools/in_def2.html" class="code" title="function y = in_def2(question,default_value)">in_def2</a>	IN_DEF2 - input, with default value</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="tomo20061212ariel3.html" class="code" title="">tomo20061212ariel3</a>	TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</li><li><a href="tomo20080305FinalIR_082011.html" class="code" title="">tomo20080305FinalIR_082011</a>	TOMO20080305FinalIR_082011 - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="tomo20080305NewBeginnings.html" class="code" title="">tomo20080305NewBeginnings</a>	TOMO20080305NewBeginnings - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="tomo_EXMPL970216.html" class="code" title="">tomo_EXMPL970216</a>	% TOMO_EXMPL970216 - Template/example script for auroral tomography,</li><li><a href="tomo_skeleton.html" class="code" title="">tomo_skeleton</a>	% TOMO_SKELETON - Template/example script for auroral tomography,</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function tomo_ops = make_tomo_ops(stns)</a>
+0002 <span class="comment">% MAKE_TOMO_OPS - User interface to set some parameters for the</span>
+0003 <span class="comment">% tomographic inversion.</span>
+0004 <span class="comment">% These options are:</span>
+0005 <span class="comment">% 1, 'quiet border' the frame around the images where the ratio</span>
+0006 <span class="comment">%     between observed image and current projection is set to 1</span>
+0007 <span class="comment">%     this is to avoid problems with edge effects an porly known</span>
+0008 <span class="comment">%     flat-field sensitivity corrections;</span>
+0009 <span class="comment">% 2, relative scaling of images and the normalization region to</span>
+0010 <span class="comment">%    avoid problems with absolute sensitivity uncertainties and</span>
+0011 <span class="comment">%    such;</span>
+0012 <span class="comment">% 3, choice of itterative method;</span>
+0013 <span class="comment">% 4, choise of 3-D filtering method and filter kernel.</span>
+0014 <span class="comment">% 5, display images and intermediate projections of</span>
+0015 <span class="comment">%    reconstruction. [ {'no-disp'} | 'disp' ]</span>
+0016 <span class="comment">% Input parameter:</span>
+0017 <span class="comment">% STNS - a station-struct array</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% Calling:</span>
+0020 <span class="comment">% tomo_ops = make_tomo_ops(stns)</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% See also: TOMO_INP_IMAGES, TOMO_SKELETON</span>
+0023 
+0024 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0025 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0026 
+0027 <span class="keyword">if</span>  ( nargin == 1 )
+0028   
+0029   disp(<span class="string">'Currently these iterative methods are implemented'</span>)
+0030   disp(<span class="string">'1. Multiplicative ART'</span>)
+0031   disp(<span class="string">'2. Multiplicative SIRT'</span>)
+0032   disp(<span class="string">'3. SIRT'</span>)
+0033   disp(<span class="string">'4. FMAPE'</span>)
+0034   disp(<span class="string">'--------'</span>)
+0035   t_t = <a href="../tools/in_def2.html" class="code" title="function y = in_def2(question,default_value)">in_def2</a>(<span class="string">'Which kind of iteration method should we use? '</span>,1);
+0036   <span class="keyword">for</span> i1 = numel(stns):-1:1,
+0037     tomo_ops(i1).tomotype = t_t;
+0038   <span class="keyword">end</span>
+0039   <span class="keyword">if</span> ~any([1 2 3 4]==tomo_ops(1).tomotype)
+0040     
+0041     error(<span class="string">'Asking for unimplemented iteration method'</span>)
+0042     
+0043   <span class="keyword">end</span>
+0044   
+0045   sp = <a href="fix_subplots_tomo.html" class="code" title="function SP = fix_subplots_tomo(nrimages)">fix_subplots_tomo</a>(length(stns(:)));
+0046   
+0047   <span class="keyword">for</span> i1 = 1:length(stns(:)),
+0048     
+0049     subplot(sp(1),sp(2),i1)
+0050     imagesc(stns(i1).img),axis xy
+0051     <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.001,stns(i1).img)
+0052     title([<span class="string">'Image: '</span>,num2str(i1),<span class="string">' Station '</span>,num2str(stns(i1).obs.station)])
+0053     
+0054   <span class="keyword">end</span>
+0055   
+0056   [tomo_ops(:).randorder] = deal(nan*ones(size(tomo_ops)));
+0057   <span class="keyword">if</span> tomo_ops(1).tomotype == 1
+0058     <span class="comment">% 3 randomclassiffication of stations</span>
+0059     
+0060     
+0061     disp(<span class="string">'For ART it might be of importance in which order the stations'</span>)
+0062     disp(<span class="string">'are used. Therefore there are 3 possible groups, first (1),'</span>)
+0063     disp(<span class="string">'middle(2) or last (3)'</span>)
+0064     randorder = <a href="../tools/in_def2.html" class="code" title="function y = in_def2(question,default_value)">in_def2</a>(<span class="string">'Group the stations into classes? (vector notation, ex: [2 2 1 3])'</span>,2);
+0065     
+0066     <span class="keyword">for</span> i2 = 1:length(stns),
+0067       tomo_ops(i2).randorder = max(min(randorder(i2),3),1);
+0068     <span class="keyword">end</span>
+0069   <span class="keyword">end</span>
+0070   
+0071   <span class="comment">% 1 select quiet border</span>
+0072   disp(<span class="string">'Typically it is good to set the update-ratio to 1 on the '</span>)
+0073   disp(<span class="string">'borders of images. Unless there is special reasons not to'</span>)
+0074   disp(<span class="string">'this is adviseable.'</span>)
+0075   no_qbi = <a href="../tools/in_def2.html" class="code" title="function y = in_def2(question,default_value)">in_def2</a>([<span class="string">'Are there any images that should not have quiet'</span> <span class="keyword">...</span>
+0076             <span class="string">' borders?'</span>],0);
+0077   <span class="keyword">for</span> i1 = 1:length(stns)
+0078     
+0079     <span class="keyword">if</span> ~any(no_qbi==i1)
+0080       
+0081       clf
+0082       imagesc(stns(i1).img),axis xy
+0083       <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.001,stns(i1).img)
+0084       hold on
+0085       <span class="keyword">try</span>
+0086         contour(<span class="string">'v6'</span>,stns(i1).proj,8,<span class="string">'k'</span>)
+0087       <span class="keyword">catch</span>
+0088       <span class="keyword">end</span>
+0089       title([<span class="string">'Select the ''quiet frame'' for IMAGE: '</span>, <span class="keyword">...</span>
+0090          num2str(i1)])
+0091       
+0092       <span class="comment">% Disable any widowbutton down functions</span>
+0093       set(gcf,<span class="string">'windowbuttondownfcn'</span>,<span class="string">' '</span>) ;
+0094       <span class="comment">% Get frame</span>
+0095       waitforbuttonpress            ;
+0096       pnt = get(gcf,<span class="string">'currentpoint'</span>) ;
+0097       xy1 = get(gca,<span class="string">'currentpoint'</span>) ;
+0098       rbbox([pnt 0 0],pnt)          ;
+0099       xy2 = get(gca,<span class="string">'currentpoint'</span>) ;
+0100       
+0101       <a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>  = [xy1(1,1) xy2(1,1)] ;
+0102       <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>  = [xy1(1,2) xy2(1,2)] ;
+0103       
+0104     <span class="keyword">else</span>
+0105       <a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a> = [1 size(stns(i1).img,1)];
+0106       <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a> = [1 size(stns(i1).img,2)];
+0107     <span class="keyword">end</span>
+0108     tomo_ops(i1).qb(1) = ceil(min(<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(1:2)));
+0109     tomo_ops(i1).qb(2) = floor(max(<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(1:2)));
+0110     tomo_ops(i1).qb(3) = ceil(min(<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(1:2)));
+0111     tomo_ops(i1).qb(4) = floor(max(<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(1:2)));
+0112     
+0113   <span class="keyword">end</span>
+0114   
+0115   <span class="keyword">for</span> i1 = 1:min(length(stns),12)
+0116     
+0117     stns(i1).tomops(6:9) = nan;
+0118     
+0119     subplot(sp(1),sp(2),i1)
+0120     imagesc(stns(i1).img),axis xy
+0121     <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.001,stns(i1).img)
+0122     title([<span class="string">'Image: '</span>,num2str(i1),<span class="string">' Station '</span>,num2str(stns(i1).obs.station)])
+0123     
+0124   <span class="keyword">end</span>
+0125   
+0126   disp(<span class="string">'To avoid/reduce problems with errors in intensity calibrations'</span>)
+0127   disp(<span class="string">'one trick to use is to normalize the intensity of the projections'</span>)
+0128   disp(<span class="string">'to the image intensity in a central region. This way the spatial'</span>)
+0129   disp(<span class="string">'intensity variation will be utilized, but not the absolute intensity itself.'</span>)
+0130   <span class="comment">% 2 select images with normalization regions,        sso.</span>
+0131   renorm = <a href="../tools/in_def2.html" class="code" title="function y = in_def2(question,default_value)">in_def2</a>(<span class="string">'Are there any images that should be intensity normalized? (vector notation, ex: [2,3,4])'</span>,0);
+0132   <span class="keyword">for</span> i1 = 1:length(stns)
+0133     
+0134     <a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a> = [nan nan];
+0135     <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a> = [nan nan];
+0136     <span class="keyword">if</span> any(renorm==i1)
+0137       
+0138       clf
+0139       imagesc(stns(i1).img),axis xy
+0140       <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.001,stns(i1).img)
+0141       hold on
+0142       <span class="keyword">try</span>
+0143         contour(<span class="string">'v6'</span>,stns(i1).proj,8,<span class="string">'k'</span>)
+0144       <span class="keyword">catch</span>
+0145       <span class="keyword">end</span>
+0146       <span class="keyword">if</span> ~isnan(tomo_ops(i1).qb(3))
+0147         plot(tomo_ops(i1).qb([1 2 2 1 1]),tomo_ops(i1).qb([3 3 4 4 3]),<span class="string">'w'</span>)
+0148       <span class="keyword">end</span>
+0149       title([<span class="string">'Select the ''normalization region'' for IMAGE: '</span>, <span class="keyword">...</span>
+0150          num2str(i1)])
+0151       
+0152       <span class="comment">% Disable any windowbutton down functions</span>
+0153       set(gcf,<span class="string">'windowbuttondownfcn'</span>,<span class="string">' '</span>) ;
+0154       <span class="comment">% Get frame</span>
+0155       waitforbuttonpress            ;
+0156       pnt = get(gcf,<span class="string">'currentpoint'</span>) ;
+0157       xy1 = get(gca,<span class="string">'currentpoint'</span>) ;
+0158       rbbox([pnt 0 0],pnt)          ;
+0159       xy2 = get(gca,<span class="string">'currentpoint'</span>) ;
+0160       
+0161       <a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>  = [xy1(1,1) xy2(1,1)] ;
+0162       <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>  = [xy1(1,2) xy2(1,2)] ;
+0163       
+0164     <span class="keyword">end</span>
+0165     
+0166     tomo_ops(i1).renorm(1) = ceil(min(<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(1:2)));
+0167     tomo_ops(i1).renorm(2) = floor(max(<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(1:2)));
+0168     tomo_ops(i1).renorm(3) = ceil(min(<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(1:2)));
+0169     tomo_ops(i1).renorm(4) = floor(max(<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(1:2)));
+0170     
+0171   <span class="keyword">end</span>
+0172   
+0173   <span class="comment">% 6 filtertype                                       [filter2, medfilt2, proximity]</span>
+0174   disp(<span class="string">'Type of spatial filtering to stabilize the reconstruction'</span>)
+0175   disp(<span class="string">'Available are:'</span>)
+0176   disp(<span class="string">'0. None'</span>)
+0177   disp(<span class="string">'1. Horizontal local averaging, filter2.'</span>)
+0178   disp(<span class="string">'2. Horizontal median filter, medfilt2.'</span>)
+0179   disp(<span class="string">'3. Proximity constraint, proxfilt.'</span>)
+0180   tft = <a href="../tools/in_def2.html" class="code" title="function y = in_def2(question,default_value)">in_def2</a>(<span class="string">'Which filter type to use?'</span>,0);
+0181   [tomo_ops(:).filtertype] = deal(tft);
+0182   <span class="comment">% 7 filterparameters</span>
+0183   <span class="comment">% [filterkernel]</span>
+0184   <span class="keyword">if</span> tft == 2
+0185     tfr = <a href="../tools/in_def2.html" class="code" title="function y = in_def2(question,default_value)">in_def2</a>(<span class="string">'What region size to use for median filtering?'</span>,[3 3]);
+0186   <span class="keyword">else</span>
+0187     tfr = <a href="../tools/in_def2.html" class="code" title="function y = in_def2(question,default_value)">in_def2</a>(<span class="string">'What filter kernel to use [matlab matrix]?'</span>,1);
+0188   <span class="keyword">end</span>
+0189   <span class="keyword">for</span> i2 = 1:length(stns)
+0190     tomo_ops(i2).filterkernel = tfr;
+0191     tomo_ops(i2).alpha = 1;
+0192     tomo_ops(i2).disp = <span class="string">'no-disp'</span>;
+0193   <span class="keyword">end</span>
+0194   
+0195 <span class="keyword">else</span>
+0196   
+0197   tomo_ops.tomotype = [];
+0198   tomo_ops.qb = [];
+0199   tomo_ops.renorm = [];
+0200   tomo_ops.filtertype = [];
+0201   tomo_ops.filterkernel = [];
+0202   tomo_ops.randorder = [];
+0203   
+0204 <span class="keyword">end</span> <span class="comment">% if  ( nargin == 1 )</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

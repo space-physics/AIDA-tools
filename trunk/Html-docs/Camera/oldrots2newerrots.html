@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of oldrots2newerrots</title>
+  <meta name="keywords" content="oldrots2newerrots">
+  <meta name="description" content="OLDROTS2NEWERROTS - Transformation between 2 set of rotation angles">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>oldrots2newerrots
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>OLDROTS2NEWERROTS - Transformation between 2 set of rotation angles</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [a2,b2,g2] = oldrots2newerrots(a1,b1,g1) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> OLDROTS2NEWERROTS - Transformation between 2 set of rotation angles 
+   Method: Just some simle trigonometry and a little trivial
+   algebra, nothing fancy really. Typical scribble on a napkin
+   type of maths.
+ Calling:
+ [a2,b2,g2] = oldrots2newerrots(a1,b1,g1)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [a2,b2,g2] = oldrots2newerrots(a1,b1,g1)</a>
+0002 <span class="comment">% OLDROTS2NEWERROTS - Transformation between 2 set of rotation angles</span>
+0003 <span class="comment">%   Method: Just some simle trigonometry and a little trivial</span>
+0004 <span class="comment">%   algebra, nothing fancy really. Typical scribble on a napkin</span>
+0005 <span class="comment">%   type of maths.</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% [a2,b2,g2] = oldrots2newerrots(a1,b1,g1)</span>
+0008 
+0009 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0010 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0011 
+0012 a2(1) = [  atan2(sin(a1)*cos(b1),(-sin(a1)^2+sin(a1)^2*sin(b1)^2+1)^(1/2))];
+0013 a2(2) = [ atan2(sin(a1)*cos(b1),-(-sin(a1)^2+sin(a1)^2*sin(b1)^2+1)^(1/2))];
+0014 
+0015 b2(1) = [   atan2(sin(b1)/(-sin(a1)^2+sin(a1)^2*sin(b1)^2+1)^(1/2),cos(a1)*cos(b1)/(-sin(a1)^2+sin(a1)^2*sin(b1)^2+1)^(1/2))];
+0016 b2(2) = [ atan2(-sin(b1)/(-sin(a1)^2+sin(a1)^2*sin(b1)^2+1)^(1/2),-cos(a1)*cos(b1)/(-sin(a1)^2+sin(a1)^2*sin(b1)^2+1)^(1/2))];
+0017 
+0018 g2(1) = [   atan2((cos(a1)*sin(g1)+sin(a1)*sin(b1)*cos(g1))/(-sin(a1)^2+sin(a1)^2*sin(b1)^2+1)^(1/2),(cos(a1)*cos(g1)-sin(a1)*sin(b1)*sin(g1))/(-sin(a1)^2+sin(a1)^2*sin(b1)^2+1)^(1/2))];
+0019 g2(2) = [ atan2(-(cos(a1)*sin(g1)+sin(a1)*sin(b1)*cos(g1))/(-sin(a1)^2+sin(a1)^2*sin(b1)^2+1)^(1/2),-(cos(a1)*cos(g1)-sin(a1)*sin(b1)*sin(g1))/(-sin(a1)^2+sin(a1)^2*sin(b1)^2+1)^(1/2))];
+0020 
+0021 <span class="comment">% I told you so it was nothing here to see. Gotcha!</span>
+0022</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

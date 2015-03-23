@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of checkok</title>
+  <meta name="keywords" content="checkok">
+  <meta name="description" content="CHECKOK - displays time and observation site GUI for user choise.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>checkok
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>CHECKOK - displays time and observation site GUI for user choise.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [stnnames,SkMp] = checkok(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> CHECKOK - displays time and observation site GUI for user choise.
+
+ Calling:
+  [stnnames,SkMp] = checkok(SkMp);
+ Input:
+  SkMp - Skymap struct, see SKYMAP
+ Output:
+  stnnames - string matrix with station names
+  SkMp     - Skymap struct, see SKYMAP</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/num8str.html" class="code" title="function [s] = num8str(in)">num8str</a>	NUM8STR - numerical to string converter</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="skymap.html" class="code" title="function [SkMp] = skymap(pos,time,SkMp)">skymap</a>	SKYMAP An easy to astronomical starchart.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [stnnames,SkMp] = checkok(SkMp)</a>
+0002 <span class="comment">% CHECKOK - displays time and observation site GUI for user choise.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  [stnnames,SkMp] = checkok(SkMp);</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  SkMp - Skymap struct, see SKYMAP</span>
+0008 <span class="comment">% Output:</span>
+0009 <span class="comment">%  stnnames - string matrix with station names</span>
+0010 <span class="comment">%  SkMp     - Skymap struct, see SKYMAP</span>
+0011 
+0012 
+0013 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0014 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0015 
+0016 <span class="comment">%global stardir</span>
+0017 
+0018 station = 1;
+0019 <span class="keyword">if</span> nargin == 1
+0020   
+0021   checkisokstr = <span class="string">'[SkMp] = checkisok(SkMp);'</span>;
+0022   <span class="keyword">if</span> isfield(SkMp,<span class="string">'tid0'</span>)
+0023     tid = SkMp.tid0;
+0024   <span class="keyword">else</span>
+0025     tid = clock;
+0026     SkMp.tid0 = tid;
+0027   <span class="keyword">end</span>
+0028 <span class="keyword">else</span>
+0029   
+0030   checkisokstr = <span class="string">'[SkMp] = checkisok(SkMp);'</span>;
+0031   tid = clock;
+0032   SkMp.tid0 = tid;
+0033   
+0034 <span class="keyword">end</span>
+0035 SkMp.figchok = figure(<span class="string">'Name'</span>,<span class="string">'OBSERVATION DATA'</span>,<span class="keyword">...</span>
+0036               <span class="string">'Numbertitle'</span>,<span class="string">'off'</span>,<span class="keyword">...</span>
+0037               <span class="string">'Position'</span>,[200,500,270,180],<span class="keyword">...</span>
+0038               <span class="string">'resize'</span>,<span class="string">'off'</span>,<span class="keyword">...</span>
+0039               <span class="string">'MenuBar'</span>,<span class="string">'none'</span>);
+0040 
+0041 
+0042 stnnames = SkMp.StnNames;
+0043 <span class="comment">% $$$ stnnames{end+1} = 'Other';</span>
+0044 
+0045 
+0046 SkMp.ui81 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0047               <span class="string">'Style'</span>,<span class="string">'Popup'</span>,<span class="keyword">...</span>
+0048               <span class="string">'String'</span>,stnnames,<span class="keyword">...</span>
+0049               <span class="string">'Value'</span>,station==1,<span class="keyword">...</span>
+0050               <span class="string">'Position'</span>,[.05,.315,.9,.11]);
+0051 
+0052 
+0053 SkMp.ui815 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0054                <span class="string">'Style'</span>,<span class="string">'pushbutton'</span>,<span class="keyword">...</span>
+0055                <span class="string">'String'</span>,<span class="string">'long'</span>,<span class="keyword">...</span>
+0056                <span class="string">'Position'</span>,[.05,.16+.02,.11,.11]);
+0057 SkMp.ui815 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0058                <span class="string">'Style'</span>,<span class="string">'edit'</span>,<span class="keyword">...</span>
+0059                <span class="string">'String'</span>,<a href="../tools/num8str.html" class="code" title="function [s] = num8str(in)">num8str</a>(SkMp.longlat(station,1)),<span class="keyword">...</span>
+0060                <span class="string">'Position'</span>,[.18,.16+.02,.5-.015-.18,.11]);
+0061 
+0062 SkMp.ui8160 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0063             <span class="string">'Style'</span>,<span class="string">'pushbutton'</span>,<span class="keyword">...</span>
+0064             <span class="string">'String'</span>,<span class="string">'lat'</span>,<span class="keyword">...</span>
+0065             <span class="string">'Position'</span>,[.515,.16+.02,.11,.11]);
+0066 SkMp.ui816 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0067                <span class="string">'Style'</span>,<span class="string">'edit'</span>,<span class="keyword">...</span>
+0068                <span class="string">'String'</span>,<a href="../tools/num8str.html" class="code" title="function [s] = num8str(in)">num8str</a>(SkMp.longlat(station,2)),<span class="keyword">...</span>
+0069                <span class="string">'Position'</span>,[.64,.16+.02,.5-.015-.18,.11]);
+0070 
+0071 SkMp.ui86 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0072               <span class="string">'Style'</span>,<span class="string">'pushbutton'</span>,<span class="keyword">...</span>
+0073               <span class="string">'String'</span>,<span class="string">'YEAR'</span>,<span class="keyword">...</span>
+0074               <span class="string">'Position'</span>,[.05,0.825+.02,.28,.11]);
+0075 SkMp.ui86 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0076               <span class="string">'Style'</span>,<span class="string">'edit'</span>,<span class="keyword">...</span>
+0077               <span class="string">'String'</span>,num2str(tid(1)),<span class="keyword">...</span>
+0078               <span class="string">'Position'</span>,[.05,0.695+.02,.28,.11]);
+0079 
+0080 SkMp.ui87 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0081               <span class="string">'Style'</span>,<span class="string">'pushbutton'</span>,<span class="keyword">...</span>
+0082               <span class="string">'String'</span>,<span class="string">'MONTH'</span>,<span class="keyword">...</span>
+0083               <span class="string">'Position'</span>,[.36,0.825+.02,.28,.11]);
+0084 SkMp.ui87 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0085               <span class="string">'Style'</span>,<span class="string">'edit'</span>,<span class="keyword">...</span>
+0086               <span class="string">'String'</span>,num2str(tid(2)),<span class="keyword">...</span>
+0087               <span class="string">'Position'</span>,[.36,0.695+.02,.28,.11]);
+0088 
+0089 SkMp.ui88 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0090               <span class="string">'Style'</span>,<span class="string">'pushbutton'</span>,<span class="keyword">...</span>
+0091               <span class="string">'String'</span>,<span class="string">'DAY'</span>,<span class="keyword">...</span>
+0092               <span class="string">'Position'</span>,[.67,0.825+.02,.28,.11]);
+0093 SkMp.ui88 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0094               <span class="string">'Style'</span>,<span class="string">'edit'</span>,<span class="keyword">...</span>
+0095               <span class="string">'String'</span>,num2str(tid(3)),<span class="keyword">...</span>
+0096               <span class="string">'Position'</span>,[.67,0.695+.02,.28,.11]);
+0097 
+0098 SkMp.ui89 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0099               <span class="string">'Style'</span>,<span class="string">'pushbutton'</span>,<span class="keyword">...</span>
+0100               <span class="string">'String'</span>,<span class="string">'HOUR'</span>,<span class="keyword">...</span>
+0101               <span class="string">'Position'</span>,[.05,.565+.02,.28,.11]);
+0102 SkMp.ui89 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0103               <span class="string">'Style'</span>,<span class="string">'edit'</span>,<span class="keyword">...</span>
+0104               <span class="string">'String'</span>,num2str(tid(4)),<span class="keyword">...</span>
+0105               <span class="string">'Position'</span>,[.05,0.435+.02,.28,.11]);
+0106 
+0107 SkMp.ui817 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0108                <span class="string">'Style'</span>,<span class="string">'pushbutton'</span>,<span class="keyword">...</span>
+0109                <span class="string">'String'</span>,<span class="string">'MIN'</span>,<span class="keyword">...</span>
+0110                <span class="string">'Position'</span>,[.36,.565+.02,.28,.11]);
+0111 SkMp.ui817 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0112                <span class="string">'Style'</span>,<span class="string">'edit'</span>,<span class="keyword">...</span>
+0113                <span class="string">'String'</span>,num2str(tid(5)),<span class="keyword">...</span>
+0114                <span class="string">'Position'</span>,[.36,0.435+.02,.28,.11]);
+0115 
+0116 SkMp.ui818 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0117                <span class="string">'Style'</span>,<span class="string">'pushbutton'</span>,<span class="keyword">...</span>
+0118                <span class="string">'String'</span>,<span class="string">'SEC'</span>,<span class="keyword">...</span>
+0119                <span class="string">'Position'</span>,[.67,.565+.02,.28,.11]);
+0120 SkMp.ui818 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0121                <span class="string">'Style'</span>,<span class="string">'edit'</span>,<span class="keyword">...</span>
+0122                <span class="string">'String'</span>,num2str(tid(6)),<span class="keyword">...</span>
+0123                <span class="string">'Position'</span>,[.67,0.435+.02,.28,.11]);
+0124 
+0125 SkMp.ui812 = uicontrol(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0126                <span class="string">'Style'</span>,<span class="string">'pushbutton'</span>,<span class="keyword">...</span>
+0127                <span class="string">'String'</span>,<span class="string">'OK'</span>,<span class="keyword">...</span>
+0128                <span class="string">'Position'</span>,[.045,.02+.02,.9,.11],<span class="keyword">...</span>
+0129                <span class="string">'Callback'</span>,checkisokstr);
+0130 
+0131 set(SkMp.ui81,<span class="string">'Callback'</span>,<span class="string">'poschoice(SkMp)'</span>);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,15 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+
+  plot_stars_over [URL="plot_stars_over.html"];
+  updautident [URL="updautident.html"];
+  updautomat [URL="updautomat.html"];
+  updcenter2 [URL="updcenter2.html"];
+  updchange_optmod [URL="updchange_optmod.html"];
+  upddellastr [URL="upddellastr.html"];
+  updfindstar [URL="updfindstar.html"];
+  updfliplrud [URL="updfliplrud.html"];
+  updrmstar [URL="updrmstar.html"];
+  updstrman [URL="updstrman.html"];
+  updzoom [URL="updzoom.html"];
+}

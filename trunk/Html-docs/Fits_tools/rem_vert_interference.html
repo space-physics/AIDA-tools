@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of rem_vert_interference</title>
+  <meta name="keywords" content="rem_vert_interference">
+  <meta name="description" content="REM_VERT_INTERFERENCE - Notch filter to remove vertical">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>rem_vert_interference
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>REM_VERT_INTERFERENCE - Notch filter to remove vertical</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function imgout = rem_vert_interference(imgin,notch_lines,nrregs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> REM_VERT_INTERFERENCE - Notch filter to remove vertical
+ interferens from images.
+   
+ Calling:
+ imgout = rem_vert_interference(imgin,notch_lines,nrregs)
+ 
+ INPUT:
+   IMGIN - 2-D array with interference pattern in teh vertical
+           direction.
+   NOTCH_LINES - frequencies to be removed (pixel index in
+                 fft-plane). 
+   NRREGS - 2 for images with 2 separate readout channels,
+            interference pattern then not continous over column</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/detrend.html" class="code" title="function [y,trend] = detrend(x,o,bp)">detrend</a>	DETREND Remove a linear trend from a vector, usually for FFT processing.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>	PRE_PROC_IMG - systematic image correction and preprocessing of</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function imgout = rem_vert_interference(imgin,notch_lines,nrregs)</a>
+0002 <span class="comment">% REM_VERT_INTERFERENCE - Notch filter to remove vertical</span>
+0003 <span class="comment">% interferens from images.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">% imgout = rem_vert_interference(imgin,notch_lines,nrregs)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% INPUT:</span>
+0009 <span class="comment">%   IMGIN - 2-D array with interference pattern in teh vertical</span>
+0010 <span class="comment">%           direction.</span>
+0011 <span class="comment">%   NOTCH_LINES - frequencies to be removed (pixel index in</span>
+0012 <span class="comment">%                 fft-plane).</span>
+0013 <span class="comment">%   NRREGS - 2 for images with 2 separate readout channels,</span>
+0014 <span class="comment">%            interference pattern then not continous over column</span>
+0015 
+0016 
+0017 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0018 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0019 
+0020 <span class="keyword">if</span> ( nrregs==1 )
+0021   
+0022   fk = fft(imgin);
+0023   fk(notch_lines,:) = 0;
+0024   fk(end-notch_lines+2,:) = 0;
+0025   imgout = real(ifft(fk));
+0026   
+0027 <span class="keyword">elseif</span> ( nrregs == 2 )
+0028   
+0029   [imgin,bg] = <a href="../tools/detrend.html" class="code" title="function [y,trend] = detrend(x,o,bp)">detrend</a>(imgin,<span class="string">'linear'</span>,round([size(imgin,1)/2 size(imgin,1)/2+1]));
+0030   fk = fft(imgin(1:end/2,:));
+0031   fk(notch_lines,:) = 0;
+0032   fk(end-notch_lines+2,:) = 0;
+0033   imgout = real(ifft(fk));
+0034   fk = fft(imgin(end/2+1:<span class="keyword">end</span>,:));
+0035   fk(notch_lines,:) = 0;
+0036   fk(end-notch_lines+2,:) = 0;
+0037   imgout = [imgout;real(ifft(fk))];
+0038   imgout = imgout+bg;
+0039   
+0040 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

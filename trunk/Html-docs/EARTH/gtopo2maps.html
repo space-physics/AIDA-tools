@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of gtopo2maps</title>
+  <meta name="keywords" content="gtopo2maps">
+  <meta name="description" content="GTOPO2MAPS - Parse gtopo digital elevation models">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html EARTH -->
+<h1>gtopo2maps
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>GTOPO2MAPS - Parse gtopo digital elevation models</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function varargout = gtopo2maps(gtopo_file,gtopo_hdr,ops) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> GTOPO2MAPS - Parse gtopo digital elevation models
+   
+ Calling:
+   [long,lat,alt,X,Y,Z] =  gtopo2maps(gtopo_file,gtopo_hdr,OPS)
+   OPS                  =  gtopo2maps
+ Input:
+   gtopo_file - filename of gtopo digital elevation model
+   gtopo_hdr  - filename of gtopo header file
+   OPS        - options struct
+ Output:
+   long - longitude array (degrees)
+   lat  - latitude array (degrees)
+   alt  - altitude array
+   X    - Horizontal distance from center (east)  [km]
+   Y    - Horizontal distance from center (north) [km]
+   Z    - Altitude distance from center (zenith)  [km]
+ or when GTOPO2MAPS is called without input arguments
+   OPS - the default options is returned.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="makenlcpos.html" class="code" title="function [x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt)">makenlcpos</a>	MAKENLCPOS transforms the positions (LAT, LONG, ALT) to (X,Y,Z)</li><li><a href="../Fits_tools/fitsfindkey_strmhead.html" class="code" title="function [j_out] = fitsfindkey_strmhead(H,S)">fitsfindkey_strmhead</a>	fitsfindkey_strmhead - Searches a FITS header H for keyword S</li><li><a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>	ISCHAR - return true if STR is a char-array</li><li><a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function varargout = gtopo2maps(gtopo_file,gtopo_hdr,ops)</a>
+0002 <span class="comment">% GTOPO2MAPS - Parse gtopo digital elevation models</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   [long,lat,alt,X,Y,Z] =  gtopo2maps(gtopo_file,gtopo_hdr,OPS)</span>
+0006 <span class="comment">%   OPS                  =  gtopo2maps</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%   gtopo_file - filename of gtopo digital elevation model</span>
+0009 <span class="comment">%   gtopo_hdr  - filename of gtopo header file</span>
+0010 <span class="comment">%   OPS        - options struct</span>
+0011 <span class="comment">% Output:</span>
+0012 <span class="comment">%   long - longitude array (degrees)</span>
+0013 <span class="comment">%   lat  - latitude array (degrees)</span>
+0014 <span class="comment">%   alt  - altitude array</span>
+0015 <span class="comment">%   X    - Horizontal distance from center (east)  [km]</span>
+0016 <span class="comment">%   Y    - Horizontal distance from center (north) [km]</span>
+0017 <span class="comment">%   Z    - Altitude distance from center (zenith)  [km]</span>
+0018 <span class="comment">% or when GTOPO2MAPS is called without input arguments</span>
+0019 <span class="comment">%   OPS - the default options is returned.</span>
+0020 
+0021 <span class="comment">%   Copyright � 2010 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0022 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0023 
+0024 <span class="comment">% TODO: Check gtopo2maps outputs!</span>
+0025 
+0026 <span class="comment">% Set values for the default options:</span>
+0027 def_ops.lat0 = nan;   
+0028 def_ops.long0 = nan;
+0029 def_ops.out_name = <span class="string">'default.mat'</span>;
+0030 
+0031 <span class="keyword">if</span> nargin == 0
+0032   <span class="comment">% If no input arguments: Return the default options:</span>
+0033   varargout{1} = def_ops;
+0034   <span class="keyword">return</span>;
+0035 <span class="keyword">elseif</span> nargin &gt; 2 &amp; isstruct(ops)
+0036   <span class="comment">% otherwise, if there is an options struct input merge that ontop</span>
+0037   <span class="comment">% of the default options:</span>
+0038   def_ops = <a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(def_ops,ops);
+0039 <span class="keyword">end</span>
+0040 
+0041 EARTH_HOME = fileparts(which(<span class="string">'latlongh_2_xyz'</span>));
+0042 
+0043 <span class="comment">% Open the gtopo-header file:</span>
+0044 fp_hdr = fopen(gtopo_hdr,<span class="string">'r'</span>);
+0045 <span class="keyword">if</span> fp_hdr &lt; 0
+0046   <span class="comment">% Since that has to work, error out if it is not working:</span>
+0047   error([<span class="string">'gtopo2maps: could not open file '</span>,gtopo_hdr,])
+0048 <span class="keyword">end</span>
+0049 
+0050 <span class="comment">% Read the header:</span>
+0051 hdr_string = <span class="string">''</span>;
+0052 <span class="keyword">while</span> ~feof(fp_hdr)
+0053   curr_line = fgetl(fp_hdr);
+0054   hdr_string = str2mat(hdr_string,curr_line);
+0055 <span class="keyword">end</span>
+0056 fclose(fp_hdr);
+0057 
+0058 <span class="comment">% Build a struct from the header with field names and values</span>
+0059 <span class="comment">% according to what is found in gtopo_2_obs.txt:</span>
+0060 obs = [];
+0061 header_parser_file_name = fullfile(EARTH_HOME,<span class="string">'gtopo_2_obs.txt'</span>);
+0062 fp = fopen(header_parser_file_name,<span class="string">'r'</span>);
+0063 <span class="keyword">while</span> ~feof(fp)
+0064   curr_line = fgetl(fp);
+0065   <span class="keyword">if</span> <a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(curr_line)
+0066     [fieldname,curr_line] = strtok(curr_line,<span class="string">':'</span>);
+0067     [hdr_field_key,curr_line] = strtok(curr_line(2:end),<span class="string">' '</span>);
+0068     [key_Evalue_string,curr_line] = strtok(curr_line(2:end),<span class="string">' '</span>);
+0069     cindx = <a href="../Fits_tools/fitsfindkey_strmhead.html" class="code" title="function [j_out] = fitsfindkey_strmhead(H,S)">fitsfindkey_strmhead</a>(hdr_string,deblank(hdr_field_key));
+0070     
+0071     <span class="keyword">if</span> ~isempty(cindx)
+0072       key_val = eval(key_Evalue_string);
+0073       obs = setfield(obs,fieldname,key_val);
+0074     <span class="keyword">else</span>
+0075       obs = setfield(obs,fieldname,0);<span class="comment">%%% Fixa fixen senare...</span>
+0076       warning([<span class="string">'MATLAB: gtopo2maps'</span>,sprintf(<span class="string">'missing header info for?: %s'</span>,fieldname)])
+0077     <span class="keyword">end</span>
+0078     
+0079   <span class="keyword">end</span>
+0080 <span class="keyword">end</span>
+0081 fclose(fp);
+0082 obs
+0083 
+0084 <span class="comment">%        'int8'    'integer*1'      integer, 8 bits.</span>
+0085 <span class="comment">%        'int16'   'integer*2'      integer, 16 bits.</span>
+0086 <span class="comment">%        'int32'   'integer*4'      integer, 32 bits.</span>
+0087 <span class="comment">%        'int64'   'integer*8'      integer, 64 bits.</span>
+0088 
+0089 <span class="comment">% Read the altitudes above sealevel:</span>
+0090 fp_alts = fopen(gtopo_file,<span class="string">'r'</span>,<span class="string">'ieee-be'</span>);
+0091 <span class="keyword">switch</span> obs.nbits
+0092  <span class="keyword">case</span> 8
+0093   alts = fread(fp_alts,[obs.nx,obs.ny],<span class="string">'int8'</span>);
+0094  <span class="keyword">case</span> 16
+0095   alts = fread(fp_alts,[obs.nx,obs.ny],<span class="string">'int16'</span>);
+0096  <span class="keyword">case</span> 32
+0097   alts = fread(fp_alts,[obs.nx,obs.ny],<span class="string">'int32'</span>);
+0098  <span class="keyword">case</span> 64
+0099   alts = fread(fp_alts,[obs.nx,obs.ny],<span class="string">'int64'</span>);
+0100  <span class="keyword">otherwise</span>
+0101 <span class="keyword">end</span>
+0102 
+0103 fclose(fp_alts)
+0104 <span class="comment">% This should give the correct longitude-latitude coordinates:</span>
+0105 Long = obs.ulx + [0:(size(alts,1)-1)]*obs.dx;
+0106 Lat  = obs.uly - [0:(size(alts,2)-1)]*obs.dy;
+0107 
+0108 <span class="comment">% if there is limits in latitude or longitude crop down Lat, Long</span>
+0109 <span class="comment">% and alt accordingly:</span>
+0110 <span class="keyword">if</span> isfield(def_ops,<span class="string">'latlims'</span>)
+0111   iLat = (min(def_ops.latlims)&lt;=Lat&amp;Lat&lt;=max(def_ops.latlims));
+0112   Lat = Lat(iLat);
+0113   alts = alts(:,iLat);
+0114 <span class="keyword">end</span>
+0115 <span class="keyword">if</span> isfield(def_ops,<span class="string">'longlims'</span>)
+0116   iLong = (min(def_ops.longlims)&lt;=Long&amp;Long&lt;=max(def_ops.longlims));
+0117   Long = Long(iLong);
+0118   alts = alts(iLong,:);
+0119 <span class="keyword">end</span>
+0120 
+0121 <span class="comment">% Assign Long Lat and alts to the output:</span>
+0122 varargout{1} = Long;
+0123 varargout{2} = Lat;
+0124 varargout{3} = alts';
+0125 
+0126 <span class="comment">% If horizontal coordinates is requested to calculate them:</span>
+0127 <span class="keyword">if</span> nargout &gt; 3
+0128   
+0129   [lats,longs] = meshgrid(Lat,Long);
+0130   
+0131   <span class="keyword">if</span> ~isnan(def_ops.lat0)
+0132     lat0 = def_ops.lat0;
+0133   <span class="keyword">else</span>
+0134     lat0 = mean(Lat);
+0135   <span class="keyword">end</span>
+0136   
+0137   <span class="keyword">if</span> ~isnan(def_ops.long0)
+0138     long0 = def_ops.long0;
+0139   <span class="keyword">else</span>
+0140     long0 = mean(Long);
+0141   <span class="keyword">end</span>
+0142   xA = alts;
+0143   yA = alts;
+0144   zA = alts;
+0145   
+0146   [xA(:),yA(:),zA(:)] = <a href="makenlcpos.html" class="code" title="function [x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt)">makenlcpos</a>(long0,lat0,0,longs(:),lats(:),max(-10,alts(:)/1e3));
+0147   varargout{4} = yA';
+0148   varargout{5} = xA';
+0149   varargout{6} = zA';
+0150   
+0151 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

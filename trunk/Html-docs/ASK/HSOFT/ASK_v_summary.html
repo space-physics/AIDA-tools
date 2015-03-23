@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_v_summary</title>
+  <meta name="keywords" content="ASK_v_summary">
+  <meta name="description" content="ASK_V_SUMMARY - print summary of event setup">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_v_summary
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_V_SUMMARY - print summary of event setup</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function fp = ASK_v_summary(fp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_V_SUMMARY - print summary of event setup
+ 
+ Calling:
+   ASK_v_summary(vs,fp)
+ Input:
+   vs - vs struct, or something TBD
+   fp - file identifier. Optional, if function is called with only
+        vs output is directed to standard output (1)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>	ASK_DAT2STR - convert a modified Julian second (mjs) to date string</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>	ASK_V_SELECT - Set current camera index in global structure VS</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function fp = ASK_v_summary(fp)</a>
+0002 <span class="comment">% ASK_V_SUMMARY - print summary of event setup</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   ASK_v_summary(vs,fp)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%   vs - vs struct, or something TBD</span>
+0008 <span class="comment">%   fp - file identifier. Optional, if function is called with only</span>
+0009 <span class="comment">%        vs output is directed to standard output (1)</span>
+0010 
+0011 <span class="comment">% Modified from add_multi.pro</span>
+0012 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0013 <span class="comment">% GPL 3.0 or later applies</span>
+0014 
+0015 <span class="keyword">global</span> vs
+0016 
+0017 <span class="keyword">if</span> nargin == 0 | fp &lt; 1 
+0018   fp = 1;
+0019 <span class="keyword">end</span>
+0020 
+0021 str = <a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>( vs.vmjs(vs.vsel) );
+0022 
+0023 len = (vs.vnl(vs.vsel) - vs.vnf(vs.vsel)) * vs.vres(vs.vsel);
+0024 
+0025 az    = vs.vcnv(vs.vsel,6)*180/pi;
+0026 el    = vs.vcnv(vs.vsel,7)*180/pi;
+0027 scale = vs.vcnv(vs.vsel,2)*1d-3*180/pi;
+0028 
+0029 
+0030 fprintf(fp, <span class="string">'Summary of the event setup for event #%d\n'</span>,vs.vsel);
+0031 fprintf(fp, <span class="string">'Directory name: %s\n'</span>, vs.vdir{vs.vsel})
+0032 fprintf(fp, <span class="string">'------------------------------------------------\n'</span>)
+0033 fprintf(fp, <span class="string">'Camera name:        %s\n'</span>,vs.vcam{vs.vsel})
+0034 fprintf(fp, <span class="string">'Location:           %f6.2, %f6.2\n'</span>,vs.vlat(vs.vsel),vs.vlon(vs.vsel))
+0035 fprintf(fp, <span class="string">'Filter:             %s\n'</span>,vs.vftr{vs.vsel})
+0036 fprintf(fp, <span class="string">'Image rate:         %f5.2 fps\n'</span>,(1/vs.vres(vs.vsel)))
+0037 fprintf(fp, <span class="string">'Start time:         %s\n'</span>,str)
+0038 fprintf(fp, <span class="string">'Length, s:          %f8.1\n'</span>,len)
+0039 fprintf(fp, <span class="string">'First image number: %d\n'</span>, vs.vnf(vs.vsel))
+0040 fprintf(fp, <span class="string">'Last image number:  %d\n'</span>, vs.vnl(vs.vsel))
+0041 fprintf(fp, <span class="string">'Step in the sequence: %d\n'</span>, vs.vnstep(vs.vsel))
+0042 fprintf(fp, <span class="string">'Image dimensions:  (%4d x %4d)\n'</span>,vs.dimx(vs.vsel),vs.dimy(vs.vsel))
+0043 fprintf(fp, <span class="string">'------------------------------------------------\n'</span>)
+0044 fprintf(fp, <span class="string">'Image to celestial mapping\n'</span>)
+0045 fprintf(fp, <span class="string">'Look direction:  azimuth %f6.1 east of north, elevation %f5.1\n'</span>,az,el)
+0046 fprintf(fp, <span class="string">'Pixel scale:        %f7.5 deg/pixel\n'</span>,scale)
+0047 fprintf(fp, <span class="string">'Rotation angle:     %f7.1 degrees\n'</span>,vs.vcnv(vs.vsel,5)*180/pi)
+0048 fprintf(fp, <span class="string">'F.O.V.              (%f4.1 x %f4.1) degrees\n'</span>,scale*vs.dimx(vs.vsel),scale*vs.dimy(vs.vsel))
+0049 fprintf(fp, <span class="string">'------------------------------------------------\n'</span>)
+0050 fprintf(fp, <span class="string">'Dark field used: %s\n'</span>,vs.vdrk{vs.vsel})
+0051 fprintf(fp, <span class="string">'Flat field used: %s\n'</span>,vs.vflt{vs.vsel})</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

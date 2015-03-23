@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dlsq_psf</title>
+  <meta name="keywords" content="dlsq_psf">
+  <meta name="description" content="DLSQ_PSF - Damped Least SQuare Point Spread Function calculation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Inversion -->
+<h1>dlsq_psf
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>DLSQ_PSF - Damped Least SQuare Point Spread Function calculation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [rI,d,drI,fitHist] = dlsq_psf(U,S,V,I,p,epsilon_damp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> DLSQ_PSF - Damped Least SQuare Point Spread Function calculation
+ using the singular value decomposition of the forward matrix
+ (U,S,V) to calculate the reconstruction of a point (or any
+ general input pattern) A. The method will use damped LSQ if the
+ optional input parameter EPSILON_DAMP is non-zero, and truncated
+ if the optional input parameter p (integer) is smaller than the
+ number of columns with non-zero eigenvalues in S.
+
+ Calling:
+   [rI,d,dI,fitHist] = dlsq_psf(U,S,V,I,p,epsilon_damp)
+ Input:
+  U - The USV matrices are supposed to be the singular value 
+  S - decomposition of the forward matrix M: [U,S,V] = svd(M);
+  V - Where M [n_data x n_model] where n_data is the number of
+      samples in the observations and n_model is the number of
+      unknowns to estimate.
+  I - input model source [n_data x 1]
+  p - truncation - number, index to smallest eigenvalue index to
+      use for the inversion. [1 x 1]
+  epsilon_damp - additional damping term - added to the
+                 eigenvalues before inverting the eigenvalue
+                 matrix. 
+ Output:
+  rI - damped-truncated least square estimate of I
+  d  - artificial forward projection of I
+  rd - predicted observations rI would produce
+  fitHist - histogram of (d-rd)./max(1,rd)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ftlsq_svd.html" class="code" title="function [ra,hvals,rd] = ftlsq_svd(U,S,V,d,I)">ftlsq_svd</a>	FTLSQ_SVD filtered truncated least square from SVD decomposition</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [rI,d,drI,fitHist] = dlsq_psf(U,S,V,I,p,epsilon_damp)</a>
+0002 <span class="comment">% DLSQ_PSF - Damped Least SQuare Point Spread Function calculation</span>
+0003 <span class="comment">% using the singular value decomposition of the forward matrix</span>
+0004 <span class="comment">% (U,S,V) to calculate the reconstruction of a point (or any</span>
+0005 <span class="comment">% general input pattern) A. The method will use damped LSQ if the</span>
+0006 <span class="comment">% optional input parameter EPSILON_DAMP is non-zero, and truncated</span>
+0007 <span class="comment">% if the optional input parameter p (integer) is smaller than the</span>
+0008 <span class="comment">% number of columns with non-zero eigenvalues in S.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Calling:</span>
+0011 <span class="comment">%   [rI,d,dI,fitHist] = dlsq_psf(U,S,V,I,p,epsilon_damp)</span>
+0012 <span class="comment">% Input:</span>
+0013 <span class="comment">%  U - The USV matrices are supposed to be the singular value</span>
+0014 <span class="comment">%  S - decomposition of the forward matrix M: [U,S,V] = svd(M);</span>
+0015 <span class="comment">%  V - Where M [n_data x n_model] where n_data is the number of</span>
+0016 <span class="comment">%      samples in the observations and n_model is the number of</span>
+0017 <span class="comment">%      unknowns to estimate.</span>
+0018 <span class="comment">%  I - input model source [n_data x 1]</span>
+0019 <span class="comment">%  p - truncation - number, index to smallest eigenvalue index to</span>
+0020 <span class="comment">%      use for the inversion. [1 x 1]</span>
+0021 <span class="comment">%  epsilon_damp - additional damping term - added to the</span>
+0022 <span class="comment">%                 eigenvalues before inverting the eigenvalue</span>
+0023 <span class="comment">%                 matrix.</span>
+0024 <span class="comment">% Output:</span>
+0025 <span class="comment">%  rI - damped-truncated least square estimate of I</span>
+0026 <span class="comment">%  d  - artificial forward projection of I</span>
+0027 <span class="comment">%  rd - predicted observations rI would produce</span>
+0028 <span class="comment">%  fitHist - histogram of (d-rd)./max(1,rd)</span>
+0029 
+0030 <span class="comment">%   Copyright � 20010805 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0031 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0032 
+0033 <span class="comment">%% Calculate the data that would be observed from model A</span>
+0034 va = V'*I(:);    <span class="comment">% 1: calculate V'*A</span>
+0035 usva = U*S*va;   <span class="comment">% 2: and the remainder of the forward model: U*S*VA</span>
+0036 
+0037 <span class="keyword">if</span> nargin &gt; 4 &amp; ~isempty(p)
+0038   p = min(p,size(U,2));
+0039 <span class="keyword">else</span>
+0040   p = size(U,2);
+0041 <span class="keyword">end</span>
+0042 <span class="keyword">if</span> nargin &gt; 5 &amp; ~isempty(epsilon_damp)
+0043   S2 = diag(diag(S)+epsilon_damp);
+0044 <span class="keyword">else</span>
+0045   S2 = diag(diag(S));
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="keyword">if</span> nargout == 1
+0049   [rI] = <a href="ftlsq_svd.html" class="code" title="function [ra,hvals,rd] = ftlsq_svd(U,S,V,d,I)">ftlsq_svd</a>(U,S2,V,usva,p);
+0050 <span class="keyword">else</span>
+0051   [rI,fitHist,drI] = <a href="ftlsq_svd.html" class="code" title="function [ra,hvals,rd] = ftlsq_svd(U,S,V,d,I)">ftlsq_svd</a>(U,S2,V,usva,p);
+0052   d = usva;
+0053 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

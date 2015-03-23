@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Often I don't know which way to turn...</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+  </head>
+  
+  <body class="section-2">
+    <ul id="menu">
+      <li id="nav-1"><a href="../Documentation/index.html">AIDA-home</a>
+      </li>
+      <li id="nav-2"><a href="intros.html">Image analysis (introductions)</a>
+	<ul id="subnav-2">
+	  <li><a href="BBH.pdf">Tutorial</a></li>
+	  <li><a href="optics.html">Camera</a></li>
+	  <li><a href="starcal.html">Starcal</a></li>
+	  <li><a href="Skymap/index.html">Skymap</a></li>
+	</ul>
+      </li>
+      <li id="nav-3"><a href="../Html-exmpls/index.html">Examples</a>
+      </li>
+      <li id="nav-4"><a href="../Html-docs/index.html">Matlab-src-tree</a>
+      </li>
+    </ul>
+    <div id="contents">
+      <h1>Rotations and their matrices</h1>
+      <p>
+	When it comes to rotations there are a plethora of
+	options. Which rotations to choose, which order to perform them,
+	from where to start the rotation, which is the positive
+	direction...
+      <p>
+	However, as long as we determine three rotations that are not
+	degenerate we can choose pretty much as we like - as long as we
+	don't mix them up. Starcal/Camera and the other toolboxes built
+	around them uses rotations provided by these two functions:
+      </p>
+      <ol>
+	<li><A HREF ="../Html-docs/Camera/camera_rot.html">camera_rot.m</A><br>
+	Function that determines the rotation matrix to the the camera
+	coordinate system (<math>e<sub>3</sub></math> as the optical
+	axis). This function uses the full 3 angle Tait-Bryant
+	(Gyro-mount) rotations. 
+	</li>
+	<li><A HREF ="../Html-docs/Camera/camera_base.html">camera_base.m</A><br>
+	  Function that calculates the unit vectors of the rotated
+	  camera system.
+	</li>
+      </ol>
+      
+    </div>
+    <address><a href="mailto:bjorn@irf.se">Bj&ouml;rn Gustavsson</a></address>
+    <!-- Created: Mon Oct 27 13:14:56 MET 1997 -->
+    <!-- hhmts start -->Last modified: Mon Apr 15 00:19:45 CEST 2013 <!-- hhmts end -->
+  </body>
+</html>

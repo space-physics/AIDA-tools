@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of starhelp</title>
+  <meta name="keywords" content="starhelp">
+  <meta name="description" content="STARHELP Main help function">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>starhelp
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STARHELP Main help function</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [ok] = starhelp(val) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STARHELP Main help function
+
+ Calling:
+  [ok] = starhelp(val)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a>	STARHELP Main help function</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a>	STARHELP Main help function</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ok] = starhelp(val)</a>
+0002 <span class="comment">% STARHELP Main help function</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  [ok] = starhelp(val)</span>
+0006 
+0007 <span class="comment">%   Copyright � 20011105 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0008 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0009 
+0010 
+0011 ok = 1;
+0012 <span class="keyword">if</span> ( val == 3 | val == 2 )
+0013   <span class="comment">% staridentification image window</span>
+0014   <a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a> =[<span class="string">'FILE                                                                    '</span>;
+0015       <span class="string">'OPEN - give the name ( full path to ) of the fits image You want to load'</span>;
+0016       <span class="string">'CLOSE ends the starcalibration par of the work.                         '</span>;
+0017       <span class="string">'SAVE - give the name of the variable You want to save ( idstars/optpar )'</span>;
+0018       <span class="string">'                                                                        '</span>;
+0019       <span class="string">'COLOURSCALES - Different colourscales to choose from to stress certain  '</span>;
+0020       <span class="string">'levels in the image as well as changing its appearance.                 '</span>;
+0021       <span class="string">'BRIGTHEN - Enhance and make the darker parts of the image brighter.     '</span>;
+0022       <span class="string">'                                                                        '</span>;
+0023       <span class="string">'UPPERLIMIT                                                              '</span>;
+0024       <span class="string">'Select a cut of in intensity to reduce cosmic rays from the image.      '</span>;
+0025       <span class="string">'To avoid wasting the colorscale on somethign that''s just junk.          '</span>;
+0026       <span class="string">'                                                                        '</span>;
+0027       <span class="string">'CENTER/ZOOM                                                             '</span>;
+0028       <span class="string">'CENTER - Move the center of the image by ''click and point''.             '</span>;
+0029       <span class="string">'ZOOM - Select a region in the large image to display magnified in the   '</span>;
+0030       <span class="string">'smaller image.                                                          '</span>];
+0031 
+0032 <span class="keyword">elseif</span> ( val == 4 )
+0033   <span class="comment">% staridentification zoom window</span>
+0034   <a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a> =[<span class="string">'CENTER - Move the center of the image by ''click and point''.             '</span>;
+0035       <span class="string">'                                                                        '</span>;
+0036       <span class="string">'STAR - Determine the size, orientation and brightness of a star by      '</span>;
+0037       <span class="string">'point and click. Auto - makes a fit of a general 2-D Gaussian to the    '</span>;
+0038       <span class="string">'image-intensity above the average in the frame. Man.pick sets the       '</span>;
+0039       <span class="string">'parameters of the gaussian to fixed widths and maximum intensity as the '</span>;
+0040       <span class="string">'intensity above the average in the central point.                       '</span>;
+0041       <span class="string">'Current experience favour use of Man.pick - faster and sufficiently     '</span>;
+0042       <span class="string">'accurate.                                                               '</span>];
+0043   
+0044 <span class="keyword">elseif</span> ( val == 5 )
+0045   <span class="comment">% staridentification skyview - window</span>
+0046   <a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a> =[<span class="string">'FILE                                                                             '</span>;
+0047       <span class="string">'OPEN - give the name ( full path to ) of the fits image You want to load         '</span>;
+0048       <span class="string">'CLOSE ends the starcalibration par of the work.                                  '</span>;
+0049       <span class="string">'SAVE - give the name of the variable You want to save ( idstars/optpar )         '</span>;
+0050       <span class="string">'                                                                                 '</span>;
+0051       <span class="string">'POS/TIME                                                                         '</span>;
+0052       <span class="string">'POS/TIME - Change the position and time of the obseration to update the starplot '</span>;
+0053       <span class="string">'                                                                                 '</span>;
+0054       <span class="string">'STAR                                                                             '</span>;
+0055       <span class="string">'IDENTIFY - identify the star picked in the zoomwindow by point and click.        '</span>;
+0056       <span class="string">'INFORMATION gives information about the star closest to where You point and click'</span>;
+0057       <span class="string">'DELETE LAST - To remove an erroneously identified star does not work at the      '</span>;
+0058       <span class="string">'moment.                                                                          '</span>;
+0059       <span class="string">'AUTOIDENTIFY - suggests where in the image the stars from the skyview window     '</span>;
+0060       <span class="string">'shuld appear and allows you to semiautomatically change missidentification of the'</span>;
+0061       <span class="string">'the star picked in the zoomwindow by point and click.                            '</span>;
+0062       <span class="string">'                                                                                 '</span>;
+0063       <span class="string">'The popup menu in the window allows you to set maximum magnitude of the stars to '</span>;
+0064       <span class="string">'be displayed.                                                                    '</span>;
+0065       <span class="string">'                                                                                 '</span>;
+0066       <span class="string">'The lower horizontal scrollbar is the azimuth angle of the central point of the  '</span>;
+0067       <span class="string">'feild of view, south is in the centre of the scrollbar.                          '</span>;
+0068       <span class="string">'The upper horizontal scrollbar is the field of view.                             '</span>;
+0069       <span class="string">'The left vertical scrollbar is the zenith angle of the central point of the      '</span>;
+0070       <span class="string">'feild of view, zenith is all down and 90 deg is all the way upp                  '</span>;
+0071       <span class="string">'The right vertical scrollbar is the rotation angle of the                        '</span>;
+0072       <span class="string">'feild of view.                                                                   '</span>];
+0073   
+0074 <span class="keyword">elseif</span> ( val == 6 )
+0075   <span class="comment">% staridentification optparfit window</span>
+0076   <span class="comment">% NEED some work</span>
+0077   <a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a> =[<span class="string">'FILE                                                                             '</span>;
+0078       <span class="string">'OPEN - give the name ( full path to ) of the fits image You want to load         '</span>;
+0079       <span class="string">'CLOSE ends the starcalibration par of the work.                                  '</span>;
+0080       <span class="string">'SAVE - give the name of the variable You want to save ( idstars/optpar )         '</span>;
+0081       <span class="string">'                                                                                 '</span>;
+0082       <span class="string">'The PLOT - In the plot the the possitions of the stars in the picture is plotted '</span>;
+0083       <span class="string">'as red + and the modelled positions are plotted as green x.                      '</span>];
+0084   
+0085 <span class="keyword">elseif</span> ( val == 7 )
+0086   <span class="comment">% staridentification optpar window</span>
+0087   <a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a> =[<span class="string">'APLY - Applies the current setting of the optical parameters in the optpar     '</span>;
+0088       <span class="string">'window to the current list of identified stars - the plot gives the actual     '</span>;
+0089       <span class="string">'possition in the image and the modeled position of the star from the optical   '</span>;
+0090       <span class="string">'parameters.                                                                    '</span>;
+0091       <span class="string">'                                                                               '</span>;
+0092       <span class="string">'To set some parameters to a fixed and known value just press the corresponding '</span>;
+0093       <span class="string">'checkbox.                                                                      '</span>;
+0094       <span class="string">'                                                                               '</span>;
+0095       <span class="string">'SEARCH - Finds the optimal values of the optical parameters.                   '</span>];
+0096   
+0097 <span class="keyword">elseif</span> ( val == 8 )
+0098   <span class="comment">% intercalibration input window</span>
+0099   <a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a> =[<span class="string">'OPEN - give the name ( full path to ) of the .ids file You want to load '</span>;
+0100              <span class="string">'You should load two ids-files with approximately the same stars to do   '</span>;
+0101              <span class="string">'the sensitivity intercalibration.                                       '</span>;
+0102              <span class="string">'SAVE - give the name of the variable You want to save ( idstars/optpar )'</span>;
+0103              <span class="string">'AS - give the name of the file You want to save the parameter in.       '</span>;
+0104              <span class="string">'Nothing is saved until You have given both a variable and a name.       '</span>;
+0105              <span class="string">'QUIT ends the intercalibration part of the work.                        '</span>];
+0106   
+0107 <span class="keyword">elseif</span> ( val == 9 )
+0108   <span class="comment">% intercalibration surface ratio window</span>
+0109   <a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a> =[<span class="string">'PRINT (C) prints the panel in colour output to the colour printer     '</span>;
+0110       <span class="string">'PRINT (B/W) prints the panel in black/white output to the printer lwO '</span>;
+0111       <span class="string">'QUIT ends the intercalibration part of the work.                      '</span>;
+0112       <span class="string">'The horizontal slider changes the azimuth of the viewing direction    '</span>;
+0113       <span class="string">'The vertical slider changes the elevation of the viewing direction    '</span>];
+0114   
+0115 <span class="keyword">elseif</span> ( val == 10 )
+0116   <span class="comment">% intercalibration ratio histogram window</span>
+0117   <a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a> =[<span class="string">'PRINT (C) prints the panel in colour output to the colour printer     '</span>;
+0118       <span class="string">'PRINT (B/W) prints the panel in black/white output to the printer lwO '</span>;
+0119       <span class="string">'QUIT ends the intercalibration part of the work.                      '</span>;
+0120       <span class="string">'HELP - well try it once more and compare the output with this...      '</span>];
+0121   
+0122 <span class="keyword">end</span>
+0123 
+0124 <span class="keyword">if</span> exist(<span class="string">'starhelp'</span>,<span class="string">'var'</span>)
+0125   
+0126   <span class="keyword">if</span> ( exist(<span class="string">'helpdlg'</span>,<span class="string">'file'</span>) )
+0127     
+0128     helpdlg(<a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a>,<span class="string">'starhelp 1'</span>)
+0129     
+0130   <span class="keyword">else</span>
+0131     
+0132     disp(<a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a>)
+0133     
+0134   <span class="keyword">end</span>
+0135 
+0136 <span class="keyword">end</span>
+0137 clear <a href="starhelp.html" class="code" title="function [ok] = starhelp(val)">starhelp</a></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

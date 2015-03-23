@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of inv_project_img</title>
+  <meta name="keywords" content="inv_project_img">
+  <meta name="description" content="INV_PROJECT_IMG - maps an image IMG_IN to a plane.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>inv_project_img
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>INV_PROJECT_IMG - maps an image IMG_IN to a plane.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [xx,yy,zz] = inv_project_img(img_in,r,optmod,optpar,e_n,l_0,cmtr) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> INV_PROJECT_IMG - maps an image IMG_IN to a plane.
+  The image is taken from point R with a camera model OPTMOD and
+  rotation and optical transfer function caracterised by OPTPAR on
+  a plane with a normal E_N at distance L_O. CMTR is an optional
+  correction rotarion matrix
+
+ Calling:
+ [xx,yy,zz] = inv_project_img(img_in,r,optmod,optpar,e_n,l_0,cmtr)
+
+ Input:
+  img_in - image used only to get pixel range
+  r      - [1x3] (or [3x1]) array for camera position, 
+  optmod - identifier for optical transfer function [-2,-1,1,2,3,4,5]
+  optpar - parameters for optical model focal widths, camera
+           rotation angles, image coordinates (relative units) for
+           projection point of optical axis, shape factor.
+  e_n    - normal vector of plane to project to
+  l_0    - distance from r to plane.
+  cmtr   - additional rotation matrix
+ 
+       See also <a href="camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>, camera_inv_model</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>	CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA</li><li><a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>	CAMERA_ROT - determines the coordinate system of the camera</li><li><a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>	x = xx( phi, lambda , alt )</li><li><a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>	y = yy( phi, lambda, alt)</li><li><a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>	z = zz( phi, lambda, alt )</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ASK/HSOFT/ASK_draw_fov.html" class="code" title="function [varargout] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)">ASK_draw_fov</a>	ASK_DRAW_FOV - Draw one cameras field-of-view in another cameras f-o-v</li><li><a href="../Aurora/projection_setup0H.html" class="code" title="">projection_setup0H</a>	% 1 Optical parameters</li><li><a href="auto_triangulate.html" class="code" title="function [XX,YY,ZZ,CC,cc3d] = auto_triangulate(img1,r1,optmod1,optp1,img2,r2,optmod2,optp2,e_n,l_range,Xlim,Ylim,blksz,cm1,cm2)">auto_triangulate</a>	AUTO_TRIANGULATE - Automatic stareoscopic triangulation</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [xx,yy,zz] = inv_project_img(img_in,r,optmod,optpar,e_n,l_0,cmtr)</a>
+0002 <span class="comment">% INV_PROJECT_IMG - maps an image IMG_IN to a plane.</span>
+0003 <span class="comment">%  The image is taken from point R with a camera model OPTMOD and</span>
+0004 <span class="comment">%  rotation and optical transfer function caracterised by OPTPAR on</span>
+0005 <span class="comment">%  a plane with a normal E_N at distance L_O. CMTR is an optional</span>
+0006 <span class="comment">%  correction rotarion matrix</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">% [xx,yy,zz] = inv_project_img(img_in,r,optmod,optpar,e_n,l_0,cmtr)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Input:</span>
+0012 <span class="comment">%  img_in - image used only to get pixel range</span>
+0013 <span class="comment">%  r      - [1x3] (or [3x1]) array for camera position,</span>
+0014 <span class="comment">%  optmod - identifier for optical transfer function [-2,-1,1,2,3,4,5]</span>
+0015 <span class="comment">%  optpar - parameters for optical model focal widths, camera</span>
+0016 <span class="comment">%           rotation angles, image coordinates (relative units) for</span>
+0017 <span class="comment">%           projection point of optical axis, shape factor.</span>
+0018 <span class="comment">%  e_n    - normal vector of plane to project to</span>
+0019 <span class="comment">%  l_0    - distance from r to plane.</span>
+0020 <span class="comment">%  cmtr   - additional rotation matrix</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%       See also camera_model, camera_inv_model</span>
+0023 
+0024 
+0025 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0026 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0027 
+0028 bxy = size(img_in);
+0029 bx = bxy(2);
+0030 by = bxy(1);
+0031 <span class="comment">% Calculate the camera rotation</span>
+0032 <span class="keyword">if</span> optmod &lt; 0
+0033   rotmtr = <a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>(optpar.rot(1),optpar.rot(2),optpar.rot(3));
+0034 <span class="keyword">elseif</span> optmod ~= 11
+0035   rotmtr = <a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>(optpar(3),optpar(4),optpar(5));
+0036 <span class="keyword">else</span>
+0037   rotmtr = eye(3);
+0038 <span class="keyword">end</span>
+0039 <span class="comment">% Correct for the rotation relative the &quot;central-station&quot; of the</span>
+0040 <span class="comment">% local coordinate system:</span>
+0041 <span class="keyword">if</span> nargin&gt;6
+0042   rotmtr = cmtr*rotmtr;
+0043 <span class="keyword">end</span>
+0044 
+0045 i = 1:bx;
+0046 j = 1:by;
+0047 
+0048 [i,j] = meshgrid(i,j);
+0049 
+0050 <span class="comment">% Calculate the pixel line-of-sigh directions in the camera</span>
+0051 <span class="comment">% coordinate system:</span>
+0052 [phi,theta] = <a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>(i(:)',j(:)',optpar,optmod,size(img_in));
+0053 epix = [sin(theta).*sin(phi); sin(theta).*cos(phi); cos(theta)];
+0054 <span class="comment">% Rotate/Transform them with the rotation matrix:</span>
+0055 epix = rotmtr*epix;
+0056 epix = epix';
+0057 
+0058 <span class="comment">% Calculate distance from camera location in r to the plane:</span>
+0059 l = l_0 - dot(r,e_n);
+0060 rde_n = e_n(1)*epix(:,1) + e_n(2)*epix(:,2) + e_n(3)*epix(:,3);
+0061 l = l./rde_n;
+0062 
+0063 <a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a> = zeros(size(img_in));
+0064 <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a> = zeros(size(img_in));
+0065 <a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a> = zeros(size(img_in));
+0066 <span class="comment">% And calculate the intersection between lines-of-sight and plane:</span>
+0067 <a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(:) = r(1) + l.*epix(:,1);
+0068 <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(:) = r(2) + l.*epix(:,2);
+0069 <a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>(:) = r(3) + l.*epix(:,3);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

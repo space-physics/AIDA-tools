@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sc_grouping</title>
+  <meta name="keywords" content="sc_grouping">
+  <meta name="description" content="SC_GROUPING - divides base functions into NR_LAYER groups">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>sc_grouping
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SC_GROUPING - divides base functions into NR_LAYER groups</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [l_cl,cl_sz] = sc_grouping(vs,nr_layers) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SC_GROUPING - divides base functions into NR_LAYER groups
+ based on sizes VS
+ 
+ Calling:
+ [l_cl,cl_sz] = sc_grouping(vs,nr_layers)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">camera_set_up_sc</a>	CAMERA_SET_UP_SC - Calculates the projection matrix from 3-D simple cubic grid</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [l_cl,cl_sz] = sc_grouping(vs,nr_layers)</a>
+0002 <span class="comment">% SC_GROUPING - divides base functions into NR_LAYER groups</span>
+0003 <span class="comment">% based on sizes VS</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">% [l_cl,cl_sz] = sc_grouping(vs,nr_layers)</span>
+0007 <span class="comment">%</span>
+0008 
+0009 <span class="comment">%   Copyright � 2001 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0010 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0011 
+0012 
+0013 <span class="keyword">if</span> ( diff([min(vs(:)) max(vs(:))]) )
+0014   
+0015     <span class="comment">% need to add something here which will set a nan wherever vs = 256</span>
+0016     <span class="comment">% (blob size of 256 pixels is not physical for z &gt; ~0.5km) our min z</span>
+0017     <span class="comment">% will never be below 75km, so blobs of &gt; ~50 pixels is not realistic.</span>
+0018     
+0019   <span class="comment">%indx_256 = find(vs == 256);</span>
+0020   vs(vs==256) = NaN;    <span class="comment">% addition for the comment above</span>
+0021     
+0022   sizelimits = min(vs):(max(vs)-min(vs))/(nr_layers):max(vs);
+0023   
+0024   <span class="keyword">for</span> i1 = 1:(nr_layers),
+0025     
+0026     l_cl{i1} = find(sizelimits(i1)&lt;=vs&amp;vs&lt;=sizelimits(i1+1));
+0027     
+0028   <span class="keyword">end</span>
+0029   
+0030   cl_sz = (sizelimits(1:end-1)+sizelimits(2:end))/2;
+0031   
+0032   <span class="comment">% these lines added so that all blobs in volume are accounted for in l_cl</span>
+0033   l_cl{nr_layers+1} = find(isnan(vs) == 1); <span class="comment">% find the blobs outside image</span>
+0034   cl_sz(nr_layers+1) = 0;   <span class="comment">% set the footprint size of blobs outside image to zero</span>
+0035   
+0036 <span class="keyword">else</span>
+0037   
+0038   l_cl{1} = 1:length(vs);
+0039   cl_sz = mean(vs);
+0040   
+0041 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

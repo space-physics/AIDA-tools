@@ -1,0 +1,590 @@
+========================================
+  News for AIDA_tools version 20140127
+========================================
+
+* New functions
+   AIDA_THUMBS - display thumbnails gallery of list of images
+   IMTHUMBS    - display thumbnails gallery of list of images 
+
+These functions are intended to provide a thumbnail gallery interface
+to overview and browse data in (Imthumbs.m is more tailored to
+ordinary images, while aida_thumbs are for scientific images with
+special meta-data handling and image pre-processing). The gallery view
+also allow for loading selected images into a figure with lightweight
+DS9 capabilities. These functions come with a small set of helper
+functions thats mostly useles for direct use: aida_thumbs.m,
+Imthumbs.m, imthumbScaler.m, imthumb_load_n_show.m, aidathumbImTool.m,
+imthumbImTool.m, imthumbImToolupdateRCcuts.m and aidathumb_load_n_show.m. 
+
+ImageViewer - Interactively preview, pan and zoom images on the computer.
+
+Another image-reader-shower-interface gui addition, handles fits
+images if they have ALIS-fits-style headers, regular image files
+treated without parsing of science meta-data.
+
+* New group of functions:
+   For calculations of ionization profiles and excitation profiles a
+   groupd of functions by T. Sergienko based on the
+   range/energy-deposition is now included. The typical user interface
+   is:
+
+IONIZATION_PROFILE_MATRIX     - calculate ionization profiles
+IONIZATION_PROFILES_FROM_FLUX - simple model for volume emission as function of altitude.
+
+They use a couple of subfunctions: energy_deg.m Pat_range.m, lambda.m
+and albedo.m 
+
+========================================
+  News for AIDA_tools version 20130723
+========================================
+
+* New functions: 
+   STAROVERPLOT - plots the stars over an image.
+   STARCAL_CHECKER  - verify geometric calibration quality.
+   STARCAL_COMPARER - compare quality of geometric calibrations.
+
+These functions are intended for visual verification of validity of
+geometric calibration by ploting calculated image position of stars
+over a relevant image. If something has failed then there should be a
+mismatch between the calculated and actual positions.
+
+   INV_PROJ_IMG_LATLONG - calculate pixel-by-pixel Long-Lat coordinate for IMG_IN 
+   INV_PROJ_IMG_LL2     - calculate pixel-by-pixel Long-Lat coordinate for IMG_IN 
+
+These two functions are more similar to inv_project_img in
+functionality.
+  
+  IMG_RESAMPLING_PIXELS - resampling coordinates for one image to match look directions of another
+  IMGS_RGB_KEOGRAM_UV   - make "keogram" along image coordinates [u,v].
+  IMGS_KEOGRAM_UV       - make "keogram" along image coordinates [u,v].
+  IMG_HIST2HIST         - histogram transformation.
+  
+  STAROVERPLOT          - plots the stars over an image.
+  
+  GEO2MAG95 - Convert from geographic to geomagnetic coordinates
+  MAG2GEO   - Convert from geomagnetic to geographic coordinates
+
+
+
+========================================
+  News for AIDA_tools version 20120621
+========================================
+(The "Midsummer Nights Dreams" release)
+
+
+Since the previous release these are the more important changes, in
+directory-by-directory order:
+
+ALIS:
+
+
+* AIDA_VISIBLEVOL - the that calculates the edges of the visible volume
+  at a specified altitude using a given field-of-view. The function now
+  can use two different orders of rotations. This makes it possible to
+  better estimate the resulting field-of-view for a camera rotation.
+
+* AIDA_CALIBRATED_VISIBLEVOL - a function that calculates the edges of
+  the visible volume at a specified altitude using calibrated optical
+  parameters 
+
+* ALIS_auto_overview - a function that converts ALIS 16-bit fits
+  images to ordinary png images with automatic intensity-scaling, also
+  avi-overview movies are produced for each station-filter combination.
+
+* All-Sky-Camera-images with points-of-interest can be displayed and
+  updated. See starter4PointsOverImg.m and startPointsOverImgSpider2.m
+
+Tomography:
+
+* The most important change is that there is a new superior
+  start-guesser, made with the help of Dr C. Simon-Wedlund for the
+  three-D distribution of volume emission rates. This function
+  (tomo_start_guessGACT) uses a "Generalized Auroral Computerized
+  Tomography" [Tanaka et al 2011] method in a plane parallel with the
+  magnetic field that cuts 2 imaging stations. In that plane the volume
+  emission rates are determined by fitting the electron precipitation
+  from a wide diffuse layer and a number of discrete arcs. This
+  determines the volume emission rate in that plane, which is then
+  expanded/extrapolated into the full 3-D volume.
+
+
+* Now the options for the tomography functions are an array of
+  tomo_ops-structures. The main benefit with this change is that it is
+  straightforward to make one array of such structures and then simply
+  select the options for a subset of stations - in the cases one would
+  want to use only a reduced number of images for the tomographic
+  iteration. Earlier the options structure (as made by make_tomo_ops)
+  was one struct with arrays of parameters for things such as the
+  frame-size of the "quiet border", this made the sub-set iterations
+  cumbersome since then a tomo_ops struct had to be made for each
+  sub-set. This is no longer necessary!
+
+* A number of minor improvements in the tomography functions and
+  primarily the example script suggested by Sam Tuttle have been
+  fixed. 
+
+
+Camera:
+
+* The trmtr correction matrix is used correctly for the epi-polar
+  curves in the triangulate function now. Also one can now do the
+  triangulation with the images in subplots also - this might lead to
+  less figure-window-cluttering.
+
+
+Fits-tools
+
+* Multi-frame fits images can now be read with INIMG (so 3-D
+  fits-files is now properly handled by all AIDA_tools functions. That
+  is many functions in AIDA_tools will only work on single 2-D images,
+  but one can read a single frame from a 3-D fits, and then everything
+  is working as for any other 2-D image) if the pre-processing options
+  struct passed into INIMG has a field 'frames' with an integer array
+  with which frames should be read.
+
+* ALIS fits-files from 2012-2013 season can be read and pre-processed
+  with the inimg function.
+
+* The inimg function now works properly for ordinary image files, to
+  get time and location for star calibration the image reading
+  function can use a meta-data-building function provided through the
+  pre-processing option, if none is given the user will be prompted for
+  time and location of the observation.
+
+
+Imgtools:
+
+* There is a function for doing an optical-flow estimate of motion
+  between two auroral images - this version will also produce a field
+  for intensity variation too. This should make the algorithm work
+  more robustly. Untested on real data.
+
+
+Documentation
+
+* There is now a new "getting started" section in the documentation
+  showing how to set up the necessary image reader and meta-data
+  parser functions and how to do the geometrical camera calibration.
+
+
+Starcal:
+
+* Starcal now can use ordinary images of any format IMREAD can handle
+  (jpg, png, tiff...). If there are no functions to determine the
+  relevant meta-data the image-reading function (inimg) will ask for
+  the time of observation (yyyy,mm,dd,HH,MM,SS) as well as the
+  location (longitude, latitude). 
+
+* Give and respect start-guess for optical parameters
+  If obs will contain an optpar field with optical parameters
+  starcal will respect those (to the best of its abilities, how
+  this works for sin(a*theta) and tan(a*theta) remains to be
+  tested 20120207) and the sliders will change the corresponding
+  parameters with +/- 1 degree (0.1 degree for ASK camera model)
+  and +/- 1 % for the field-of-view.
+
+* When switching between the camera models (f*tan(a*theta),
+  f*tan(theta), f*sin(a*theta), f*sin(theta),
+  f*(1-a)*tan(theta)+f*a*theta) the shape parameter will be set to a
+  "safe" value and f will be scaled so that the radial projection is
+  equal for small angles to the optical axis.
+
+* The ASK optical model is now included so it is possible to calibrate
+  ASK-cameras with the ASK-camera-model.
+
+* The SAO star catalog can now be used instead of the BSC, this is
+  necessary for calibration of ASK cameras. SAO-gt50dec.dat is
+  included and will be read if the options structure given to starcal
+  has the field .SAO set to 1.
+
+* It is now possible to save the identified stars during a
+  starcalibration for later reuse - for example in case of computer
+  or matlab crash.
+
+* During star calibration the selected-star the zoomed in region is
+  displayed on-top of the full image.
+
+* The "vanishing sliders problem" seems to be fixed.
+
+* After the first optimisation the sliders are disabled, this makes it
+  more difficult to accidentally move them and change the optical
+  parameters. This disabling can be undone.
+
+* The optical parameters is automatically saved in a specified
+  directory (so that one automatically gets them somewhat
+  organised). This is done by setting the "StarCalResDir" field in the
+  pre-processing struct (i.e. PO) to that directory. The default is no
+  set to the .data/Opticalparameters subdirectory to the AIDA_tools
+  directory, this can be changed in typical_pre_proc_ops.m.
+
+
+TBD:
+% Also come up with some way to weight the different variants
+% according to number of stars and total error or the like.
+
+
+Spectral_cal
+
+Spectralcal have been changed in a number of ways to improve its
+robustness and usability:
+
+* The spectral calibration functions now uses a cell-arrays instead of
+  regular arrays for the various steps. This makes it more robust to
+  use with image sequences with an arbitrary number of unique filters.
+  This is done for all the subfunctions - and there is a new
+  example/template script showing how to use the modified functions.
+
+* The user interaction phase is made smoother, now it is no longer
+  necessary to use as many clicks and key-presses to get through the
+  selection of bad time periods of intensity outliers. This leads to a
+  slightly easier work-cycle.
+
+
+* Functions for saving of intermediary results is implemented -
+  safeguarding against matlab or computer crashes.
+
+* spc_cal_bad_times changed to work with only mouse clicks, to reduce
+  the silliness, also now possible to explicitly skip selection of bad
+  time periods.
+
+* spc_sens_hist - changed the output to give the outputs as cell arrays
+  with the histograms for one filter in one cell, likewise for the
+  fitted parameters. 
+
+
+EARTH
+
+* The EARTH toolbox had some minor unfortunate bug in the WGS84
+  elipsoid. This confusion between the geodetic and geocentric
+  latitude is now fixed.
+
+General
+
+Many of the features implemented by Mika Veijonsuo have been included,
+some slightly rearranged to better suit a general (== non-Miracle)
+audience, some just copied straight from his code. These are:
+
+1, Saving and loading of temporary optical calibrations, together with
+   the corresponding indentifystars.
+2, Saving (and loading) of error data.
+
+These two features clarified a need for a more refined approach of
+storing star calibration results. To fully take advantage of star
+calibrations already done (temporary or complete) it is necessary to
+have all optical parameters saved in such a way that the program can
+search for them. This equals one-and-the-same-directory, at least for
+each project (ALIS, Miracle, HAARPOON, etc.). It is also not good
+to use the direct and sloppy approach to save calibration results in
+the data directories themselves - those should be kept read-only for
+sake of security. Previously, I put ALIS-camera-calibration files in
+the AIDA_tools/.data directory, but I know realise that that is not
+the ideal place to put them at once - with AIDA-tools now being used
+with other imaging systems as well. Therefore I have implemented a
+set-up that puts all STARCAL result-files in a system specific
+StarCalResDir directory, that can be set to a specific unique
+directory for each instrument system. This should be set for each
+instrument system in typical_pre_proc_options.m. The setting for ALIS
+can be set as shown below:
+  PO.StarCalResDir = '/export/data/bjg1c10/ALIS/ACC';
+If this is not set it will default to the .data/Opticalparameters
+subdirectory to the AIDA_tools directory, this might be very
+OK too. So this is just included to give users the opportunity to have
+a bit more organisation in their work.
+
+Temporary star-calibrations can be saved (to be later reloaded) during
+the working procedure.
+
+When switching between optical transfer functions the focal length
+optical parameters are scaled to keep the slope of 
+f_1*tan(theta) == f_2*sin(theta*alpha) ==
+f_3*((1-alpha)*tan(theta)+alpha*theta == f_5*tan(alpha*theta)
+constant for small theta for the optical transfer functions switched
+between. This will make the projection function identical close to the
+optical axis, also the shape-parameter(distortion parameter?) is
+automatically set to safe values.
+
+The starcal save-functions: saveacc, saveoptiden and saveerrordata now
+saves files in filenames generated with genfilename, saveoptiden and
+saveerrordata keeps backups of older versions. The destination
+directory is possible to set through the 'StarCalResDir' field in the
+struct for pre-processing options sent into the starcal function. This
+way it is possible to store all starcal-results in one and the same
+directory/database making it easier to keep track of what geometrical
+calibrations are done.
+
+
+
+
+Changes in functions:
+
+diff2_ps_on_ls - Is now changed to return the LENGTH of the distance
+                 between the 2 points, and no longer the square of the
+		 length. In AIDA_tools this function is called from
+		 TRIANGULATE and STEREOSCOPIC. If you use any of these
+		 functions for the output of the length, you
+		 might/should have taken the square root out of the
+		 length output. Now you have to change that (or modify
+		 the diff2_ps_on_ls back.)
+
+New functions
+
+There are ~180 new functions in this release. The main reason for this
+is that now also the ASK HSOFT tools are translated into matlab and
+included in this package. In addition to that a good number of tools
+written by others are now included. The functions are in order of
+directory: 
+
+ALIS/
+
+ALIS_auto_overview   - automated fits data to png image conversion 
+ALIS_image_sequence  - to display an ALIS image sequence as movie
+ALIS_pre_pos_vv_plot - plots ALIS predefined observation rotations
+ALISstdpos_visvol    - Display ALIS f-o-v ontop of topographic map 
+ALIScalTS            - ALIS Camera calibration factors 
+
+Aurora/
+
+starter4PointsOverImg     - starting function for ASC image overplotting
+callbackFcn4PointsOverImg - function is a simple wrapping of IMREAD and IMG_OVERPLOT_LLH
+runner4FlamingRays        - estimate electron precipitation variation with E and Y
+err4FlamingRaysC          - error function for estimating electron spectra in auroral ray
+err4FlamingRays           - error function for estimating electron spectra in auroral ray
+
+Camera/
+
+ASK_camera_model               - the camera model for the ASK instrument.
+ASK_camera_invmodel            - the inverse camera model for the ASK instrument.
+ask_conv_cart2sphere           - conversion used in ASK_camera_[inv]model
+inv_project_LineOfSightVectors - pixels coordinates to line-of-sight vectors
+project_llh2img                - project a point in space LONGLATALT down onto an image
+
+EARTH/
+
+trace_line_to_EARTHsurf - from point [x0,y0,z0] in direction [dx,dy,dz]
+
+Fits_tools/
+
+AIDApositionize  - calculate station lat-long and xyz positions 
+read_ASKimgs     - AIDA_TOOLS' ASK-image-reading function wrapper
+read_miracle     - reads MIRACLE ASC jpg or png images
+read_miracle_ASC - reads MIRACLE ASC jpg or png images
+
+Geometry/
+
+getFieldLines - magnetic field lines from IGRF.
+
+Imgtools/
+
+img_overplot_llh   - longitude-latitude-height points projected
+img_optflow        - optical-flow displacements with intensity-scaling adjustment
+img_morphing       - Intensity and spatial morphing of image
+img_rot            - rotate image around arbitrary point.
+img_stack2fanogram - make fan-keograms from  image stack.
+imgs_stack2keo     - make keograms from stack of images
+img_splinefilter   - spline fitting filter optimum statistical filter
+img_svdfilter      - SVD fitting filter optimum statistical filter
+symnin_filter      - Symmetric nearest intensity neighbour filter
+errFcnAuroralFlow  - error function for auroral motion estimate
+
+Inversion/
+
+errDeParallax2DiffuseS - error function for estimating electron spectra
+
+Skymap/
+
+solar_pos - Get the sky position of the sun
+moonpos   - calculates lunar azimuth, zenith and apparent zenith angles
+read_BSC  - loads stars from the Bright Star Catalogue
+read_SAO  - loads stars from the SAO Star Catalogue
+read_sao  - loads stars from the SAO Star Catalogue
+
+Spectral_cal/
+
+Spec_cal_jobb_exmplCell - Example of spectral camera sensitivity calibration
+Spec_cal_jobb_Miracle   - Example of spectral camera sensitivity calibration
+spc_save_stars          - save scanned star data for spec cal scripts
+spc_save_bad_times      - saves bad times for spectral calibration
+spc_save_bad_intens     - saves bad times for spectral calibration
+
+Starcal/
+
+loaderrordata       - loads error data
+loadparam           - loads parameters for lens model tests and 
+optparOld2optparNew - scale f_u and f_v between optical transfer functions
+saveoptident        - saves preliminary optical parameters and identified stars
+saveerrordata       - saves error data
+
+Tomography/
+
+helloWorld                 - a function to be guaranteedly completely bug-free!
+tomo20080305FinalIR_082011 - script for tomographing ALIS 20080305 event, 18:40 UT
+tomo20080305NewBeginnings  - script for tomographing ALIS 20080305 event, 18:40 UT
+tomo_3Dfiltering           - wrapper for filtering of 3-D block of blobbs
+tomo_CalSensMat            - calibration factors for FASTPROJECTION
+tomo_arcpeakfinderinslice  - Finds peaks of emission along [U,V]
+tomo_cal                   - estimate calibration factor for fastprojection of 3D b-o-b
+tomo_cal0                  - estimate calibration factor for fastprojection of 3D b-o-b
+TOMO_CAL1                  - estimate calibration factor for fastprojection of 3D b-o-b
+tomo_err4sliceGACT         - error function for estimating electron spectra
+tomo_rescalingHyuge        - rescale volume emission rate to correct l-o-s intensity
+tomo_setup4reduced2D       - Set up coordinates and projection matrices
+tomo_start_guess1deconvAltvarQD - One Grroooovy start guess for auroral
+tomo_start_guessGACT       - start guess for 3-D distribution of volume emission rates
+tomo_start_guess_altvar1dc - 3D start guess with varying alt and width
+trmtr3Dto1D                - make projection matrix from 3-D to 1-D image cuts
+
+tools/
+
+ImageViewer      - Interactively preview, pan and zoom images on the computer.
+LunarAzEl        - get lunar Azimuth and Elevation angle at position and time
+arrow            -  Draw a line with an arrowhead
+backup1000filesversions - Backup files to prevent overwriting them
+detrend          - Remove a linear trend from a vector, usually for FFT processing
+draw3d_vem       - Use of the routine vol3d to plot ALIS formatted outputs in 3D
+find_in_cellstr  - search for string in cellstrings
+fminsearchbnd    - FMINSEARCH, but with bound constraints by transformation
+freezeColors     -  Lock colors of an image to current colors
+genfilename      - generates starcal formated filenames
+get_B_EISCAT     - get geomagnteic fields for the EISACT sites.
+gridfit          - estimates a surface on a 2d grid, based on scattered data
+imresize         - binning/resizing of image.
+irifileloader    - load and parse IRI data files
+ischar           - return true if STR is a char-array
+isleap           - True for leap year.
+magnifyOnFigure  - interactive zooming in inset subaxes
+make_depend_from_inmem - Extracts currently used functions with
+max2D            - maximum element and its indices in a 2-D array
+maxfilt1         - one dimensional sliding max-filter
+merge_structs    - Merge all fields of S2 into S1
+mtit             - creates a major title in a figure with many axes
+plotCube         - plot a cube/cuboid
+progmeter        - displays the progress of completion of a task in the MATLAB
+subdir           - Performs a recursive file search
+subplotsqueezer  - Squeeze out space between subplot-axes
+sun_posiiton     - get solar zenith and azimuth at local time and position. 
+textable         - writes a TeX formatted table to file
+unplot           - Delete the most recently created graphics object(s)
+vol3d            - Volume render 3-D data
+vol3dtool        - Tool to edit color/alpha channels when
+
+ASK/HSOFT/
+
+ASK_read_v            - read one image
+ASK_keograms          - make keograms from an ASK image sequence
+ASK_fanograms         - make keograms of a fan-beam-cut from an ASK image sequence
+ASK_overlay           - overlay three images to RGB composite
+ASK_add_int_radar     - get image intenisity inside radar beam.
+ASK_line_int          - make intensity line plots from an image sequence.
+ASK_imcalibrate       - scale the images to Rayleighs
+ASK_overlay           - procedure to combine 3 ASK images to RGB-image
+ASK_binning           - post-bin data
+ASK_add_multi         - addmultiple frames
+ASK_add_up            - alpha-trimmed temporal average of data block
+ASK_auto_range        - returns an array of automatic range 
+ASK_bytscl            - clip-n-scale matrix into [0-MAXOUT] from min(max_IN,max(min_IN,M_in))
+ASK_image_c           - reinterpolate image nearest neighbour style.
+ASK_roundmask         - "circular" mask with ones in image sized [sy,sx]
+ASK_slice2trmtr       - projection matrix from blobs in slice || B to ASK-image
+ASK_keogram_overlayed - to plot an overlayed keogram, ASK-style
+ASK_image_sequence    - to display an ASK image sequence as movie
+ASK_image_play        - Convert image-stacks to matlab movie
+ASK_plot_line         - make a line plot with time axis
+ASK_draw_fov          - draw one cameras field-of-view in another cameras f-o-v
+ASK_draw_north        - draws the north direction on an image, from the centre.
+ASK_draw_radar        - plot the radar beam onto an image. 
+ASK_plot_fieldline    - plot magnetic field-line projection onto an image.
+ASK_get_radar         - get image coordinates of the radar beam.
+ASK_get_fieldline     - get magnetic field-line projection onto an image.
+ASK_tvin              - display an image
+ASK_play_keolines     - 
+ASK_sph_dist          -  Calculating angle between two points on a sphere. 
+ASK_overviewmaker     - Create mega-block overlayed-keogram for overviews
+ASK_megablockviewer   - Utility callback function for zooming around
+ASK_read_vs           - procedure to read event setup files
+ASK_v_select          - set current camera index for event
+ASK_v_summary         - print summary of event setup
+ASK_get_ask_cal       - get absolute intensity calibration factors 
+ASK_find_cnv          - get cnv camera parameters for a specific time
+ASK_get_cnv           - get the cnv from the vs common block
+ASK_current_imcal     - get the dark and flat from the common block
+ASK_bias              - returns the bias drift during a observation megablock
+ASK_read_asklut       - reads ASKLUT meta-data
+ASK_read_cnvlut       - reads camera parameter lookup table
+ASK_get_dark_name     - get the name of the dark megablock corresponding to the
+ASK_get_imcal         - routine filling the imcal common block with
+ASK_enable_datadir    - short routine to automatically enable 
+ASK_make_askdark      - Script that creates darks or flats.
+ASK_mjs_TT            - convert modified Julian second to calender date
+ASK_TT_MJS            - converts calendar date to modified Julian second
+ASK_time2MJS          - converts calendar date to modified Julian second
+ASK_dat2str           - convert modified Julian second (mjs) to date string
+ASK_mjs_dy            - convert modified Julian second (mjs) to decimal years
+ASK_time2indx         - returns the image index for a time-vector
+ASK_indx2datevec      - convert a frame index into a [yyyy,mm,dd,HH,MM,SS.FFF]
+ASK_locate_int        - locate time intervals
+ASK_nearest_int       - finds the interval starting at t1 closest to mjs1
+ASK_time_v            - returns time since the start of the sequence
+ASK_read_sst          - read start and stop times from a string 
+ASK_print_dat         - prints the date corresponding to a modified
+ASK_time_axis         - get suitable settings for time tick marks and labels.
+ASK_time_tick         - suitable settings for time tick marks and labels.
+
+ASK/IC/
+
+soton_ionchem_density_parser   - Parses the SOTON IC *out*.dat
+soton_ionchem_emissions_parser - Parses the SOTON IC emission.dat
+sotonChem2em_AVplot            - plot altitude variation of emission rates
+sotonChem2em_CEplot            - plot column emission rates
+sotonChem2em_TAVplot           - plot time-altitude variation of emission rates
+ASKChem2em_AVplot              - plot altitude variation of emission rates
+ASKChem2em_CERplot             - plot column emission rates
+ASKChem2em_AVplot              - plot time-altitude variation of emission rates
+
+
+A couple of files have beem removed:
+
+fitrota.m
+ecef2lla.m
+euler_rot.m
+get_r0.m
+get_rot_and_e.m
+qd_rotation.m
+v_rotation.m
+abrota2.m
+Spec_cal_jobb_2007.m
+Spec_cal_jobb_HAARP_RnG2007.m
+Spec_cal_jobb_exmpl.m
+circ_err.m
+plot_itf.m
+plot_scitf.m
+
+These functions have been obsolete for a long time. They are replaced
+by slightly different functions filling the same functionality.
+
+A couple of files will be removed in the next release:
+
+SPASI_cal.m
+Spec_cal_jobb_spasi.m
+spec_ccd_cal.m
+tomo_start_guess1deconvAltvarQD.m
+tomo_start_guess1.m
+tomo_start_guess_altvar1dc.m
+tomo_start_guess_altvar1deconv.m
+tomo_start_guess_altvar1.m
+tomo_start_guess_epitri.m
+tomo_start_guess.m
+tomo_start_guessN2.m
+tomo_start_guessN.m
+
+These functions are moved to the directory Obsoletings, this directory
+is not by default added to the matlab path in the AIDA_start.m
+script. If you want to use some of them either move them to the MyAIDA
+directory, add the directory to the path or move them to the
+Tomography or Spectral_cal directories.
+
+And a few functions in the EARTH directory are renamed:
+
+dNdfi.m -> dNdphi.m
+dxdfi.m -> dxdphi.m
+dydfi.m -> dydphi.m
+dzdfi.m -> dzdphi.m

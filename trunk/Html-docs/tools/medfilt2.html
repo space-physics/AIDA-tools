@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of medfilt2</title>
+  <meta name="keywords" content="medfilt2">
+  <meta name="description" content="MEDFILT2 - 2 dimensional sliding median filter">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>medfilt2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>MEDFILT2 - 2 dimensional sliding median filter</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function outM = medfilt2(inM,fc,varagin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MEDFILT2 - 2 dimensional sliding median filter
+   Not really, rather an approximation with repeated use of 1-D
+   sliding median filter:
+   medfilt1(medfilt1(inM',filtersize2)',filtersize(2))
+   Working QD-solution for people without the image processing
+   toolbox. This is a fall-back routine that will be used when the
+   signal processing toolbox is installed but not the image
+   processing TB. When both are absent the gen_susan filter is
+   used as a last ditch save attempt.
+
+ Calling:
+ outM = medfilt2(inM,fc);
+
+ See also MEDFILT1</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Imgtools/gen_susan.html" class="code" title="function J = gen_susan(I,w,OPS)">gen_susan</a>	gen_susan - Generalized SUSAN 2-D filtering</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ASK/HSOFT/ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>	ASK_READ_V - Read ASK image #i1 from current camera in current "mega-block"</li><li><a href="../Aurora/runner4FlamingRays.html" class="code" title="function Ibest = runner4FlamingRays(indices2run,Keos,IstartGuesses,Ibestest,trmtr2Dto1D,A1Z,A2Z,E,Y,Z,OPS)">runner4FlamingRays</a>	runner4FlamingRays - Estimate electron precipitation variation with E and Y</li><li><a href="../Aurora/runner4FlamingRays0.html" class="code" title="">runner4FlamingRays0</a>	% Example script: how to estimate electron energies in flaming rays</li><li><a href="../Fits_tools/pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>	PRE_PROC_IMG - systematic image correction and preprocessing of</li><li><a href="../Imgtools/gen_susan.html" class="code" title="function J = gen_susan(I,w,OPS)">gen_susan</a>	gen_susan - Generalized SUSAN 2-D filtering</li><li><a href="../Imgtools/img_splinefilter.html" class="code" title="function [varargout] = img_splinefilter(img_in,OPS)">img_splinefilter</a>	IMG_SPLINEFILTER - spline fitting filter optimum statistical filter</li><li><a href="../Imgtools/img_svdfilter.html" class="code" title="function [varargout] = img_svdfilter(img_in,OPS)">img_svdfilter</a>	IMG_SVDFILTER - SVD fitting filter optimum statistical filter</li><li><a href="../Imgtools/imgs2timeserieses.html" class="code" title="function [I_ts] = imgs2timeserieses(files,U,V)">imgs2timeserieses</a>	imgs2timeserieses - make time-series for selected pixels</li><li><a href="../Spectral_cal/M6/star_int_search.html" class="code" title="function [idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,plstars,OPTS)">star_int_search</a>	[idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,pls</li><li><a href="../Spectral_cal/M7/star_int_search.html" class="code" title="function [idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,plstars,OPTS)">star_int_search</a>	[idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,plstars,OPTS)</li><li><a href="../Spectral_cal/pixel2pixel.html" class="code" title="function [C,sigma2C] = pixel2pixel(files,m_size,PO)">pixel2pixel</a>	PIXEL2PIXEL - p-2-p variation in photo responce non uniformity</li><li><a href="../Spectral_cal/star_int_model.html" class="code" title="function [varargout] = star_int_model(img_in,optpar,optmode,plstars,starpar,OPTS,BSTRNR)">star_int_model</a>	STAR_INT_MODEL - Model and plot of star</li><li><a href="../Spectral_cal/star_int_search_as.html" class="code" title="function [idstarsok,stars_par] = star_int_search_as(img_in,optpar,optmode,plstars,OPTS)">star_int_search_as</a>	STAR_INT_SEARCH identifies points in image with stars, make a parametrisation</li><li><a href="../Starcal/M6/autoidentify.html" class="code" title="function [idstarsok,stars_par] = autoidentify(SkMp)">autoidentify</a>	AUTOIDENTIFY - automatically identify all the stars of PLSTARS</li><li><a href="../Starcal/M7/autoidentify.html" class="code" title="function [idstarsok,stars_par] = autoidentify(SkMp)">autoidentify</a>	AUTOIDENTIFY - automatically identify all the stars of PLSTARS</li><li><a href="../Starcal/star_enhancer.html" class="code" title="function Df = star_enhancer(files,PO,i0,nr_imgs,filtersizes)">star_enhancer</a>	STAR_ENHANCER - average background-removed images to enhance stars</li><li><a href="../Starcal/star_minus_bg.html" class="code" title="function starint = star_minus_bg(in_starint)">star_minus_bg</a>	STAR_MINUS_BG - background reduction from star</li><li><a href="../Tomography/tomo_3Dfiltering.html" class="code" title="function Vem = tomo_3Dfiltering(VemIn,tomo_ops)">tomo_3Dfiltering</a>	TOMO_3DFILTERING -</li><li><a href="../Tomography/tomo_altmaxIscaling.html" class="code" title="function [Vem,stns] = tomo_altmaxIscaling(Vem,stns,tomo_ops,X3,Y3,Z3)">tomo_altmaxIscaling</a>	TOMO_ALTMAXISCALING - tomographic itterative step(s).</li><li><a href="../Tomography/tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>	TOMO_STEPS - tomographic itterative step(s).</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function outM = medfilt2(inM,fc,varagin)</a>
+0002 <span class="comment">% MEDFILT2 - 2 dimensional sliding median filter</span>
+0003 <span class="comment">%   Not really, rather an approximation with repeated use of 1-D</span>
+0004 <span class="comment">%   sliding median filter:</span>
+0005 <span class="comment">%   medfilt1(medfilt1(inM',filtersize2)',filtersize(2))</span>
+0006 <span class="comment">%   Working QD-solution for people without the image processing</span>
+0007 <span class="comment">%   toolbox. This is a fall-back routine that will be used when the</span>
+0008 <span class="comment">%   signal processing toolbox is installed but not the image</span>
+0009 <span class="comment">%   processing TB. When both are absent the gen_susan filter is</span>
+0010 <span class="comment">%   used as a last ditch save attempt.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% Calling:</span>
+0013 <span class="comment">% outM = medfilt2(inM,fc);</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% See also MEDFILT1</span>
+0016 
+0017 <span class="comment">% Copyright Bjorn Gustavsson 20050110</span>
+0018 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0019 
+0020 <span class="keyword">if</span> nargin==1
+0021   fc = [3 3];
+0022 <span class="keyword">end</span>
+0023 <span class="keyword">try</span>
+0024   <span class="keyword">if</span> length(fc) &gt; 1
+0025     outM = medfilt1(medfilt1(inM',fc(2))',fc(1));
+0026   <span class="keyword">else</span>
+0027     outM = medfilt1(medfilt1(inM',fc)',fc);
+0028   <span class="keyword">end</span>
+0029 <span class="keyword">catch</span>
+0030   <span class="comment">% The last resort, not a 2-D median filter but similar enough</span>
+0031   g_opts = <a href="../Imgtools/gen_susan.html" class="code" title="function J = gen_susan(I,w,OPS)">gen_susan</a>;
+0032   w = ones(fc);
+0033   w = w/sum(w(:));
+0034   outM = <a href="../Imgtools/gen_susan.html" class="code" title="function J = gen_susan(I,w,OPS)">gen_susan</a>(inM,w,g_opts);
+0035   
+0036 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

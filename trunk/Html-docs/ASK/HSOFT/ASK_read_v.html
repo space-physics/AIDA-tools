@@ -1,0 +1,432 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_read_v</title>
+  <meta name="keywords" content="ASK_read_v">
+  <meta name="description" content="ASK_READ_V - Read ASK image #i1 from current camera in current "mega-block"">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_read_v
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_READ_V - Read ASK image #i1 from current camera in current "mega-block"</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_READ_V - Read ASK image #i1 from current camera in current &quot;mega-block&quot; 
+
+ Calling:
+   img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)
+ Input:
+   i1      - index of the image to read in the image
+             sequence. Scalar integer.
+   noImCal - Optional flag to set to avoid background subtraction
+             and flatfield correction.
+   RGBout  - Optional flag to set if the image is an RGB image -
+             will avoid calibration.
+   nocnv   - Optional flag for avoiding 
+   OPS     - options struct for controlling image filtering,
+             fields are: filtertype and filterArgs. The available
+             filters are  [ {'none'} | 'conv2' | 'sigma' | 'median'
+             | 'susan' | 'medfilt2' | 'wiener2'] (sigma and wiener2;
+             and median and medfilt2 are &quot;same-thing-different
+             name) SUSAN is bilateral filter, conv2 linear
+             filter. Then the filterArgs should be a cell array
+             with cell arrays, where the inner cell-array should
+             be the extra arguments to the respective
+             filter. Several filtertypes can be run sequentially.
+ 
+ Translated from read_v.pro
+
+ Original help/header comments:
+
+ Modified by Dan 01/05/08 - added true keyword, to keep an image in colour. Note that this also
+ stops image calibration, as the imcalibrate routine will not work on colour images.
+
+ Keyword added nocnv to stop the routine trying to read the conversion coefficients to locate the image with reference to the sky
+ This broke TLC data.
+ Dan changed it 07/12/09, so that png doesn't do the cnv thing.
+ Will do a better fix later.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_imcalibrate.html" class="code" title="function img_out = ASK_imcalibrate(img_in)">ASK_imcalibrate</a>	ASK_IMCALIBRATE - scale the images to Rayleighs</li><li><a href="../../Imgtools/gen_susan.html" class="code" title="function J = gen_susan(I,w,OPS)">gen_susan</a>	gen_susan - Generalized SUSAN 2-D filtering</li><li><a href="../../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>	MEDFILT2 - 2 dimensional sliding median filter</li><li><a href="../../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_add_int_radar.html" class="code" title="function I_of_T = ASK_add_int_radar(RadarSite,az,el,dphi,indices,Cams,optpar,r_camera,OPS)">ASK_add_int_radar</a>	ASK_ADD_INT_RADAR - Image intenisity inside radar beam.</li><li><a href="ASK_bias.html" class="code" title="function delta = ASK_bias(file)">ASK_bias</a>	ASK_BIAS - returns the bias drift of of megablock, by measuring the</li><li><a href="ASK_fanograms.html" class="code" title="function [Keos,time_V,u,v] = ASK_fanograms(Indices2do,Cams,shifts,e_fan,width,OPS)">ASK_fanograms</a>	ASK_FANOGRAMS - Produce keograms of a fan-beam-cut from an ASK image sequence</li><li><a href="ASK_image_sequence.html" class="code" title="function varargout = ASK_image_sequence(indices2show,Cams,OPS)">ASK_image_sequence</a>	ASK_IMAGE_SEQUENCE - to display an ASK image sequence as movie, and</li><li><a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li><li><a href="ASK_keograms.html" class="code" title="function [keo1,keo2,keo3,time_V] = ASK_keograms(fir,las,ste,width,x0,y0,angle,bkg,dist,OPS)">ASK_keograms</a>	ASK_KEOGRAMS - Produce keograms keograms from an ASK image sequence</li><li><a href="ASK_line_int.html" class="code" title="function [line_I,timeOut,mjsT0] = ASK_line_int(Nstart,Num4itter,x0,y0,r,step)">ASK_line_int</a>	ASK_LINE_INT - make intensity line plots from an image sequence.</li><li><a href="ASK_make_askdark.html" class="code" title="function ASK_make_askdark(filename,flat)">ASK_make_askdark</a>	ASK_MAKE_ASKDARK - Script that creates darks or flats.</li><li><a href="../../Fits_tools/read_ASKimgs.html" class="code" title="function [header,img_out] = read_ASKimgs(DummyFilename,PO)">read_ASKimgs</a>	READ_ASKIMGS - AIDA_TOOLS' ASK-image-reading function wrapper</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)</a>
+0002 <span class="comment">% ASK_READ_V - Read ASK image #i1 from current camera in current &quot;mega-block&quot;</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%   i1      - index of the image to read in the image</span>
+0008 <span class="comment">%             sequence. Scalar integer.</span>
+0009 <span class="comment">%   noImCal - Optional flag to set to avoid background subtraction</span>
+0010 <span class="comment">%             and flatfield correction.</span>
+0011 <span class="comment">%   RGBout  - Optional flag to set if the image is an RGB image -</span>
+0012 <span class="comment">%             will avoid calibration.</span>
+0013 <span class="comment">%   nocnv   - Optional flag for avoiding</span>
+0014 <span class="comment">%   OPS     - options struct for controlling image filtering,</span>
+0015 <span class="comment">%             fields are: filtertype and filterArgs. The available</span>
+0016 <span class="comment">%             filters are  [ {'none'} | 'conv2' | 'sigma' | 'median'</span>
+0017 <span class="comment">%             | 'susan' | 'medfilt2' | 'wiener2'] (sigma and wiener2;</span>
+0018 <span class="comment">%             and median and medfilt2 are &quot;same-thing-different</span>
+0019 <span class="comment">%             name) SUSAN is bilateral filter, conv2 linear</span>
+0020 <span class="comment">%             filter. Then the filterArgs should be a cell array</span>
+0021 <span class="comment">%             with cell arrays, where the inner cell-array should</span>
+0022 <span class="comment">%             be the extra arguments to the respective</span>
+0023 <span class="comment">%             filter. Several filtertypes can be run sequentially.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% Translated from read_v.pro</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% Original help/header comments:</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">% Modified by Dan 01/05/08 - added true keyword, to keep an image in colour. Note that this also</span>
+0030 <span class="comment">% stops image calibration, as the imcalibrate routine will not work on colour images.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">% Keyword added nocnv to stop the routine trying to read the conversion coefficients to locate the image with reference to the sky</span>
+0033 <span class="comment">% This broke TLC data.</span>
+0034 <span class="comment">% Dan changed it 07/12/09, so that png doesn't do the cnv thing.</span>
+0035 <span class="comment">% Will do a better fix later.</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%</span>
+0038 
+0039 
+0040 <span class="keyword">global</span> vs
+0041 
+0042 dOPS.filtertype = {<span class="string">'none'</span>};
+0043 dOPS.filterArgs = {};
+0044 dOPS.videodir = <span class="string">''</span>;
+0045 <span class="keyword">if</span> nargin == 0
+0046   img_out = dOPS;
+0047   <span class="keyword">return</span>
+0048 <span class="keyword">end</span>
+0049 <span class="keyword">if</span> nargin &gt;= 5
+0050   dOPS = <a href="../../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0051 <span class="keyword">end</span>
+0052 j1 = floor(i1);
+0053 
+0054 
+0055 <span class="keyword">if</span> ( ( vs.vnf(vs.vsel) &lt;= j1 ) &amp; <span class="keyword">...</span>
+0056      ( j1 &lt;= vs.vnl(vs.vsel) ) &amp; <span class="keyword">...</span>
+0057      ( mod( (j1 - vs.vnf(vs.vsel)), vs.vnstep(vs.vsel) ) == 0 ) )
+0058 <span class="comment">% Were on a number that should be between the first and the last in</span>
+0059 <span class="comment">% the sequence and j1 should be in the sequence:</span>
+0060 <span class="comment">% vs.vnf(vs.vsel):vs.vnstep(vs.vsel):vs.vnl(vs.vsel),</span>
+0061 <span class="comment">% Maybe faster/neater/CLEANER with ismember?</span>
+0062 <span class="comment">% Like so: if ismember(j1,vs.vnf(vs.vsel):vs.vnstep(vs.vsel):vs.vnl(vs.vsel))</span>
+0063 <span class="keyword">else</span>
+0064   disp([<span class="string">'Image number '</span>, num2str(j1), <span class="string">' does not exist in this sequence!'</span>])
+0065   keyboard
+0066   <span class="comment">% TODO: determine what to do with &quot;stop&quot; -&gt; dbstop/keyboard</span>
+0067 <span class="keyword">end</span>
+0068 
+0069 <span class="keyword">if</span> isempty(dOPS.videodir)
+0070   videodir = vs.videodir;
+0071 <span class="keyword">else</span>
+0072   videodir = dOPS.videodir;
+0073 <span class="keyword">end</span>
+0074 
+0075 <span class="keyword">switch</span> vs.vtyp{vs.vsel}
+0076  <span class="keyword">case</span> <span class="string">'raw'</span>
+0077   <span class="comment">%</span>
+0078   <span class="comment">% RAW two byte data - Andor detector, winter 2004</span>
+0079   <span class="comment">%</span>
+0080   file = fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},sprintf(<span class="string">'%d'</span>,j1)],<span class="string">'dat'</span>);
+0081   <span class="comment">% d = uintarr(vs.dimy(vs.vsel),vs.dimx(vs.vsel));</span>
+0082   fID = fopen(file,<span class="string">'r'</span>);
+0083   d = double(fread(fID,[vs.dimx(vs.vsel),vs.dimy(vs.vsel)],<span class="string">'uint16'</span>));
+0084   fclose(fID);
+0085   img_out = 1.0*rotate(d,6);
+0086   
+0087  <span class="keyword">case</span> <span class="string">'ask'</span>
+0088   <span class="comment">%</span>
+0089   <span class="comment">% RAW two byte data - Andor detectors, winter 05/06</span>
+0090   <span class="comment">%</span>
+0091   file = fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},sprintf(<span class="string">'%05d'</span>,j1),<span class="string">'.dat'</span>]);
+0092   fID = fopen(file,<span class="string">'r'</span>);
+0093   d = double(fread(fID,[vs.dimx(vs.vsel),vs.dimy(vs.vsel)],<span class="string">'uint16'</span>));
+0094   fclose(fID);
+0095   d = double(d);
+0096   d(d(:) &gt; 60000) = d(d(:) &gt; 60000) - 65536.0;
+0097   img_out = flipud(rot90(d)); <span class="comment">% FLIPUD?</span>
+0098   
+0099  <span class="keyword">case</span> <span class="string">'ask3'</span>
+0100   <span class="comment">%</span>
+0101   <span class="comment">% RAW two byte data - Andor detector #3 (upside down), winter 05/06</span>
+0102   <span class="comment">%</span>
+0103   file = fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},sprintf(<span class="string">'%05d'</span>,j1),<span class="string">'.dat'</span>]);
+0104   <span class="comment">% d = uintarr(dimx(vsel),dimy(vsel))</span>
+0105   fID = fopen(file,<span class="string">'r'</span>);
+0106   d = double(fread(fID,[vs.dimx(vs.vsel),vs.dimy(vs.vsel)],<span class="string">'uint16'</span>));
+0107   fclose(fID);
+0108   d = double(d);
+0109   d(d(:) &gt; 60000) = d(d(:) &gt; 60000) - 65536.0;
+0110   img_out = flipud(rot90(d,3)); <span class="comment">% FLIPUD?</span>
+0111   
+0112  <span class="keyword">case</span> <span class="string">'askv8'</span>
+0113   <span class="comment">%</span>
+0114   <span class="comment">% RAW two byte data - Andor detectors, winter 05/06</span>
+0115   <span class="comment">%</span>
+0116   
+0117   <span class="comment">% This is for calculating the file name-number (the mega-block</span>
+0118   <span class="comment">% sequence number of the first frame in the file)</span>
+0119   <span class="comment">% This should be 1, 41, 81 for 20 fps and 1 33 65 for 32 fps.</span>
+0120   fnum = floor((j1-1)/(2./vs.vres(vs.vsel)))*(2./vs.vres(vs.vsel)) + 1;
+0121   <span class="comment">% File-name</span>
+0122   file = fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},sprintf(<span class="string">'%05d'</span>,fnum),<span class="string">'.dat'</span>]);
+0123   fID = fopen(file,<span class="string">'r'</span>);
+0124   <span class="comment">% the number of frames to skip to get to the desired frame:</span>
+0125   frames2skip = j1-fnum;
+0126   <span class="comment">% Skip ahead that number of frames:</span>
+0127   status = fseek(fID,2*frames2skip*vs.dimx(vs.vsel)*vs.dimy(vs.vsel),<span class="string">'bof'</span>);
+0128   <span class="comment">% ...and read the desired frame:</span>
+0129   d = double(fread(fID,[vs.dimx(vs.vsel),vs.dimy(vs.vsel)],<span class="string">'uint16'</span>));
+0130   fclose(fID);
+0131   d = double(d);
+0132   d(d(:) &gt; 60000) = d(d(:) &gt; 60000) - 65536.0;
+0133   img_out = flipud(rot90(d)); <span class="comment">% FLIPUD?</span>
+0134   
+0135  <span class="keyword">case</span> <span class="string">'ask3v8'</span>
+0136   <span class="comment">%</span>
+0137   <span class="comment">% RAW two byte data - Andor detector #3 (upside down), winter 05/06</span>
+0138   <span class="comment">%</span>
+0139   
+0140   <span class="comment">% Same procedure as ASKV8 above</span>
+0141   fnum = floor((j1-1)/(2./vs.vres(vs.vsel)))*(2./vs.vres(vs.vsel)) + 1;
+0142   file = fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},sprintf(<span class="string">'%05d'</span>,fnum),<span class="string">'.dat'</span>]);
+0143   <span class="comment">% d = uintarr(dimx(vsel),dimy(vsel))</span>
+0144   fID = fopen(file,<span class="string">'r'</span>);
+0145   frames2skip = j1-fnum;
+0146   
+0147   status = fseek(fID,2*frames2skip*vs.dimx(vs.vsel)*vs.dimy(vs.vsel),<span class="string">'bof'</span>);
+0148   
+0149   d = double(fread(fID,[vs.dimx(vs.vsel),vs.dimy(vs.vsel)],<span class="string">'uint16'</span>));
+0150   fclose(fID);
+0151   d = double(d);
+0152   d(d(:) &gt; 60000) = d(d(:) &gt; 60000) - 65536.0;
+0153   img_out = flipud(rot90(d,3)); <span class="comment">% FLIPUD?</span>
+0154   
+0155  <span class="keyword">case</span> <span class="string">'askd'</span>
+0156   <span class="comment">%</span>
+0157   <span class="comment">% RAW two byte data - Andor detectors, winter 05/06</span>
+0158   <span class="comment">%</span>
+0159   file = fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},sprintf(<span class="string">'%05d'</span>,j1),<span class="string">'d.dat'</span>]);
+0160   fID = fopen(file,<span class="string">'r'</span>);
+0161   d = double(fread(fID,[vs.dimx(vs.vsel),vs.dimy(vs.vsel)],<span class="string">'uint16'</span>));
+0162   fclose(fID);
+0163   d = double(d);
+0164   d(d(:) &gt; 60000) = d(d(:) &gt; 60000) - 65536.0;
+0165   img_out = flipud(rot90(d)); <span class="comment">% FLIPUD?</span>
+0166  <span class="keyword">case</span> <span class="string">'ask3d'</span>
+0167   <span class="comment">%</span>
+0168   <span class="comment">% RAW two byte data - Andor detector #3 (upside down), winter 05/06</span>
+0169   <span class="comment">%</span>
+0170   file = fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},sprintf(<span class="string">'%05d'</span>,j1),<span class="string">'d.dat'</span>]);
+0171   fID = fopen(file,<span class="string">'r'</span>);
+0172   d = double(fread(fID,[vs.dimx(vs.vsel),vs.dimy(vs.vsel)],<span class="string">'uint16'</span>));
+0173   fclose(fID);
+0174   d = double(d);
+0175   d(d(:) &gt; 60000) = d(d(:) &gt; 60000) - 65536.0;
+0176   img_out = flipud(rot90(d,3)); <span class="comment">% FLIPUD?</span>
+0177 
+0178  <span class="keyword">case</span> <span class="string">'askv8d'</span>
+0179   <span class="comment">%</span>
+0180   <span class="comment">% RAW two byte data - Andor detectors, winter 05/06</span>
+0181   <span class="comment">%</span>
+0182   
+0183   <span class="comment">% This is for calculating the file name-number (the mega-block</span>
+0184   <span class="comment">% sequence number of the first frame in the file)</span>
+0185   <span class="comment">% This should be 1, 41, 81 for 20 fps and 1 33 65 for 32 fps.</span>
+0186   fnum = floor((j1-1)/(2./vs.vres(vs.vsel)))*(2./vs.vres(vs.vsel)) + 1;
+0187   <span class="comment">% File-name</span>
+0188   file = fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},sprintf(<span class="string">'%05d'</span>,fnum),<span class="string">'d.dat'</span>]);
+0189   fID = fopen(file,<span class="string">'r'</span>);
+0190   <span class="comment">% the number of frames to skip to get to the desired frame:</span>
+0191   frames2skip = j1-fnum;
+0192   <span class="comment">% Skip ahead that number of frames:</span>
+0193   status = fseek(fID,2*frames2skip*vs.dimx(vs.vsel)*vs.dimy(vs.vsel),<span class="string">'bof'</span>);
+0194   <span class="comment">% ...and read the desired frame:</span>
+0195   d = double(fread(fID,[vs.dimx(vs.vsel),vs.dimy(vs.vsel)],<span class="string">'uint16'</span>));
+0196   fclose(fID);
+0197   d = double(d);
+0198   d(d(:) &gt; 60000) = d(d(:) &gt; 60000) - 65536.0;
+0199   img_out = flipud(rot90(d)); <span class="comment">% FLIPUD?</span>
+0200   
+0201  <span class="keyword">case</span> <span class="string">'ask3v8d'</span>
+0202   <span class="comment">%</span>
+0203   <span class="comment">% RAW two byte data - Andor detector #3 (upside down), winter 05/06</span>
+0204   <span class="comment">%</span>
+0205   
+0206   <span class="comment">% Same procedure as ASKV8 above</span>
+0207   fnum = floor((j1-1)/(2./vs.vres(vs.vsel)))*(2./vs.vres(vs.vsel)) + 1;
+0208   file = fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},sprintf(<span class="string">'%05d'</span>,fnum),<span class="string">'d.dat'</span>]);
+0209   <span class="comment">% d = uintarr(dimx(vsel),dimy(vsel))</span>
+0210   fID = fopen(file,<span class="string">'r'</span>);
+0211   frames2skip = j1-fnum;
+0212   
+0213   status = fseek(fID,2*frames2skip*vs.dimx(vs.vsel)*vs.dimy(vs.vsel),<span class="string">'bof'</span>);
+0214   
+0215   d = double(fread(fID,[vs.dimx(vs.vsel),vs.dimy(vs.vsel)],<span class="string">'uint16'</span>));
+0216   fclose(fID);
+0217   d = double(d);
+0218   d(d(:) &gt; 60000) = d(d(:) &gt; 60000) - 65536.0;
+0219   img_out = flipud(rot90(d,3)); <span class="comment">% FLIPUD?</span>
+0220   
+0221  <span class="keyword">case</span> <span class="string">'alvis'</span>
+0222   <span class="comment">%</span>
+0223   <span class="comment">% RAW two byte data - Andor detectors, winter 05/06</span>
+0224   <span class="comment">%</span>
+0225   file = fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},sprintf(<span class="string">'%05d'</span>,j1),<span class="string">'.dat'</span>]);
+0226   fID = fopen(file,<span class="string">'r'</span>);
+0227   d = double(fread(fID,[vs.dimx(vs.vsel),vs.dimy(vs.vsel)],<span class="string">'uint16'</span>));
+0228   fclose(fID);
+0229   d = double(d);
+0230   d(d(:) &gt; 60000) = d(d(:) &gt; 60000) - 65536.0;
+0231   img_out = rot90(d,3)';
+0232   
+0233   <span class="comment">%</span>
+0234   <span class="comment">% PNG files</span>
+0235   <span class="comment">%</span>
+0236  <span class="keyword">case</span> <span class="string">'pngkak'</span> 
+0237   si = sprintf(<span class="string">'%8.8d'</span>,i1);<span class="comment">%,form = '(i8.8)')</span>
+0238   img_out = double(255.-1.0*imread(fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},si,<span class="string">'.png'</span>])));
+0239   <span class="comment">%%%%vname(vsel) before +si</span>
+0240   <span class="comment">%if not (keyword_set(nocnv)) then begin</span>
+0241   <span class="comment">%  mjs = time_v(j,/full)</span>
+0242   <span class="comment">%  find_cnv,mjs,conv</span>
+0243   <span class="comment">%  vcnv[vsel,*] = conv</span>
+0244   <span class="comment">%  endif</span>
+0245   <span class="comment">%end</span>
+0246   
+0247  <span class="keyword">case</span>   <span class="string">'png'</span>
+0248   
+0249   si = sprintf(<span class="string">'%5.5d'</span>,i1); <span class="comment">% ,form = '(i5.5)')</span>
+0250   img_out = double(255.-1.0*imread(fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},si,<span class="string">'.png'</span>])));
+0251   
+0252   <span class="comment">%if not (keyword_set(nocnv)) then begin</span>
+0253   <span class="comment">%    mjs = time_v(j,/full)</span>
+0254   <span class="comment">%    find_cnv,mjs,conv</span>
+0255   <span class="comment">%    vcnv[vsel,*] = conv</span>
+0256   <span class="comment">%endif</span>
+0257   <span class="comment">%%%%%%%%%%%%%%%</span>
+0258 
+0259  <span class="keyword">case</span> <span class="string">'pngRobDon'</span>
+0260   
+0261   si = sprintf(<span class="string">'%5.5d'</span>,i1); <span class="comment">% ,form = '(i5.5)')</span>
+0262   img_out = 255.-1.0*imread(fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},si,<span class="string">'.png'</span>]));
+0263   img_out = double(rot90(img_out,2))';
+0264   <span class="comment">%if not (keyword_set(nocnv)) then begin</span>
+0265   <span class="comment">%  mjs = time_v(j,/full)</span>
+0266   <span class="comment">%  find_cnv,mjs,conv</span>
+0267   <span class="comment">%  vcnv[vsel,*] = conv</span>
+0268   <span class="comment">%  endif</span>
+0269   <span class="comment">%  %%%%%%%%%%%%%%%</span>
+0270   <span class="comment">%end</span>
+0271  <span class="keyword">case</span> <span class="string">'clvis'</span>
+0272   
+0273   <span class="comment">%si = string(i,form = '(i5.5)')</span>
+0274   si = sprintf(<span class="string">'%5.5d'</span>,i1); <span class="comment">% ,form = '(i5.5)')</span>
+0275   img_out = -double(255.-1.0*imread(fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},si,<span class="string">'.png'</span>])));
+0276   img_out = rot90(img_out,2)';
+0277   <span class="comment">%if not (keyword_set(nocnv)) then begin</span>
+0278   <span class="comment">%  mjs = time_v(j,/full)</span>
+0279   <span class="comment">%  find_cnv,mjs,conv</span>
+0280   <span class="comment">%  vcnv[vsel,*] = conv</span>
+0281   <span class="comment">%  endif</span>
+0282   <span class="comment">%  %%%%%%%%%%%%%%%</span>
+0283   <span class="comment">%end</span>
+0284   <span class="comment">%Guppy mirrored data</span>
+0285  <span class="keyword">case</span> <span class="string">'guppy2mirror'</span>
+0286   <span class="comment">%</span>
+0287   <span class="comment">%   si = string(i,form = '(i5.5)')</span>
+0288   si = sprintf(<span class="string">'%5.5d'</span>,i1); <span class="comment">% ,form = '(i5.5)')</span>
+0289   <span class="comment">%   read_ppm,videodir+vdir(vsel)+'/'+si+'.pgm',img_out</span>
+0290   img_out = double(imread(fullfile(videodir,vs.vdir{vs.vsel},[vs.vname{vs.vsel},si,<span class="string">'.pgm'</span>])));
+0291   <span class="comment">%</span>
+0292   img_out = rot90(img_out,2)';
+0293   <span class="comment">% mjs = time_v(j,/full)</span>
+0294   <span class="comment">% find_cnv, mjs, conv</span>
+0295   <span class="comment">% vcnv[vsel,*] = conv</span>
+0296  <span class="keyword">otherwise</span>
+0297 <span class="keyword">end</span>
+0298 
+0299 
+0300 
+0301 
+0302 ndim = size(img_out);
+0303 <span class="keyword">if</span> length(ndim) == 3 
+0304   <span class="keyword">if</span> nargin &gt; 2 &amp; RGBout <span class="comment">% Then dont add up the colour channels</span>
+0305     <span class="comment">% Nothing</span>
+0306   <span class="keyword">else</span>
+0307     img_out = sum(img_out,3);
+0308     <span class="comment">%correct for the fact that a negative image is produced</span>
+0309     <span class="comment">% Do we need to do this? img_out = 255-img_out;</span>
+0310   <span class="keyword">end</span>
+0311 <span class="keyword">end</span>
+0312 
+0313 <span class="keyword">if</span> nargin &gt; 1  &amp; ~isempty(noImCal) &amp; noImCal
+0314 <span class="keyword">else</span>
+0315   <span class="keyword">if</span> nargin &gt; 2 &amp; ~isempty(RGBout) &amp; RGBout
+0316   <span class="keyword">else</span>
+0317     img_out = <a href="ASK_imcalibrate.html" class="code" title="function img_out = ASK_imcalibrate(img_in)">ASK_imcalibrate</a>(img_out);
+0318   <span class="keyword">end</span>
+0319 <span class="keyword">end</span>
+0320 
+0321 <span class="comment">% Do image filtering here,</span>
+0322 <span class="comment">% a sequence of filtering can be done. This allows for systematic</span>
+0323 <span class="comment">% use of image filtering in all functions that reads or plots</span>
+0324 <span class="comment">% ASK-images, as long as an options struct is passed to</span>
+0325 <span class="comment">% ASK_read_v.</span>
+0326 <span class="keyword">for</span> i1 = 1:length(dOPS.filtertype),
+0327   filtertype = dOPS.filtertype{i1};
+0328   <span class="keyword">switch</span> filtertype
+0329    <span class="keyword">case</span> <span class="string">'none'</span>
+0330    <span class="keyword">case</span> <span class="string">'conv2'</span>
+0331     filterArgs = dOPS.filterArgs{i1};
+0332     img_out = conv2(img_out,filterArgs{:});
+0333    <span class="keyword">case</span> <span class="string">'sigma'</span>
+0334     filterArgs = dOPS.filterArgs{i1};
+0335     img_out = wiener2(img_out,filterArgs{:});
+0336    <span class="keyword">case</span> <span class="string">'wiener2'</span>
+0337     filterArgs = dOPS.filterArgs{i1};
+0338     img_out = wiener2(img_out,filterArgs{:});
+0339    <span class="keyword">case</span> <span class="string">'medfilt2'</span>
+0340     filterArgs = dOPS.filterArgs{i1};
+0341     img_out = <a href="../../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(img_out,filterArgs{:});
+0342    <span class="keyword">case</span> <span class="string">'median'</span>
+0343     filterArgs = dOPS.filterArgs{i1};
+0344     img_out = <a href="../../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(img_out,filterArgs{:});
+0345    <span class="keyword">case</span> <span class="string">'susan'</span>
+0346     filterArgs = dOPS.filterArgs{i1};
+0347     img_out = <a href="../../Imgtools/gen_susan.html" class="code" title="function J = gen_susan(I,w,OPS)">gen_susan</a>(img_out,filterArgs{:});
+0348    <span class="keyword">otherwise</span>
+0349     <span class="keyword">try</span>
+0350       ffcn = str2func(dOPS.filtertype{i1});
+0351       filterArgs = dOPS.filterArgs{i1};
+0352       img_out = ffcn(img_out,filterArgs{:});
+0353     <span class="keyword">catch</span>
+0354       disp([<span class="string">'Failed to run the filtering function: '</span>,dOPS.filtertype{i1}])
+0355     <span class="keyword">end</span>
+0356   <span class="keyword">end</span>
+0357 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

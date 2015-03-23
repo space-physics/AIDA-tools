@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of inputall</title>
+  <meta name="keywords" content="inputall">
+  <meta name="description" content="[rbild,gbild,bbild,tid,station,optpar] = inputall(filename,stardir,make_opt)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Starcal --><!-- menu.html IOfcns -->
+<h1>inputall
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>[rbild,gbild,bbild,tid,station,optpar] = inputall(filename,stardir,make_opt)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [img,obs] = inputall(filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> [rbild,gbild,bbild,tid,station,optpar] = inputall(filename,stardir,make_opt)
+ 
+ INPUTALL reads an image FILENAME. STARDIR is the
+    path to where starcaltoolkit is installed. MAKE_OPT tells 
+    wether to build OPTPAR or not.
+    
+    See also IMREAD, INPUTFITS2</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Fits_tools/read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>	READ_IMG - reads image data and process header info.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [img,obs] = inputall(filename)</a>
+0002 <span class="comment">% [rbild,gbild,bbild,tid,station,optpar] = inputall(filename,stardir,make_opt)</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% INPUTALL reads an image FILENAME. STARDIR is the</span>
+0005 <span class="comment">%    path to where starcaltoolkit is installed. MAKE_OPT tells</span>
+0006 <span class="comment">%    wether to build OPTPAR or not.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%    See also IMREAD, INPUTFITS2</span>
+0009 
+0010 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson&lt;bjorn.gustavsson@irf.se&gt;</span>
+0011 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0012 
+0013 <span class="comment">% global bx by bxy</span>
+0014 
+0015 <span class="keyword">try</span>
+0016   img = imread(filename);
+0017   [p,n,ext] = fileparts(filename);
+0018   obs = imfinfo(filename);
+0019   <span class="keyword">if</span> ndims(img)==3
+0020     <span class="keyword">try</span>
+0021       img = rgb2hsv(img);
+0022       img = double(img(:,:,3));
+0023     <span class="keyword">catch</span>
+0024       img = squeeze(sum(double(img),3));
+0025     <span class="keyword">end</span>
+0026   <span class="keyword">else</span>
+0027     img = double(img);
+0028   <span class="keyword">end</span>
+0029   <span class="keyword">if</span> strcmp(ext,<span class="string">'.png'</span>)
+0030     <span class="comment">%img = 255-img;</span>
+0031   <span class="keyword">end</span>
+0032 <span class="keyword">catch</span>
+0033   obs.empty = 1;
+0034 who
+0035 img = load(filename);
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="comment">%bxy = size(img);</span>
+0039 <span class="comment">%bx = bxy(2);</span>
+0040 <span class="comment">%by = bxy(1);</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of soton_ionchem_emissions_parser</title>
+  <meta name="keywords" content="soton_ionchem_emissions_parser">
+  <meta name="description" content="soton_ionchem_emissions_parser - Parses the emission.dat output">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html IC -->
+<h1>soton_ionchem_emissions_parser
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>soton_ionchem_emissions_parser - Parses the emission.dat output</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [emissions] = soton_ionchem_emissions_parser(filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> soton_ionchem_emissions_parser - Parses the emission.dat output
+  file from the Southampton ion-chemistry-electron transport
+  model. The function returns a structure with the emissions saved
+  from a model run, together with some auxiliary information.
+ 
+ Calling:
+   emissions = soton_ionchem_emissions_parser(filename)
+ Input;
+   filename - filename, with relative or full path to a
+              file with the emissions.dat output, long header
+              format assumed currently.
+ Output
+   emissions - a structure with fields:
+          SourceFile: Char array with file name of input script
+         nr_profiles: Integer with number of profiles saved for
+                      each timestep 
+        profile_vars: [NR_profiles x 1] - identifier-index into
+                      reactions_vec identifying the modeled profiles
+           alt_range: [2x1 double] with the upper and lower limit for
+                      altitude range
+            nr_p_alt: Number of altitude ranges
+           nr_p_chem: number of chemical reactions 
+       reactions_vec: {[nr_p_chem x 1 ]  {nr_p_chem x 1 cell} [nr_p_chem x 1 int32]}
+                      Cell array with first cell containing the
+                      reaction ID, second cell containing the
+                      reaction-name, and third cell containing
+                      something else.
+               t_out: [1 x NR_time_steps double] array with
+                      simulation time
+                data: [nr_p_alt x nr_profiles x NR_time_steps double]
+                      3-D array with model output.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="askChem2em_AVplot.html" class="code" title="function [ph,emissions] = askChem2em_AVplot(emissions,OPS,varargin)">askChem2em_AVplot</a>	ASKCHEM2EM_AVPLOT - plot altitude variation of emission rates</li><li><a href="askChem2em_CERplot.html" class="code" title="function [ph,CER,emissions] = askChem2em_CERplot(emissions,OPS,varargin)">askChem2em_CERplot</a>	ASKCHEM2EM_CERPLOT - plot column emission rates from SOTON Chemistry model emission-file/struct</li><li><a href="askChem2em_TAVplot.html" class="code" title="function [ph,Ems,emissions] = askChem2em_TAVplot(emissions,OPS,varargin)">askChem2em_TAVplot</a>	ASKCHEM2EM_AVPLOT - plot time-altitude variation of emission rates</li><li><a href="sotonChem2em_AVplot.html" class="code" title="function [ph,emissions] = sotonChem2em_AVplot(emissions,OPS,varargin)">sotonChem2em_AVplot</a>	sotonChem2em_AVplot - plot altitude variation of emission rates</li><li><a href="sotonChem2em_CERplot.html" class="code" title="function [ph,CER,emissions] = sotonChem2em_CERplot(emissions,OPS,varargin)">sotonChem2em_CERplot</a>	sotonChem2em_CERplot - plot column emission rates from SOTON Chemistry model emission-file/struct</li><li><a href="sotonChem2em_TAVplot.html" class="code" title="function [ph,Ems,emissions] = sotonChem2em_TAVplot(emissions,OPS,varargin)">sotonChem2em_TAVplot</a>	sotonChem2em_TAVplot - plot time-altitude variation of emission rates</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [emissions] = soton_ionchem_emissions_parser(filename)</a>
+0002 <span class="comment">% soton_ionchem_emissions_parser - Parses the emission.dat output</span>
+0003 <span class="comment">%  file from the Southampton ion-chemistry-electron transport</span>
+0004 <span class="comment">%  model. The function returns a structure with the emissions saved</span>
+0005 <span class="comment">%  from a model run, together with some auxiliary information.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%   emissions = soton_ionchem_emissions_parser(filename)</span>
+0009 <span class="comment">% Input;</span>
+0010 <span class="comment">%   filename - filename, with relative or full path to a</span>
+0011 <span class="comment">%              file with the emissions.dat output, long header</span>
+0012 <span class="comment">%              format assumed currently.</span>
+0013 <span class="comment">% Output</span>
+0014 <span class="comment">%   emissions - a structure with fields:</span>
+0015 <span class="comment">%          SourceFile: Char array with file name of input script</span>
+0016 <span class="comment">%         nr_profiles: Integer with number of profiles saved for</span>
+0017 <span class="comment">%                      each timestep</span>
+0018 <span class="comment">%        profile_vars: [NR_profiles x 1] - identifier-index into</span>
+0019 <span class="comment">%                      reactions_vec identifying the modeled profiles</span>
+0020 <span class="comment">%           alt_range: [2x1 double] with the upper and lower limit for</span>
+0021 <span class="comment">%                      altitude range</span>
+0022 <span class="comment">%            nr_p_alt: Number of altitude ranges</span>
+0023 <span class="comment">%           nr_p_chem: number of chemical reactions</span>
+0024 <span class="comment">%       reactions_vec: {[nr_p_chem x 1 ]  {nr_p_chem x 1 cell} [nr_p_chem x 1 int32]}</span>
+0025 <span class="comment">%                      Cell array with first cell containing the</span>
+0026 <span class="comment">%                      reaction ID, second cell containing the</span>
+0027 <span class="comment">%                      reaction-name, and third cell containing</span>
+0028 <span class="comment">%                      something else.</span>
+0029 <span class="comment">%               t_out: [1 x NR_time_steps double] array with</span>
+0030 <span class="comment">%                      simulation time</span>
+0031 <span class="comment">%                data: [nr_p_alt x nr_profiles x NR_time_steps double]</span>
+0032 <span class="comment">%                      3-D array with model output.</span>
+0033 
+0034 <span class="comment">% Copyright Bjorn Gustavsson 20110128,</span>
+0035 <span class="comment">% % GPL version 3 or later applies.</span>
+0036 
+0037 fp = fopen(filename,<span class="string">'r'</span>);
+0038 
+0039 <span class="keyword">if</span> fp &lt; 0 
+0040   
+0041   error([<span class="string">'Could not open file: '</span>,filename])
+0042   
+0043 <span class="keyword">end</span>
+0044 
+0045 FileType = fgets(fp);<span class="comment">% Line with information on what is in file.</span>
+0046 tmp_line = fgets(fp);<span class="comment">%</span>
+0047 emissions.SourceFile = fgets(fp);<span class="comment">% Line with source file</span>
+0048 
+0049 tmp_line = fgets(fp);<span class="comment">% Line with number of profiles saved</span>
+0050 nr_profiles = sscanf(tmp_line,<span class="string">'%f'</span>)+1;
+0051 emissions.nr_profiles = nr_profiles;
+0052 profile_vars = [];
+0053 <span class="keyword">for</span> i1 = 1:length(nr_profiles)
+0054   tmp_line = fgets(fp);<span class="comment">% Line with variables per index</span>
+0055   tmpprofile_vars = sscanf(tmp_line,<span class="string">'%d'</span>);
+0056   profile_vars = [profile_vars,tmpprofile_vars];
+0057 <span class="keyword">end</span>
+0058 emissions.profile_vars = profile_vars;
+0059 
+0060 [svars,sv_indx] = sort(profile_vars);
+0061 unsrt_indx = 1:length(profile_vars);
+0062 unsrt_indx(sv_indx) = unsrt_indx;
+0063 
+0064 tmp_line = fgets(fp);             <span class="comment">% Should be: Altitude range, km</span>
+0065 tmp_line = fgets(fp);             <span class="comment">% Line with altitude range</span>
+0066 emissions.alt_range = sscanf(tmp_line,<span class="string">'%f'</span>);
+0067 
+0068 tmp_line = fgets(fp);             <span class="comment">% Bla-bla line</span>
+0069 tmp_line = fgets(fp);             <span class="comment">% Line with number of points in altitude</span>
+0070 nr_p_alt = sscanf(tmp_line,<span class="string">'%f'</span>);
+0071 emissions.nr_p_alt = nr_p_alt;
+0072 
+0073 tmp_line = fgets(fp);<span class="comment">% Should be: ###############</span>
+0074 <span class="comment">%disp('###############')</span>
+0075 tmp_line = fgets(fp);<span class="comment">% Should be: Reactions</span>
+0076 tmp_line = fgets(fp);<span class="comment">% Line with number of reactions</span>
+0077 nr_p_chem = sscanf(tmp_line,<span class="string">'%f'</span>);
+0078 emissions.nr_p_chem = nr_p_chem;
+0079 
+0080 emissions.reactions_vec = textscan(fp,<span class="string">'%d%s%d\n'</span>,nr_p_chem); <span class="comment">% Cell-array with chemical reactions</span>
+0081 
+0082 tmp_line = fgets(fp); <span class="comment">% Should be: ###############</span>
+0083 <span class="comment">%disp('###############')</span>
+0084 
+0085 tmp_line = fgets(fp);<span class="comment">% Should be: first time step</span>
+0086 
+0087 
+0088 i0 = 0;
+0089 indx_t = 1;
+0090 <span class="keyword">while</span> ~feof(fp)
+0091   
+0092   emissions.t_out(indx_t) = str2num(tmp_line);
+0093   <span class="comment">%disp(emissions.t_out(indx_t))</span>
+0094   <span class="comment">%profiles = fscanf(fp,'%f ',[nr_p_alt,nr_profiles])</span>
+0095   emissions.data(:,:,indx_t) = fscanf(fp,<span class="string">'%f '</span>,[nr_profiles,nr_p_alt])';
+0096   <span class="comment">%plot(emissions.data(:,2,indx_t),emissions.data(:,1,indx_t),'color',rand(1,3))</span>
+0097   <span class="comment">%hold on</span>
+0098   <span class="comment">%drawnow</span>
+0099   tmp_line = fgets(fp);<span class="comment">% Should be: next time step</span>
+0100   i0 = i0+1;
+0101   indx_t = indx_t + 1;
+0102   <span class="comment">%disp(['i0 = ',sprintf('%d',i0)])</span>
+0103   
+0104 <span class="keyword">end</span>
+0105 fclose(fp);
+0106 
+0107 <span class="comment">%keyboard</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

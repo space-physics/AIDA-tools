@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tindex3</title>
+  <meta name="keywords" content="tindex3">
+  <meta name="description" content="Script used to make gopta experiment configuration file for">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html ALIS --><!-- menu.html Gopta-exps -->
+<h1>tindex3
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Script used to make gopta experiment configuration file for</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Script used to make gopta experiment configuration file for
+ ALIS-EISCAT-Heating campaign 200411
+ EISCAT_ALIS200411 - example script showing how to make gopta experiment configuration files</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>	TO_GOPTA - Produce ALIS gopta files (experiment control files)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Script used to make gopta experiment configuration file for</span>
+0002 <span class="comment">% ALIS-EISCAT-Heating campaign 200411</span>
+0003 <span class="comment">% EISCAT_ALIS200411 - example script showing how to make gopta experiment configuration files</span>
+0004 
+0005 <span class="comment">% Copyright Bjorn Gustavsson</span>
+0006 <span class="comment">%                  X       Y       Y        X</span>
+0007 sn =            {<span class="string">'botn'</span> <span class="string">'kiruna'</span> <span class="string">'silki'</span> <span class="string">'tjautjas'</span> <span class="string">'abisko'</span>};
+0008 GTfast =        {<span class="string">'1,0'</span>  <span class="string">'1,0'</span>    <span class="string">'1,3'</span>     <span class="string">'1,0'</span>    <span class="string">'1,3'</span>   };
+0009 GTlittlenoise = {<span class="string">'2,1'</span>  <span class="string">'2,1'</span>    <span class="string">'2,0'</span>     <span class="string">'2,1'</span>    <span class="string">'2,0'</span>   };
+0010 GTlownoise =    {<span class="string">'3,2'</span>  <span class="string">'3,2'</span>    <span class="string">'3,1'</span>     <span class="string">'3,2'</span>    <span class="string">'3,1'</span>   };
+0011 mima_nr     =   [ 6      4        2         3        5      ];
+0012 
+0013 Startstop = {<span class="string">'16:00:00'</span>    <span class="string">'16:00:00'</span>    <span class="string">'16:00:00'</span>
+0014              <span class="string">'27:00:00'</span>    <span class="string">'27:00:00'</span>    <span class="string">'27:00:00'</span>};
+0015 
+0016 exptimes = [1000        1000  1000        1000        1000
+0017             1000        1000  1000        1000        1000
+0018             1000        1000  1000        1000        1000
+0019             1000        1000  1000        1000        1000
+0020             1000        1000  1000        1000        1000
+0021             1000        1000  1000        1000        1000
+0022             1000        1000  1000        1000        1000];
+0023 
+0024 interv = [ 3     3     3     3     3
+0025            3     3     3     3     3
+0026            3     3     3     3     3
+0027            3     3     3     3     3
+0028            3     3     3     3     3
+0029            3     3     3     3     3
+0030            3     3     3     3     3];
+0031 
+0032 OPS1.binning = <span class="string">'4,4'</span>;
+0033 OPS1.observer =  <span class="string">'ALIS team 2005/6'</span>;
+0034 
+0035 c_l1 =     [  7         7         7       7         7 ];
+0036 filter1 = {<span class="string">'4278'</span>   <span class="string">'4278'</span>    <span class="string">'4278'</span>  <span class="string">'4278'</span>    <span class="string">'4278'</span>
+0037            <span class="string">'5577'</span>   <span class="string">'5577'</span>    <span class="string">'4278'</span>  <span class="string">'5577'</span>    <span class="string">'5577'</span>
+0038            <span class="string">'6300'</span>   <span class="string">'4278'</span>    <span class="string">'6300'</span>  <span class="string">'6300'</span>    <span class="string">'6300'</span>           
+0039            <span class="string">'4278'</span>   <span class="string">'4278'</span>    <span class="string">'4278'</span>  <span class="string">'4278'</span>    <span class="string">'4278'</span>
+0040            <span class="string">'5577'</span>   <span class="string">'4278'</span>    <span class="string">'5577'</span>  <span class="string">'5577'</span>    <span class="string">'5577'</span>
+0041            <span class="string">'8446'</span>   <span class="string">'8446'</span>    <span class="string">'4278'</span>  <span class="string">'8446'</span>    <span class="string">'8446'</span>
+0042            <span class="string">'5577'</span>   <span class="string">'5577'</span>    <span class="string">'5577'</span>  <span class="string">'5577'</span>    <span class="string">'5577'</span>   
+0043           };
+0044 
+0045 POS = {<span class="string">''</span> <span class="string">'eiscat'</span> <span class="string">'eiscat'</span> <span class="string">'eiscat'</span> <span class="string">'eiscat'</span>};
+0046 
+0047 
+0048 OPS1.object =  <span class="string">'Index: filter cycle tindex2_fast.eps'</span>;
+0049 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'tindex2_fast'</span>,sn,Startstop,c_l1,filter1 ,POS,exptimes-300,interv,GTfast,OPS1);
+0050 OPS1.object =  <span class="string">'Index: filter cycle tindex2_3_06.eps'</span>;
+0051 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'tindex2_3_06mn'</span>,sn,Startstop,c_l1,filter1   ,POS,exptimes-400,interv,GTlittlenoise,OPS1);
+0052 
+0053 interv(:) = 4;
+0054 exptimes(:) = 2000;
+0055 
+0056 OPS1.object =  <span class="string">'Index: filter cycle tindex2_4_13.eps'</span>;
+0057 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'tindex2_4_13ln'</span>,sn,Startstop,c_l1,filter1   ,POS,exptimes-700,interv,GTlownoise,OPS1);
+0058 OPS1.object =  <span class="string">'Index: filter cycle tindex2_4_16.eps'</span>;
+0059 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'tindex2_4_16mn'</span>,sn,Startstop,c_l1,filter1   ,POS,exptimes-400,interv,GTlittlenoise,OPS1);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of MK_at_HAARP2008</title>
+  <meta name="keywords" content="MK_at_HAARP2008">
+  <meta name="description" content="MK_at_HAARP2008 - make Observation struct from file-struct">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Fits_tools --><!-- menu.html File2obs -->
+<h1>MK_at_HAARP2008
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>MK_at_HAARP2008 - make Observation struct from file-struct</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function obs = MK_at_HAARP2008(filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MK_at_HAARP2008 - make Observation struct from file-struct
+   Everything hard-coded for one particular image from a HAARP
+   campaign. 
+ 
+ Also outdated!</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function obs = MK_at_HAARP2008(filename)</a>
+0002 <span class="comment">% MK_at_HAARP2008 - make Observation struct from file-struct</span>
+0003 <span class="comment">%   Everything hard-coded for one particular image from a HAARP</span>
+0004 <span class="comment">%   campaign.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Also outdated!</span>
+0007 
+0008 obs.time = [2007 3 16 19 32 67];
+0009 obs.pos= [62.3 -145.25];
+0010 obs.longlat= [62.3 -145.25];
+0011 obs.xyz = [0,0,0];
+0012 obs.station = 401;
+0013 obs.alpha = [];
+0014 obs.beta = [];
+0015 obs.az = [0];
+0016 obs.ze = [0];
+0017 obs.camnr = [39];
+0018 obs.exptime = 2;
+0019 obs.filter = [];
+0020 obs.imreg = [];
+0021 obs.BZERO = 0;
+0022</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

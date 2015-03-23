@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of updautomat</title>
+  <meta name="keywords" content="updautomat">
+  <meta name="description" content="UPDAUTOMAT -">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Starcal --><!-- menu.html update -->
+<h1>updautomat
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>UPDAUTOMAT -</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function OptF_struct = updautomat(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> UPDAUTOMAT - 
+   
+      UPDAUTOMAT
+      Is the callback for the automatical opimization changes in the user interface
+      of the optplot figure. Here the changes in focal widths,
+      Azimuth, Zenith and rotation angles is made to appear on the screen.
+
+ Calling: 
+   OptF_struct = updautomat(SkMp)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../tools/num8str.html" class="code" title="function [s] = num8str(in)">num8str</a>	NUM8STR - numerical to string converter</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function OptF_struct = updautomat(SkMp)</a>
+0002 <span class="comment">% UPDAUTOMAT -</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%      UPDAUTOMAT</span>
+0005 <span class="comment">%      Is the callback for the automatical opimization changes in the user interface</span>
+0006 <span class="comment">%      of the optplot figure. Here the changes in focal widths,</span>
+0007 <span class="comment">%      Azimuth, Zenith and rotation angles is made to appear on the screen.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Calling:</span>
+0010 <span class="comment">%   OptF_struct = updautomat(SkMp)</span>
+0011 
+0012 <span class="comment">%   Copyright © 2011 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0013 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0014 
+0015 sx1 = 0.01;
+0016 sx2 = 0.45;
+0017 lx1 = .43;
+0018 lx2 = .54;
+0019 ly = .085;
+0020 
+0021 opt_mod = SkMp.optmod;
+0022 <span class="keyword">if</span> opt_mod &lt; 0
+0023   startpar = [exp(1),(-1).^.5,pi,2^.5,0.61803,0,7,8];
+0024   opt_mod = 7;
+0025 <span class="keyword">else</span>
+0026   startpar = SkMp.optpar;
+0027   <span class="keyword">if</span> opt_mod == 11
+0028     opt_mod = 9;
+0029     parStrs = {<span class="string">'u0'</span>,<span class="string">'v0'</span>,<span class="string">'f0'</span>,<span class="string">'f1'</span>,<span class="string">'df(u,v)'</span>,<span class="string">'rot'</span>,<span class="string">'azimuth'</span>,<span class="string">'elevation'</span>};
+0030   <span class="keyword">else</span>
+0031     parStrs = {<span class="string">'focal(fu)'</span>,<span class="string">'focal(fv)'</span>,<span class="string">'Alpha'</span>,<span class="string">'Beta'</span>,<span class="string">'Gamma'</span>,<span class="string">'du'</span>,<span class="string">'dv'</span>,<span class="string">'alfa'</span>};
+0032   <span class="keyword">end</span>
+0033 <span class="keyword">end</span>
+0034 figoptp = figure(<span class="string">'Name'</span>,<span class="string">'Projection par'</span>,<span class="keyword">...</span>
+0035                  <span class="string">'Position'</span>,[480,500,275,300],<span class="keyword">...</span>
+0036          <span class="string">'Resize'</span>,<span class="string">'off'</span>,<span class="keyword">...</span>
+0037          <span class="string">'MenuBar'</span>,<span class="string">'none'</span>);
+0038 
+0039 ui7a(1) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0040            <span class="string">'Style'</span>,<span class="string">'checkbox'</span>,<span class="keyword">...</span>
+0041            <span class="string">'String'</span>,parStrs{3},<span class="keyword">...</span>
+0042            <span class="string">'Position'</span>,[sx1,.91,lx1,ly]);
+0043 ui7a(2) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0044            <span class="string">'Style'</span>,<span class="string">'checkbox'</span>,<span class="keyword">...</span>
+0045            <span class="string">'String'</span>,parStrs{4},<span class="keyword">...</span>
+0046            <span class="string">'Position'</span>,[sx1,.82,lx1,ly]);
+0047 ui7a(3) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0048            <span class="string">'Style'</span>,<span class="string">'checkbox'</span>,<span class="keyword">...</span>
+0049            <span class="string">'String'</span>,parStrs{5},<span class="keyword">...</span>
+0050            <span class="string">'Position'</span>,[sx1,.73,lx1,ly]);
+0051 ui7a(4) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0052            <span class="string">'Style'</span>,<span class="string">'checkbox'</span>,<span class="keyword">...</span>
+0053            <span class="string">'String'</span>,parStrs{1},<span class="keyword">...</span>
+0054            <span class="string">'Position'</span>,[sx1,.64,lx1,ly]);
+0055 ui7a(5) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0056            <span class="string">'Style'</span>,<span class="string">'checkbox'</span>,<span class="keyword">...</span>
+0057            <span class="string">'String'</span>,parStrs{2},<span class="keyword">...</span>
+0058            <span class="string">'Position'</span>,[sx1,.55,lx1,ly]);
+0059 ui7a(6) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0060            <span class="string">'Style'</span>,<span class="string">'checkbox'</span>,<span class="keyword">...</span>
+0061            <span class="string">'String'</span>,parStrs{6},<span class="keyword">...</span>
+0062            <span class="string">'Position'</span>,[sx1,.46,lx1,ly]);
+0063 ui7a(7) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0064            <span class="string">'Style'</span>,<span class="string">'checkbox'</span>,<span class="keyword">...</span>
+0065            <span class="string">'String'</span>,parStrs{7},<span class="keyword">...</span>
+0066            <span class="string">'Position'</span>,[sx1,.37,lx1,ly]);
+0067 ui7a(12) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0068            <span class="string">'Style'</span>,<span class="string">'checkbox'</span>,<span class="keyword">...</span>
+0069            <span class="string">'String'</span>,parStrs{8},<span class="keyword">...</span>
+0070            <span class="string">'Position'</span>,[sx1,.28,lx1,ly]);
+0071 ui7a(8) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0072            <span class="string">'Style'</span>,<span class="string">'Pushbutton'</span>,<span class="keyword">...</span>
+0073            <span class="string">'String'</span>,<span class="string">'Mode'</span>,<span class="keyword">...</span>
+0074            <span class="string">'Position'</span>,[sx1,.19,lx1,ly]);
+0075 ui7(1) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0076            <span class="string">'Style'</span>,<span class="string">'Edit'</span>,<span class="keyword">...</span>
+0077            <span class="string">'Position'</span>,[sx2,.91,lx2,ly],<span class="keyword">...</span>
+0078            <span class="string">'String'</span>,<a href="../../tools/num8str.html" class="code" title="function [s] = num8str(in)">num8str</a>(startpar(3)));
+0079 ui7(2) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0080            <span class="string">'Style'</span>,<span class="string">'Edit'</span>,<span class="keyword">...</span>
+0081            <span class="string">'Position'</span>,[sx2,.82,lx2,ly],<span class="keyword">...</span>
+0082            <span class="string">'String'</span>,<a href="../../tools/num8str.html" class="code" title="function [s] = num8str(in)">num8str</a>(startpar(4)));
+0083 ui7(3) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0084            <span class="string">'Style'</span>,<span class="string">'Edit'</span>,<span class="keyword">...</span>
+0085            <span class="string">'Position'</span>,[sx2,.73,lx2,ly],<span class="keyword">...</span>
+0086            <span class="string">'String'</span>,<a href="../../tools/num8str.html" class="code" title="function [s] = num8str(in)">num8str</a>(startpar(5)));
+0087 ui7(4) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0088            <span class="string">'Style'</span>,<span class="string">'Edit'</span>,<span class="keyword">...</span>
+0089            <span class="string">'Position'</span>,[sx2,.64,lx2,ly],<span class="keyword">...</span>
+0090            <span class="string">'String'</span>,<a href="../../tools/num8str.html" class="code" title="function [s] = num8str(in)">num8str</a>(startpar(1)));
+0091 ui7(5) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0092            <span class="string">'Style'</span>,<span class="string">'Edit'</span>,<span class="keyword">...</span>
+0093            <span class="string">'Position'</span>,[sx2,.55,lx2,ly],<span class="keyword">...</span>
+0094            <span class="string">'String'</span>,<a href="../../tools/num8str.html" class="code" title="function [s] = num8str(in)">num8str</a>(startpar(2)));
+0095 ui7(6) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0096            <span class="string">'Style'</span>,<span class="string">'Edit'</span>,<span class="keyword">...</span>
+0097            <span class="string">'Position'</span>,[sx2,.46,lx2,ly],<span class="keyword">...</span>
+0098            <span class="string">'String'</span>,<a href="../../tools/num8str.html" class="code" title="function [s] = num8str(in)">num8str</a>(startpar(6)));
+0099 ui7(7) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0100            <span class="string">'Style'</span>,<span class="string">'Edit'</span>,<span class="keyword">...</span>
+0101            <span class="string">'Position'</span>,[sx2,.37,lx2,ly],<span class="keyword">...</span>
+0102            <span class="string">'String'</span>,<a href="../../tools/num8str.html" class="code" title="function [s] = num8str(in)">num8str</a>(startpar(7)));
+0103 ui7(12) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0104            <span class="string">'Style'</span>,<span class="string">'Edit'</span>,<span class="keyword">...</span>
+0105            <span class="string">'Position'</span>,[sx2,.28,lx2,ly],<span class="keyword">...</span>
+0106            <span class="string">'String'</span>,<a href="../../tools/num8str.html" class="code" title="function [s] = num8str(in)">num8str</a>(startpar(8)));
+0107 ui7(8) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0108            <span class="string">'Style'</span>,<span class="string">'Popup'</span>,<span class="keyword">...</span>
+0109            <span class="string">'String'</span>,<span class="string">'f tg(theta)|f sin(a theta)|f(1-a)tg(theta)+f a theta|f theta|f tg(a theta)|allsSkib|Non-param|rot-Non-par|ASK'</span>,<span class="keyword">...</span>
+0110            <span class="string">'Position'</span>,[sx2,.19,lx2,ly],<span class="keyword">...</span>
+0111            <span class="string">'Value'</span>,opt_mod);
+0112 ui7(10) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0113            <span class="string">'Style'</span>,<span class="string">'Pushbutton'</span>,<span class="keyword">...</span>
+0114            <span class="string">'String'</span>,<span class="string">'Search'</span>,<span class="keyword">...</span>
+0115            <span class="string">'Position'</span>,[sx1,.10,lx2+lx1+.02,ly],<span class="keyword">...</span>
+0116            <span class="string">'Value'</span>,2,<span class="keyword">...</span>
+0117            <span class="string">'Callback'</span>,<span class="string">'[optpar,SkMp]=runopticsoptimization(SkMp,OptF_struct);'</span>);
+0118 ui7(11) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0119            <span class="string">'Style'</span>,<span class="string">'Pushbutton'</span>,<span class="keyword">...</span>
+0120            <span class="string">'String'</span>,<span class="string">'Help'</span>,<span class="keyword">...</span>
+0121            <span class="string">'Position'</span>,[sx1,.01,lx2+lx1+.02,ly],<span class="keyword">...</span>
+0122            <span class="string">'Value'</span>,2,<span class="keyword">...</span>
+0123            <span class="string">'Callback'</span>,<span class="string">'starhelp(7)'</span>);
+0124 
+0125 verstr = version;
+0126 version_nr = str2num(verstr(1:3));
+0127 
+0128 <span class="keyword">if</span> ( version_nr &gt; 5.1 )
+0129   
+0130   set(ui7a(1),<span class="string">'TooltipString'</span>,<span class="string">'(un)Lock the EAST-WEST angle'</span>);
+0131   set(ui7a(2),<span class="string">'TooltipString'</span>,<span class="string">'(un)Lock the NORTH-SOUTH angle'</span>);
+0132   set(ui7a(3),<span class="string">'TooltipString'</span>,<span class="string">'(un)Lock the ROLL angle'</span>);
+0133   set(ui7a(4),<span class="string">'TooltipString'</span>,<span class="string">'(un)Lock the HORIZONTAL FOCAL WIDTH'</span>);
+0134   set(ui7a(5),<span class="string">'TooltipString'</span>,<span class="string">'(un)Lock the VERTICAL FOCAL WIDTH'</span>);
+0135   set(ui7a(6),<span class="string">'TooltipString'</span>,<span class="string">'(un)Lock the horizontal displacement of optical axis'</span>);
+0136   set(ui7a(7),<span class="string">'TooltipString'</span>,<span class="string">'(un)Lock the vertical displacement of optical axis'</span>);
+0137   set(ui7a(12),<span class="string">'TooltipString'</span>,<span class="string">'(un)Lock the weighting factor alfa (relevant for mode 3)'</span>);
+0138   set(ui7a(8),<span class="string">'TooltipString'</span>,<span class="string">'Change the optical camera model, see help'</span>);
+0139   set(ui7(1),<span class="string">'TooltipString'</span>,<span class="string">'Change the EAST-WEST angle'</span>)
+0140   set(ui7(2),<span class="string">'TooltipString'</span>,<span class="string">'Change the NORTH-SOUTH angle'</span>);
+0141   set(ui7(3),<span class="string">'TooltipString'</span>,<span class="string">'Change the ROLL angle'</span>);
+0142   set(ui7(4),<span class="string">'TooltipString'</span>,<span class="string">'Change the HORIZONTAL FOCAL WIDTH'</span>);
+0143   set(ui7(5),<span class="string">'TooltipString'</span>,<span class="string">'Change the VERTICAL FOCAL WIDTH'</span>);
+0144   set(ui7(6),<span class="string">'TooltipString'</span>,<span class="string">'Change the horizontal displacement of optical axis'</span>);
+0145   set(ui7(7),<span class="string">'TooltipString'</span>,<span class="string">'Change the vertical displacement of optical axis'</span>);
+0146   set(ui7(12),<span class="string">'TooltipString'</span>,<span class="string">'Change the weighting factor alfa (relevant for mode 3)'</span>);
+0147   set(ui7(8),<span class="string">'TooltipString'</span>,<span class="string">'Change the optical camera model, see help'</span>);
+0148   set(ui7(10),<span class="string">'TooltipString'</span>,<span class="string">'Optimize the optical parameters to minimal error'</span>);
+0149   set(ui7(11),<span class="string">'TooltipString'</span>,<span class="string">'Guess what?'</span>);
+0150   
+0151 <span class="keyword">end</span>
+0152 
+0153 
+0154 OptF_struct.figopt = figoptp;
+0155 OptF_struct.ui7 = ui7;
+0156 OptF_struct.ui7a = ui7a;
+0157 SkMp.ui7 = ui7;
+0158 set(SkMp.ui7(8),<span class="string">'callback'</span>,<span class="string">'SkMp = updchange_optmod(SkMp,OptF_struct);'</span>)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

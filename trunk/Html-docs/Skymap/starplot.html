@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of starplot</title>
+  <meta name="keywords" content="starplot">
+  <meta name="description" content="STARPLOT plots the skymap.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>starplot
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STARPLOT plots the skymap.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [pstarsout] = starplot(pstars,SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STARPLOT plots the skymap.
+ Used in the starcalibration program.
+ 
+ Calling:
+ [pstarsout] = starplot(pstars,SkMp)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>	CAMERA_BASE - determine the coordinate system of the camera</li><li><a href="../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>	CAMERA_MODEL - determine the image coordinates of light from [az,ze]</li><li><a href="../Starcal/IOfcns/inimage.html" class="code" title="function [true] = inimage(x,y,bx,by)">inimage</a>	INIMAGE  tests if a point (X,Y) is within the image,</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="updstrpl.html" class="code" title="function [SkMp] = updstrpl(SkMp)">updstrpl</a>	</li><li><a href="updstrplOld.html" class="code" title="function [SkMp] = updstrplOld(SkMp)">updstrplOld</a>	</li><li><a href="../Starcal/M6/runopticsoptimization.html" class="code" title="function [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin)">runopticsoptimization</a>	RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters</li><li><a href="../Starcal/M7/runopticsoptimization.html" class="code" title="function [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin)">runopticsoptimization</a>	RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [pstarsout] = starplot(pstars,SkMp)</a>
+0002 <span class="comment">% STARPLOT plots the skymap.</span>
+0003 <span class="comment">% Used in the starcalibration program.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">% [pstarsout] = starplot(pstars,SkMp)</span>
+0007 
+0008 
+0009 <span class="comment">%       Bjorn Gustavsson 7-9-97</span>
+0010 <span class="comment">%    Copyright � 1997 by Bjorn Gustavsson</span>
+0011 
+0012 <span class="keyword">global</span> bx by bxy
+0013 
+0014 Lb = [395.3125
+0015       400.0000
+0016       411.9792
+0017       439.0625
+0018       450.0000
+0019       460.9375
+0020       489.0625
+0021       512.3762
+0022       535.6436];
+0023 eye_b = [0.0212
+0024          0.0377
+0025          0.1274
+0026          0.9552
+0027          0.9835
+0028          0.9316
+0029          0.3042
+0030          0.0896
+0031          0.0071];
+0032 Lg = [423.9583
+0033       470.8333
+0034       495.3125
+0035       517.8218
+0036       544.0594
+0037       578.4946
+0038       600.0000
+0039       630.0971
+0040       658.3333];
+0041 eye_g = [0.0118
+0042          0.0967
+0043          0.2241
+0044          0.4764
+0045          0.6627
+0046          0.4481
+0047          0.2476
+0048          0.0377
+0049          0.0047];
+0050 Lr = [405.7292
+0051       439.0625
+0052       467.7083
+0053       500.4950
+0054       534.6535
+0055       565.0538
+0056       587.0968
+0057       618.4466
+0058       641.2621
+0059       671.6667
+0060       701.6667];
+0061 eye_r = [0.0142
+0062          0.0401
+0063          0.0189
+0064          0.1014
+0065          0.3632
+0066          0.5212
+0067          0.5637
+0068          0.3986
+0069          0.1863
+0070          0.0472
+0071          0.0047];
+0072 
+0073 
+0074 
+0075 fig = SkMp.figsky;
+0076 ssc = SkMp.prefs.pl_sz_st/10;
+0077 <span class="comment">% selectedstar = SkMp.selectedstar;</span>
+0078 
+0079 <span class="keyword">if</span> isempty(SkMp.img)
+0080   clf
+0081   
+0082   x = ssc*180/pi*.5*cos(0:2*pi/8:2*pi);
+0083   y = ssc*180/pi*.5*sin(0:2*pi/8:2*pi);
+0084   sz = size(pstars);
+0085   figure(fig)
+0086   hold off
+0087   plot(180/pi*max(pstars(:,6))*[1 -1],<span class="string">'w.'</span>,<span class="string">'markersize'</span>,.1)
+0088   hold on
+0089   plot(180/pi*max(pstars(:,6))*[1 -1],[0 0],<span class="string">'w.'</span>,<span class="string">'markersize'</span>,.1)
+0090   ax = axis;
+0091   axis(ax)
+0092   axis off
+0093   
+0094   hold on
+0095   
+0096   <span class="keyword">for</span> i = sz(1):-1:1,
+0097     
+0098     px = ( .05 - .05*pstars(i,4)/9 )*x + 180/pi*pstars(i,6)*cos(-pstars(i,5));
+0099     py = ( .05 - .05*pstars(i,4)/9 )*y + 180/pi*pstars(i,6)*sin(-pstars(i,5));
+0100     f_h = fill(px,py,SkMp.prefs.pl_cl_st);
+0101     i_s = find([SkMp.star_list.Bright_Star_Nr]==pstars(i,8));
+0102     <span class="keyword">if</span> SkMp.star_list(i_s).spectra == 1
+0103       set(f_h,<span class="string">'facecolor'</span>,SkMp.star_list(i_s).rgb)
+0104     <span class="keyword">end</span>
+0105   <span class="keyword">end</span>
+0106   pstarsout = 1;
+0107   
+0108 <span class="keyword">else</span>
+0109   cax = caxis;
+0110   <span class="keyword">if</span> ( cax(1) == 0 &amp; cax(2) == 1 )
+0111     cax = [ min(SkMp.img(:)) max(SkMp.img(:))];
+0112   <span class="keyword">end</span>
+0113   clf
+0114   
+0115   <span class="keyword">if</span> SkMp.optmod &lt; 0
+0116     [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(SkMp.optpar.rot(1),SkMp.optpar.rot(2),SkMp.optpar.rot(3));
+0117   <span class="keyword">else</span>
+0118     <span class="keyword">if</span> length(SkMp.optpar) &gt; 9
+0119       [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(SkMp.optpar(3),SkMp.optpar(4),SkMp.optpar(5),SkMp.optpar(10));
+0120     <span class="keyword">else</span>
+0121       [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(SkMp.optpar(3),SkMp.optpar(4),SkMp.optpar(5));
+0122     <span class="keyword">end</span>
+0123   <span class="keyword">end</span>
+0124   bxy = size(SkMp.img);
+0125   bx = bxy(2);
+0126   by = bxy(1);
+0127   
+0128   figure(fig);
+0129   az = pstars(:,1);
+0130   ze = pstars(:,2);
+0131   [u,w] = <a href="../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>(az',ze',e1,e2,e3,SkMp.optpar,SkMp.optmod,size(SkMp.img));
+0132   indx = find(<a href="../Starcal/IOfcns/inimage.html" class="code" title="function [true] = inimage(x,y,bx,by)">inimage</a>(u,w,bx,by));
+0133   ua = u;
+0134   wa = w;
+0135   pstarsout = pstars;
+0136   intens = pstars(:,4);
+0137   min(intens);
+0138   max(intens);
+0139   
+0140   x = ssc*cos(0:2*pi/8:2*pi);
+0141   y = ssc*sin(0:2*pi/8:2*pi);
+0142   sz = max(size(ua));
+0143   imagesc(SkMp.img),axis xy
+0144   caxis(cax)
+0145   hold on
+0146   
+0147   figure(fig)
+0148   <span class="keyword">for</span> i = sz(1):-1:1,
+0149     px = .5*( 10 - intens(i) )*x + ua(i);
+0150     py = .5*( 10 - intens(i) )*y + wa(i);
+0151     <span class="keyword">if</span> isfield(SkMp,<span class="string">'selectedstar'</span>) &amp; SkMp.selectedstar(3) == pstars(i,3)
+0152       line(px,py,<span class="string">'color'</span>,SkMp.prefs.pl_cl_slst)
+0153     <span class="keyword">else</span>
+0154       line(px,py,<span class="string">'color'</span>,SkMp.prefs.pl_cl_st)
+0155     <span class="keyword">end</span>
+0156   <span class="keyword">end</span>
+0157   zoom on
+0158   hold off
+0159   
+0160 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

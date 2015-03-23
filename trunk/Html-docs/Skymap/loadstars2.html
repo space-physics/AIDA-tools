@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of loadstars2</title>
+  <meta name="keywords" content="loadstars2">
+  <meta name="description" content="LOADSTARS2 load stars from the: Bright Star Catalogue, 5th Revised">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>loadstars2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>LOADSTARS2 load stars from the: Bright Star Catalogue, 5th Revised</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [possiblestars,catalog] = loadstars2(pos0,date,time0) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> LOADSTARS2 load stars from the: Bright Star Catalogue, 5th Revised
+ Ed. (Hoffleit+, 1991) and pick the stars that are above the
+ horizon at POS0 (longitude, latitude [deg]) at time TIME0 (UTC)
+ on the day DATE.
+ 
+ Calling:
+ [possiblestars,catalog] = loadstars2(pos0,date,time0)
+ 
+ See also INFOV, PLOTTABLESTARS.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>	STARPOS2 gives the azimuth, zenith and apparent zenith angles</li><li><a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>	ISCHAR - return true if STR is a char-array</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="checkisok.html" class="code" title="function [SkMp] = checkisok(SkMp)">checkisok</a>	</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [possiblestars,catalog] = loadstars2(pos0,date,time0)</a>
+0002 <span class="comment">% LOADSTARS2 load stars from the: Bright Star Catalogue, 5th Revised</span>
+0003 <span class="comment">% Ed. (Hoffleit+, 1991) and pick the stars that are above the</span>
+0004 <span class="comment">% horizon at POS0 (longitude, latitude [deg]) at time TIME0 (UTC)</span>
+0005 <span class="comment">% on the day DATE.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">% [possiblestars,catalog] = loadstars2(pos0,date,time0)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% See also INFOV, PLOTTABLESTARS.</span>
+0011 
+0012 
+0013 <span class="comment">%   Copyright � 2002 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0014 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0015 
+0016 <span class="keyword">global</span> stardir
+0017 
+0018 <span class="comment">%i = 1;</span>
+0019 
+0020 fname = fullfile(stardir,<span class="string">'stars'</span>,<span class="string">'catalog.dat'</span>);
+0021 fp = fopen(fname,<span class="string">'r'</span>);
+0022 
+0023 catalog(9096,197) = <span class="string">' '</span>;
+0024 cl = 1;
+0025 <span class="keyword">while</span> 1
+0026   line = fgetl(fp); 
+0027   <span class="keyword">if</span> ~<a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(line),
+0028     <span class="keyword">break</span>,
+0029   <span class="keyword">end</span>
+0030   catalog(cl,1:length(line)) = line;
+0031   cl = cl+1;
+0032 <span class="keyword">end</span>
+0033 fclose(fp);
+0034 
+0035 Bright_Star_Nr = str2num(catalog(:,1:4));
+0036 
+0037 ra = ( str2num(catalog(:,76:77)) + <span class="keyword">...</span>
+0038        str2num(catalog(:,78:79))/60 + <span class="keyword">...</span>
+0039        str2num(catalog(:,80:83))/3600 );
+0040 <span class="comment">% This bug was found at 20120205, the declination will become wrong</span>
+0041 <span class="comment">% for stars with negative declination. This have not affected</span>
+0042 <span class="comment">% geometric calibrations done on imagers in located in the arctic!</span>
+0043 <span class="comment">%decl = ( str2num(catalog(:,84:86)) + ...</span>
+0044 <span class="comment">%     str2num(catalog(:,87:88))/60 + ...</span>
+0045 <span class="comment">%     str2num(catalog(:,89:90))/3600 );</span>
+0046 
+0047 decl = str2num(catalog(:,84:86));
+0048 decl = decl + (-1).^(decl&lt;0).*( str2num(catalog(:,87:88))/60 + <span class="keyword">...</span>
+0049                                 str2num(catalog(:,89:90))/3600 );
+0050 
+0051 magn = str2num(catalog(:,103:107));
+0052 
+0053 long = pos0(1);
+0054 lat = pos0(2);
+0055 
+0056 
+0057 [az,ze,apze] = <a href="starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>(ra,decl,date,time0,lat,long);
+0058 [i] = find(ze&lt;pi/2);
+0059 
+0060 possiblestars(:,1:7) = [az(i) ze(i) i magn(i) zeros(size(i)) Bright_Star_Nr(i) apze(i)];</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

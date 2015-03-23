@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of xyz_2_llh</title>
+  <meta name="keywords" content="xyz_2_llh">
+  <meta name="description" content="XYZ_2_LLH transforms X,Y,Z in an lat0,long0 centred horizontal system">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html EARTH -->
+<h1>xyz_2_llh
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>XYZ_2_LLH transforms X,Y,Z in an lat0,long0 centred horizontal system</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [long,lat,h] = xyz_2_llh(lat0,long0,h0,r) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> XYZ_2_LLH transforms X,Y,Z in an lat0,long0 centred horizontal system
+ to ( LONG, LAT, H ).
+    
+ Calling:
+ [long,lat,h] = xyz_2_llh(lat0,long0,h0,r)
+ 
+ See also <a href="latlongh_2_r.html" class="code" title="function [r_out] = latlongh_2_r(lat,long,h)">LATLONGH_2_R</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="e_local.html" class="code" title="function [e1,e2,e3] = e_local(lat0,long0,alt0)">e_local</a>	E_LOCAL - base vectors for local Cartesian coordinate in the GEO system</li><li><a href="latlongh_2_r.html" class="code" title="function [r_out] = latlongh_2_r(lat,long,h)">latlongh_2_r</a>	LATLONGH_2_R transforms the point ( LONG, LAT, H ) to (X,Y,Z)</li><li><a href="r_2_llh.html" class="code" title="function [long,lat,h] = r_2_llh(r)">r_2_llh</a>	R_2LLH transforms R in an earth centred horizontal system (GEO)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/aida_calibrated_visiblevol.html" class="code" title="function hndl = aida_calibrated_visiblevol(stn_pos,alt,optpar,edge,OPS)">aida_calibrated_visiblevol</a>	AIDA_CALIBRATED_VISIBLEVOL - Calculates the field of view from an ALIS   \  |  /</li><li><a href="../ALIS/aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>	AIDA_VISIBLEVOL - Calculates the field of view from an ALIS   \  |  /</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [long,lat,h] = xyz_2_llh(lat0,long0,h0,r)</a>
+0002 <span class="comment">% XYZ_2_LLH transforms X,Y,Z in an lat0,long0 centred horizontal system</span>
+0003 <span class="comment">% to ( LONG, LAT, H ).</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">% [long,lat,h] = xyz_2_llh(lat0,long0,h0,r)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% See also LATLONGH_2_R</span>
+0009 
+0010 
+0011 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0012 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0013 
+0014 
+0015 r0 = <a href="latlongh_2_r.html" class="code" title="function [r_out] = latlongh_2_r(lat,long,h)">latlongh_2_r</a>(lat0,long0,h0);
+0016 
+0017 [e1,e2,e3] = <a href="e_local.html" class="code" title="function [e1,e2,e3] = e_local(lat0,long0,alt0)">e_local</a>(lat0,long0,h0);
+0018 trmtr = [e1',e2',e3'];
+0019 rtmp = (trmtr*r')';
+0020 
+0021 rtmp(:,1) = rtmp(:,1) + r0(1);
+0022 rtmp(:,2) = rtmp(:,2) + r0(2);
+0023 rtmp(:,3) = rtmp(:,3) + r0(3);
+0024 
+0025 [long,lat,h] = <a href="r_2_llh.html" class="code" title="function [long,lat,h] = r_2_llh(r)">r_2_llh</a>(rtmp);
+0026 long = long*180/pi;
+0027 lat = lat*180/pi;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

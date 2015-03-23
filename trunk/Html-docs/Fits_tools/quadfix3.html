@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of quadfix3</title>
+  <meta name="keywords" content="quadfix3">
+  <meta name="description" content="QUADFIX3 quadrant balancing of raw CCD data from overscan-strips">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>quadfix3
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>QUADFIX3 quadrant balancing of raw CCD data from overscan-strips</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [img_out] = quadfix3(img_in,strips,stripsize) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> QUADFIX3 quadrant balancing of raw CCD data from overscan-strips 
+
+ Calling
+ [img_out] = quadfix(img_in,stripsize)
+ 
+ Input:
+   IMG_IN - input image with overscan strips with shift of
+   zero-level 
+   STRIPS - 2 for two overscanstips - at the left and right edge
+            of image, 1 for one at left edge of image.
+   STRIPSIZE - size of overscanestrip in pixels.
+   QUADFIX3 reduces the median value of the overscanpixels from
+   each line.
+
+ See also <a href="removerscanstrip.html" class="code" title="function img_out = removerscanstrip(in_img,strips,stripsize)">REMOVERSCANSTRIP</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="fix_ccdcam6.html" class="code" title="">fix_ccdcam6</a>	Template/example of how to fix the "interesting" placement of</li><li><a href="pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>	PRE_PROC_IMG - systematic image correction and preprocessing of</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [img_out] = quadfix3(img_in,strips,stripsize)</a>
+0002 <span class="comment">% QUADFIX3 quadrant balancing of raw CCD data from overscan-strips</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling</span>
+0005 <span class="comment">% [img_out] = quadfix(img_in,stripsize)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%   IMG_IN - input image with overscan strips with shift of</span>
+0009 <span class="comment">%   zero-level</span>
+0010 <span class="comment">%   STRIPS - 2 for two overscanstips - at the left and right edge</span>
+0011 <span class="comment">%            of image, 1 for one at left edge of image.</span>
+0012 <span class="comment">%   STRIPSIZE - size of overscanestrip in pixels.</span>
+0013 <span class="comment">%   QUADFIX3 reduces the median value of the overscanpixels from</span>
+0014 <span class="comment">%   each line.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% See also REMOVERSCANSTRIP</span>
+0017 
+0018 
+0019 
+0020 <span class="comment">%   Copyright � 1998 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0021 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0022 
+0023 img_out = img_in;
+0024 
+0025 <span class="keyword">if</span> ( strips == 2 )
+0026 
+0027   <span class="keyword">if</span> ( stripsize &gt; 1 )
+0028     
+0029     k1 = median(img_in(:,1:stripsize),2);
+0030     k2 = median(img_in(:,end-stripsize+1:end),2);
+0031     
+0032   <span class="keyword">else</span>
+0033     
+0034     k1 = img_in(:,1)';
+0035     k2 = img_in(:,end)';
+0036     
+0037   <span class="keyword">end</span>
+0038   
+0039   <span class="keyword">for</span> i1 = 1:length(k1)
+0040     
+0041     img_out(i1,1:end/2) = img_out(i1,1:end/2)-k1(i1);
+0042     img_out(i1,end/2+1:end) = img_out(i1,end/2+1:end)-k2(i1);
+0043     
+0044   <span class="keyword">end</span>
+0045   
+0046 <span class="keyword">elseif</span> ( strips == 1 )
+0047   
+0048   k1 = median(img_out(:,1:stripsize),2);
+0049   <span class="keyword">for</span> i1 = 1:length(k1)
+0050     
+0051     img_out(i1,:) = img_out(i1,:)-k1(i1);
+0052     
+0053   <span class="keyword">end</span>
+0054 
+0055 <span class="keyword">else</span>
+0056   
+0057   k2 = median(img_out(:,end-stripsize+1:end),2);
+0058   
+0059   <span class="keyword">for</span> i1 = 1:length(k2)
+0060     
+0061     img_out(i1,:) = img_out(i1,:)-k2(i1);
+0062     
+0063   <span class="keyword">end</span>
+0064   
+0065 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

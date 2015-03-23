@@ -1,0 +1,1488 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of arrow</title>
+  <meta name="keywords" content="arrow">
+  <meta name="description" content="ARROW  Draw a line with an arrowhead.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>arrow
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ARROW  Draw a line with an arrowhead.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [h,yy,zz] = arrow(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ARROW  Draw a line with an arrowhead.
+
+  ARROW(Start,Stop) draws a line with an arrow from Start to Stop (points
+        should be vectors of length 2 or 3, or matrices with 2 or 3
+        columns), and returns the graphics handle of the arrow(s).
+
+  ARROW uses the mouse (click-drag) to create an arrow.
+
+  ARROW DEMO &amp; ARROW DEMO2 show 3-D &amp; 2-D demos of the capabilities of ARROW.
+
+  ARROW may be called with a normal argument list or a property-based list.
+        ARROW(Start,Stop,Length,BaseAngle,TipAngle,Width,Page,CrossDir) is
+        the full normal argument list, where all but the Start and Stop
+        points are optional.  If you need to specify a later argument (e.g.,
+        Page) but want default values of earlier ones (e.g., TipAngle),
+        pass an empty matrix for the earlier ones (e.g., TipAngle=[]).
+
+  ARROW('Property1',PropVal1,'Property2',PropVal2,...) creates arrows with the
+        given properties, using default values for any unspecified or given as
+        'default' or NaN.  Some properties used for line and patch objects are
+        used in a modified fashion, others are passed directly to LINE, PATCH,
+        or SET.  For a detailed properties explanation, call ARROW PROPERTIES.
+
+        Start         The starting points.                     B
+        Stop          The end points.                         /|\           ^
+        Length        Length of the arrowhead in pixels.     /|||\          |
+        BaseAngle     Base angle in degrees (ADE).          //|||\\        L|
+        TipAngle      Tip angle in degrees (ABC).          ///|||\\\       e|
+        Width         Width of the base in pixels.        ////|||\\\\      n|
+        Page          Use hardcopy proportions.          /////|D|\\\\\     g|
+        CrossDir      Vector || to arrowhead plane.     ////  |||  \\\\    t|
+        NormalDir     Vector out of arrowhead plane.   ///    |||    \\\   h|
+        Ends          Which end has an arrowhead.     //&lt;-----&gt;||      \\   |
+        ObjectHandles Vector of handles to update.   /   base |||        \  V
+                                                    E    angle||&lt;--------&gt;C
+  ARROW(H,'Prop1',PropVal1,...), where H is a                 |||tipangle
+        vector of handles to previously-created arrows        |||
+        and/or line objects, will update the previously-      |||
+        created arrows according to the current view       --&gt;|A|&lt;-- width
+        and any specified properties, and will convert
+        two-point line objects to corresponding arrows.  ARROW(H) will update
+        the arrows if the current view has changed.  Root, figure, or axes
+        handles included in H are replaced by all descendant Arrow objects.
+
+  A property list can follow any specified normal argument list, e.g.,
+  ARROW([1 2 3],[0 0 0],36,'BaseAngle',60) creates an arrow from (1,2,3) to
+  the origin, with an arrowhead of length 36 pixels and 60-degree base angle.
+
+  The basic arguments or properties can generally be vectorized to create
+  multiple arrows with the same call.  This is done by passing a property
+  with one row per arrow, or, if all arrows are to have the same property
+  value, just one row may be specified.
+
+  You may want to execute AXIS(AXIS) before calling ARROW so it doesn't change
+  the axes on you; ARROW determines the sizes of arrow components BEFORE the
+  arrow is plotted, so if ARROW changes axis limits, arrows may be malformed.
+
+  This version of ARROW uses features of MATLAB 6.x and is incompatible with
+  earlier MATLAB versions (ARROW for MATLAB 4.2c is available separately);
+  some problems with perspective plots still exist.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>	x = xx( phi, lambda , alt )</li><li><a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>	y = yy( phi, lambda, alt)</li><li><a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>	z = zz( phi, lambda, alt )</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ASK/HSOFT/ASK_draw_north.html" class="code" title="function ph = ASK_draw_north(optpar,imsiz,ArrowLength,Colour,ArrowWidth,Start_uv,EastOrNorthOrUp)">ASK_draw_north</a>	ASK_DRAW_NORTH -  Draws the north direction on an image, from the centre.</li><li><a href="../ASK/HSOFT/play_video.html" class="code" title="">play_video</a>	</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function out = arrow_defcheck(in,def,prop)</a></li><li><a href="#_sub2" class="code">function [H,oldaxlims,errstr] = arrow_clicks(H,ud,x,y,z,ax,oldaxlims)</a></li><li><a href="#_sub3" class="code">function [wasInterrupted,errstr] = arrow_click(lockStart,H,prop,ax)</a></li><li><a href="#_sub4" class="code">function arrow_callback(varargin)</a></li><li><a href="#_sub5" class="code">function out = arrow_point(ax,use_z)</a></li><li><a href="#_sub6" class="code">function [wasKeyPress,wasInterrupted,errstr] = arrow_wfbdown(fig)</a></li><li><a href="#_sub7" class="code">function [out,is2D] = arrow_is2DXY(ax)</a></li><li><a href="#_sub8" class="code">function out = arrow_planarkids(ax)</a></li><li><a href="#_sub9" class="code">function arrow_fixlimits(axlimits)</a></li><li><a href="#_sub10" class="code">function out = arrow_WarpToFill(notstretched,manualcamera,curax)</a></li><li><a href="#_sub11" class="code">function out = arrow_warnlimits(axlimits,narrows)</a></li><li><a href="#_sub12" class="code">function arrow_copyprops(fm,to)</a></li><li><a href="#_sub13" class="code">function arrow_props</a></li><li><a href="#_sub14" class="code">function out = arrow_demo</a></li><li><a href="#_sub15" class="code">function h = arrow_demo3(in)</a></li><li><a href="#_sub16" class="code">function h = arrow_demo2(in)</a></li><li><a href="#_sub17" class="code">function out = trueornan(x)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [h,yy,zz] = arrow(varargin)</a>
+0002 <span class="comment">% ARROW  Draw a line with an arrowhead.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%  ARROW(Start,Stop) draws a line with an arrow from Start to Stop (points</span>
+0005 <span class="comment">%        should be vectors of length 2 or 3, or matrices with 2 or 3</span>
+0006 <span class="comment">%        columns), and returns the graphics handle of the arrow(s).</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%  ARROW uses the mouse (click-drag) to create an arrow.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%  ARROW DEMO &amp; ARROW DEMO2 show 3-D &amp; 2-D demos of the capabilities of ARROW.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%  ARROW may be called with a normal argument list or a property-based list.</span>
+0013 <span class="comment">%        ARROW(Start,Stop,Length,BaseAngle,TipAngle,Width,Page,CrossDir) is</span>
+0014 <span class="comment">%        the full normal argument list, where all but the Start and Stop</span>
+0015 <span class="comment">%        points are optional.  If you need to specify a later argument (e.g.,</span>
+0016 <span class="comment">%        Page) but want default values of earlier ones (e.g., TipAngle),</span>
+0017 <span class="comment">%        pass an empty matrix for the earlier ones (e.g., TipAngle=[]).</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%  ARROW('Property1',PropVal1,'Property2',PropVal2,...) creates arrows with the</span>
+0020 <span class="comment">%        given properties, using default values for any unspecified or given as</span>
+0021 <span class="comment">%        'default' or NaN.  Some properties used for line and patch objects are</span>
+0022 <span class="comment">%        used in a modified fashion, others are passed directly to LINE, PATCH,</span>
+0023 <span class="comment">%        or SET.  For a detailed properties explanation, call ARROW PROPERTIES.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%        Start         The starting points.                     B</span>
+0026 <span class="comment">%        Stop          The end points.                         /|\           ^</span>
+0027 <span class="comment">%        Length        Length of the arrowhead in pixels.     /|||\          |</span>
+0028 <span class="comment">%        BaseAngle     Base angle in degrees (ADE).          //|||\\        L|</span>
+0029 <span class="comment">%        TipAngle      Tip angle in degrees (ABC).          ///|||\\\       e|</span>
+0030 <span class="comment">%        Width         Width of the base in pixels.        ////|||\\\\      n|</span>
+0031 <span class="comment">%        Page          Use hardcopy proportions.          /////|D|\\\\\     g|</span>
+0032 <span class="comment">%        CrossDir      Vector || to arrowhead plane.     ////  |||  \\\\    t|</span>
+0033 <span class="comment">%        NormalDir     Vector out of arrowhead plane.   ///    |||    \\\   h|</span>
+0034 <span class="comment">%        Ends          Which end has an arrowhead.     //&lt;-----&gt;||      \\   |</span>
+0035 <span class="comment">%        ObjectHandles Vector of handles to update.   /   base |||        \  V</span>
+0036 <span class="comment">%                                                    E    angle||&lt;--------&gt;C</span>
+0037 <span class="comment">%  ARROW(H,'Prop1',PropVal1,...), where H is a                 |||tipangle</span>
+0038 <span class="comment">%        vector of handles to previously-created arrows        |||</span>
+0039 <span class="comment">%        and/or line objects, will update the previously-      |||</span>
+0040 <span class="comment">%        created arrows according to the current view       --&gt;|A|&lt;-- width</span>
+0041 <span class="comment">%        and any specified properties, and will convert</span>
+0042 <span class="comment">%        two-point line objects to corresponding arrows.  ARROW(H) will update</span>
+0043 <span class="comment">%        the arrows if the current view has changed.  Root, figure, or axes</span>
+0044 <span class="comment">%        handles included in H are replaced by all descendant Arrow objects.</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%  A property list can follow any specified normal argument list, e.g.,</span>
+0047 <span class="comment">%  ARROW([1 2 3],[0 0 0],36,'BaseAngle',60) creates an arrow from (1,2,3) to</span>
+0048 <span class="comment">%  the origin, with an arrowhead of length 36 pixels and 60-degree base angle.</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">%  The basic arguments or properties can generally be vectorized to create</span>
+0051 <span class="comment">%  multiple arrows with the same call.  This is done by passing a property</span>
+0052 <span class="comment">%  with one row per arrow, or, if all arrows are to have the same property</span>
+0053 <span class="comment">%  value, just one row may be specified.</span>
+0054 <span class="comment">%</span>
+0055 <span class="comment">%  You may want to execute AXIS(AXIS) before calling ARROW so it doesn't change</span>
+0056 <span class="comment">%  the axes on you; ARROW determines the sizes of arrow components BEFORE the</span>
+0057 <span class="comment">%  arrow is plotted, so if ARROW changes axis limits, arrows may be malformed.</span>
+0058 <span class="comment">%</span>
+0059 <span class="comment">%  This version of ARROW uses features of MATLAB 6.x and is incompatible with</span>
+0060 <span class="comment">%  earlier MATLAB versions (ARROW for MATLAB 4.2c is available separately);</span>
+0061 <span class="comment">%  some problems with perspective plots still exist.</span>
+0062 
+0063 <span class="comment">% Copyright (c)1995-2009, Dr. Erik A. Johnson &lt;JohnsonE@usc.edu&gt;, 5/20/2009</span>
+0064 <span class="comment">% http://www.usc.edu/civil_eng/johnsone/</span>
+0065 
+0066 <span class="comment">% Revision history:</span>
+0067 <span class="comment">%    5/20/09  EAJ  Fix view direction in (3D) demo.</span>
+0068 <span class="comment">%    6/26/08  EAJ  Replace eval('trycmd','catchcmd') with try, trycmd; catch,</span>
+0069 <span class="comment">%                    catchcmd; end; -- break's MATLAB 5 compatibility.</span>
+0070 <span class="comment">%    8/26/03  EAJ  Eliminate OpenGL attempted fix since it didn't fix anyway.</span>
+0071 <span class="comment">%   11/15/02  EAJ  Accomodate how MATLAB 6.5 handles NaN and logicals</span>
+0072 <span class="comment">%    7/28/02  EAJ  Tried (but failed) work-around for MATLAB 6.x / OpenGL bug</span>
+0073 <span class="comment">%                    if zero 'Width' or not double-ended</span>
+0074 <span class="comment">%   11/10/99  EAJ  Add logical() to eliminate zero index problem in MATLAB 5.3.</span>
+0075 <span class="comment">%   11/10/99  EAJ  Corrected warning if axis limits changed on multiple axes.</span>
+0076 <span class="comment">%   11/10/99  EAJ  Update e-mail address.</span>
+0077 <span class="comment">%    2/10/99  EAJ  Some documentation updating.</span>
+0078 <span class="comment">%    2/24/98  EAJ  Fixed bug if Start~=Stop but both colinear with viewpoint.</span>
+0079 <span class="comment">%    8/14/97  EAJ  Added workaround for MATLAB 5.1 scalar logical transpose bug.</span>
+0080 <span class="comment">%    7/21/97  EAJ  Fixed a few misc bugs.</span>
+0081 <span class="comment">%    7/14/97  EAJ  Make arrow([],'Prop',...) do nothing (no old handles)</span>
+0082 <span class="comment">%    6/23/97  EAJ  MATLAB 5 compatible version, release.</span>
+0083 <span class="comment">%    5/27/97  EAJ  Added Line Arrows back in.  Corrected a few bugs.</span>
+0084 <span class="comment">%    5/26/97  EAJ  Changed missing Start/Stop to mouse-selected arrows.</span>
+0085 <span class="comment">%    5/19/97  EAJ  MATLAB 5 compatible version, beta.</span>
+0086 <span class="comment">%    4/13/97  EAJ  MATLAB 5 compatible version, alpha.</span>
+0087 <span class="comment">%    1/31/97  EAJ  Fixed bug with multiple arrows and unspecified Z coords.</span>
+0088 <span class="comment">%   12/05/96  EAJ  Fixed one more bug with log plots and NormalDir specified</span>
+0089 <span class="comment">%   10/24/96  EAJ  Fixed bug with log plots and NormalDir specified</span>
+0090 <span class="comment">%   11/13/95  EAJ  Corrected handling for 'reverse' axis directions</span>
+0091 <span class="comment">%   10/06/95  EAJ  Corrected occasional conflict with SUBPLOT</span>
+0092 <span class="comment">%    4/24/95  EAJ  A major rewrite.</span>
+0093 <span class="comment">%    Fall 94  EAJ  Original code.</span>
+0094 
+0095 <span class="comment">% Things to be done:</span>
+0096 <span class="comment">%  - in the arrow_clicks section, prompt by printing to the screen so that</span>
+0097 <span class="comment">%    the user knows what's going on; also make sure the figure is brought</span>
+0098 <span class="comment">%    to the front.</span>
+0099 <span class="comment">%  - segment parsing, computing, and plotting into separate subfunctions</span>
+0100 <span class="comment">%  - change computing from Xform to Camera paradigms</span>
+0101 <span class="comment">%     + this will help especially with 3-D perspective plots</span>
+0102 <span class="comment">%     + if the WarpToFill section works right, remove warning code</span>
+0103 <span class="comment">%     + when perpsective works properly, remove perspective warning code</span>
+0104 <span class="comment">%  - add cell property values and struct property name/values (like get/set)</span>
+0105 <span class="comment">%  - get rid of NaN as the &quot;default&quot; data label</span>
+0106 <span class="comment">%     + perhaps change userdata to a struct and don't include (or leave</span>
+0107 <span class="comment">%       empty) the values specified as default; or use a cell containing</span>
+0108 <span class="comment">%       an empty matrix for a default value</span>
+0109 <span class="comment">%  - add functionality of GET to retrieve current values of ARROW properties</span>
+0110 
+0111 <span class="comment">% Many thanks to Keith Rogers &lt;kerog@ai.mit.com&gt; for his many excellent</span>
+0112 <span class="comment">% suggestions and beta testing.  Check out his shareware package MATDRAW</span>
+0113 <span class="comment">% (at ftp://ftp.mathworks.com/pub/contrib/v5/graphics/matdraw/) -- he has</span>
+0114 <span class="comment">% permission to distribute ARROW with MATDRAW.</span>
+0115 
+0116 <span class="comment">% Permission is granted to distribute ARROW with the toolboxes for the book</span>
+0117 <span class="comment">% &quot;Solving Solid Mechanics Problems with MATLAB 5&quot;, by F. Golnaraghi et al.</span>
+0118 <span class="comment">% (Prentice Hall, 1999).</span>
+0119 
+0120 <span class="comment">% Permission is granted to Dr. Josef Bigun to distribute ARROW with his</span>
+0121 <span class="comment">% software to reproduce the figures in his image analysis text.</span>
+0122 
+0123 <span class="comment">% global variable initialization</span>
+0124 <span class="keyword">global</span> ARROW_PERSP_WARN ARROW_STRETCH_WARN ARROW_AXLIMITS
+0125 <span class="keyword">if</span> isempty(ARROW_PERSP_WARN  ), ARROW_PERSP_WARN  =1; <span class="keyword">end</span>;
+0126 <span class="keyword">if</span> isempty(ARROW_STRETCH_WARN), ARROW_STRETCH_WARN=1; <span class="keyword">end</span>;
+0127 
+0128 <span class="comment">% Handle callbacks</span>
+0129 <span class="keyword">if</span> (nargin&gt;0 &amp; isstr(varargin{1}) &amp; strcmp(lower(varargin{1}),<span class="string">'callback'</span>)),
+0130     <a href="#_sub4" class="code" title="subfunction arrow_callback(varargin)">arrow_callback</a>(varargin{2:end}); <span class="keyword">return</span>;
+0131 <span class="keyword">end</span>;
+0132 
+0133 <span class="comment">% Are we doing the demo?</span>
+0134 c = sprintf(<span class="string">'\n'</span>);
+0135 <span class="keyword">if</span> (nargin==1 &amp; isstr(varargin{1})),
+0136     arg1 = lower(varargin{1});
+0137     <span class="keyword">if</span> strncmp(arg1,<span class="string">'prop'</span>,4), <a href="#_sub13" class="code" title="subfunction arrow_props">arrow_props</a>;
+0138     <span class="keyword">elseif</span> strncmp(arg1,<span class="string">'demo'</span>,4)
+0139         clf reset
+0140         demo_info = <a href="#_sub14" class="code" title="subfunction out = arrow_demo">arrow_demo</a>;
+0141         <span class="keyword">if</span> ~strncmp(arg1,<span class="string">'demo2'</span>,5),
+0142             hh=<a href="#_sub15" class="code" title="subfunction h = arrow_demo3(in)">arrow_demo3</a>(demo_info);
+0143         <span class="keyword">else</span>,
+0144             hh=<a href="#_sub16" class="code" title="subfunction h = arrow_demo2(in)">arrow_demo2</a>(demo_info);
+0145         <span class="keyword">end</span>;
+0146         <span class="keyword">if</span> (nargout&gt;=1), h=hh; <span class="keyword">end</span>;
+0147     <span class="keyword">elseif</span> strncmp(arg1,<span class="string">'fixlimits'</span>,3),
+0148         <a href="#_sub9" class="code" title="subfunction arrow_fixlimits(axlimits)">arrow_fixlimits</a>(ARROW_AXLIMITS);
+0149         ARROW_AXLIMITS=[];
+0150     <span class="keyword">elseif</span> strncmp(arg1,<span class="string">'help'</span>,4),
+0151         disp(help(mfilename));
+0152     <span class="keyword">else</span>,
+0153         error([upper(mfilename) <span class="string">' got an unknown single-argument string '''</span> deblank(arg1) <span class="string">'''.'</span>]);
+0154     <span class="keyword">end</span>;
+0155     <span class="keyword">return</span>;
+0156 <span class="keyword">end</span>;
+0157 
+0158 <span class="comment">% Check # of arguments</span>
+0159 <span class="keyword">if</span> (nargout&gt;3), error([upper(mfilename) <span class="string">' produces at most 3 output arguments.'</span>]); <span class="keyword">end</span>;
+0160 
+0161 <span class="comment">% find first property number</span>
+0162 firstprop = nargin+1;
+0163 <span class="keyword">for</span> k=1:length(varargin), <span class="keyword">if</span> ~isnumeric(varargin{k}), firstprop=k; <span class="keyword">break</span>; <span class="keyword">end</span>; <span class="keyword">end</span>;
+0164 lastnumeric = firstprop-1;
+0165 
+0166 <span class="comment">% check property list</span>
+0167 <span class="keyword">if</span> (firstprop&lt;=nargin),
+0168     <span class="keyword">for</span> k=firstprop:2:nargin,
+0169         curarg = varargin{k};
+0170         <span class="keyword">if</span> ~isstr(curarg) | sum(size(curarg)&gt;1)&gt;1,
+0171             error([upper(mfilename) <span class="string">' requires that a property name be a single string.'</span>]);
+0172         <span class="keyword">end</span>;
+0173     <span class="keyword">end</span>;
+0174     <span class="keyword">if</span> (rem(nargin-firstprop,2)~=1),
+0175         error([upper(mfilename) <span class="string">' requires that the property '''</span> <span class="keyword">...</span>
+0176                varargin{nargin} <span class="string">''' be paired with a property value.'</span>]);
+0177     <span class="keyword">end</span>;
+0178 <span class="keyword">end</span>;
+0179 
+0180 <span class="comment">% default output</span>
+0181 <span class="keyword">if</span> (nargout&gt;0), h=[]; <span class="keyword">end</span>;
+0182 <span class="keyword">if</span> (nargout&gt;1), <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>=[]; <span class="keyword">end</span>;
+0183 <span class="keyword">if</span> (nargout&gt;2), <a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>=[]; <span class="keyword">end</span>;
+0184 
+0185 <span class="comment">% set values to empty matrices</span>
+0186 start      = [];
+0187 stop       = [];
+0188 len        = [];
+0189 baseangle  = [];
+0190 tipangle   = [];
+0191 wid        = [];
+0192 page       = [];
+0193 crossdir   = [];
+0194 ends       = [];
+0195 ax         = [];
+0196 oldh       = [];
+0197 ispatch    = [];
+0198 defstart      = [NaN NaN NaN];
+0199 defstop       = [NaN NaN NaN];
+0200 deflen        = 16;
+0201 defbaseangle  = 90;
+0202 deftipangle   = 16;
+0203 defwid        = 0;
+0204 defpage       = 0;
+0205 defcrossdir   = [NaN NaN NaN];
+0206 defends       = 1;
+0207 defoldh       = [];
+0208 defispatch    = 1;
+0209 
+0210 <span class="comment">% The 'Tag' we'll put on our arrows</span>
+0211 ArrowTag = <span class="string">'Arrow'</span>;
+0212 
+0213 <span class="comment">% check for oldstyle arguments</span>
+0214 <span class="keyword">if</span> (firstprop==2),
+0215     <span class="comment">% assume arg1 is a set of handles</span>
+0216     oldh = varargin{1}(:);
+0217     <span class="keyword">if</span> isempty(oldh), <span class="keyword">return</span>; <span class="keyword">end</span>;
+0218 <span class="keyword">elseif</span> (firstprop&gt;9),
+0219     error([upper(mfilename) <span class="string">' takes at most 8 non-property arguments.'</span>]);
+0220 <span class="keyword">elseif</span> (firstprop&gt;2),
+0221     {start,stop,len,baseangle,tipangle,wid,page,crossdir};
+0222     args = [varargin(1:firstprop-1) cell(1,length(ans)-(firstprop-1))];
+0223     [start,stop,len,baseangle,tipangle,wid,page,crossdir] = deal(args{:});
+0224 <span class="keyword">end</span>;
+0225 
+0226 <span class="comment">% parse property pairs</span>
+0227 extraprops={};
+0228 <span class="keyword">for</span> k=firstprop:2:nargin,
+0229     prop = varargin{k};
+0230     val  = varargin{k+1};
+0231     prop = [lower(prop(:)') <span class="string">'      '</span>];
+0232     <span class="keyword">if</span>     strncmp(prop,<span class="string">'start'</span> ,5),   start      = val;
+0233     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'stop'</span>  ,4),   stop       = val;
+0234     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'len'</span>   ,3),   len        = val(:);
+0235     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'base'</span>  ,4),   baseangle  = val(:);
+0236     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'tip'</span>   ,3),   tipangle   = val(:);
+0237     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'wid'</span>   ,3),   wid        = val(:);
+0238     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'page'</span>  ,4),   page       = val;
+0239     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'cross'</span> ,5),   crossdir   = val;
+0240     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'norm'</span>  ,4),   <span class="keyword">if</span> (isstr(val)), crossdir=val; <span class="keyword">else</span>, crossdir=val*sqrt(-1); <span class="keyword">end</span>;
+0241     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'end'</span>   ,3),   ends       = val;
+0242     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'object'</span>,6),   oldh       = val(:);
+0243     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'handle'</span>,6),   oldh       = val(:);
+0244     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'type'</span>  ,4),   ispatch    = val;
+0245     <span class="keyword">elseif</span> strncmp(prop,<span class="string">'userd'</span> ,5),   <span class="comment">%ignore it</span>
+0246     <span class="keyword">else</span>,
+0247         <span class="comment">% make sure it is a valid patch or line property</span>
+0248         <span class="keyword">try</span>
+0249             get(0,[<span class="string">'DefaultPatch'</span> varargin{k}]);
+0250         <span class="keyword">catch</span>
+0251             errstr = lasterr;
+0252             <span class="keyword">try</span>
+0253                 get(0,[<span class="string">'DefaultLine'</span> varargin{k}]);
+0254             <span class="keyword">catch</span>
+0255                 errstr(1:max(find(errstr==char(13)|errstr==char(10)))) = <span class="string">''</span>;
+0256                 error([upper(mfilename) <span class="string">' got '</span> errstr]);
+0257             <span class="keyword">end</span>
+0258         <span class="keyword">end</span>;
+0259         extraprops={extraprops{:},varargin{k},val};
+0260     <span class="keyword">end</span>;
+0261 <span class="keyword">end</span>;
+0262 
+0263 <span class="comment">% Check if we got 'default' values</span>
+0264 start     = <a href="#_sub1" class="code" title="subfunction out = arrow_defcheck(in,def,prop)">arrow_defcheck</a>(start    ,defstart    ,<span class="string">'Start'</span>        );
+0265 stop      = <a href="#_sub1" class="code" title="subfunction out = arrow_defcheck(in,def,prop)">arrow_defcheck</a>(stop     ,defstop     ,<span class="string">'Stop'</span>         );
+0266 len       = <a href="#_sub1" class="code" title="subfunction out = arrow_defcheck(in,def,prop)">arrow_defcheck</a>(len      ,deflen      ,<span class="string">'Length'</span>       );
+0267 baseangle = <a href="#_sub1" class="code" title="subfunction out = arrow_defcheck(in,def,prop)">arrow_defcheck</a>(baseangle,defbaseangle,<span class="string">'BaseAngle'</span>    );
+0268 tipangle  = <a href="#_sub1" class="code" title="subfunction out = arrow_defcheck(in,def,prop)">arrow_defcheck</a>(tipangle ,deftipangle ,<span class="string">'TipAngle'</span>     );
+0269 wid       = <a href="#_sub1" class="code" title="subfunction out = arrow_defcheck(in,def,prop)">arrow_defcheck</a>(wid      ,defwid      ,<span class="string">'Width'</span>        );
+0270 crossdir  = <a href="#_sub1" class="code" title="subfunction out = arrow_defcheck(in,def,prop)">arrow_defcheck</a>(crossdir ,defcrossdir ,<span class="string">'CrossDir'</span>     );
+0271 page      = <a href="#_sub1" class="code" title="subfunction out = arrow_defcheck(in,def,prop)">arrow_defcheck</a>(page     ,defpage     ,<span class="string">'Page'</span>         );
+0272 ends      = <a href="#_sub1" class="code" title="subfunction out = arrow_defcheck(in,def,prop)">arrow_defcheck</a>(ends     ,defends     ,<span class="string">''</span>             );
+0273 oldh      = <a href="#_sub1" class="code" title="subfunction out = arrow_defcheck(in,def,prop)">arrow_defcheck</a>(oldh     ,[]          ,<span class="string">'ObjectHandles'</span>);
+0274 ispatch   = <a href="#_sub1" class="code" title="subfunction out = arrow_defcheck(in,def,prop)">arrow_defcheck</a>(ispatch  ,defispatch  ,<span class="string">''</span>             );
+0275 
+0276 <span class="comment">% check transpose on arguments</span>
+0277 [m,n]=size(start   );   <span class="keyword">if</span> any(m==[2 3])&amp;(n==1|n&gt;3),   start    = start';      <span class="keyword">end</span>;
+0278 [m,n]=size(stop    );   <span class="keyword">if</span> any(m==[2 3])&amp;(n==1|n&gt;3),   stop     = stop';       <span class="keyword">end</span>;
+0279 [m,n]=size(crossdir);   <span class="keyword">if</span> any(m==[2 3])&amp;(n==1|n&gt;3),   crossdir = crossdir';   <span class="keyword">end</span>;
+0280 
+0281 <span class="comment">% convert strings to numbers</span>
+0282 <span class="keyword">if</span> ~isempty(ends) &amp; isstr(ends),
+0283     endsorig = ends;
+0284     [m,n] = size(ends);
+0285     col = lower([ends(:,1:min(3,n)) ones(m,max(0,3-n))*<span class="string">' '</span>]);
+0286     ends = NaN*ones(m,1);
+0287     oo = ones(1,m);
+0288     ii=find(all(col'==[<span class="string">'non'</span>]'*oo)'); <span class="keyword">if</span> ~isempty(ii), ends(ii)=ones(length(ii),1)*0; <span class="keyword">end</span>;
+0289     ii=find(all(col'==[<span class="string">'sto'</span>]'*oo)'); <span class="keyword">if</span> ~isempty(ii), ends(ii)=ones(length(ii),1)*1; <span class="keyword">end</span>;
+0290     ii=find(all(col'==[<span class="string">'sta'</span>]'*oo)'); <span class="keyword">if</span> ~isempty(ii), ends(ii)=ones(length(ii),1)*2; <span class="keyword">end</span>;
+0291     ii=find(all(col'==[<span class="string">'bot'</span>]'*oo)'); <span class="keyword">if</span> ~isempty(ii), ends(ii)=ones(length(ii),1)*3; <span class="keyword">end</span>;
+0292     <span class="keyword">if</span> any(isnan(ends)),
+0293         ii = min(find(isnan(ends)));
+0294         error([upper(mfilename) <span class="string">' does not recognize '''</span> deblank(endsorig(ii,:)) <span class="string">''' as a valid ''Ends'' value.'</span>]);
+0295     <span class="keyword">end</span>;
+0296 <span class="keyword">else</span>,
+0297     ends = ends(:);
+0298 <span class="keyword">end</span>;
+0299 <span class="keyword">if</span> ~isempty(ispatch) &amp; isstr(ispatch),
+0300     col = lower(ispatch(:,1));
+0301     patchchar=<span class="string">'p'</span>; linechar=<span class="string">'l'</span>; defchar=<span class="string">' '</span>;
+0302     mask = col~=patchchar &amp; col~=linechar &amp; col~=defchar;
+0303     <span class="keyword">if</span> any(mask),
+0304         error([upper(mfilename) <span class="string">' does not recognize '''</span> deblank(ispatch(min(find(mask)),:)) <span class="string">''' as a valid ''Type'' value.'</span>]);
+0305     <span class="keyword">end</span>;
+0306     ispatch = (col==patchchar)*1 + (col==linechar)*0 + (col==defchar)*defispatch;
+0307 <span class="keyword">else</span>,
+0308     ispatch = ispatch(:);
+0309 <span class="keyword">end</span>;
+0310 oldh = oldh(:);
+0311 
+0312 <span class="comment">% check object handles</span>
+0313 <span class="keyword">if</span> ~all(ishandle(oldh)), error([upper(mfilename) <span class="string">' got invalid object handles.'</span>]); <span class="keyword">end</span>;
+0314 
+0315 <span class="comment">% expand root, figure, and axes handles</span>
+0316 <span class="keyword">if</span> ~isempty(oldh),
+0317     ohtype = get(oldh,<span class="string">'Type'</span>);
+0318     mask = strcmp(ohtype,<span class="string">'root'</span>) | strcmp(ohtype,<span class="string">'figure'</span>) | strcmp(ohtype,<span class="string">'axes'</span>);
+0319     <span class="keyword">if</span> any(mask),
+0320         oldh = num2cell(oldh);
+0321         <span class="keyword">for</span> ii=find(mask)',
+0322             oldh(ii) = {findobj(oldh{ii},<span class="string">'Tag'</span>,ArrowTag)};
+0323         <span class="keyword">end</span>;
+0324         oldh = cat(1,oldh{:});
+0325         <span class="keyword">if</span> isempty(oldh), <span class="keyword">return</span>; <span class="keyword">end</span>; <span class="comment">% no arrows to modify, so just leave</span>
+0326     <span class="keyword">end</span>;
+0327 <span class="keyword">end</span>;
+0328 
+0329 <span class="comment">% largest argument length</span>
+0330 [mstart,junk]=size(start); [mstop,junk]=size(stop); [mcrossdir,junk]=size(crossdir);
+0331 argsizes = [length(oldh) mstart mstop                              <span class="keyword">...</span>
+0332             length(len) length(baseangle) length(tipangle)         <span class="keyword">...</span>
+0333             length(wid) length(page) mcrossdir length(ends) ];
+0334 args=[<span class="string">'length(ObjectHandle)  '</span>; <span class="keyword">...</span>
+0335       <span class="string">'#rows(Start)          '</span>; <span class="keyword">...</span>
+0336       <span class="string">'#rows(Stop)           '</span>; <span class="keyword">...</span>
+0337       <span class="string">'length(Length)        '</span>; <span class="keyword">...</span>
+0338       <span class="string">'length(BaseAngle)     '</span>; <span class="keyword">...</span>
+0339       <span class="string">'length(TipAngle)      '</span>; <span class="keyword">...</span>
+0340       <span class="string">'length(Width)         '</span>; <span class="keyword">...</span>
+0341       <span class="string">'length(Page)          '</span>; <span class="keyword">...</span>
+0342       <span class="string">'#rows(CrossDir)       '</span>; <span class="keyword">...</span>
+0343       <span class="string">'#rows(Ends)           '</span>];
+0344 <span class="keyword">if</span> (any(imag(crossdir(:))~=0)),
+0345     args(9,:) = <span class="string">'#rows(NormalDir)      '</span>;
+0346 <span class="keyword">end</span>;
+0347 <span class="keyword">if</span> isempty(oldh),
+0348     narrows = max(argsizes);
+0349 <span class="keyword">else</span>,
+0350     narrows = length(oldh);
+0351 <span class="keyword">end</span>;
+0352 <span class="keyword">if</span> (narrows&lt;=0), narrows=1; <span class="keyword">end</span>;
+0353 
+0354 <span class="comment">% Check size of arguments</span>
+0355 ii = find((argsizes~=0)&amp;(argsizes~=1)&amp;(argsizes~=narrows));
+0356 <span class="keyword">if</span> ~isempty(ii),
+0357     s = args(ii',:);
+0358     <span class="keyword">while</span> ((size(s,2)&gt;1)&amp;((abs(s(:,size(s,2)))==0)|(abs(s(:,size(s,2)))==abs(<span class="string">' '</span>)))),
+0359         s = s(:,1:size(s,2)-1);
+0360     <span class="keyword">end</span>;
+0361     s = [ones(length(ii),1)*[upper(mfilename) <span class="string">' requires that  '</span>] s <span class="keyword">...</span>
+0362          ones(length(ii),1)*[<span class="string">'  equal the # of arrows ('</span> num2str(narrows) <span class="string">').'</span> c]];
+0363     s = s';
+0364     s = s(:)';
+0365     s = s(1:length(s)-1);
+0366     error(setstr(s));
+0367 <span class="keyword">end</span>;
+0368 
+0369 <span class="comment">% check element length in Start, Stop, and CrossDir</span>
+0370 <span class="keyword">if</span> ~isempty(start),
+0371     [m,n] = size(start);
+0372     <span class="keyword">if</span> (n==2),
+0373         start = [start NaN*ones(m,1)];
+0374     <span class="keyword">elseif</span> (n~=3),
+0375         error([upper(mfilename) <span class="string">' requires 2- or 3-element Start points.'</span>]);
+0376     <span class="keyword">end</span>;
+0377 <span class="keyword">end</span>;
+0378 <span class="keyword">if</span> ~isempty(stop),
+0379     [m,n] = size(stop);
+0380     <span class="keyword">if</span> (n==2),
+0381         stop = [stop NaN*ones(m,1)];
+0382     <span class="keyword">elseif</span> (n~=3),
+0383         error([upper(mfilename) <span class="string">' requires 2- or 3-element Stop points.'</span>]);
+0384     <span class="keyword">end</span>;
+0385 <span class="keyword">end</span>;
+0386 <span class="keyword">if</span> ~isempty(crossdir),
+0387     [m,n] = size(crossdir);
+0388     <span class="keyword">if</span> (n&lt;3),
+0389         crossdir = [crossdir NaN*ones(m,3-n)];
+0390     <span class="keyword">elseif</span> (n~=3),
+0391         <span class="keyword">if</span> (all(imag(crossdir(:))==0)),
+0392             error([upper(mfilename) <span class="string">' requires 2- or 3-element CrossDir vectors.'</span>]);
+0393         <span class="keyword">else</span>,
+0394             error([upper(mfilename) <span class="string">' requires 2- or 3-element NormalDir vectors.'</span>]);
+0395         <span class="keyword">end</span>;
+0396     <span class="keyword">end</span>;
+0397 <span class="keyword">end</span>;
+0398 
+0399 <span class="comment">% fill empty arguments</span>
+0400 <span class="keyword">if</span> isempty(start     ),   start      = [Inf Inf Inf];      <span class="keyword">end</span>;
+0401 <span class="keyword">if</span> isempty(stop      ),   stop       = [Inf Inf Inf];      <span class="keyword">end</span>;
+0402 <span class="keyword">if</span> isempty(len       ),   len        = Inf;                <span class="keyword">end</span>;
+0403 <span class="keyword">if</span> isempty(baseangle ),   baseangle  = Inf;                <span class="keyword">end</span>;
+0404 <span class="keyword">if</span> isempty(tipangle  ),   tipangle   = Inf;                <span class="keyword">end</span>;
+0405 <span class="keyword">if</span> isempty(wid       ),   wid        = Inf;                <span class="keyword">end</span>;
+0406 <span class="keyword">if</span> isempty(page      ),   page       = Inf;                <span class="keyword">end</span>;
+0407 <span class="keyword">if</span> isempty(crossdir  ),   crossdir   = [Inf Inf Inf];      <span class="keyword">end</span>;
+0408 <span class="keyword">if</span> isempty(ends      ),   ends       = Inf;                <span class="keyword">end</span>;
+0409 <span class="keyword">if</span> isempty(ispatch   ),   ispatch    = Inf;                <span class="keyword">end</span>;
+0410 
+0411 <span class="comment">% expand single-column arguments</span>
+0412 o = ones(narrows,1);
+0413 <span class="keyword">if</span> (size(start     ,1)==1),   start      = o * start     ;   <span class="keyword">end</span>;
+0414 <span class="keyword">if</span> (size(stop      ,1)==1),   stop       = o * stop      ;   <span class="keyword">end</span>;
+0415 <span class="keyword">if</span> (length(len       )==1),   len        = o * len       ;   <span class="keyword">end</span>;
+0416 <span class="keyword">if</span> (length(baseangle )==1),   baseangle  = o * baseangle ;   <span class="keyword">end</span>;
+0417 <span class="keyword">if</span> (length(tipangle  )==1),   tipangle   = o * tipangle  ;   <span class="keyword">end</span>;
+0418 <span class="keyword">if</span> (length(wid       )==1),   wid        = o * wid       ;   <span class="keyword">end</span>;
+0419 <span class="keyword">if</span> (length(page      )==1),   page       = o * page      ;   <span class="keyword">end</span>;
+0420 <span class="keyword">if</span> (size(crossdir  ,1)==1),   crossdir   = o * crossdir  ;   <span class="keyword">end</span>;
+0421 <span class="keyword">if</span> (length(ends      )==1),   ends       = o * ends      ;   <span class="keyword">end</span>;
+0422 <span class="keyword">if</span> (length(ispatch   )==1),   ispatch    = o * ispatch   ;   <span class="keyword">end</span>;
+0423 ax = o * gca;
+0424 
+0425 <span class="comment">% if we've got handles, get the defaults from the handles</span>
+0426 <span class="keyword">if</span> ~isempty(oldh),
+0427     <span class="keyword">for</span> k=1:narrows,
+0428         oh = oldh(k);
+0429         ud = get(oh,<span class="string">'UserData'</span>);
+0430         ax(k) = get(oh,<span class="string">'Parent'</span>);
+0431         ohtype = get(oh,<span class="string">'Type'</span>);
+0432         <span class="keyword">if</span> strcmp(get(oh,<span class="string">'Tag'</span>),ArrowTag), <span class="comment">% if it's an arrow already</span>
+0433             <span class="keyword">if</span> isinf(ispatch(k)), ispatch(k)=strcmp(ohtype,<span class="string">'patch'</span>); <span class="keyword">end</span>;
+0434             <span class="comment">% arrow UserData format: [start' stop' len base tip wid page crossdir' ends]</span>
+0435             start0 = ud(1:3);
+0436             stop0  = ud(4:6);
+0437             <span class="keyword">if</span> (isinf(len(k))),           len(k)        = ud( 7);   <span class="keyword">end</span>;
+0438             <span class="keyword">if</span> (isinf(baseangle(k))),     baseangle(k)  = ud( 8);   <span class="keyword">end</span>;
+0439             <span class="keyword">if</span> (isinf(tipangle(k))),      tipangle(k)   = ud( 9);   <span class="keyword">end</span>;
+0440             <span class="keyword">if</span> (isinf(wid(k))),           wid(k)        = ud(10);   <span class="keyword">end</span>;
+0441             <span class="keyword">if</span> (isinf(page(k))),          page(k)       = ud(11);   <span class="keyword">end</span>;
+0442             <span class="keyword">if</span> (isinf(crossdir(k,1))),    crossdir(k,1) = ud(12);   <span class="keyword">end</span>;
+0443             <span class="keyword">if</span> (isinf(crossdir(k,2))),    crossdir(k,2) = ud(13);   <span class="keyword">end</span>;
+0444             <span class="keyword">if</span> (isinf(crossdir(k,3))),    crossdir(k,3) = ud(14);   <span class="keyword">end</span>;
+0445             <span class="keyword">if</span> (isinf(ends(k))),          ends(k)       = ud(15);   <span class="keyword">end</span>;
+0446         <span class="keyword">elseif</span> strcmp(ohtype,<span class="string">'line'</span>)|strcmp(ohtype,<span class="string">'patch'</span>), <span class="comment">% it's a non-arrow line or patch</span>
+0447             convLineToPatch = 1; <span class="comment">%set to make arrow patches when converting from lines.</span>
+0448             <span class="keyword">if</span> isinf(ispatch(k)), ispatch(k)=convLineToPatch|strcmp(ohtype,<span class="string">'patch'</span>); <span class="keyword">end</span>;
+0449             x=get(oh,<span class="string">'XData'</span>);  x=x(~isnan(x(:)));  <span class="keyword">if</span> isempty(x), x=NaN; <span class="keyword">end</span>;
+0450             y=get(oh,<span class="string">'YData'</span>);  y=y(~isnan(y(:)));  <span class="keyword">if</span> isempty(y), y=NaN; <span class="keyword">end</span>;
+0451             z=get(oh,<span class="string">'ZData'</span>);  z=z(~isnan(z(:)));  <span class="keyword">if</span> isempty(z), z=NaN; <span class="keyword">end</span>;
+0452             start0 = [x(1)   y(1)   z(1)  ];
+0453             stop0  = [x(end) y(end) z(end)];
+0454         <span class="keyword">else</span>,
+0455             error([upper(mfilename) <span class="string">' cannot convert '</span> ohtype <span class="string">' objects.'</span>]);
+0456         <span class="keyword">end</span>;
+0457         ii=find(isinf(start(k,:)));  <span class="keyword">if</span> ~isempty(ii),  start(k,ii)=start0(ii);  <span class="keyword">end</span>;
+0458         ii=find(isinf(stop( k,:)));  <span class="keyword">if</span> ~isempty(ii),  stop( k,ii)=stop0( ii);  <span class="keyword">end</span>;
+0459     <span class="keyword">end</span>;
+0460 <span class="keyword">end</span>;
+0461 
+0462 <span class="comment">% convert Inf's to NaN's</span>
+0463 start(     isinf(start    )) = NaN;
+0464 stop(      isinf(stop     )) = NaN;
+0465 len(       isinf(len      )) = NaN;
+0466 baseangle( isinf(baseangle)) = NaN;
+0467 tipangle(  isinf(tipangle )) = NaN;
+0468 wid(       isinf(wid      )) = NaN;
+0469 page(      isinf(page     )) = NaN;
+0470 crossdir(  isinf(crossdir )) = NaN;
+0471 ends(      isinf(ends     )) = NaN;
+0472 ispatch(   isinf(ispatch  )) = NaN;
+0473 
+0474 <span class="comment">% set up the UserData data (here so not corrupted by log10's and such)</span>
+0475 ud = [start stop len baseangle tipangle wid page crossdir ends];
+0476 
+0477 <span class="comment">% Set Page defaults</span>
+0478 page = ~isnan(page) &amp; <a href="#_sub17" class="code" title="subfunction out = trueornan(x)">trueornan</a>(page);
+0479 
+0480 <span class="comment">% Get axes limits, range, min; correct for aspect ratio and log scale</span>
+0481 axm       = zeros(3,narrows);
+0482 axr       = zeros(3,narrows);
+0483 axrev     = zeros(3,narrows);
+0484 ap        = zeros(2,narrows);
+0485 xyzlog    = zeros(3,narrows);
+0486 limmin    = zeros(2,narrows);
+0487 limrange  = zeros(2,narrows);
+0488 oldaxlims = zeros(narrows,7);
+0489 oneax = all(ax==ax(1));
+0490 <span class="keyword">if</span> (oneax),
+0491     T    = zeros(4,4);
+0492     invT = zeros(4,4);
+0493 <span class="keyword">else</span>,
+0494     T    = zeros(16,narrows);
+0495     invT = zeros(16,narrows);
+0496 <span class="keyword">end</span>;
+0497 axnotdone = logical(ones(size(ax)));
+0498 <span class="keyword">while</span> (any(axnotdone)),
+0499     ii = min(find(axnotdone));
+0500     curax = ax(ii);
+0501     curpage = page(ii);
+0502     <span class="comment">% get axes limits and aspect ratio</span>
+0503     axl = [get(curax,<span class="string">'XLim'</span>); get(curax,<span class="string">'YLim'</span>); get(curax,<span class="string">'ZLim'</span>)];
+0504     oldaxlims(min(find(oldaxlims(:,1)==0)),:) = [curax reshape(axl',1,6)];
+0505     <span class="comment">% get axes size in pixels (points)</span>
+0506     u = get(curax,<span class="string">'Units'</span>);
+0507     axposoldunits = get(curax,<span class="string">'Position'</span>);
+0508     really_curpage = curpage &amp; strcmp(u,<span class="string">'normalized'</span>);
+0509     <span class="keyword">if</span> (really_curpage),
+0510         curfig = get(curax,<span class="string">'Parent'</span>);
+0511         pu = get(curfig,<span class="string">'PaperUnits'</span>);
+0512         set(curfig,<span class="string">'PaperUnits'</span>,<span class="string">'points'</span>);
+0513         pp = get(curfig,<span class="string">'PaperPosition'</span>);
+0514         set(curfig,<span class="string">'PaperUnits'</span>,pu);
+0515         set(curax,<span class="string">'Units'</span>,<span class="string">'pixels'</span>);
+0516         curapscreen = get(curax,<span class="string">'Position'</span>);
+0517         set(curax,<span class="string">'Units'</span>,<span class="string">'normalized'</span>);
+0518         curap = pp.*get(curax,<span class="string">'Position'</span>);
+0519     <span class="keyword">else</span>,
+0520         set(curax,<span class="string">'Units'</span>,<span class="string">'pixels'</span>);
+0521         curapscreen = get(curax,<span class="string">'Position'</span>);
+0522         curap = curapscreen;
+0523     <span class="keyword">end</span>;
+0524     set(curax,<span class="string">'Units'</span>,u);
+0525     set(curax,<span class="string">'Position'</span>,axposoldunits);
+0526     <span class="comment">% handle non-stretched axes position</span>
+0527     str_stretch = { <span class="string">'DataAspectRatioMode'</span>    ; <span class="keyword">...</span>
+0528                     <span class="string">'PlotBoxAspectRatioMode'</span> ; <span class="keyword">...</span>
+0529                     <span class="string">'CameraViewAngleMode'</span>      };
+0530     str_camera  = { <span class="string">'CameraPositionMode'</span>  ; <span class="keyword">...</span>
+0531                     <span class="string">'CameraTargetMode'</span>    ; <span class="keyword">...</span>
+0532                     <span class="string">'CameraViewAngleMode'</span> ; <span class="keyword">...</span>
+0533                     <span class="string">'CameraUpVectorMode'</span>    };
+0534     notstretched = strcmp(get(curax,str_stretch),<span class="string">'manual'</span>);
+0535     manualcamera = strcmp(get(curax,str_camera),<span class="string">'manual'</span>);
+0536     <span class="keyword">if</span> ~<a href="#_sub10" class="code" title="subfunction out = arrow_WarpToFill(notstretched,manualcamera,curax)">arrow_WarpToFill</a>(notstretched,manualcamera,curax),
+0537         <span class="comment">% give a warning that this has not been thoroughly tested</span>
+0538         <span class="keyword">if</span> 0 &amp; ARROW_STRETCH_WARN,
+0539             ARROW_STRETCH_WARN = 0;
+0540             strs = {str_stretch{1:2},str_camera{:}};
+0541             strs = [char(ones(length(strs),1)*sprintf(<span class="string">'\n    '</span>)) char(strs)]';
+0542             warning([upper(mfilename) <span class="string">' may not yet work quite right '</span> <span class="keyword">...</span>
+0543                      <span class="string">'if any of the following are ''manual'':'</span> strs(:).']);
+0544         <span class="keyword">end</span>;
+0545         <span class="comment">% find the true pixel size of the actual axes</span>
+0546         texttmp = text(axl(1,[1 2 2 1 1 2 2 1]), <span class="keyword">...</span>
+0547                        axl(2,[1 1 2 2 1 1 2 2]), <span class="keyword">...</span>
+0548                        axl(3,[1 1 1 1 2 2 2 2]),<span class="string">''</span>);
+0549         set(texttmp,<span class="string">'Units'</span>,<span class="string">'points'</span>);
+0550         textpos = get(texttmp,<span class="string">'Position'</span>);
+0551         delete(texttmp);
+0552         textpos = cat(1,textpos{:});
+0553         textpos = max(textpos(:,1:2)) - min(textpos(:,1:2));
+0554         <span class="comment">% adjust the axes position</span>
+0555         <span class="keyword">if</span> (really_curpage),
+0556             <span class="comment">% adjust to printed size</span>
+0557             textpos = textpos * min(curap(3:4)./textpos);
+0558             curap = [curap(1:2)+(curap(3:4)-textpos)/2 textpos];
+0559         <span class="keyword">else</span>,
+0560             <span class="comment">% adjust for pixel roundoff</span>
+0561             textpos = textpos * min(curapscreen(3:4)./textpos);
+0562             curap = [curap(1:2)+(curap(3:4)-textpos)/2 textpos];
+0563         <span class="keyword">end</span>;
+0564     <span class="keyword">end</span>;
+0565     <span class="keyword">if</span> ARROW_PERSP_WARN &amp; ~strcmp(get(curax,<span class="string">'Projection'</span>),<span class="string">'orthographic'</span>),
+0566         ARROW_PERSP_WARN = 0;
+0567         warning([upper(mfilename) <span class="string">' does not yet work right for 3-D perspective projection.'</span>]);
+0568     <span class="keyword">end</span>;
+0569     <span class="comment">% adjust limits for log scale on axes</span>
+0570     curxyzlog = [strcmp(get(curax,<span class="string">'XScale'</span>),<span class="string">'log'</span>); <span class="keyword">...</span>
+0571                  strcmp(get(curax,<span class="string">'YScale'</span>),<span class="string">'log'</span>); <span class="keyword">...</span>
+0572                  strcmp(get(curax,<span class="string">'ZScale'</span>),<span class="string">'log'</span>)];
+0573     <span class="keyword">if</span> (any(curxyzlog)),
+0574         ii = find([curxyzlog;curxyzlog]);
+0575         <span class="keyword">if</span> (any(axl(ii)&lt;=0)),
+0576             error([upper(mfilename) <span class="string">' does not support non-positive limits on log-scaled axes.'</span>]);
+0577         <span class="keyword">else</span>,
+0578             axl(ii) = log10(axl(ii));
+0579         <span class="keyword">end</span>;
+0580     <span class="keyword">end</span>;
+0581     <span class="comment">% correct for 'reverse' direction on axes;</span>
+0582     curreverse = [strcmp(get(curax,<span class="string">'XDir'</span>),<span class="string">'reverse'</span>); <span class="keyword">...</span>
+0583                   strcmp(get(curax,<span class="string">'YDir'</span>),<span class="string">'reverse'</span>); <span class="keyword">...</span>
+0584                   strcmp(get(curax,<span class="string">'ZDir'</span>),<span class="string">'reverse'</span>)];
+0585     ii = find(curreverse);
+0586     <span class="keyword">if</span> ~isempty(ii),
+0587         axl(ii,[1 2])=-axl(ii,[2 1]);
+0588     <span class="keyword">end</span>;
+0589     <span class="comment">% compute the range of 2-D values</span>
+0590     curT = get(curax,<span class="string">'Xform'</span>);
+0591     lim = curT*[0 1 0 1 0 1 0 1;0 0 1 1 0 0 1 1;0 0 0 0 1 1 1 1;1 1 1 1 1 1 1 1];
+0592     lim = lim(1:2,:)./([1;1]*lim(4,:));
+0593     curlimmin = min(lim')';
+0594     curlimrange = max(lim')' - curlimmin;
+0595     curinvT = inv(curT);
+0596     <span class="keyword">if</span> (~oneax),
+0597         curT = curT.';
+0598         curinvT = curinvT.';
+0599         curT = curT(:);
+0600         curinvT = curinvT(:);
+0601     <span class="keyword">end</span>;
+0602     <span class="comment">% check which arrows to which cur corresponds</span>
+0603     ii = find((ax==curax)&amp;(page==curpage));
+0604     oo = ones(1,length(ii));
+0605     axr(:,ii)      = diff(axl')' * oo;
+0606     axm(:,ii)      = axl(:,1)    * oo;
+0607     axrev(:,ii)    = curreverse  * oo;
+0608     ap(:,ii)       = curap(3:4)' * oo;
+0609     xyzlog(:,ii)   = curxyzlog   * oo;
+0610     limmin(:,ii)   = curlimmin   * oo;
+0611     limrange(:,ii) = curlimrange * oo;
+0612     <span class="keyword">if</span> (oneax),
+0613         T    = curT;
+0614         invT = curinvT;
+0615     <span class="keyword">else</span>,
+0616         T(:,ii)    = curT    * oo;
+0617         invT(:,ii) = curinvT * oo;
+0618     <span class="keyword">end</span>;
+0619     axnotdone(ii) = zeros(1,length(ii));
+0620 <span class="keyword">end</span>;
+0621 oldaxlims(oldaxlims(:,1)==0,:)=[];
+0622 
+0623 <span class="comment">% correct for log scales</span>
+0624 curxyzlog = xyzlog.';
+0625 ii = find(curxyzlog(:));
+0626 <span class="keyword">if</span> ~isempty(ii),
+0627     start(   ii) = real(log10(start(   ii)));
+0628     stop(    ii) = real(log10(stop(    ii)));
+0629     <span class="keyword">if</span> (all(imag(crossdir)==0)), <span class="comment">% pulled (ii) subscript on crossdir, 12/5/96 eaj</span>
+0630         crossdir(ii) = real(log10(crossdir(ii)));
+0631     <span class="keyword">end</span>;
+0632 <span class="keyword">end</span>;
+0633 
+0634 <span class="comment">% correct for reverse directions</span>
+0635 ii = find(axrev.');
+0636 <span class="keyword">if</span> ~isempty(ii),
+0637     start(   ii) = -start(   ii);
+0638     stop(    ii) = -stop(    ii);
+0639     crossdir(ii) = -crossdir(ii);
+0640 <span class="keyword">end</span>;
+0641 
+0642 <span class="comment">% transpose start/stop values</span>
+0643 start     = start.';
+0644 stop      = stop.';
+0645 
+0646 <span class="comment">% take care of defaults, page was done above</span>
+0647 ii=find(isnan(start(:)       ));  <span class="keyword">if</span> ~isempty(ii),  start(ii)       = axm(ii)+axr(ii)/2;                <span class="keyword">end</span>;
+0648 ii=find(isnan(stop(:)        ));  <span class="keyword">if</span> ~isempty(ii),  stop(ii)        = axm(ii)+axr(ii)/2;                <span class="keyword">end</span>;
+0649 ii=find(isnan(crossdir(:)    ));  <span class="keyword">if</span> ~isempty(ii),  crossdir(ii)    = zeros(length(ii),1);              <span class="keyword">end</span>;
+0650 ii=find(isnan(len            ));  <span class="keyword">if</span> ~isempty(ii),  len(ii)         = ones(length(ii),1)*deflen;        <span class="keyword">end</span>;
+0651 ii=find(isnan(baseangle      ));  <span class="keyword">if</span> ~isempty(ii),  baseangle(ii)   = ones(length(ii),1)*defbaseangle;  <span class="keyword">end</span>;
+0652 ii=find(isnan(tipangle       ));  <span class="keyword">if</span> ~isempty(ii),  tipangle(ii)    = ones(length(ii),1)*deftipangle;   <span class="keyword">end</span>;
+0653 ii=find(isnan(wid            ));  <span class="keyword">if</span> ~isempty(ii),  wid(ii)         = ones(length(ii),1)*defwid;        <span class="keyword">end</span>;
+0654 ii=find(isnan(ends           ));  <span class="keyword">if</span> ~isempty(ii),  ends(ii)        = ones(length(ii),1)*defends;       <span class="keyword">end</span>;
+0655 
+0656 <span class="comment">% transpose rest of values</span>
+0657 len       = len.';
+0658 baseangle = baseangle.';
+0659 tipangle  = tipangle.';
+0660 wid       = wid.';
+0661 page      = page.';
+0662 crossdir  = crossdir.';
+0663 ends      = ends.';
+0664 ax        = ax.';
+0665 
+0666 <span class="comment">% given x, a 3xN matrix of points in 3-space;</span>
+0667 <span class="comment">% want to convert to X, the corresponding 4xN 2-space matrix</span>
+0668 <span class="comment">%</span>
+0669 <span class="comment">%   tmp1=[(x-axm)./axr; ones(1,size(x,1))];</span>
+0670 <span class="comment">%   if (oneax), X=T*tmp1;</span>
+0671 <span class="comment">%   else, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=T.*tmp1;</span>
+0672 <span class="comment">%         tmp2=zeros(4,4*N); tmp2(:)=tmp1(:);</span>
+0673 <span class="comment">%         X=zeros(4,N); X(:)=sum(tmp2)'; end;</span>
+0674 <span class="comment">%   X = X ./ (ones(4,1)*X(4,:));</span>
+0675 
+0676 <span class="comment">% for all points with start==stop, start=stop-(verysmallvalue)*(up-direction);</span>
+0677 ii = find(all(start==stop));
+0678 <span class="keyword">if</span> ~isempty(ii),
+0679     <span class="comment">% find an arrowdir vertical on screen and perpendicular to viewer</span>
+0680     <span class="comment">%    transform to 2-D</span>
+0681         tmp1 = [(stop(:,ii)-axm(:,ii))./axr(:,ii);ones(1,length(ii))];
+0682         <span class="keyword">if</span> (oneax), twoD=T*tmp1;
+0683         <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=T(:,ii).*tmp1;
+0684               tmp2=zeros(4,4*length(ii)); tmp2(:)=tmp1(:);
+0685               twoD=zeros(4,length(ii)); twoD(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0686         twoD=twoD./(ones(4,1)*twoD(4,:));
+0687     <span class="comment">%    move the start point down just slightly</span>
+0688         tmp1 = twoD + [0;-1/1000;0;0]*(limrange(2,ii)./ap(2,ii));
+0689     <span class="comment">%    transform back to 3-D</span>
+0690         <span class="keyword">if</span> (oneax), threeD=invT*tmp1;
+0691         <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=invT(:,ii).*tmp1;
+0692               tmp2=zeros(4,4*length(ii)); tmp2(:)=tmp1(:);
+0693               threeD=zeros(4,length(ii)); threeD(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0694         start(:,ii) = (threeD(1:3,:)./(ones(3,1)*threeD(4,:))).*axr(:,ii)+axm(:,ii);
+0695 <span class="keyword">end</span>;
+0696 
+0697 <span class="comment">% compute along-arrow points</span>
+0698 <span class="comment">%    transform Start points</span>
+0699     tmp1=[(start-axm)./axr;ones(1,narrows)];
+0700     <span class="keyword">if</span> (oneax), X0=T*tmp1;
+0701     <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=T.*tmp1;
+0702           tmp2=zeros(4,4*narrows); tmp2(:)=tmp1(:);
+0703           X0=zeros(4,narrows); X0(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0704     X0=X0./(ones(4,1)*X0(4,:));
+0705 <span class="comment">%    transform Stop points</span>
+0706     tmp1=[(stop-axm)./axr;ones(1,narrows)];
+0707     <span class="keyword">if</span> (oneax), Xf=T*tmp1;
+0708     <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=T.*tmp1;
+0709           tmp2=zeros(4,4*narrows); tmp2(:)=tmp1(:);
+0710           Xf=zeros(4,narrows); Xf(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0711     Xf=Xf./(ones(4,1)*Xf(4,:));
+0712 <span class="comment">%    compute pixel distance between points</span>
+0713     D = sqrt(sum(((Xf(1:2,:)-X0(1:2,:)).*(ap./limrange)).^2));
+0714     D = D + (D==0);  <span class="comment">%eaj new 2/24/98</span>
+0715 <span class="comment">%    compute and modify along-arrow distances</span>
+0716     len1 = len;
+0717     len2 = len - (len.*tan(tipangle/180*pi)-wid/2).*tan((90-baseangle)/180*pi);
+0718     slen0 = zeros(1,narrows);
+0719     slen1 = len1 .* ((ends==2)|(ends==3));
+0720     slen2 = len2 .* ((ends==2)|(ends==3));
+0721     len0 = zeros(1,narrows);
+0722     len1  = len1 .* ((ends==1)|(ends==3));
+0723     len2  = len2 .* ((ends==1)|(ends==3));
+0724     <span class="comment">%    for no start arrowhead</span>
+0725         ii=find((ends==1)&amp;(D&lt;len2));
+0726         <span class="keyword">if</span> ~isempty(ii),
+0727             slen0(ii) = D(ii)-len2(ii);
+0728         <span class="keyword">end</span>;
+0729     <span class="comment">%    for no end arrowhead</span>
+0730         ii=find((ends==2)&amp;(D&lt;slen2));
+0731         <span class="keyword">if</span> ~isempty(ii),
+0732             len0(ii) = D(ii)-slen2(ii);
+0733         <span class="keyword">end</span>;
+0734     len1  = len1  + len0;
+0735     len2  = len2  + len0;
+0736     slen1 = slen1 + slen0;
+0737     slen2 = slen2 + slen0;
+0738      <span class="comment">% note:  the division by D below will probably not be accurate if both</span>
+0739      <span class="comment">%        of the following are true:</span>
+0740      <span class="comment">%           1. the ratio of the line length to the arrowhead</span>
+0741      <span class="comment">%              length is large</span>
+0742      <span class="comment">%           2. the view is highly perspective.</span>
+0743 <span class="comment">%    compute stoppoints</span>
+0744     tmp1=X0.*(ones(4,1)*(len0./D))+Xf.*(ones(4,1)*(1-len0./D));
+0745     <span class="keyword">if</span> (oneax), tmp3=invT*tmp1;
+0746     <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=invT.*tmp1;
+0747           tmp2=zeros(4,4*narrows); tmp2(:)=tmp1(:);
+0748           tmp3=zeros(4,narrows); tmp3(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0749     stoppoint = tmp3(1:3,:)./(ones(3,1)*tmp3(4,:)).*axr+axm;
+0750 <span class="comment">%    compute tippoints</span>
+0751     tmp1=X0.*(ones(4,1)*(len1./D))+Xf.*(ones(4,1)*(1-len1./D));
+0752     <span class="keyword">if</span> (oneax), tmp3=invT*tmp1;
+0753     <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=invT.*tmp1;
+0754           tmp2=zeros(4,4*narrows); tmp2(:)=tmp1(:);
+0755           tmp3=zeros(4,narrows); tmp3(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0756     tippoint = tmp3(1:3,:)./(ones(3,1)*tmp3(4,:)).*axr+axm;
+0757 <span class="comment">%    compute basepoints</span>
+0758     tmp1=X0.*(ones(4,1)*(len2./D))+Xf.*(ones(4,1)*(1-len2./D));
+0759     <span class="keyword">if</span> (oneax), tmp3=invT*tmp1;
+0760     <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=invT.*tmp1;
+0761           tmp2=zeros(4,4*narrows); tmp2(:)=tmp1(:);
+0762           tmp3=zeros(4,narrows); tmp3(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0763     basepoint = tmp3(1:3,:)./(ones(3,1)*tmp3(4,:)).*axr+axm;
+0764 <span class="comment">%    compute startpoints</span>
+0765     tmp1=X0.*(ones(4,1)*(1-slen0./D))+Xf.*(ones(4,1)*(slen0./D));
+0766     <span class="keyword">if</span> (oneax), tmp3=invT*tmp1;
+0767     <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=invT.*tmp1;
+0768           tmp2=zeros(4,4*narrows); tmp2(:)=tmp1(:);
+0769           tmp3=zeros(4,narrows); tmp3(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0770     startpoint = tmp3(1:3,:)./(ones(3,1)*tmp3(4,:)).*axr+axm;
+0771 <span class="comment">%    compute stippoints</span>
+0772     tmp1=X0.*(ones(4,1)*(1-slen1./D))+Xf.*(ones(4,1)*(slen1./D));
+0773     <span class="keyword">if</span> (oneax), tmp3=invT*tmp1;
+0774     <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=invT.*tmp1;
+0775           tmp2=zeros(4,4*narrows); tmp2(:)=tmp1(:);
+0776           tmp3=zeros(4,narrows); tmp3(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0777     stippoint = tmp3(1:3,:)./(ones(3,1)*tmp3(4,:)).*axr+axm;
+0778 <span class="comment">%    compute sbasepoints</span>
+0779     tmp1=X0.*(ones(4,1)*(1-slen2./D))+Xf.*(ones(4,1)*(slen2./D));
+0780     <span class="keyword">if</span> (oneax), tmp3=invT*tmp1;
+0781     <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=invT.*tmp1;
+0782           tmp2=zeros(4,4*narrows); tmp2(:)=tmp1(:);
+0783           tmp3=zeros(4,narrows); tmp3(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0784     sbasepoint = tmp3(1:3,:)./(ones(3,1)*tmp3(4,:)).*axr+axm;
+0785 
+0786 <span class="comment">% compute cross-arrow directions for arrows with NormalDir specified</span>
+0787 <span class="keyword">if</span> (any(imag(crossdir(:))~=0)),
+0788     ii = find(any(imag(crossdir)~=0));
+0789     crossdir(:,ii) = cross((stop(:,ii)-start(:,ii))./axr(:,ii), <span class="keyword">...</span>
+0790                            imag(crossdir(:,ii))).*axr(:,ii);
+0791 <span class="keyword">end</span>;
+0792 
+0793 <span class="comment">% compute cross-arrow directions</span>
+0794 basecross  = crossdir + basepoint;
+0795 tipcross   = crossdir + tippoint;
+0796 sbasecross = crossdir + sbasepoint;
+0797 stipcross  = crossdir + stippoint;
+0798 ii = find(all(crossdir==0)|any(isnan(crossdir)));
+0799 <span class="keyword">if</span> ~isempty(ii),
+0800     numii = length(ii);
+0801     <span class="comment">%    transform start points</span>
+0802         tmp1 = [basepoint(:,ii) tippoint(:,ii) sbasepoint(:,ii) stippoint(:,ii)];
+0803         tmp1 = (tmp1-axm(:,[ii ii ii ii])) ./ axr(:,[ii ii ii ii]);
+0804         tmp1 = [tmp1; ones(1,4*numii)];
+0805         <span class="keyword">if</span> (oneax), X0=T*tmp1;
+0806         <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=T(:,[ii ii ii ii]).*tmp1;
+0807               tmp2=zeros(4,16*numii); tmp2(:)=tmp1(:);
+0808               X0=zeros(4,4*numii); X0(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0809         X0=X0./(ones(4,1)*X0(4,:));
+0810     <span class="comment">%    transform stop points</span>
+0811         tmp1 = [(2*stop(:,ii)-start(:,ii)-axm(:,ii))./axr(:,ii);ones(1,numii)];
+0812         tmp1 = [tmp1 tmp1 tmp1 tmp1];
+0813         <span class="keyword">if</span> (oneax), Xf=T*tmp1;
+0814         <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=T(:,[ii ii ii ii]).*tmp1;
+0815               tmp2=zeros(4,16*numii); tmp2(:)=tmp1(:);
+0816               Xf=zeros(4,4*numii); Xf(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0817         Xf=Xf./(ones(4,1)*Xf(4,:));
+0818     <span class="comment">%    compute perpendicular directions</span>
+0819         pixfact = ((limrange(1,ii)./limrange(2,ii)).*(ap(2,ii)./ap(1,ii))).^2;
+0820         pixfact = [pixfact pixfact pixfact pixfact];
+0821         pixfact = [pixfact;1./pixfact];
+0822         [dummyval,jj] = max(abs(Xf(1:2,:)-X0(1:2,:)));
+0823         jj1 = ((1:4)'*ones(1,length(jj))==ones(4,1)*jj);
+0824         jj2 = ((1:4)'*ones(1,length(jj))==ones(4,1)*(3-jj));
+0825         jj3 = jj1(1:2,:);
+0826         Xf(jj1)=Xf(jj1)+(Xf(jj1)-X0(jj1)==0); <span class="comment">%eaj new 2/24/98</span>
+0827         Xp = X0;
+0828         Xp(jj2) = X0(jj2) + ones(sum(jj2(:)),1);
+0829         Xp(jj1) = X0(jj1) - (Xf(jj2)-X0(jj2))./(Xf(jj1)-X0(jj1)) .* pixfact(jj3);
+0830     <span class="comment">%    inverse transform the cross points</span>
+0831         <span class="keyword">if</span> (oneax), Xp=invT*Xp;
+0832         <span class="keyword">else</span>, tmp1=[Xp;Xp;Xp;Xp]; tmp1=invT(:,[ii ii ii ii]).*tmp1;
+0833               tmp2=zeros(4,16*numii); tmp2(:)=tmp1(:);
+0834               Xp=zeros(4,4*numii); Xp(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0835         Xp=(Xp(1:3,:)./(ones(3,1)*Xp(4,:))).*axr(:,[ii ii ii ii])+axm(:,[ii ii ii ii]);
+0836         basecross(:,ii)  = Xp(:,0*numii+(1:numii));
+0837         tipcross(:,ii)   = Xp(:,1*numii+(1:numii));
+0838         sbasecross(:,ii) = Xp(:,2*numii+(1:numii));
+0839         stipcross(:,ii)  = Xp(:,3*numii+(1:numii));
+0840 <span class="keyword">end</span>;
+0841 
+0842 <span class="comment">% compute all points</span>
+0843 <span class="comment">%    compute start points</span>
+0844     axm11 = [axm axm axm axm axm axm axm axm axm axm axm];
+0845     axr11 = [axr axr axr axr axr axr axr axr axr axr axr];
+0846     st = [stoppoint tippoint basepoint sbasepoint stippoint startpoint stippoint sbasepoint basepoint tippoint stoppoint];
+0847     tmp1 = (st - axm11) ./ axr11;
+0848     tmp1 = [tmp1; ones(1,size(tmp1,2))];
+0849     <span class="keyword">if</span> (oneax), X0=T*tmp1;
+0850     <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=[T T T T T T T T T T T].*tmp1;
+0851           tmp2=zeros(4,44*narrows); tmp2(:)=tmp1(:);
+0852           X0=zeros(4,11*narrows); X0(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0853     X0=X0./(ones(4,1)*X0(4,:));
+0854 <span class="comment">%    compute stop points</span>
+0855     tmp1 = ([start tipcross basecross sbasecross stipcross stop stipcross sbasecross basecross tipcross start] <span class="keyword">...</span>
+0856          - axm11) ./ axr11;
+0857     tmp1 = [tmp1; ones(1,size(tmp1,2))];
+0858     <span class="keyword">if</span> (oneax), Xf=T*tmp1;
+0859     <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=[T T T T T T T T T T T].*tmp1;
+0860           tmp2=zeros(4,44*narrows); tmp2(:)=tmp1(:);
+0861           Xf=zeros(4,11*narrows); Xf(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0862     Xf=Xf./(ones(4,1)*Xf(4,:));
+0863 <span class="comment">%    compute lengths</span>
+0864     len0  = len.*((ends==1)|(ends==3)).*tan(tipangle/180*pi);
+0865     slen0 = len.*((ends==2)|(ends==3)).*tan(tipangle/180*pi);
+0866     le = [zeros(1,narrows) len0 wid/2 wid/2 slen0 zeros(1,narrows) -slen0 -wid/2 -wid/2 -len0 zeros(1,narrows)];
+0867     aprange = ap./limrange;
+0868     aprange = [aprange aprange aprange aprange aprange aprange aprange aprange aprange aprange aprange];
+0869     D = sqrt(sum(((Xf(1:2,:)-X0(1:2,:)).*aprange).^2));
+0870     Dii=find(D==0); <span class="keyword">if</span> ~isempty(Dii), D=D+(D==0); le(Dii)=zeros(1,length(Dii)); <span class="keyword">end</span>; <span class="comment">%should fix DivideByZero warnings</span>
+0871     tmp1 = X0.*(ones(4,1)*(1-le./D)) + Xf.*(ones(4,1)*(le./D));
+0872 <span class="comment">%    inverse transform</span>
+0873     <span class="keyword">if</span> (oneax), tmp3=invT*tmp1;
+0874     <span class="keyword">else</span>, tmp1=[tmp1;tmp1;tmp1;tmp1]; tmp1=[invT invT invT invT invT invT invT invT invT invT invT].*tmp1;
+0875           tmp2=zeros(4,44*narrows); tmp2(:)=tmp1(:);
+0876           tmp3=zeros(4,11*narrows); tmp3(:)=sum(tmp2)'; <span class="keyword">end</span>;
+0877     pts = tmp3(1:3,:)./(ones(3,1)*tmp3(4,:)) .* axr11 + axm11;
+0878 
+0879 <span class="comment">% correct for ones where the crossdir was specified</span>
+0880 ii = find(~(all(crossdir==0)|any(isnan(crossdir))));
+0881 <span class="keyword">if</span> ~isempty(ii),
+0882     D1 = [pts(:,1*narrows+ii)-pts(:,9*narrows+ii) <span class="keyword">...</span>
+0883           pts(:,2*narrows+ii)-pts(:,8*narrows+ii) <span class="keyword">...</span>
+0884           pts(:,3*narrows+ii)-pts(:,7*narrows+ii) <span class="keyword">...</span>
+0885           pts(:,4*narrows+ii)-pts(:,6*narrows+ii) <span class="keyword">...</span>
+0886           pts(:,6*narrows+ii)-pts(:,4*narrows+ii) <span class="keyword">...</span>
+0887           pts(:,7*narrows+ii)-pts(:,3*narrows+ii) <span class="keyword">...</span>
+0888           pts(:,8*narrows+ii)-pts(:,2*narrows+ii) <span class="keyword">...</span>
+0889           pts(:,9*narrows+ii)-pts(:,1*narrows+ii)]/2;
+0890     ii = ii'*ones(1,8) + ones(length(ii),1)*[1:4 6:9]*narrows;
+0891     ii = ii(:)';
+0892     pts(:,ii) = st(:,ii) + D1;
+0893 <span class="keyword">end</span>;
+0894 
+0895 
+0896 <span class="comment">% readjust for reverse directions</span>
+0897 iicols=(1:narrows)'; iicols=iicols(:,ones(1,11)); iicols=iicols(:).';
+0898 tmp1=axrev(:,iicols);
+0899 ii = find(tmp1(:)); <span class="keyword">if</span> ~isempty(ii), pts(ii)=-pts(ii); <span class="keyword">end</span>;
+0900 
+0901 <span class="comment">% readjust for log scale on axes</span>
+0902 tmp1=xyzlog(:,iicols);
+0903 ii = find(tmp1(:)); <span class="keyword">if</span> ~isempty(ii), pts(ii)=10.^pts(ii); <span class="keyword">end</span>;
+0904 
+0905 <span class="comment">% compute the x,y,z coordinates of the patches;</span>
+0906 ii = narrows*(0:10)'*ones(1,narrows) + ones(11,1)*(1:narrows);
+0907 ii = ii(:)';
+0908 x = zeros(11,narrows);
+0909 y = zeros(11,narrows);
+0910 z = zeros(11,narrows);
+0911 x(:) = pts(1,ii)';
+0912 y(:) = pts(2,ii)';
+0913 z(:) = pts(3,ii)';
+0914 
+0915 <span class="comment">% do the output</span>
+0916 <span class="keyword">if</span> (nargout&lt;=1),
+0917 <span class="comment">%    % create or modify the patches</span>
+0918     newpatch = <a href="#_sub17" class="code" title="subfunction out = trueornan(x)">trueornan</a>(ispatch) &amp; (isempty(oldh)|~strcmp(get(oldh,<span class="string">'Type'</span>),<span class="string">'patch'</span>));
+0919     newline = ~<a href="#_sub17" class="code" title="subfunction out = trueornan(x)">trueornan</a>(ispatch) &amp; (isempty(oldh)|~strcmp(get(oldh,<span class="string">'Type'</span>),<span class="string">'line'</span>));
+0920     <span class="keyword">if</span> isempty(oldh), H=zeros(narrows,1); <span class="keyword">else</span>, H=oldh; <span class="keyword">end</span>;
+0921 <span class="comment">%    % make or modify the arrows</span>
+0922     <span class="keyword">for</span> k=1:narrows,
+0923         <span class="keyword">if</span> all(isnan(ud(k,[3 6])))&amp;<a href="#_sub7" class="code" title="subfunction [out,is2D] = arrow_is2DXY(ax)">arrow_is2DXY</a>(ax(k)), <a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>=[]; <span class="keyword">else</span>, <a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>=z(:,k); <span class="keyword">end</span>;
+0924         <a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>=x(:,k); <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>=y(:,k);
+0925         <span class="keyword">if</span> (0), <span class="comment">% this fix didn't work, so let's not use it -- 8/26/03</span>
+0926             <span class="comment">% try to work around a MATLAB 6.x OpenGL bug -- 7/28/02</span>
+0927               mask=any([ones(1,2+size(<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>,2));diff([<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a> <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a> <a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>],[],1)],2);
+0928               <a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>=<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(mask); <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>=<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(mask); <span class="keyword">if</span> ~isempty(<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>), <a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>=<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>(mask); <span class="keyword">end</span>;
+0929         <span class="keyword">end</span>;
+0930         <span class="comment">% plot the patch or line</span>
+0931         xyz = {<span class="string">'XData'</span>,<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>,<span class="string">'YData'</span>,<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>,<span class="string">'ZData'</span>,<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>,<span class="string">'Tag'</span>,ArrowTag};
+0932         <span class="keyword">if</span> newpatch(k)|newline(k),
+0933             <span class="keyword">if</span> newpatch(k),
+0934                 H(k) = patch(xyz{:});
+0935             <span class="keyword">else</span>,
+0936                 H(k) = line(xyz{:});
+0937             <span class="keyword">end</span>;
+0938             <span class="keyword">if</span> ~isempty(oldh), <a href="#_sub12" class="code" title="subfunction arrow_copyprops(fm,to)">arrow_copyprops</a>(oldh(k),H(k)); <span class="keyword">end</span>;
+0939         <span class="keyword">else</span>,
+0940             <span class="keyword">if</span> ispatch(k), xyz={xyz{:},<span class="string">'CData'</span>,[]}; <span class="keyword">end</span>;
+0941             set(H(k),xyz{:});
+0942         <span class="keyword">end</span>;
+0943     <span class="keyword">end</span>;
+0944     <span class="keyword">if</span> ~isempty(oldh), delete(oldh(oldh~=H)); <span class="keyword">end</span>;
+0945 <span class="comment">%    % additional properties</span>
+0946     set(H,<span class="string">'Clipping'</span>,<span class="string">'off'</span>);
+0947     set(H,{<span class="string">'UserData'</span>},num2cell(ud,2));
+0948     <span class="keyword">if</span> (length(extraprops)&gt;0), set(H,extraprops{:}); <span class="keyword">end</span>;
+0949     <span class="comment">% handle choosing arrow Start and/or Stop locations if unspecified</span>
+0950     [H,oldaxlims,errstr] = <a href="#_sub2" class="code" title="subfunction [H,oldaxlims,errstr] = arrow_clicks(H,ud,x,y,z,ax,oldaxlims)">arrow_clicks</a>(H,ud,x,y,z,ax,oldaxlims);
+0951     <span class="keyword">if</span> ~isempty(errstr), error([upper(mfilename) <span class="string">' got '</span> errstr]); <span class="keyword">end</span>;
+0952     <span class="comment">% set the output</span>
+0953     <span class="keyword">if</span> (nargout&gt;0), h=H; <span class="keyword">end</span>;
+0954     <span class="comment">% make sure the axis limits did not change</span>
+0955     <span class="keyword">if</span> isempty(oldaxlims),
+0956         ARROW_AXLIMITS = [];
+0957     <span class="keyword">else</span>,
+0958         lims = get(oldaxlims(:,1),{<span class="string">'XLim'</span>,<span class="string">'YLim'</span>,<span class="string">'ZLim'</span>})';
+0959         lims = reshape(cat(2,lims{:}),6,size(lims,2));
+0960         mask = <a href="#_sub7" class="code" title="subfunction [out,is2D] = arrow_is2DXY(ax)">arrow_is2DXY</a>(oldaxlims(:,1));
+0961         oldaxlims(mask,6:7) = lims(5:6,mask)';
+0962         ARROW_AXLIMITS = oldaxlims(find(any(oldaxlims(:,2:7)'~=lims)),:);
+0963         <span class="keyword">if</span> ~isempty(ARROW_AXLIMITS),
+0964             warning(<a href="#_sub11" class="code" title="subfunction out = arrow_warnlimits(axlimits,narrows)">arrow_warnlimits</a>(ARROW_AXLIMITS,narrows));
+0965         <span class="keyword">end</span>;
+0966     <span class="keyword">end</span>;
+0967 <span class="keyword">else</span>,
+0968     <span class="comment">% don't create the patch, just return the data</span>
+0969     h=x;
+0970     <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>=y;
+0971     <a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>=z;
+0972 <span class="keyword">end</span>;
+0973 
+0974 
+0975 
+0976 <a name="_sub1" href="#_subfunctions" class="code">function out = arrow_defcheck(in,def,prop)</a>
+0977 <span class="comment">% check if we got 'default' values</span>
+0978     out = in;
+0979     <span class="keyword">if</span> ~isstr(in), <span class="keyword">return</span>; <span class="keyword">end</span>;
+0980     <span class="keyword">if</span> size(in,1)==1 &amp; strncmp(lower(in),<span class="string">'def'</span>,3),
+0981         out = def;
+0982     <span class="keyword">elseif</span> ~isempty(prop),
+0983         error([upper(mfilename) <span class="string">' does not recognize '''</span> in(:)' <span class="string">''' as a valid '''</span> prop <span class="string">''' string.'</span>]);
+0984     <span class="keyword">end</span>;
+0985 
+0986 
+0987 
+0988 <a name="_sub2" href="#_subfunctions" class="code">function [H,oldaxlims,errstr] = arrow_clicks(H,ud,x,y,z,ax,oldaxlims)</a>
+0989 <span class="comment">% handle choosing arrow Start and/or Stop locations if necessary</span>
+0990     errstr = <span class="string">''</span>;
+0991     <span class="keyword">if</span> isempty(H)|isempty(ud)|isempty(x), <span class="keyword">return</span>; <span class="keyword">end</span>;
+0992     <span class="comment">% determine which (if any) need Start and/or Stop</span>
+0993     needStart = all(isnan(ud(:,1:3)'))';
+0994     needStop  = all(isnan(ud(:,4:6)'))';
+0995     mask = any(needStart|needStop);
+0996     <span class="keyword">if</span> ~any(mask), <span class="keyword">return</span>; <span class="keyword">end</span>;
+0997     ud(~mask,:)=[]; ax(:,~mask)=[];
+0998     x(:,~mask)=[]; y(:,~mask)=[]; z(:,~mask)=[];
+0999     <span class="comment">% make them invisible for the time being</span>
+1000     set(H,<span class="string">'Visible'</span>,<span class="string">'off'</span>);
+1001     <span class="comment">% save the current axes and limits modes; set to manual for the time being</span>
+1002     oldAx  = gca;
+1003     limModes=get(ax(:),{<span class="string">'XLimMode'</span>,<span class="string">'YLimMode'</span>,<span class="string">'ZLimMode'</span>});
+1004     set(ax(:),{<span class="string">'XLimMode'</span>,<span class="string">'YLimMode'</span>,<span class="string">'ZLimMode'</span>},{<span class="string">'manual'</span>,<span class="string">'manual'</span>,<span class="string">'manual'</span>});
+1005     <span class="comment">% loop over each arrow that requires attention</span>
+1006     jj = find(mask);
+1007     <span class="keyword">for</span> ii=1:length(jj),
+1008         h = H(jj(ii));
+1009         axes(ax(ii));
+1010         <span class="comment">% figure out correct call</span>
+1011         <span class="keyword">if</span> needStart(ii), prop=<span class="string">'Start'</span>; <span class="keyword">else</span>, prop=<span class="string">'Stop'</span>; <span class="keyword">end</span>;
+1012         [wasInterrupted,errstr] = <a href="#_sub3" class="code" title="subfunction [wasInterrupted,errstr] = arrow_click(lockStart,H,prop,ax)">arrow_click</a>(needStart(ii)&amp;needStop(ii),h,prop,ax(ii));
+1013         <span class="comment">% handle errors and control-C</span>
+1014         <span class="keyword">if</span> wasInterrupted,
+1015             delete(H(jj(ii:end)));
+1016             H(jj(ii:end))=[];
+1017             oldaxlims(jj(ii:end),:)=[];
+1018             <span class="keyword">break</span>;
+1019         <span class="keyword">end</span>;
+1020     <span class="keyword">end</span>;
+1021     <span class="comment">% restore the axes and limit modes</span>
+1022     axes(oldAx);
+1023     set(ax(:),{<span class="string">'XLimMode'</span>,<span class="string">'YLimMode'</span>,<span class="string">'ZLimMode'</span>},limModes);
+1024 
+1025 <a name="_sub3" href="#_subfunctions" class="code">function [wasInterrupted,errstr] = arrow_click(lockStart,H,prop,ax)</a>
+1026 <span class="comment">% handle the clicks for one arrow</span>
+1027     fig = get(ax,<span class="string">'Parent'</span>);
+1028     <span class="comment">% save some things</span>
+1029     oldFigProps = {<span class="string">'Pointer'</span>,<span class="string">'WindowButtonMotionFcn'</span>,<span class="string">'WindowButtonUpFcn'</span>};
+1030     oldFigValue = get(fig,oldFigProps);
+1031     oldArrowProps = {<span class="string">'EraseMode'</span>};
+1032     oldArrowValue = get(H,oldArrowProps);
+1033     set(H,<span class="string">'EraseMode'</span>,<span class="string">'background'</span>); <span class="comment">%because 'xor' makes shaft invisible unless Width&gt;1</span>
+1034     <span class="keyword">global</span> ARROW_CLICK_H ARROW_CLICK_PROP ARROW_CLICK_AX ARROW_CLICK_USE_Z
+1035     ARROW_CLICK_H=H; ARROW_CLICK_PROP=prop; ARROW_CLICK_AX=ax;
+1036     ARROW_CLICK_USE_Z=~<a href="#_sub7" class="code" title="subfunction [out,is2D] = arrow_is2DXY(ax)">arrow_is2DXY</a>(ax)|~<a href="#_sub8" class="code" title="subfunction out = arrow_planarkids(ax)">arrow_planarkids</a>(ax);
+1037     set(fig,<span class="string">'Pointer'</span>,<span class="string">'crosshair'</span>);
+1038     <span class="comment">% set up the WindowButtonMotion so we can see the arrow while moving around</span>
+1039     set(fig,<span class="string">'WindowButtonUpFcn'</span>,<span class="string">'set(gcf,''WindowButtonUpFcn'','''')'</span>, <span class="keyword">...</span>
+1040             <span class="string">'WindowButtonMotionFcn'</span>,<span class="string">''</span>);
+1041     <span class="keyword">if</span> ~lockStart,
+1042         set(H,<span class="string">'Visible'</span>,<span class="string">'on'</span>);
+1043         set(fig,<span class="string">'WindowButtonMotionFcn'</span>,[mfilename <span class="string">'(''callback'',''motion'');'</span>]);
+1044     <span class="keyword">end</span>;
+1045     <span class="comment">% wait for the button to be pressed</span>
+1046     [wasKeyPress,wasInterrupted,errstr] = <a href="#_sub6" class="code" title="subfunction [wasKeyPress,wasInterrupted,errstr] = arrow_wfbdown(fig)">arrow_wfbdown</a>(fig);
+1047     <span class="comment">% if we wanted to click-drag, set the Start point</span>
+1048     <span class="keyword">if</span> lockStart &amp; ~wasInterrupted,
+1049         pt = <a href="#_sub5" class="code" title="subfunction out = arrow_point(ax,use_z)">arrow_point</a>(ARROW_CLICK_AX,ARROW_CLICK_USE_Z);
+1050         feval(mfilename,H,<span class="string">'Start'</span>,pt,<span class="string">'Stop'</span>,pt);
+1051         set(H,<span class="string">'Visible'</span>,<span class="string">'on'</span>);
+1052         ARROW_CLICK_PROP=<span class="string">'Stop'</span>;
+1053         set(fig,<span class="string">'WindowButtonMotionFcn'</span>,[mfilename <span class="string">'(''callback'',''motion'');'</span>]);
+1054         <span class="comment">% wait for the mouse button to be released</span>
+1055         <span class="keyword">try</span>
+1056             waitfor(fig,<span class="string">'WindowButtonUpFcn'</span>,<span class="string">''</span>);
+1057         <span class="keyword">catch</span>
+1058             errstr = lasterr;
+1059             wasInterrupted = 1;
+1060         <span class="keyword">end</span>;
+1061     <span class="keyword">end</span>;
+1062     <span class="keyword">if</span> ~wasInterrupted, feval(mfilename,<span class="string">'callback'</span>,<span class="string">'motion'</span>); <span class="keyword">end</span>;
+1063     <span class="comment">% restore some things</span>
+1064     set(gcf,oldFigProps,oldFigValue);
+1065     set(H,oldArrowProps,oldArrowValue);
+1066 
+1067 <a name="_sub4" href="#_subfunctions" class="code">function arrow_callback(varargin)</a>
+1068 <span class="comment">% handle redrawing callbacks</span>
+1069     <span class="keyword">if</span> nargin==0, <span class="keyword">return</span>; <span class="keyword">end</span>;
+1070     str = varargin{1};
+1071     <span class="keyword">if</span> ~isstr(str), error([upper(mfilename) <span class="string">' got an invalid Callback command.'</span>]); <span class="keyword">end</span>;
+1072     s = lower(str);
+1073     <span class="keyword">if</span> strcmp(s,<span class="string">'motion'</span>),
+1074         <span class="comment">% motion callback</span>
+1075         <span class="keyword">global</span> ARROW_CLICK_H ARROW_CLICK_PROP ARROW_CLICK_AX ARROW_CLICK_USE_Z
+1076         feval(mfilename,ARROW_CLICK_H,ARROW_CLICK_PROP,<a href="#_sub5" class="code" title="subfunction out = arrow_point(ax,use_z)">arrow_point</a>(ARROW_CLICK_AX,ARROW_CLICK_USE_Z));
+1077         drawnow;
+1078     <span class="keyword">else</span>,
+1079         error([upper(mfilename) <span class="string">' does not recognize '''</span> str(:).' <span class="string">''' as a valid Callback option.'</span>]);
+1080     <span class="keyword">end</span>;
+1081 
+1082 <a name="_sub5" href="#_subfunctions" class="code">function out = arrow_point(ax,use_z)</a>
+1083 <span class="comment">% return the point on the given axes</span>
+1084     <span class="keyword">if</span> nargin==0, ax=gca; <span class="keyword">end</span>;
+1085     <span class="keyword">if</span> nargin&lt;2, use_z=~<a href="#_sub7" class="code" title="subfunction [out,is2D] = arrow_is2DXY(ax)">arrow_is2DXY</a>(ax)|~<a href="#_sub8" class="code" title="subfunction out = arrow_planarkids(ax)">arrow_planarkids</a>(ax); <span class="keyword">end</span>;
+1086     out = get(ax,<span class="string">'CurrentPoint'</span>);
+1087     out = out(1,:);
+1088     <span class="keyword">if</span> ~use_z, out=out(1:2); <span class="keyword">end</span>;
+1089 
+1090 <a name="_sub6" href="#_subfunctions" class="code">function [wasKeyPress,wasInterrupted,errstr] = arrow_wfbdown(fig)</a>
+1091 <span class="comment">% wait for button down ignoring object ButtonDownFcn's</span>
+1092     <span class="keyword">if</span> nargin==0, fig=gcf; <span class="keyword">end</span>;
+1093     errstr = <span class="string">''</span>;
+1094     <span class="comment">% save ButtonDownFcn values</span>
+1095     objs = findobj(fig);
+1096     buttonDownFcns = get(objs,<span class="string">'ButtonDownFcn'</span>);
+1097     mask=~strcmp(buttonDownFcns,<span class="string">''</span>); objs=objs(mask); buttonDownFcns=buttonDownFcns(mask);
+1098     set(objs,<span class="string">'ButtonDownFcn'</span>,<span class="string">''</span>);
+1099     <span class="comment">% save other figure values</span>
+1100     figProps = {<span class="string">'KeyPressFcn'</span>,<span class="string">'WindowButtonDownFcn'</span>};
+1101     figValue = get(fig,figProps);
+1102     <span class="comment">% do the real work</span>
+1103     set(fig,<span class="string">'KeyPressFcn'</span>,<span class="string">'set(gcf,''KeyPressFcn'','''',''WindowButtonDownFcn'','''');'</span>, <span class="keyword">...</span>
+1104             <span class="string">'WindowButtonDownFcn'</span>,<span class="string">'set(gcf,''WindowButtonDownFcn'','''')'</span>);
+1105     lasterr(<span class="string">''</span>);
+1106     <span class="keyword">try</span>
+1107         waitfor(fig,<span class="string">'WindowButtonDownFcn'</span>,<span class="string">''</span>);
+1108         wasInterrupted = 0;
+1109     <span class="keyword">catch</span>
+1110         wasInterrupted = 1;
+1111     <span class="keyword">end</span>
+1112     wasKeyPress = ~wasInterrupted &amp; strcmp(get(fig,<span class="string">'KeyPressFcn'</span>),<span class="string">''</span>);
+1113     <span class="keyword">if</span> wasInterrupted, errstr=lasterr; <span class="keyword">end</span>;
+1114     <span class="comment">% restore ButtonDownFcn and other figure values</span>
+1115     set(objs,<span class="string">'ButtonDownFcn'</span>,buttonDownFcns);
+1116     set(fig,figProps,figValue);
+1117 
+1118 
+1119 
+1120 <a name="_sub7" href="#_subfunctions" class="code">function [out,is2D] = arrow_is2DXY(ax)</a>
+1121 <span class="comment">% check if axes are 2-D X-Y plots</span>
+1122     <span class="comment">% may not work for modified camera angles, etc.</span>
+1123     out = logical(zeros(size(ax))); <span class="comment">% 2-D X-Y plots</span>
+1124     is2D = out;                     <span class="comment">% any 2-D plots</span>
+1125     views = get(ax(:),{<span class="string">'View'</span>});
+1126     views = cat(1,views{:});
+1127     out(:) = abs(views(:,2))==90;
+1128     is2D(:) = out(:) | all(rem(views',90)==0)';
+1129 
+1130 <a name="_sub8" href="#_subfunctions" class="code">function out = arrow_planarkids(ax)</a>
+1131 <span class="comment">% check if axes descendents all have empty ZData (lines,patches,surfaces)</span>
+1132     out = logical(ones(size(ax)));
+1133     allkids = get(ax(:),{<span class="string">'Children'</span>});
+1134     <span class="keyword">for</span> k=1:length(allkids),
+1135         kids = get([findobj(allkids{k},<span class="string">'flat'</span>,<span class="string">'Type'</span>,<span class="string">'line'</span>)
+1136                     findobj(allkids{k},<span class="string">'flat'</span>,<span class="string">'Type'</span>,<span class="string">'patch'</span>)
+1137                     findobj(allkids{k},<span class="string">'flat'</span>,<span class="string">'Type'</span>,<span class="string">'surface'</span>)],{<span class="string">'ZData'</span>});
+1138         <span class="keyword">for</span> j=1:length(kids),
+1139             <span class="keyword">if</span> ~isempty(kids{j}), out(k)=logical(0); <span class="keyword">break</span>; <span class="keyword">end</span>;
+1140         <span class="keyword">end</span>;
+1141     <span class="keyword">end</span>;
+1142 
+1143 
+1144 
+1145 <a name="_sub9" href="#_subfunctions" class="code">function arrow_fixlimits(axlimits)</a>
+1146 <span class="comment">% reset the axis limits as necessary</span>
+1147     <span class="keyword">if</span> isempty(axlimits), disp([upper(mfilename) <span class="string">' does not remember any axis limits to reset.'</span>]); <span class="keyword">end</span>;
+1148     <span class="keyword">for</span> k=1:size(axlimits,1),
+1149         <span class="keyword">if</span> any(get(axlimits(k,1),<span class="string">'XLim'</span>)~=axlimits(k,2:3)), set(axlimits(k,1),<span class="string">'XLim'</span>,axlimits(k,2:3)); <span class="keyword">end</span>;
+1150         <span class="keyword">if</span> any(get(axlimits(k,1),<span class="string">'YLim'</span>)~=axlimits(k,4:5)), set(axlimits(k,1),<span class="string">'YLim'</span>,axlimits(k,4:5)); <span class="keyword">end</span>;
+1151         <span class="keyword">if</span> any(get(axlimits(k,1),<span class="string">'ZLim'</span>)~=axlimits(k,6:7)), set(axlimits(k,1),<span class="string">'ZLim'</span>,axlimits(k,6:7)); <span class="keyword">end</span>;
+1152     <span class="keyword">end</span>;
+1153 
+1154 
+1155 
+1156 <a name="_sub10" href="#_subfunctions" class="code">function out = arrow_WarpToFill(notstretched,manualcamera,curax)</a>
+1157 <span class="comment">% check if we are in &quot;WarpToFill&quot; mode.</span>
+1158     out = strcmp(get(curax,<span class="string">'WarpToFill'</span>),<span class="string">'on'</span>);
+1159     <span class="comment">% 'WarpToFill' is undocumented, so may need to replace this by</span>
+1160     <span class="comment">% out = ~( any(notstretched) &amp; any(manualcamera) );</span>
+1161 
+1162 
+1163 
+1164 <a name="_sub11" href="#_subfunctions" class="code">function out = arrow_warnlimits(axlimits,narrows)</a>
+1165 <span class="comment">% create a warning message if we've changed the axis limits</span>
+1166     msg = <span class="string">''</span>;
+1167     <span class="keyword">switch</span> (size(axlimits,1))
+1168         <span class="keyword">case</span> 1, msg=<span class="string">''</span>;
+1169         <span class="keyword">case</span> 2, msg=<span class="string">'on two axes '</span>;
+1170         <span class="keyword">otherwise</span>, msg=<span class="string">'on several axes '</span>;
+1171     <span class="keyword">end</span>;
+1172     msg = [upper(mfilename) <span class="string">' changed the axis limits '</span> msg <span class="keyword">...</span>
+1173            <span class="string">'when adding the arrow'</span>];
+1174     <span class="keyword">if</span> (narrows&gt;1), msg=[msg <span class="string">'s'</span>]; <span class="keyword">end</span>;
+1175     out = [msg <span class="string">'.'</span> sprintf(<span class="string">'\n'</span>) <span class="string">'         Call '</span> upper(mfilename) <span class="keyword">...</span>
+1176            <span class="string">' FIXLIMITS to reset them now.'</span>];
+1177 
+1178 
+1179 
+1180 <a name="_sub12" href="#_subfunctions" class="code">function arrow_copyprops(fm,to)</a>
+1181 <span class="comment">% copy line properties to patches</span>
+1182     props  = {<span class="string">'EraseMode'</span>,<span class="string">'LineStyle'</span>,<span class="string">'LineWidth'</span>,<span class="string">'Marker'</span>,<span class="string">'MarkerSize'</span>,<span class="keyword">...</span>
+1183               <span class="string">'MarkerEdgeColor'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'ButtonDownFcn'</span>,      <span class="keyword">...</span>
+1184               <span class="string">'Clipping'</span>,<span class="string">'DeleteFcn'</span>,<span class="string">'BusyAction'</span>,<span class="string">'HandleVisibility'</span>,   <span class="keyword">...</span>
+1185               <span class="string">'Selected'</span>,<span class="string">'SelectionHighlight'</span>,<span class="string">'Visible'</span>};
+1186     lineprops  = {<span class="string">'Color'</span>,    props{:}};
+1187     patchprops = {<span class="string">'EdgeColor'</span>,props{:}};
+1188     patch2props = {<span class="string">'FaceColor'</span>,patchprops{:}};
+1189     fmpatch = strcmp(get(fm,<span class="string">'Type'</span>),<span class="string">'patch'</span>);
+1190     topatch = strcmp(get(to,<span class="string">'Type'</span>),<span class="string">'patch'</span>);
+1191     set(to( fmpatch&amp; topatch),patch2props,get(fm( fmpatch&amp; topatch),patch2props)); <span class="comment">%p-&gt;p</span>
+1192     set(to(~fmpatch&amp;~topatch),lineprops,  get(fm(~fmpatch&amp;~topatch),lineprops  )); <span class="comment">%l-&gt;l</span>
+1193     set(to( fmpatch&amp;~topatch),lineprops,  get(fm( fmpatch&amp;~topatch),patchprops )); <span class="comment">%p-&gt;l</span>
+1194     set(to(~fmpatch&amp; topatch),patchprops, get(fm(~fmpatch&amp; topatch),lineprops)  ,<span class="string">'FaceColor'</span>,<span class="string">'none'</span>); <span class="comment">%l-&gt;p</span>
+1195 
+1196 
+1197 
+1198 <a name="_sub13" href="#_subfunctions" class="code">function arrow_props</a>
+1199 <span class="comment">% display further help info about ARROW properties</span>
+1200     c = sprintf(<span class="string">'\n'</span>);
+1201     disp([c <span class="keyword">...</span>
+1202     <span class="string">'ARROW Properties:  Default values are given in [square brackets], and other'</span> c <span class="keyword">...</span>
+1203     <span class="string">'                   acceptable equivalent property names are in (parenthesis).'</span> c c <span class="keyword">...</span>
+1204     <span class="string">'  Start           The starting points. For N arrows,            B'</span> c <span class="keyword">...</span>
+1205     <span class="string">'                  this should be a Nx2 or Nx3 matrix.          /|\           ^'</span> c <span class="keyword">...</span>
+1206     <span class="string">'  Stop            The end points. For N arrows, this          /|||\          |'</span> c <span class="keyword">...</span>
+1207     <span class="string">'                  should be a Nx2 or Nx3 matrix.             //|||\\        L|'</span> c <span class="keyword">...</span>
+1208     <span class="string">'  Length          Length of the arrowhead (in pixels on     ///|||\\\       e|'</span> c <span class="keyword">...</span>
+1209     <span class="string">'                  screen, points on a page). [16] (Len)    ////|||\\\\      n|'</span> c <span class="keyword">...</span>
+1210     <span class="string">'  BaseAngle       Angle (degrees) of the base angle       /////|D|\\\\\     g|'</span> c <span class="keyword">...</span>
+1211     <span class="string">'                  ADE.  For a simple stick arrow, use    ////  |||  \\\\    t|'</span> c <span class="keyword">...</span>
+1212     <span class="string">'                  BaseAngle=TipAngle. [90] (Base)       ///    |||    \\\   h|'</span> c <span class="keyword">...</span>
+1213     <span class="string">'  TipAngle        Angle (degrees) of tip angle ABC.    //&lt;-----&gt;||      \\   |'</span> c <span class="keyword">...</span>
+1214     <span class="string">'                  [16] (Tip)                          /   base |||        \  V'</span> c <span class="keyword">...</span>
+1215     <span class="string">'  Width           Width of the base in pixels.  Not  E   angle ||&lt;--------&gt;C'</span> c <span class="keyword">...</span>
+1216     <span class="string">'                  the ''LineWidth'' prop. [0] (Wid)            |||tipangle'</span> c <span class="keyword">...</span>
+1217     <span class="string">'  Page            If provided, non-empty, and not NaN,         |||'</span> c <span class="keyword">...</span>
+1218     <span class="string">'                  this causes ARROW to use hardcopy            |||'</span> c <span class="keyword">...</span>
+1219     <span class="string">'                  rather than onscreen proportions.             A'</span> c <span class="keyword">...</span>
+1220     <span class="string">'                  This is important if screen aspect        --&gt;   &lt;-- width'</span> c <span class="keyword">...</span>
+1221     <span class="string">'                  ratio and hardcopy aspect ratio are    ----CrossDir----&gt;'</span> c <span class="keyword">...</span>
+1222     <span class="string">'                  vastly different. []'</span> c<span class="keyword">...</span>
+1223     <span class="string">'  CrossDir        A vector giving the direction towards which the fletches'</span> c <span class="keyword">...</span>
+1224     <span class="string">'                  on the arrow should go.  [computed such that it is perpen-'</span> c <span class="keyword">...</span>
+1225     <span class="string">'                  dicular to both the arrow direction and the view direction'</span> c <span class="keyword">...</span>
+1226     <span class="string">'                  (i.e., as if it was pasted on a normal 2-D graph)]  (Note'</span> c <span class="keyword">...</span>
+1227     <span class="string">'                  that CrossDir is a vector.  Also note that if an axis is'</span> c <span class="keyword">...</span>
+1228     <span class="string">'                  plotted on a log scale, then the corresponding component'</span> c <span class="keyword">...</span>
+1229     <span class="string">'                  of CrossDir must also be set appropriately, i.e., to 1 for'</span> c <span class="keyword">...</span>
+1230     <span class="string">'                  no change in that direction, &gt;1 for a positive change, &gt;0'</span> c <span class="keyword">...</span>
+1231     <span class="string">'                  and &lt;1 for negative change.)'</span> c <span class="keyword">...</span>
+1232     <span class="string">'  NormalDir       A vector normal to the fletch direction (CrossDir is then'</span> c <span class="keyword">...</span>
+1233     <span class="string">'                  computed by the vector cross product [Line]x[NormalDir]). []'</span> c <span class="keyword">...</span>
+1234     <span class="string">'                  (Note that NormalDir is a vector.  Unlike CrossDir,'</span> c <span class="keyword">...</span>
+1235     <span class="string">'                  NormalDir is used as is regardless of log-scaled axes.)'</span> c <span class="keyword">...</span>
+1236     <span class="string">'  Ends            Set which end has an arrowhead.  Valid values are ''none'','</span> c <span class="keyword">...</span>
+1237     <span class="string">'                  ''stop'', ''start'', and ''both''. [''stop''] (End)'</span> c<span class="keyword">...</span>
+1238     <span class="string">'  ObjectHandles   Vector of handles to previously-created arrows to be'</span> c <span class="keyword">...</span>
+1239     <span class="string">'                  updated or line objects to be converted to arrows.'</span> c <span class="keyword">...</span>
+1240     <span class="string">'                  [] (Object,Handle)'</span> c ]);
+1241 
+1242 
+1243 
+1244 <a name="_sub14" href="#_subfunctions" class="code">function out = arrow_demo</a>
+1245      <span class="comment">% demo</span>
+1246     <span class="comment">% create the data</span>
+1247     [x,y,z] = peaks;
+1248     [ddd,out.iii]=max(z(:));
+1249     out.axlim = [min(x(:)) max(x(:)) min(y(:)) max(y(:)) min(z(:)) max(z(:))];
+1250     
+1251     <span class="comment">% modify it by inserting some NaN's</span>
+1252     [m,n] = size(z);
+1253     m = floor(m/2);
+1254     n = floor(n/2);
+1255     z(1:m,1:n) = NaN*ones(m,n);
+1256     
+1257     <span class="comment">% graph it</span>
+1258     clf(<span class="string">'reset'</span>);
+1259     out.hs=surf(x,y,z);
+1260     out.x=x; out.y=y; out.z=z;
+1261     xlabel(<span class="string">'x'</span>); ylabel(<span class="string">'y'</span>);
+1262             
+1263 <a name="_sub15" href="#_subfunctions" class="code">function h = arrow_demo3(in)</a>
+1264     <span class="comment">% set the view</span>
+1265     axlim = in.axlim;
+1266     axis(axlim);
+1267     zlabel(<span class="string">'z'</span>);
+1268     <span class="comment">%set(in.hs,'FaceColor','interp');</span>
+1269     view(3); <span class="comment">% view(viewmtx(-37.5,30,20));</span>
+1270     title([<span class="string">'Demo of the capabilities of the ARROW function in 3-D'</span>]);
+1271     
+1272     <span class="comment">% Normal blue arrow</span>
+1273     h1 = feval(mfilename,[axlim(1) axlim(4) 4],[-.8 1.2 4], <span class="keyword">...</span>
+1274                <span class="string">'EdgeColor'</span>,<span class="string">'b'</span>,<span class="string">'FaceColor'</span>,<span class="string">'b'</span>);
+1275     
+1276     <span class="comment">% Normal white arrow, clipped by the surface</span>
+1277     h2 = feval(mfilename,axlim([1 4 6]),[0 2 4]);
+1278     t=text(-2.4,2.7,7.7,<span class="string">'arrow clipped by surf'</span>);
+1279     
+1280     <span class="comment">% Baseangle&lt;90</span>
+1281     h3 = feval(mfilename,[3 .125 3.5],[1.375 0.125 3.5],30,50);
+1282     t2=text(3.1,.125,3.5,<span class="string">'local maximum'</span>);
+1283     
+1284     <span class="comment">% Baseangle&lt;90, fill and edge colors different</span>
+1285     h4 = feval(mfilename,axlim(1:2:5)*.5,[0 0 0],36,60,25, <span class="keyword">...</span>
+1286                <span class="string">'EdgeColor'</span>,<span class="string">'b'</span>,<span class="string">'FaceColor'</span>,<span class="string">'c'</span>);
+1287     t3=text(axlim(1)*.5,axlim(3)*.5,axlim(5)*.5-.75,<span class="string">'origin'</span>);
+1288     set(t3,<span class="string">'HorizontalAlignment'</span>,<span class="string">'center'</span>);
+1289     
+1290     <span class="comment">% Baseangle&gt;90, black fill</span>
+1291     h5 = feval(mfilename,[-2.9 2.9 3],[-1.3 .4 3.2],30,120,[],6, <span class="keyword">...</span>
+1292                <span class="string">'EdgeColor'</span>,<span class="string">'r'</span>,<span class="string">'FaceColor'</span>,<span class="string">'k'</span>,<span class="string">'LineWidth'</span>,2);
+1293     
+1294     <span class="comment">% Baseangle&gt;90, no fill</span>
+1295     h6 = feval(mfilename,[-2.9 2.9 1.3],[-1.3 .4 1.5],30,120,[],6, <span class="keyword">...</span>
+1296                <span class="string">'EdgeColor'</span>,<span class="string">'r'</span>,<span class="string">'FaceColor'</span>,<span class="string">'none'</span>,<span class="string">'LineWidth'</span>,2);
+1297     
+1298     <span class="comment">% Stick arrow</span>
+1299     h7 = feval(mfilename,[-1.6 -1.65 -6.5],[0 -1.65 -6.5],[],16,16);
+1300     t4=text(-1.5,-1.65,-7.25,<span class="string">'global mininum'</span>);
+1301     set(t4,<span class="string">'HorizontalAlignment'</span>,<span class="string">'center'</span>);
+1302     
+1303     <span class="comment">% Normal, black fill</span>
+1304     h8 = feval(mfilename,[-1.4 0 -7.2],[-1.4 0 -3],<span class="string">'FaceColor'</span>,<span class="string">'k'</span>);
+1305     t5=text(-1.5,0,-7.75,<span class="string">'local minimum'</span>);
+1306     set(t5,<span class="string">'HorizontalAlignment'</span>,<span class="string">'center'</span>);
+1307     
+1308     <span class="comment">% Gray fill, crossdir specified, 'LineStyle' --</span>
+1309     h9 = feval(mfilename,[-3 2.2 -6],[-3 2.2 -.05],36,[],27,6,[],[0 -1 0], <span class="keyword">...</span>
+1310                <span class="string">'EdgeColor'</span>,<span class="string">'k'</span>,<span class="string">'FaceColor'</span>,.75*[1 1 1],<span class="string">'LineStyle'</span>,<span class="string">'--'</span>);
+1311     
+1312     <span class="comment">% a series of normal arrows, linearly spaced, crossdir specified</span>
+1313     h10y=(0:4)'/3;
+1314     h10 = feval(mfilename,[-3*ones(size(h10y)) h10y -6.5*ones(size(h10y))], <span class="keyword">...</span>
+1315                 [-3*ones(size(h10y)) h10y -.05*ones(size(h10y))], <span class="keyword">...</span>
+1316                 12,[],[],[],[],[0 -1 0]);
+1317     
+1318     <span class="comment">% a series of normal arrows, linearly spaced</span>
+1319     h11x=(1:.33:2.8)';
+1320     h11 = feval(mfilename,[h11x -3*ones(size(h11x)) 6.5*ones(size(h11x))], <span class="keyword">...</span>
+1321                 [h11x -3*ones(size(h11x)) -.05*ones(size(h11x))]);
+1322     
+1323     <span class="comment">% series of magenta arrows, radially oriented, crossdir specified</span>
+1324     h12x=2; h12y=-3; h12z=axlim(5)/2; h12xr=1; h12zr=h12z; ir=.15;or=.81;
+1325     h12t=(0:11)'/6*pi;
+1326     h12 = feval(mfilename,                                           <span class="keyword">...</span>
+1327                 [h12x+h12xr*cos(h12t)*ir h12y*ones(size(h12t))       <span class="keyword">...</span>
+1328                  h12z+h12zr*sin(h12t)*ir],[h12x+h12xr*cos(h12t)*or   <span class="keyword">...</span>
+1329                  h12y*ones(size(h12t)) h12z+h12zr*sin(h12t)*or],     <span class="keyword">...</span>
+1330                 10,[],[],[],[],                                      <span class="keyword">...</span>
+1331                 [-h12xr*sin(h12t) zeros(size(h12t)) h12zr*cos(h12t)],<span class="keyword">...</span>
+1332                 <span class="string">'FaceColor'</span>,<span class="string">'none'</span>,<span class="string">'EdgeColor'</span>,<span class="string">'m'</span>);
+1333     
+1334     <span class="comment">% series of normal arrows, tangentially oriented, crossdir specified</span>
+1335     or13=.91; h13t=(0:.5:12)'/6*pi;
+1336     locs = [h12x+h12xr*cos(h13t)*or13 h12y*ones(size(h13t)) h12z+h12zr*sin(h13t)*or13];
+1337     h13 = feval(mfilename,locs(1:end-1,:),locs(2:<span class="keyword">end</span>,:),6);
+1338     
+1339     <span class="comment">% arrow with no line ==&gt; oriented downwards</span>
+1340     h14 = feval(mfilename,[3 3 .100001],[3 3 .1],30);
+1341     t6=text(3,3,3.6,<span class="string">'no line'</span>); set(t6,<span class="string">'HorizontalAlignment'</span>,<span class="string">'center'</span>);
+1342     
+1343     <span class="comment">% arrow with arrowheads at both ends</span>
+1344     h15 = feval(mfilename,[-.5 -3 -3],[1 -3 -3],<span class="string">'Ends'</span>,<span class="string">'both'</span>,<span class="string">'FaceColor'</span>,<span class="string">'g'</span>, <span class="keyword">...</span>
+1345                 <span class="string">'Length'</span>,20,<span class="string">'Width'</span>,3,<span class="string">'CrossDir'</span>,[0 0 1],<span class="string">'TipAngle'</span>,25);
+1346     
+1347     h=[h1;h2;h3;h4;h5;h6;h7;h8;h9;h10;h11;h12;h13;h14;h15];
+1348 
+1349 <a name="_sub16" href="#_subfunctions" class="code">function h = arrow_demo2(in)</a>
+1350     axlim = in.axlim;
+1351     dolog = 1;
+1352     <span class="keyword">if</span> (dolog), set(in.hs,<span class="string">'YData'</span>,10.^get(in.hs,<span class="string">'YData'</span>)); <span class="keyword">end</span>;
+1353     shading(<span class="string">'interp'</span>);
+1354     view(2);
+1355     title([<span class="string">'Demo of the capabilities of the ARROW function in 2-D'</span>]);
+1356     hold on; [C,H]=contour(in.x,in.y,in.z,20,<span class="string">'-'</span>); hold off;
+1357     <span class="keyword">for</span> k=H',
+1358         set(k,<span class="string">'ZData'</span>,(axlim(6)+1)*ones(size(get(k,<span class="string">'XData'</span>))),<span class="string">'Color'</span>,<span class="string">'k'</span>);
+1359         <span class="keyword">if</span> (dolog), set(k,<span class="string">'YData'</span>,10.^get(k,<span class="string">'YData'</span>)); <span class="keyword">end</span>;
+1360     <span class="keyword">end</span>;
+1361     <span class="keyword">if</span> (dolog), axis([axlim(1:2) 10.^axlim(3:4)]); set(gca,<span class="string">'YScale'</span>,<span class="string">'log'</span>);
+1362     <span class="keyword">else</span>,       axis(axlim(1:4)); <span class="keyword">end</span>;
+1363     
+1364     <span class="comment">% Normal blue arrow</span>
+1365     start = [axlim(1) axlim(4) axlim(6)+2];
+1366     stop  = [in.x(in.iii) in.y(in.iii) axlim(6)+2];
+1367     <span class="keyword">if</span> (dolog), start(:,2)=10.^start(:,2); stop(:,2)=10.^stop(:,2); <span class="keyword">end</span>;
+1368     h1 = feval(mfilename,start,stop,<span class="string">'EdgeColor'</span>,<span class="string">'b'</span>,<span class="string">'FaceColor'</span>,<span class="string">'b'</span>);
+1369     
+1370     <span class="comment">% three arrows with varying fill, width, and baseangle</span>
+1371     start = [-3   -3   10; -3   -1.5 10; -1.5 -3   10];
+1372     stop  = [-.03 -.03 10; -.03 -1.5 10; -1.5 -.03 10];
+1373     <span class="keyword">if</span> (dolog), start(:,2)=10.^start(:,2); stop(:,2)=10.^stop(:,2); <span class="keyword">end</span>;
+1374     h2 = feval(mfilename,start,stop,24,[90;60;120],[],[0;0;4],<span class="string">'Ends'</span>,str2mat(<span class="string">'both'</span>,<span class="string">'stop'</span>,<span class="string">'stop'</span>));
+1375     set(h2(2),<span class="string">'EdgeColor'</span>,[0 .35 0],<span class="string">'FaceColor'</span>,[0 .85 .85]);
+1376     set(h2(3),<span class="string">'EdgeColor'</span>,<span class="string">'r'</span>,<span class="string">'FaceColor'</span>,[1 .5 1]);
+1377     h=[h1;h2];
+1378 
+1379 <a name="_sub17" href="#_subfunctions" class="code">function out = trueornan(x)</a>
+1380 <span class="keyword">if</span> isempty(x),
+1381     out=x;
+1382 <span class="keyword">else</span>,
+1383     out = isnan(x);
+1384     out(~out) = x(~out);
+1385 <span class="keyword">end</span>;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

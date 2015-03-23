@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of stardiff_as</title>
+  <meta name="keywords" content="stardiff_as">
+  <meta name="description" content="STARDIFF_AS - total error of starfield fit.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>stardiff_as
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STARDIFF_AS - total error of starfield fit.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [diff] = stardiff_as(fv,x,y,starmat,x0,y0,xy_err,i_err) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STARDIFF_AS - total error of starfield fit.
+ 
+ STARDIFF_AS calculates the sum of the square of deviation of 
+ a 2D gaussian clock and the intensity  of the image ( 10x10 )
+ above the mean of the frame  of the image.
+ 
+ The function is used for automatic fitting of a 2D Gaussian to
+ fit a star intensity distribution, and thus finding the star.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Spectral_cal/star_int_search_as.html" class="code" title="function [idstarsok,stars_par] = star_int_search_as(img_in,optpar,optmode,plstars,OPTS)">star_int_search_as</a>	STAR_INT_SEARCH identifies points in image with stars, make a parametrisation</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [diff] = stardiff_as(fv,x,y,starmat,x0,y0,xy_err,i_err)</a>
+0002 <span class="comment">% STARDIFF_AS - total error of starfield fit.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% STARDIFF_AS calculates the sum of the square of deviation of</span>
+0005 <span class="comment">% a 2D gaussian clock and the intensity  of the image ( 10x10 )</span>
+0006 <span class="comment">% above the mean of the frame  of the image.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% The function is used for automatic fitting of a 2D Gaussian to</span>
+0009 <span class="comment">% fit a star intensity distribution, and thus finding the star.</span>
+0010 
+0011 <span class="comment">%       Copyright Bjoern Gustavsson 1998 10 22</span>
+0012 
+0013 <span class="comment">% This version by A. Senior, 2007-06-25 with &quot;optimisations&quot; for</span>
+0014 <span class="comment">% the spectral calibration code</span>
+0015 
+0016 stari = fv(3)*exp(- ( ( x - fv(1) ).^2 / fv(4)^2 + <span class="keyword">...</span>
+0017                       2*fv(5)*(x-fv(1)).*(y-fv(2)) + <span class="keyword">...</span>
+0018                       ( y - fv(2) ).^2 / fv(6)^2 ) );
+0019 
+0020 diffm=(starmat-stari)/i_err;
+0021 
+0022 <span class="comment">% total error is sum of squares of intensity differences plus</span>
+0023 <span class="comment">% squares of differences of model star centre from predicted position</span>
+0024 
+0025 diff=sum(diffm(:).^2) + ((fv(1)-x0)/xy_err)^2 + ((fv(2)-y0)/xy_err)^2;
+0026 
+0027 diff=diff/numel(starmat);
+0028</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

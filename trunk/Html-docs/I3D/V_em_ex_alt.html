@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of V_em_ex_alt</title>
+  <meta name="keywords" content="V_em_ex_alt">
+  <meta name="description" content="V_em_ex_alt, altitude, time variation of emission and excitation,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html I3D -->
+<h1>V_em_ex_alt
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>V_em_ex_alt, altitude, time variation of emission and excitation,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [em_a,ex_a,ex_b,em_b] = V_em_ex_alt(I0_R0_DR,X,Y,Z,tau3D,T,fn) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> V_em_ex_alt, altitude, time variation of emission and excitation,
+ along lines through center of emission and maximum emission
+ 
+ Calling:
+  [em_a,ex_a,ex_b,em_b] = V_em_ex_alt(I0_R0_DR,X,Y,Z,tau3D,T,fn)
+ Input:
+  I0_R0_DR - 
+  X        - 
+  Y        - 
+  Z        - 
+  tau3D    - 
+  T        - 
+  fn       - 
+ Output:
+  em_a - 
+  ex_a - 
+  ex_b - 
+  em_b -</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Geometry/point_on_line2.html" class="code" title="function  [r_out] = point_on_line2(r_0,e_l,l)">point_on_line2</a>	POINT_ON_LINE calculates the vector to a set of points R_OUT</li><li><a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>	I3d_p_dI3D - Integration of continuity equation with sources</li><li><a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>	dI3D_multiple - multiple 3-D generalized Gaussians</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [em_a,ex_a,ex_b,em_b] = V_em_ex_alt(I0_R0_DR,X,Y,Z,tau3D,T,fn)</a>
+0002 <span class="comment">% V_em_ex_alt, altitude, time variation of emission and excitation,</span>
+0003 <span class="comment">% along lines through center of emission and maximum emission</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%  [em_a,ex_a,ex_b,em_b] = V_em_ex_alt(I0_R0_DR,X,Y,Z,tau3D,T,fn)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%  I0_R0_DR -</span>
+0009 <span class="comment">%  X        -</span>
+0010 <span class="comment">%  Y        -</span>
+0011 <span class="comment">%  Z        -</span>
+0012 <span class="comment">%  tau3D    -</span>
+0013 <span class="comment">%  T        -</span>
+0014 <span class="comment">%  fn       -</span>
+0015 <span class="comment">% Output:</span>
+0016 <span class="comment">%  em_a -</span>
+0017 <span class="comment">%  ex_a -</span>
+0018 <span class="comment">%  ex_b -</span>
+0019 <span class="comment">%  em_b -</span>
+0020 
+0021 
+0022 <span class="comment">%   Copyright � 2002 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0023 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0024 
+0025 V_em = zeros(size(X));
+0026 
+0027 r0 = [-55.3533 149.7076 300];
+0028 e = [0 -sin(13*pi/180) cos(13*pi/180)];
+0029 z = 205:(329-205)/135:329;
+0030 
+0031 <span class="keyword">for</span> i1 = 2:(size(I0_R0_DR,1)-1),
+0032   
+0033   Iintrp = I0_R0_DR(i1,:)*.25+I0_R0_DR(i1-1,:)*.75;
+0034   dI3d = <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>(Iintrp,X,Y,Z,2.5,tau3D);
+0035   V_em = <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>(Iintrp,X,Y,Z,I0_R0_DR(1:i1-1,:),[T(i1) T(i1)+2.5], <span class="keyword">...</span>
+0036                     T(1:i1),tau3D,V_em,dI3d);
+0037   <span class="comment">%ii = find(~isfinite(dI3d(:)));</span>
+0038   <span class="comment">%dI3d(ii) = 0;</span>
+0039   dI3d(~isfinite(dI3d(:))) = 0;
+0040   <span class="comment">%ii = find(~isfinite(V_em(:)));</span>
+0041   <span class="comment">%V_em(ii) = 0;</span>
+0042   V_em(~isfinite(V_em(:))) = 0;
+0043   Em(4*(i1-1)+1) = sum(V_em(:));
+0044   Ex(4*(i1-1)+1) = sum(dI3d(:));
+0045   ex_r = [sum(X(:).*dI3d(:)) sum(Y(:).*dI3d(:)) sum(Z(:).*dI3d(:))]/sum(dI3d(:));
+0046   em_r = [sum(X(:).*V_em(:)) sum(Y(:).*V_em(:)) sum(Z(:).*V_em(:))]/sum(V_em(:));
+0047   [qwe,Imaxi] = max(V_em(:));
+0048   r_max = [X(Imaxi) Y(Imaxi) Z(Imaxi)];
+0049   <span class="comment">%keyboard</span>
+0050   r_em(4*(i1-1)+1,:) = em_r;
+0051   r_ex(4*(i1-1)+1,:) = ex_r;
+0052   
+0053   r0_1 =  r_em(4*(i1-1)+1,:);
+0054   r1 = <a href="../Geometry/point_on_line2.html" class="code" title="function  [r_out] = point_on_line2(r_0,e_l,l)">point_on_line2</a>(r0_1',e',z-r0_1(3));
+0055   em_a(4*(i1-1)+1,:) = interp3(Y,X,Z,permute(V_em,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0056   ex_a(4*(i1-1)+1,:) = interp3(Y,X,Z,permute(dI3d,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0057   r0_1 =  r_ex(4*(i1-1)+1,:);
+0058   <span class="keyword">if</span> all(isfinite(r_max))
+0059     r1 = <a href="../Geometry/point_on_line2.html" class="code" title="function  [r_out] = point_on_line2(r_0,e_l,l)">point_on_line2</a>(r_max',e',z-r_max(3));
+0060   <span class="keyword">end</span>
+0061   em_b(4*(i1-1)+1,:) = interp3(Y,X,Z,permute(V_em,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0062   ex_b(4*(i1-1)+1,:) = interp3(Y,X,Z,permute(dI3d,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0063   
+0064   Iintrp = I0_R0_DR(i1,:)*.5+I0_R0_DR(i1-1,:)*.5;
+0065   dI3d = <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>(Iintrp,X,Y,Z,2.5,tau3D);
+0066   V_em = <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>(Iintrp,X,Y,Z,I0_R0_DR(1:i1-1,:),[T(i1)+2.5 T(i1)+5], <span class="keyword">...</span>
+0067                     T(1:i1),tau3D,V_em,dI3d);
+0068   <span class="comment">%ii = find(~isfinite(dI3d(:)));</span>
+0069   <span class="comment">%dI3d(ii) = 0;</span>
+0070   dI3d(~isfinite(dI3d(:))) = 0;
+0071   <span class="comment">%ii = find(~isfinite(V_em(:)));</span>
+0072   <span class="comment">%V_em(ii) = 0;</span>
+0073   V_em(~isfinite(V_em(:))) = 0;
+0074   
+0075   Em(4*(i1-1)+2) = sum(V_em(:));
+0076   Ex(4*(i1-1)+2) = sum(dI3d(:));
+0077   ex_r = [sum(X(:).*dI3d(:)) sum(Y(:).*dI3d(:)) sum(Z(:).*dI3d(:))]/sum(dI3d(:));
+0078   em_r = [sum(X(:).*V_em(:)) sum(Y(:).*V_em(:)) sum(Z(:).*V_em(:))]/sum(V_em(:));
+0079   [qwe,Imaxi] = max(V_em(:));
+0080   r_max = [X(Imaxi) Y(Imaxi) Z(Imaxi)];
+0081   
+0082   r_em(4*(i1-1)+2,:) = em_r;
+0083   r_ex(4*(i1-1)+2,:) = ex_r;
+0084 
+0085   r0_1 =  r_em(4*(i1-1)+2,:);
+0086   r1 = <a href="../Geometry/point_on_line2.html" class="code" title="function  [r_out] = point_on_line2(r_0,e_l,l)">point_on_line2</a>(r0_1',e',z-r0_1(3));
+0087   em_a(4*(i1-1)+2,:) = interp3(Y,X,Z,permute(V_em,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0088   ex_a(4*(i1-1)+2,:) = interp3(Y,X,Z,permute(dI3d,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0089   r0_1 =  r_ex(4*(i1-1)+2,:);
+0090   <span class="keyword">if</span> all(isfinite(r_max))
+0091     r1 = <a href="../Geometry/point_on_line2.html" class="code" title="function  [r_out] = point_on_line2(r_0,e_l,l)">point_on_line2</a>(r_max',e',z-r_max(3));
+0092   <span class="keyword">end</span>
+0093   em_b(4*(i1-1)+2,:) = interp3(Y,X,Z,permute(V_em,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0094   ex_b(4*(i1-1)+2,:) = interp3(Y,X,Z,permute(dI3d,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0095   
+0096   
+0097   Iintrp = I0_R0_DR(i1,:)*.75+I0_R0_DR(i1-1,:)*.25;
+0098   dI3d = <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>(Iintrp,X,Y,Z,2.5,tau3D);
+0099   V_em = <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>(Iintrp,X,Y,Z,I0_R0_DR(1:i1-1,:),[T(i1)+5 T(i1)+7.5], <span class="keyword">...</span>
+0100                     T(1:i1),tau3D,V_em,dI3d);
+0101   <span class="comment">%ii = find(~isfinite(dI3d(:)));</span>
+0102   <span class="comment">%dI3d(ii) = 0;</span>
+0103   dI3d(~isfinite(dI3d(:))) = 0;
+0104   <span class="comment">%ii = find(~isfinite(V_em(:)));</span>
+0105   <span class="comment">%V_em(ii) = 0;</span>
+0106   V_em(~isfinite(V_em(:))) = 0;
+0107   Em(4*(i1-1)+3) = sum(V_em(:));
+0108   Ex(4*(i1-1)+3) = sum(dI3d(:));
+0109   ex_r = [sum(X(:).*dI3d(:)) sum(Y(:).*dI3d(:)) sum(Z(:).*dI3d(:))]/sum(dI3d(:));
+0110   em_r = [sum(X(:).*V_em(:)) sum(Y(:).*V_em(:)) sum(Z(:).*V_em(:))]/sum(V_em(:));
+0111   [qwe,Imaxi] = max(V_em(:));
+0112   r_max = [X(Imaxi) Y(Imaxi) Z(Imaxi)];
+0113   
+0114   r_em(4*(i1-1)+3,:) = em_r;
+0115   r_ex(4*(i1-1)+3,:) = ex_r;
+0116 
+0117   r0_1 =  r_em(4*(i1-1)+3,:);
+0118   r1 = <a href="../Geometry/point_on_line2.html" class="code" title="function  [r_out] = point_on_line2(r_0,e_l,l)">point_on_line2</a>(r0_1',e',z-r0_1(3));
+0119   em_a(4*(i1-1)+3,:) = interp3(Y,X,Z,permute(V_em,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0120   ex_a(4*(i1-1)+3,:) = interp3(Y,X,Z,permute(dI3d,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0121   r0_1 =  r_ex(4*(i1-1)+3,:);
+0122   <span class="keyword">if</span> all(isfinite(r_max))
+0123     r1 = <a href="../Geometry/point_on_line2.html" class="code" title="function  [r_out] = point_on_line2(r_0,e_l,l)">point_on_line2</a>(r_max',e',z-r_max(3));
+0124   <span class="keyword">end</span>
+0125   em_b(4*(i1-1)+3,:) = interp3(Y,X,Z,permute(V_em,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0126   ex_b(4*(i1-1)+3,:) = interp3(Y,X,Z,permute(dI3d,[2 1 3]),r1(2,:),r1(1,:),r1(3,:));
+0127   
+0128   Iintrp = I0_R0_DR(i1,:);
+0129   dI3d = <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>(Iintrp,X,Y,Z,2.5,tau3D);
+0130   V_em = <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>(Iintrp,X,Y,Z,I0_R0_DR(1:i1-1,:),[T(i1)+7.5 T(i1+1)], <span class="keyword">...</span>
+0131                     T(1:i1),tau3D,V_em,dI3d);
+0132   <span class="comment">%ii = find(~isfinite(dI3d(:)));</span>
+0133   <span class="comment">%dI3d(ii) = 0;</span>
+0134   dI3d(~isfinite(dI3d(:))) = 0;
+0135   <span class="comment">%ii = find(~isfinite(V_em(:)));</span>
+0136   <span class="comment">%V_em(ii) = 0;</span>
+0137   V_em(~isfinite(V_em(:))) = 0;
+0138   Em(4*(i1-1)+4) = sum(V_em(:));
+0139   Ex(4*(i1-1)+4) = sum(dI3d(:));
+0140   
+0141   ex_r = [sum(X(:).*dI3d(:)) sum(Y(:).*dI3d(:)) sum(Z(:).*dI3d(:))]/sum(dI3d(:));
+0142   em_r = [sum(X(:).*V_em(:)) sum(Y(:).*V_em(:)) sum(Z(:).*V_em(:))]/sum(V_em(:));
+0143   [qwe,Imaxi] = max(V_em(:));
+0144   r_max = [X(Imaxi) Y(Imaxi) Z(Imaxi)];
+0145 
+0146   r_em(4*(i1-1)+4,:) = em_r;
+0147   r_ex(4*(i1-1)+4,:) = ex_r;
+0148 
+0149   r0_1 =  r_em(4*(i1-1)+4,:);
+0150   r1 = <a href="../Geometry/point_on_line2.html" class="code" title="function  [r_out] = point_on_line2(r_0,e_l,l)">point_on_line2</a>(r0_1',e',z-r0_1(3));
+0151   em_a(4*(i1-1)+4,:) = interp3(Y,X,Z,permute(V_em,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0152   ex_a(4*(i1-1)+4,:) = interp3(Y,X,Z,permute(dI3d,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0153   r0_1 =  r_ex(4*(i1-1)+4,:);
+0154   <span class="keyword">if</span> all(isfinite(r_max))
+0155     r1 = <a href="../Geometry/point_on_line2.html" class="code" title="function  [r_out] = point_on_line2(r_0,e_l,l)">point_on_line2</a>(r_max',e',z-r_max(3));
+0156   <span class="keyword">end</span>
+0157   em_b(4*(i1-1)+4,:) = interp3(Y,X,Z,permute(V_em,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0158   ex_b(4*(i1-1)+4,:) = interp3(Y,X,Z,permute(dI3d,[2 1 3]),r1(2,:),r1(1,:),r1(3,:),<span class="string">'cubic'</span>);
+0159   
+0160   <span class="keyword">if</span> nargin == 7
+0161     sstr = sprintf(<span class="string">'save %s em_a ex_a ex_b'</span>,fn);
+0162     eval(sstr)
+0163   <span class="keyword">end</span>
+0164   
+0165 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

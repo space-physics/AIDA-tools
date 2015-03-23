@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of skyhelp</title>
+  <meta name="keywords" content="skyhelp">
+  <meta name="description" content="SKYHELP - Main GUI help function">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>skyhelp
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SKYHELP - Main GUI help function</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [ok] = skyhelp(val) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SKYHELP - Main GUI help function
+ 
+ &quot;Private&quot; function called from the skymap/starcal GUI
+ 
+ Calling:
+ [ok] = skyhelp(val)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ok] = skyhelp(val)</a>
+0002 <span class="comment">% SKYHELP - Main GUI help function</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% &quot;Private&quot; function called from the skymap/starcal GUI</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% [ok] = skyhelp(val)</span>
+0008 
+0009 
+0010 <span class="comment">%   Copyright � 1999 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0011 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0012 
+0013 ok = 1;
+0014 <span class="keyword">if</span> ( val == 5 )
+0015   
+0016   starhlp{1} = <span class="string">'FILE'</span>;
+0017   starhlp{2} = [<span class="string">'CLOSE - Close and quit the skymap session also'</span> <span class="keyword">...</span>
+0018         [<span class="string">'clears the related variables from the matlab'</span> <span class="keyword">...</span>
+0019          <span class="string">' workspace'</span>]]; 
+0020   starhlp{3} = [<span class="string">'PAGE SETUP - opens the page setup dialog window..'</span> <span class="keyword">...</span>
+0021         [<span class="string">' Allows the user to change the default set up for'</span> <span class="keyword">...</span>
+0022          <span class="string">' printing '</span>]];
+0023   starhlp{4} = <span class="string">'PRINT - opens the Matlab printdlg. Allows the user to print'</span>;
+0024   starhlp{5} = <span class="string">' directly or to file. Due to the use of UICONTROLS the'</span>;
+0025   starhlp{6} =  <span class="string">' option -noui is recomended.                         '</span>;
+0026   starhlp{7} =   <span class="string">'                                                                                 '</span>;
+0027   starhlp{8} =   <span class="string">'POS/TIME                                                                         '</span>;
+0028   starhlp{9} =   [<span class="string">'DISPLAY POS/TIME - Prints the current position'</span> <span class="keyword">...</span>
+0029           <span class="string">' (long,lat) and date to the malab terminal window.'</span>];
+0030   starhlp{10} =   [<span class="string">'NEW POS/TIME makes a dialog window for changing'</span> <span class="keyword">...</span>
+0031            <span class="string">' the time and position'</span>];
+0032   starhlp{11} =   <span class="string">'                                                                                 '</span>;
+0033   starhlp{12} =   <span class="string">'STAR                                                                             '</span>;
+0034   starhlp{13} =   <span class="string">'INFORMATION gives information about the star closest to where You point and click'</span>;
+0035   starhlp{14} =   <span class="string">'                                                                                 '</span>;
+0036   starhlp{15} =   <span class="string">'RA/DECL change the grid to rect ascention/declination.                           '</span>;
+0037   starhlp{16} =   <span class="string">'                                                                                 '</span>;
+0038   starhlp{17} =   <span class="string">'AZIM/ZEN change the grid to local azimuth/zenith.                                '</span>;
+0039   starhlp{18} =   <span class="string">'                                                                                 '</span>;
+0040   starhlp{19} =   <span class="string">'The popup menu in the window allows you to set maximum magnitude of the stars to '</span>;
+0041   starhlp{20} =   <span class="string">'be displayed.                                                                    '</span>;
+0042   starhlp{21} =   <span class="string">'                                                                                 '</span>;
+0043   starhlp{22} =   <span class="string">'The lower horizontal scrollbar is the EAST-WEST angle of the central point of    '</span>;
+0044   starhlp{23} =   <span class="string">'the feild of view, vertical is in the centre of the scrollbar.                   '</span>;
+0045   starhlp{24} =   <span class="string">'                                                                                 '</span>;
+0046   starhlp{25} =   <span class="string">'The upper horizontal scrollbar is the field of view.                             '</span>;
+0047   starhlp{26} =   <span class="string">'                                                                                 '</span>;
+0048   starhlp{27} =   <span class="string">'The left vertical scrollbar is the NORTH-SOUTH angle of the central point of the '</span>;
+0049   starhlp{28} =   <span class="string">'field of view, zenith is in the middle is all the way upp                        '</span>;
+0050   starhlp{29} =   <span class="string">'                                                                                 '</span>;
+0051   starhlp{30} =   <span class="string">'The right vertical scrollbar is the rotation angle of the                        '</span>;
+0052   starhlp{31} =   <span class="string">'feild of view.                                                                   '</span>;
+0053   
+0054   <span class="keyword">elseif</span> ( val == 6 )
+0055     starhlp =[<span class="string">'                            NO WARRANTY                                   '</span>;
+0056     <span class="string">'BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY      '</span>;
+0057     <span class="string">'FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN  '</span>;
+0058     <span class="string">'OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES    '</span>;
+0059     <span class="string">'PROVIDE THE PROGRAM &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED'</span>;
+0060     <span class="string">'OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF      '</span>;
+0061     <span class="string">'MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS '</span>;
+0062     <span class="string">'TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE    '</span>;
+0063     <span class="string">'PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,  '</span>;
+0064     <span class="string">'REPAIR OR CORRECTION.                                                     '</span>;
+0065     <span class="string">'                                                                          '</span>;
+0066     <span class="string">'IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING     '</span>;
+0067     <span class="string">'WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR       '</span>;
+0068     <span class="string">'REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,'</span>;
+0069     <span class="string">'INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISIN'</span>;
+0070     <span class="string">'OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED '</span>;
+0071     <span class="string">'TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY  '</span>;
+0072     <span class="string">'YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER'</span>;
+0073     <span class="string">'PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE     '</span>;
+0074     <span class="string">'POSSIBILITY OF SUCH DAMAGES.                                              '</span>];
+0075     
+0076   <span class="keyword">elseif</span> ( val == 7 )
+0077     
+0078     starhlp =[<span class="string">'Skymap - a user friendly medium accurace starchart program.         '</span>;
+0079     <span class="string">'Copyright (C) 2001  Bjorn Gustavsson                                '</span>;
+0080     <span class="string">'                                                                    '</span>;
+0081     <span class="string">'This program is free software; you can redistribute it and/or modify'</span>;
+0082     <span class="string">'it under the terms of the GNU General Public License as published by'</span>;
+0083     <span class="string">'the Free Software Foundation; either version 2 of the License, or   '</span>;
+0084     <span class="string">'(at your option) any later version.                                 '</span>;
+0085     <span class="string">'                                                                    '</span>;
+0086     <span class="string">'This program is distributed in the hope that it will be useful,     '</span>;
+0087     <span class="string">'but WITHOUT ANY WARRANTY; without even the implied warranty of      '</span>;
+0088     <span class="string">'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the       '</span>;
+0089     <span class="string">'GNU General Public License for more details.                        '</span>;
+0090     <span class="string">'                                                                    '</span>;
+0091     <span class="string">'You should have received a copy of the GNU General Public License   '</span>;
+0092     <span class="string">'along with this program; if not, write to the Free Software         '</span>;
+0093     <span class="string">'Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.           '</span>];
+0094     
+0095     
+0096 <span class="keyword">end</span>
+0097 
+0098 <span class="keyword">if</span> exist(<span class="string">'starhlp'</span>,<span class="string">'var'</span>)
+0099   
+0100   <span class="keyword">if</span> ( exist(<span class="string">'helpdlg'</span>,<span class="string">'file'</span>) )
+0101     
+0102     helpdlg(starhlp,<span class="string">'starhelp 1'</span>)
+0103     
+0104   <span class="keyword">else</span>
+0105     
+0106     disp(starhlp)
+0107     
+0108   <span class="keyword">end</span>
+0109 
+0110 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of aida_visiblevol</title>
+  <meta name="keywords" content="aida_visiblevol">
+  <meta name="description" content="AIDA_VISIBLEVOL - Calculates the field of view from an ALIS   \  |  /">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>aida_visiblevol
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>AIDA_VISIBLEVOL - Calculates the field of view from an ALIS   \  |  /</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> AIDA_VISIBLEVOL - Calculates the field of view from an ALIS   \  |  /
+ station with a slightly simplified optical transfer            \ | /
+ function.                                                       \|/
+ 
+ Calling:
+ hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS);
+ 
+ Input:
+  STN_POS - the station position either as Latitude-Longitude
+            (deg) pairs or as horizontal X,Y,Z (km) coordinates.
+  AZIM    - the azimuthal angle of the camera rotation in degrees.
+  ZENIT   - the zenith angle of the rotation, degrees.
+  ALT     - the altitude to plot the field of view on.
+  CAMFOV  - the camera field-of-view, side-to-side (degrees)
+  EDGE    - 1 for plotting the edges of the field of view cone
+  OPS     - options struct with field 'clrs' control the colour
+            used in plotting
+ Output:
+  HNDL - handle-graphics handle to field-of-view lines</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/inv_project_points.html" class="code" title="function [xx,yy,zz] = inv_project_points(px,py,img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_points</a>	INV_PROJECT_POINTS - maps points (PX,PY) in image IMG_IN to a plane</li><li><a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>	x = xx( phi, lambda , alt )</li><li><a href="../EARTH/xyz_2_llh.html" class="code" title="function [long,lat,h] = xyz_2_llh(lat0,long0,h0,r)">xyz_2_llh</a>	XYZ_2_LLH transforms X,Y,Z in an lat0,long0 centred horizontal system</li><li><a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>	y = yy( phi, lambda, alt)</li><li><a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>	z = zz( phi, lambda, alt )</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ALISstdpos_visvol.html" class="code" title="function hndl = ALISstdpos_visvol(stnNRs,AZstn,ZEstn,ALTstn,FOVstn,OPS)">ALISstdpos_visvol</a>	ALISSTDPOS_VISVOL - Display ALIS f-o-v ontop of topographic map</li><li><a href="../ALIS/OldPosPlots/pos4index20051024_north.html" class="code" title="">pos4index20051024_north</a>	pos4index20051024_north - ALIS fields-of-view for position: INDEX-rocket</li><li><a href="../ALIS/OldPosPlots/pos4index20051029.html" class="code" title="">pos4index20051029</a>	pos4index20051029 - ALIS fields-of-view for position: INDEX-rocket</li><li><a href="../ALIS/OldPosPlots/stdposEISCAT_200506.html" class="code" title="">stdposEISCAT_200506</a>	stdposEISCAT_200506 - ALIS fields-of-view for position: EISCAT</li><li><a href="../ALIS/OldPosPlots/stdposEW_2006.html" class="code" title="">stdposEW_2006</a>	stdposEW_2006 - ALIS fields-of-view for position: EW</li><li><a href="../ALIS/OldPosPlots/stdposNORTH_200506.html" class="code" title="">stdposNORTH_200506</a>	stdposNORTH_2006 - ALIS fields-of-view for position: NORTH</li><li><a href="../ALIS/OldPosPlots/stdposSOUTH_2006.html" class="code" title="">stdposSOUTH_2006</a>	stdposSOUTH_2006 - ALIS fields-of-view for position: SOUTH</li><li><a href="../ALIS/OldPosPlots/stdposSURV_2006.html" class="code" title="">stdposSURV_2006</a>	stdposSURV_2006 - ALIS fields-of-view for position: SURV</li><li><a href="stdposEISCAT2_200506.html" class="code" title="">stdposEISCAT2_200506</a>	stdposEISCAT2_200506 - ALIS fields-of-view for position: EISCAT2</li><li><a href="stdposEISCAT_comparison.html" class="code" title="">stdposEISCAT_comparison</a>	stdposEISCAT_comparison - Compare ALIS-positions EISCAT and EISCAT2</li><li><a href="stdposMZ_2006.html" class="code" title="">stdposMZ_2006</a>	stdposMZ_2006 - ALIS fields-of-view for position: MZ</li><li><a href="stdposPEERA.html" class="code" title="">stdposPEERA</a>	</li><li><a href="stdpos_Andoya.html" class="code" title="">stdpos_Andoya</a>	</li><li><a href="tetropov.html" class="code" title="">tetropov</a>	</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)</a>
+0002 <span class="comment">% AIDA_VISIBLEVOL - Calculates the field of view from an ALIS   \  |  /</span>
+0003 <span class="comment">% station with a slightly simplified optical transfer            \ | /</span>
+0004 <span class="comment">% function.                                                       \|/</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS);</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%  STN_POS - the station position either as Latitude-Longitude</span>
+0011 <span class="comment">%            (deg) pairs or as horizontal X,Y,Z (km) coordinates.</span>
+0012 <span class="comment">%  AZIM    - the azimuthal angle of the camera rotation in degrees.</span>
+0013 <span class="comment">%  ZENIT   - the zenith angle of the rotation, degrees.</span>
+0014 <span class="comment">%  ALT     - the altitude to plot the field of view on.</span>
+0015 <span class="comment">%  CAMFOV  - the camera field-of-view, side-to-side (degrees)</span>
+0016 <span class="comment">%  EDGE    - 1 for plotting the edges of the field of view cone</span>
+0017 <span class="comment">%  OPS     - options struct with field 'clrs' control the colour</span>
+0018 <span class="comment">%            used in plotting</span>
+0019 <span class="comment">% Output:</span>
+0020 <span class="comment">%  HNDL - handle-graphics handle to field-of-view lines</span>
+0021 
+0022 <span class="comment">%   Copyright � 20050112 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0023 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0024 
+0025 <span class="keyword">if</span> nargin &lt; 6,
+0026   <span class="keyword">if</span> nargin &gt; 0 | nargout ~= 1
+0027     help alis_visiblevol;
+0028   <span class="keyword">end</span>
+0029   hndl.clrs = <span class="string">'bcgmry'</span>;
+0030   <span class="keyword">return</span>;
+0031 <span class="keyword">end</span>;
+0032 
+0033 
+0034 bxy = [512 512];
+0035 
+0036 
+0037 q = [1 .7 0];
+0038 clrs = {<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'g'</span>,<span class="string">'m'</span>,<span class="string">'r'</span>,<span class="string">'y'</span>};
+0039 <span class="keyword">if</span> nargin&gt;=7 &amp; isfield(OPS,<span class="string">'clrs'</span>)
+0040   clrs = OPS.clrs;
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="keyword">for</span> i1 = 1:size(stn_pos,1)
+0044   
+0045   <span class="comment">% convert azimuth and zenith angles to Tait-Bryant angles</span>
+0046   <span class="comment">%raz = (-azim(i1)+90)*pi/180;</span>
+0047   raz = (azim(i1))*pi/180;
+0048   rze = zenit(i1)*pi/180;
+0049   <span class="comment">% alfa and beta into degrees - going into guess_optpar...</span>
+0050   <span class="comment">%beta = -180/pi * atan(cos(raz)/tan(rze));</span>
+0051   <span class="comment">%alfa = -180/pi * asin(sin(raz)*sin(rze));</span>
+0052   beta = 180/pi * asin(cos(raz)*sin(rze));
+0053 <span class="comment">% beta = 180/pi * asin(sin(raz)*sin(rze));</span>
+0054 <span class="comment">% alfa = 180/pi * atan(cos(raz)*tan(rze));</span>
+0055   alfa = 180/pi * atan2(sin(raz)*sin(rze),cos(rze));
+0056   <span class="keyword">if</span> isfield(OPS,<span class="string">'gamma_rot'</span>)
+0057     gamma = OPS.gamma_rot(i1);
+0058   <span class="keyword">else</span>
+0059     gamma = 0;
+0060   <span class="keyword">end</span>
+0061   
+0062   <span class="comment">% Calculate focal length corresponding to field-of-view.</span>
+0063   f = 1/2/atan(pi/360*camfov(i1));
+0064   guess_optp = [-f f alfa beta gamma 0 0 .3 3 1];
+0065   
+0066   hold on
+0067   grid on
+0068   
+0069   <span class="comment">% Pixel coordinates for image corners</span>
+0070   u = [1 512 512   1 1];
+0071   v = [1   1 512 512 1];
+0072 
+0073   <span class="comment">% Set the station position</span>
+0074   <span class="keyword">if</span> nargin&gt;=7 &amp; isfield(OPS,<span class="string">'LL'</span>) &amp; OPS.LL == 1 <span class="comment">%  % correction bug CSW 201203</span>
+0075     r_stn(i1,:) = [0 0 0]; <span class="comment">% For stn_pos in lat-long just set position to 0</span>
+0076   <span class="keyword">else</span>
+0077     r_stn(i1,:) = stn_pos(i1,:); <span class="comment">% Else set to stn_pos (in km relative to some origin)</span>
+0078   <span class="keyword">end</span>
+0079   e_n = [0 0 1];
+0080   <span class="comment">% calculate spatial (cartesian) coordinates for corners</span>
+0081   <span class="comment">% line-of-sigths at requested altitude</span>
+0082   [<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>,<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>,<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>] = <a href="../Camera/inv_project_points.html" class="code" title="function [xx,yy,zz] = inv_project_points(px,py,img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_points</a>(u,v,zeros(bxy),r_stn(i1,:),guess_optp(9),guess_optp,e_n,alt(i1));
+0083   <span class="comment">%disp('zz (km)')</span>
+0084   <span class="comment">%disp(zz)</span>
+0085   
+0086   <span class="keyword">if</span> nargin&gt;=7 &amp; isfield(OPS,<span class="string">'LL'</span>) &amp; OPS.LL    <span class="comment">%  % correction bug CSW 201203</span>
+0087     h0 = .245;
+0088     
+0089     <span class="keyword">if</span> size(stn_pos,2) == 3
+0090       lat0 = stn_pos(1,1);
+0091       long0 = stn_pos(1,2);
+0092       <span class="comment">% Convert postition from cartesian [x,y,z] to [lat,long,h]</span>
+0093       [r_stn(i1,1),r_stn(i1,2),r_stn(i1,3)] = <a href="../EARTH/xyz_2_llh.html" class="code" title="function [long,lat,h] = xyz_2_llh(lat0,long0,h0,r)">xyz_2_llh</a>(lat0,long0,h0,[stn_pos(i1,1),stn_pos(i1,2),.5]);
+0094       <span class="comment">% FIX-ME: get lat0, long0 some way...</span>
+0095     <span class="keyword">else</span>
+0096       r_stn(i1,1) = stn_pos(i1,1);
+0097       r_stn(i1,2) = stn_pos(i1,2);
+0098       r_stn(i1,3) = .5;
+0099     <span class="keyword">end</span>
+0100     [<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(:),<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(:),<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>(:)] = <a href="../EARTH/xyz_2_llh.html" class="code" title="function [long,lat,h] = xyz_2_llh(lat0,long0,h0,r)">xyz_2_llh</a>(r_stn(i1,1),r_stn(i1,2),h0,[<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(:),<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(:),<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>(:)]);
+0101     axis auto
+0102   <span class="keyword">else</span>
+0103     axis(<span class="string">'equal'</span>)
+0104   <span class="keyword">end</span>
+0105   <span class="keyword">if</span> nargin&gt;=7 &amp; isfield(OPS,<span class="string">'LL'</span>) &amp; OPS.LL == 1 <span class="comment">%  % correction bug CSW 201203</span>
+0106     
+0107     phdl = plot3(stn_pos(i1,2),stn_pos(i1,1),1,<span class="string">'.'</span>);
+0108     
+0109   <span class="keyword">else</span>
+0110     r_stn(i1,3);
+0111     phdl = plot3(r_stn(i1,1),r_stn(i1,2),r_stn(i1,3)+10,<span class="string">'.'</span>);
+0112   <span class="keyword">end</span>
+0113   <span class="keyword">if</span> clrs{i1} == <span class="string">'y'</span>
+0114     set(phdl,<span class="string">'color'</span>,[.9 .6 0])
+0115   <span class="keyword">else</span>
+0116     set(phdl,<span class="string">'color'</span>,clrs{i1})
+0117   <span class="keyword">end</span>
+0118   
+0119   set(phdl,<span class="string">'markersize'</span>,18)
+0120   hndl{i1} = plot3(<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>,<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>,<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>);
+0121   
+0122   <span class="keyword">if</span> ( edge == 1 )
+0123     
+0124     <span class="keyword">for</span> i2 = 1:4,
+0125       hndl{i1}(1+i2) = plot3([r_stn(i1,1) <a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(i2)],[r_stn(i1,2) <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(i2)],[r_stn(i1,3) <a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>(i2)]);
+0126     <span class="keyword">end</span>
+0127     
+0128   <span class="keyword">end</span>
+0129   
+0130   <span class="keyword">if</span> clrs{i1} == <span class="string">'y'</span>
+0131     set(hndl{i1},<span class="string">'color'</span>,[.9 .6 0])
+0132   <span class="keyword">else</span>
+0133     set(hndl{i1},<span class="string">'color'</span>,clrs{i1})
+0134   <span class="keyword">end</span>
+0135   <span class="keyword">if</span> ( alt(i1) &lt; 60 )
+0136   set(hndl{i1},<span class="string">'LineWidth'</span>,2);
+0137   <span class="keyword">else</span>
+0138     set(hndl{i1},<span class="string">'LineWidth'</span>,1);
+0139   <span class="keyword">end</span>
+0140   <span class="keyword">if</span> nargin&gt;6 &amp; isfield(OPS,<span class="string">'linewidth'</span>)
+0141     set(hndl{i1},<span class="string">'LineWidth'</span>,OPS.linewidth);
+0142   <span class="keyword">end</span>
+0143   hndl{i1} = [hndl{i1},phdl];
+0144   
+0145 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

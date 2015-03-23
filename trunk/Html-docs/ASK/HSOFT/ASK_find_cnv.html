@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_find_cnv</title>
+  <meta name="keywords" content="ASK_find_cnv">
+  <meta name="description" content="ASK_FIND_CNV - get the cnv camera parameters for a specific time">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_find_cnv
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_FIND_CNV - get the cnv camera parameters for a specific time</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function cnv = ASK_find_cnv(mjs_time) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_FIND_CNV - get the cnv camera parameters for a specific time
+ from the common block
+ This is for ASK, where cnv values are inside a lookup table.
+
+ Calling:
+  cnv = ASK_find_cnv(mjs_time,cnv_t1,cnv_t2,cnv_data)
+ Input:
+  mjs_time - the time of interest
+  cnv_t1   - Start time of CNV-validities
+  cnv_t2   - Stop time of CNV-validities
+  cnv_data - CNV-parameters.
+ Output:
+  cnv - the camera/conversion parameters</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_locate_int.html" class="code" title="function [start_indx,stop_indx] = ASK_locate_int(t1,t2,mjs1,mjs2,hardBoundaries)">ASK_locate_int</a>	ASK_LOCATE_INT -</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_read_vs.html" class="code" title="function vs = ASK_read_vs(num,filename,quiet)">ASK_read_vs</a>	ASK_READ_VS -  the procedure to read the videoevent setup - the new version</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function cnv = ASK_find_cnv(mjs_time)</a>
+0002 <span class="comment">% ASK_FIND_CNV - get the cnv camera parameters for a specific time</span>
+0003 <span class="comment">% from the common block</span>
+0004 <span class="comment">% This is for ASK, where cnv values are inside a lookup table.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%  cnv = ASK_find_cnv(mjs_time,cnv_t1,cnv_t2,cnv_data)</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%  mjs_time - the time of interest</span>
+0010 <span class="comment">%  cnv_t1   - Start time of CNV-validities</span>
+0011 <span class="comment">%  cnv_t2   - Stop time of CNV-validities</span>
+0012 <span class="comment">%  cnv_data - CNV-parameters.</span>
+0013 <span class="comment">% Output:</span>
+0014 <span class="comment">%  cnv - the camera/conversion parameters</span>
+0015 
+0016 
+0017 <span class="comment">% Written to mimic find_cnv.pro</span>
+0018 <span class="comment">% Copyright Bjorn Gustavsson 20110207</span>
+0019 <span class="comment">% GNU copyleft version 3.0 or later applies</span>
+0020 
+0021 <span class="comment">% function cnv = find_cnv(mjs_time,cnv_t1,cnv_t2,cnv_data)</span>
+0022 
+0023 
+0024 <span class="keyword">global</span> cnvlut <span class="comment">% WITH: cnv_t1, cnv_t2, cnv_data</span>
+0025 
+0026 <span class="comment">%[start_indx,stop_indx] = ASK_locate_int(cnvlut.cnv_t1,cnvlut.cnv_t2,mjs_time,mjs_time);</span>
+0027 [start_indx] = <a href="ASK_locate_int.html" class="code" title="function [start_indx,stop_indx] = ASK_locate_int(t1,t2,mjs1,mjs2,hardBoundaries)">ASK_locate_int</a>(cnvlut.cnv_t1,cnvlut.cnv_t2,mjs_time,mjs_time);
+0028 cnv = cnvlut.cnv_data(start_indx,:);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

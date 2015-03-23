@@ -1,0 +1,390 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_setup4reduced2D</title>
+  <meta name="keywords" content="tomo_setup4reduced2D">
+  <meta name="description" content="tomo_setup4reduced2D - Set up coordinates and projection matrices">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_setup4reduced2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>tomo_setup4reduced2D - Set up coordinates and projection matrices</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> tomo_setup4reduced2D - Set up coordinates and projection matrices
+ for a plane between 2 stations that is parallel with B (Tromso by
+ default, arbitrary magnetic field can be given as a field in the
+ options structure: OPS.B). 
+
+ Calling
+   [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS)
+   OPS = tomo_setup4reduced2D
+ Input:
+   stns - stations structure, with at least 2 elements, out of
+          which the two first is used to define the horizontal
+          direction of the plane to build.
+   OPS  - options structure with fields shaping the outputs and
+          the running of the function. Fields are:
+          maxAlt - highest altitude of the 2-D slice (250 km)
+          minAlt - lowest  altitude of the 2-D slice (80 km)
+          ds     - Size of blobs (2 km)
+          PlotStuff - flag for plotting intermediate steps (1),
+                      set to 0 to turn off.
+          keyboardwait - stop with a keyboard prompt at the end of
+                         the function (0), set to 1 to stop.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/inv_project_directions.html" class="code" title="function [az,ze] = inv_project_directions(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_directions</a>	INV_PROJECT_DIRECTIONS - pixels line-of-sight to azimuth and zenith angles</li><li><a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>	PROJECT_DIRECTIONS - calculates the image positions [UA,WA] from (AZ,ZE)</li><li><a href="../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>	PROJECT_POINT - project a point in space R down onto an image</li><li><a href="../Geometry/point_on_line.html" class="code" title="function  [r_out] = point_on_line(r_0,e_l,l)">point_on_line</a>	POINT_ON_LINE calculates the vector to a point R_OUT</li><li><a href="../Geometry/rot_around_v.html" class="code" title="function R = rot_around_v(e_rot,phi)">rot_around_v</a>	ROT_AROUND_V - matrix for rotation PHI radians around E_ROT</li><li><a href="sc_positioning.html" class="code" title="function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)">sc_positioning</a>	SC_POSITIONING - position voxels/base-functions in SC grid.</li><li><a href="trmtr3Dto1D.html" class="code" title="function [trmtr,fi_out,debug_m] = trmtr3Dto1D(X,Y,Z,r0,e_pix,dL,OPS)">trmtr3Dto1D</a>	trmtr3Dto1D - make projection matrix from 3-D to 1-D image cuts</li><li><a href="../tools/catstruct.html" class="code" title="function A = catstruct(varargin)">catstruct</a>	CATSTRUCT - concatenate structures</li><li><a href="../tools/get_B_EISCAT.html" class="code" title="function [Bout] = get_B_EISCAT(SiteNames)">get_B_EISCAT</a>	GET_B_EISCAT - get geomagnteic fields for the EISACT sites.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="GACT_snippet.html" class="code" title="">GACT_snippet</a>	</li><li><a href="newGACT_snippetStart.html" class="code" title="">newGACT_snippetStart</a>	% Automatic triangulation function to determine the peak altitude of</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS)</a>
+0002 <span class="comment">% tomo_setup4reduced2D - Set up coordinates and projection matrices</span>
+0003 <span class="comment">% for a plane between 2 stations that is parallel with B (Tromso by</span>
+0004 <span class="comment">% default, arbitrary magnetic field can be given as a field in the</span>
+0005 <span class="comment">% options structure: OPS.B).</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling</span>
+0008 <span class="comment">%   [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS)</span>
+0009 <span class="comment">%   OPS = tomo_setup4reduced2D</span>
+0010 <span class="comment">% Input:</span>
+0011 <span class="comment">%   stns - stations structure, with at least 2 elements, out of</span>
+0012 <span class="comment">%          which the two first is used to define the horizontal</span>
+0013 <span class="comment">%          direction of the plane to build.</span>
+0014 <span class="comment">%   OPS  - options structure with fields shaping the outputs and</span>
+0015 <span class="comment">%          the running of the function. Fields are:</span>
+0016 <span class="comment">%          maxAlt - highest altitude of the 2-D slice (250 km)</span>
+0017 <span class="comment">%          minAlt - lowest  altitude of the 2-D slice (80 km)</span>
+0018 <span class="comment">%          ds     - Size of blobs (2 km)</span>
+0019 <span class="comment">%          PlotStuff - flag for plotting intermediate steps (1),</span>
+0020 <span class="comment">%                      set to 0 to turn off.</span>
+0021 <span class="comment">%          keyboardwait - stop with a keyboard prompt at the end of</span>
+0022 <span class="comment">%                         the function (0), set to 1 to stop.</span>
+0023 
+0024 <span class="comment">%   Copyright � 20120330 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0025 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0026 
+0027 dOps.maxAlt       = 250; <span class="comment">% Highest altitude of 2-D block</span>
+0028 dOps.minAlt       =  80; <span class="comment">% Lowest altitude of 2-D block</span>
+0029 dOps.ds           =   2; <span class="comment">% Size of blob</span>
+0030 dOps.PlotStuff    =   1; <span class="comment">% Plot figures of what's done.</span>
+0031 dOps.keyboardwait =   0; <span class="comment">% Dont wait at keyboard inside this function</span>
+0032 
+0033 <span class="comment">% If the function is called without input arguments, then just</span>
+0034 <span class="comment">% return the default options:</span>
+0035 <span class="keyword">if</span> nargin == 0
+0036   trmtrs = dOps;
+0037   <span class="keyword">return</span>
+0038 <span class="keyword">elseif</span> nargin &gt; 1
+0039   <span class="comment">% ...on the other hand if there's an options struct given then</span>
+0040   <span class="comment">% merge that one ontop of the default options</span>
+0041   dOps = <a href="../tools/catstruct.html" class="code" title="function A = catstruct(varargin)">catstruct</a>(dOps,OPS);
+0042 <span class="keyword">end</span>
+0043 
+0044 <span class="comment">%% Geometry Set-up for Stations and the plane-of-interest</span>
+0045 <span class="comment">%</span>
+0046 rStn1toStn2 = stns(2).obs.xyz - stns(1).obs.xyz;
+0047 rStn1toStn2(3) = 0; <span class="comment">% This is something that is a bit dodgy. I</span>
+0048                     <span class="comment">% don't know with is better here, to stick to a</span>
+0049                     <span class="comment">% solidly horizontal unit-vector at station 1</span>
+0050                     <span class="comment">% or to stick with the curvature of the</span>
+0051                     <span class="comment">% earth. BG 20120123</span>
+0052 eS1toS2 = rStn1toStn2/norm(rStn1toStn2);
+0053 
+0054 <span class="comment">%% Magnetic field for EISCAT sites</span>
+0055 B = <a href="../tools/get_B_EISCAT.html" class="code" title="function [Bout] = get_B_EISCAT(SiteNames)">get_B_EISCAT</a>;
+0056 <span class="keyword">if</span> isfield(dOps,<span class="string">'B'</span>)
+0057   B = dOops.B;
+0058 <span class="keyword">end</span>
+0059 <span class="comment">%%</span>
+0060 <span class="comment">% 1 - Ramfjord</span>
+0061 <span class="comment">% Magnetic field direction, average between ground and 300 km:</span>
+0062 eB = sum(B(1).B);eB = -eB'/norm(eB);
+0063 eBp = (stns(1).obs.trmtr*eB);
+0064 <span class="comment">% Incermental angle for varying zenith angle in meridional plane -</span>
+0065 <span class="comment">% for making lines-of-sight fan:</span>
+0066 dphi = 1e-2*pi/180*35; <span class="comment">% This is hardcoded for giving ~256 elements</span>
+0067                        <span class="comment">% in a image-fan for the ALIS camera located</span>
+0068                        <span class="comment">% in Skibotn 2008. BG 20120123</span>
+0069 <span class="comment">%% TODO: Fix this to allow for a more flexible use</span>
+0070 
+0071 <span class="comment">%% Unit vector perpendicular to both eB and eS1toS2</span>
+0072 <span class="comment">%  This vector we should rotate line-of-sight around to get the</span>
+0073 <span class="comment">%  image fan.</span>
+0074 e2rot = cross(eS1toS2,eB);
+0075 <span class="comment">% And the rotation matrix for rotations around e2rot:</span>
+0076 RotAroundE2rot = <a href="../Geometry/rot_around_v.html" class="code" title="function R = rot_around_v(e_rot,phi)">rot_around_v</a>(e2rot,dphi);
+0077 
+0078 <span class="comment">%% Azimuth and Zenith angles for line-of-sight:</span>
+0079 eLOS = eB;
+0080 ze_B = atan(sum(eLOS(1:2).^2).^.5/eLOS(3));
+0081 az_B = atan2(eLOS(1),eLOS(2));
+0082 ze_tmp = ze_B;
+0083 az_tmp = az_B;
+0084 
+0085 <span class="comment">% Image point of magnetic zenith (for checking only):</span>
+0086 sizim1 = size(stns(1).img);
+0087 [uB,vB] = <a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(az_tmp,<span class="keyword">...</span>
+0088                              ze_tmp,<span class="keyword">...</span>
+0089                              stns(1).obs.optpar,stns(1).obs.optpar(9),<span class="keyword">...</span>
+0090                              sizim1)
+0091 uP = uB;
+0092 vP = vB;
+0093 <span class="comment">% rotate the zenith angle in one direction around E2ROT until it</span>
+0094 <span class="comment">% leaves the image field-of-view:</span>
+0095 <span class="keyword">while</span> 1 &lt;= uP &amp; uP &lt;= sizim1(2) &amp; 1&lt;=vP &amp; vP &lt;= sizim1(1)
+0096   
+0097   eLOS = (RotAroundE2rot*eLOS); <span class="comment">% Rotate line-of-sight vector</span>
+0098   ze_tmp = atan(sum(eLOS(1:2).^2).^.5/eLOS(3)); 
+0099   az_tmp = atan2(eLOS(1),eLOS(2));
+0100   <span class="comment">% Get the image coordinates that line-of-sight direction:</span>
+0101   [uP,vP] = <a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(az_tmp,ze_tmp,<span class="keyword">...</span>
+0102                                stns(1).obs.optpar,stns(1).obs.optpar(9),<span class="keyword">...</span>
+0103                                sizim1);
+0104   <span class="keyword">if</span> dOps.PlotStuff
+0105     plot(uP,vP,<span class="string">'g*'</span>),
+0106   <span class="keyword">end</span>
+0107 <span class="keyword">end</span>
+0108 
+0109 <span class="comment">% Rotate the line-of-sight vector one tick back into the image</span>
+0110 <span class="comment">% field-of-view:</span>
+0111 eLOS = (RotAroundE2rot'*eLOS);
+0112 <span class="comment">% (...the transpose of a rotation matrix rotates in the opposite</span>
+0113 <span class="comment">% directions...)</span>
+0114 
+0115 <span class="comment">% Start gathering parameters for building the projection matrix,</span>
+0116 <span class="comment">% such as azimuth and zenith angles</span>
+0117 iM = 1;
+0118 ze_tmp = atan(sum(eLOS(1:2).^2).^.5/eLOS(3));
+0119 az_tmp = atan2(eLOS(1),eLOS(2));
+0120 <span class="comment">% This should make up the first line-of-sight pixel coordinates of</span>
+0121 <span class="comment">% the fan that falls inside the image field-of-view:</span>
+0122 [uP,vP] = <a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(az_tmp,ze_tmp,<span class="keyword">...</span>
+0123                              stns(1).obs.optpar,stns(1).obs.optpar(9),<span class="keyword">...</span>
+0124                              sizim1);
+0125 
+0126 <span class="comment">% Rotate the line-of-sight vector in the other direction across the</span>
+0127 <span class="comment">% image field-of-view:</span>
+0128 <span class="keyword">while</span> 1 &lt;= uP &amp; uP &lt;= sizim1(2) &amp; 1&lt;=vP &amp; vP &lt;= sizim1(1)
+0129   
+0130   <span class="comment">% as long as we're inside the image area we save away the</span>
+0131   <span class="comment">% line-of-sight; to make a 1D-fan:</span>
+0132   az_M(iM) = az_tmp; <span class="comment">% Azimuth and</span>
+0133   ze_M(iM) = ze_tmp; <span class="comment">% Zenith angle</span>
+0134   uPM(iM) = uP;      <span class="comment">% Corresponding</span>
+0135   vPM(iM) = vP;      <span class="comment">% pixel coordinates</span>
+0136   <span class="keyword">if</span> dOps.PlotStuff
+0137     plot(uP,vP,<span class="string">'b.'</span>)
+0138   <span class="keyword">end</span>
+0139   iM = iM + 1;
+0140   <span class="comment">% Rotate the line-of-sight vector:</span>
+0141   eLOS = (RotAroundE2rot'*eLOS);
+0142   ze_tmp = atan(sum(eLOS(1:2).^2).^.5/eLOS(3));
+0143   az_tmp = atan2(eLOS(1),eLOS(2));
+0144   <span class="comment">% Calculate its image coordinates:</span>
+0145   [uP,vP] = <a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(az_tmp,ze_tmp,<span class="keyword">...</span>
+0146                                stns(1).obs.optpar,stns(1).obs.optpar(9),<span class="keyword">...</span>
+0147                                sizim1);
+0148   
+0149 <span class="keyword">end</span>
+0150 
+0151 <span class="comment">% Stack away the image coordinates of the beam-fan:</span>
+0152 U{1} = uPM;
+0153 V{1} = vPM;
+0154 
+0155 <span class="keyword">if</span> dOps.PlotStuff
+0156   plot([1 256 256 1 1],[1 1 256 256 1],<span class="string">'r'</span>)
+0157   hold on
+0158   pause(0.5)
+0159 <span class="keyword">end</span>
+0160 
+0161 <span class="comment">% This is the line-of-sight fan:</span>
+0162 eMfan = [sin(az_M').*sin(ze_M') cos(az_M').*sin(ze_M') cos(ze_M')];
+0163 eMfan = (stns(1).obs.trmtr*eMfan')';
+0164 
+0165 <span class="comment">% This should be the position of the line-of-sights at the highest</span>
+0166 <span class="comment">% altitude.</span>
+0167 <span class="keyword">for</span> i1 = 1:length(eMfan)
+0168   
+0169   r_maxAlt(i1,:) = <a href="../Geometry/point_on_line.html" class="code" title="function  [r_out] = point_on_line(r_0,e_l,l)">point_on_line</a>(stns(1).obs.xyz,<span class="keyword">...</span>
+0170                                  eMfan(i1,:),<span class="keyword">...</span>
+0171                                  dOps.maxAlt/eMfan(i1,3));
+0172 <span class="keyword">end</span>
+0173 <span class="comment">% Then we calculate the positions of those field-lines at the</span>
+0174 <span class="comment">% lowest altitudes:</span>
+0175 <span class="keyword">for</span> i1 = 1:length(eMfan)
+0176   
+0177   r_minAlt(i1,:) = <a href="../Geometry/point_on_line.html" class="code" title="function  [r_out] = point_on_line(r_0,e_l,l)">point_on_line</a>(r_maxAlt(i1,:),eBp',(dOps.minAlt-dOps.maxAlt)/eBp(3));
+0178   
+0179 <span class="keyword">end</span>
+0180 <span class="comment">% This should be used to build the 2-D block-of-blobs</span>
+0181 <span class="keyword">if</span> dOps.PlotStuff
+0182   clf
+0183   plot3(r_minAlt(:,1),r_minAlt(:,2),r_minAlt(:,3),<span class="string">'b.-'</span>),
+0184   hold on,
+0185   plot3(r_maxAlt(:,1),r_maxAlt(:,2),r_maxAlt(:,3),<span class="string">'r.-'</span>),
+0186   <span class="keyword">for</span> i1 = 1:length(stns),
+0187     phStn(i1) = plot3(stns(i1).obs.xyz(1),stns(i1).obs.xyz(2),stns(i1).obs.xyz(3),<span class="string">'*'</span>);
+0188     set(phStn(i1),<span class="string">'color'</span>,rand(1,3))
+0189   <span class="keyword">end</span>
+0190   pause(0.5)
+0191 <span class="keyword">end</span>
+0192 
+0193 <span class="comment">% This should be the lowest corners:</span>
+0194 r001 = <a href="../Geometry/point_on_line.html" class="code" title="function  [r_out] = point_on_line(r_0,e_l,l)">point_on_line</a>(r_maxAlt(1,:),eBp',(dOps.minAlt-dOps.maxAlt)/eBp(3))
+0195 r002 = <a href="../Geometry/point_on_line.html" class="code" title="function  [r_out] = point_on_line(r_0,e_l,l)">point_on_line</a>(r_maxAlt(<span class="keyword">end</span>,:),eBp',(dOps.minAlt-dOps.maxAlt)/eBp(3))
+0196 
+0197 <span class="comment">% Blob-size in km:</span>
+0198 dS = dOps.ds;
+0199 
+0200 <span class="comment">% Horizontal base vector in the direction between the stations:</span>
+0201 dr1 = eS1toS2*dS;
+0202 <span class="comment">% Tricky part: The base-vector along B should have a component</span>
+0203 <span class="comment">% perpendicular to eS1toS2 that is dS long. This we should have</span>
+0204 <span class="comment">% because we want the blob to be cos^2 dr1 * cos^2 (dr3 perp dr1)</span>
+0205 <span class="comment">% so that consecutive layers do not overlap, but still are skewed</span>
+0206 <span class="comment">% so that blob(i1,i2,i3) and blob(i1,i2,i3+1) are on the same</span>
+0207 <span class="comment">% magnetic field-line.</span>
+0208 <span class="comment">%</span>
+0209 <span class="comment">% So we start with calculating that component, by subtracting from</span>
+0210 <span class="comment">%                 eB   the component that is parallel to eS1toS2:</span>
+0211 eB_perp_eS1toS2 = eB' - dot(eB',eS1toS2)*eS1toS2;
+0212 <span class="comment">% Then we get the factor to scale eB with:</span>
+0213 ScF4eB = dS/norm(eB_perp_eS1toS2);
+0214 <span class="comment">% And the base-vector:</span>
+0215 dr3 = ScF4eB*eB';
+0216 <span class="comment">% And a third base vector to complement the system, here we choose</span>
+0217 <span class="comment">% one that is also horizontal. that way all layers V3D(:,:,iN) will</span>
+0218 <span class="comment">% be at the same altitude:</span>
+0219 dr2 = dS*cross(eS1toS2,[0 0 1]);
+0220 
+0221 
+0222 [uU2,vU2,lU2] = <a href="../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(stns(2).obs.xyz,<span class="keyword">...</span>
+0223                               stns(2).obs.optpar,<span class="keyword">...</span>
+0224                               r_maxAlt',<span class="keyword">...</span>
+0225                               stns(2).obs.trmtr',<span class="keyword">...</span>
+0226                               sizim1);
+0227 [uL2,vL2,lL2] = <a href="../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(stns(2).obs.xyz,<span class="keyword">...</span>
+0228                               stns(2).obs.optpar,<span class="keyword">...</span>
+0229                               r_minAlt',<span class="keyword">...</span>
+0230                               stns(2).obs.trmtr',<span class="keyword">...</span>
+0231                               sizim1);
+0232 
+0233 <span class="keyword">if</span> dOps.PlotStuff
+0234   [uU1,vU1,lU1] = <a href="../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(stns(1).obs.xyz,<span class="keyword">...</span>
+0235                                 stns(1).obs.optpar,<span class="keyword">...</span>
+0236                                 r_maxAlt',<span class="keyword">...</span>
+0237                                 stns(1).obs.trmtr,<span class="keyword">...</span>
+0238                                 sizim1);
+0239   [uL1,vL1,lL1] = <a href="../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(stns(1).obs.xyz,<span class="keyword">...</span>
+0240                                 stns(1).obs.optpar,<span class="keyword">...</span>
+0241                                 r_minAlt',<span class="keyword">...</span>
+0242                                 stns(1).obs.trmtr,<span class="keyword">...</span>
+0243                                 sizim1);
+0244   clf
+0245   plot(uPM,vPM)
+0246   hold on
+0247   plot(uL1,vL1,<span class="string">'r'</span>)
+0248   plot(uU1,vU1,<span class="string">'g--'</span>)
+0249   pause(0.5)
+0250   clf
+0251   plot(uU2,vU2,<span class="string">'+'</span>)
+0252   hold on
+0253   plot(uL2,vL2,<span class="string">'r'</span>)
+0254   pause(0.5)
+0255 <span class="keyword">end</span>
+0256 
+0257 <span class="comment">% Calculate the number of blobs needed to fill the full slice:</span>
+0258 l_bob = norm(r_maxAlt(1,:)-r_maxAlt(<span class="keyword">end</span>,:));
+0259 h_bob = norm(r_maxAlt(1,:)-r_minAlt(1,:));
+0260 nHor = ceil(l_bob/dS);
+0261 nVer = ceil(h_bob/dS);
+0262 
+0263 <span class="comment">% Allocate that amount of memmory:</span>
+0264 Vem = zeros([1 nHor nVer]);
+0265 
+0266 <span class="comment">% set the lower south-west corner:</span>
+0267 r0 = r001;
+0268 <span class="comment">% TODO: Check that the right one of r001 and r002 is selected as</span>
+0269 <span class="comment">% the LSW-corner!</span>
+0270 
+0271 <span class="comment">% Calculate duplicate arrays for the position of the base functions:</span>
+0272 [r,Xi,Yi,Zi] = <a href="sc_positioning.html" class="code" title="function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)">sc_positioning</a>(r0,dr1,dr2,dr3,Vem);
+0273 X = r0(1)+dr1(1)*(Xi-1)+dr2(1)*(Yi-1)+dr3(1)*(Zi-1);
+0274 Y = r0(2)+dr1(2)*(Xi-1)+dr2(2)*(Yi-1)+dr3(2)*(Zi-1);
+0275 Z = r0(3)+dr1(3)*(Xi-1)+dr2(3)*(Yi-1)+dr3(3)*(Zi-1);
+0276 
+0277 <span class="keyword">if</span> dOps.PlotStuff
+0278   clf
+0279   plot3(r_minAlt(:,1),r_minAlt(:,2),r_minAlt(:,3),<span class="string">'b.-'</span>),
+0280   hold on,
+0281   plot3(r_maxAlt(:,1),r_maxAlt(:,2),r_maxAlt(:,3),<span class="string">'r.-'</span>),
+0282   <span class="keyword">for</span> i1 = 1:length(stns),
+0283     phStn(i1) = plot3(stns(i1).obs.xyz(1),stns(i1).obs.xyz(2),stns(i1).obs.xyz(3),<span class="string">'*'</span>);
+0284     set(phStn(i1),<span class="string">'color'</span>,rand(1,3))
+0285   <span class="keyword">end</span>
+0286   plot3(r(1,:),r(2,:),r(3,:),<span class="string">'g-'</span>),
+0287   
+0288 <span class="keyword">end</span>
+0289 
+0290 <span class="comment">% Here check wether the slice cuts closer to the vertical or the</span>
+0291 <span class="comment">% horisontal direction in STNS(2).img:</span>
+0292 phi2 = atan2(diff(vU2(4:5)),diff(uU2(4:5)))*180/pi;
+0293 <span class="comment">% Then make te fan from one pixel per column:</span>
+0294 <span class="keyword">if</span> ( 45 &lt; phi2 &amp; phi2 &lt; 135 | <span class="keyword">...</span>
+0295      -135 &lt; phi2 &amp; phi2 &lt; -45 )
+0296   v2i = 1:size(stns(2).img,1); <span class="comment">% 256;</span>
+0297   u2i = interp1(vL2(1&lt;=uL2&amp;uL2&lt;=256&amp;1&lt;=vL2&amp;vL2&lt;=256),<span class="keyword">...</span>
+0298                 uL2(1&lt;=uL2&amp;uL2&lt;=256&amp;1&lt;=vL2&amp;vL2&lt;=256),v2i,<span class="string">'pchip'</span>);
+0299 <span class="keyword">else</span> <span class="comment">% Or row:</span>
+0300   u2i = 1:size(stns(2).img,2); <span class="comment">% 256;</span>
+0301   v2i = interp1(uL2(1&lt;=uL2&amp;uL2&lt;=256&amp;1&lt;=vL2&amp;vL2&lt;=256),<span class="keyword">...</span>
+0302                 vL2(1&lt;=uL2&amp;uL2&lt;=256&amp;1&lt;=vL2&amp;vL2&lt;=256),u2i,<span class="string">'pchip'</span>);
+0303 <span class="keyword">end</span>
+0304 
+0305 
+0306 U{2} = u2i;
+0307 V{2} = v2i;
+0308 <span class="comment">% Polar coordinates of the fan in the second camera</span>
+0309 [az2i,ze2i] = <a href="../Camera/inv_project_directions.html" class="code" title="function [az,ze] = inv_project_directions(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_directions</a>(u2i,v2i,stns(2).img,<span class="keyword">...</span>
+0310                                      r,<span class="keyword">...</span><span class="comment"> % Unused argument</span>
+0311                                      stns(2).obs.optpar(9),<span class="keyword">...</span>
+0312                                      stns(2).obs.optpar,<span class="keyword">...</span>
+0313                                      [0 0 1],100,<span class="keyword">...</span><span class="comment">  % Unused arguments</span>
+0314                                      eye(3));
+0315 <span class="comment">% Yup, here there is a whole lot of repeated calculations between</span>
+0316 <span class="comment">% line-of-sight vector components and the corresponding</span>
+0317 <span class="comment">% azimuth-zenith angles. There really should be a</span>
+0318 e2Fan = [sin(az2i).*sin(ze2i) cos(az2i).*sin(ze2i) cos(ze2i)];
+0319 e2Fan = (stns(2).obs.trmtr'*e2Fan')';
+0320 
+0321 <span class="comment">% ...and finaly calculate the projection matrices:</span>
+0322 trmtrs{1} = <a href="trmtr3Dto1D.html" class="code" title="function [trmtr,fi_out,debug_m] = trmtr3Dto1D(X,Y,Z,r0,e_pix,dL,OPS)">trmtr3Dto1D</a>(X,Y,Z,stns(1).obs.xyz,eMfan,dS); 
+0323 trmtrs{2} = <a href="trmtr3Dto1D.html" class="code" title="function [trmtr,fi_out,debug_m] = trmtr3Dto1D(X,Y,Z,r0,e_pix,dL,OPS)">trmtr3Dto1D</a>(X,Y,Z,stns(2).obs.xyz,e2Fan,dS); 
+0324 
+0325 
+0326 <span class="keyword">if</span> dOps.keyboardwait
+0327   keyboard
+0328 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

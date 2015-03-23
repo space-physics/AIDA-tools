@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of soton_ionchem_density_parser</title>
+  <meta name="keywords" content="soton_ionchem_density_parser">
+  <meta name="description" content="soton_ionchem_density_parser - Parses the SOTON IC *out*.dat">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html IC -->
+<h1>soton_ionchem_density_parser
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>soton_ionchem_density_parser - Parses the SOTON IC *out*.dat</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [densities] = soton_ionchem_density_parser(filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> soton_ionchem_density_parser - Parses the SOTON IC *out*.dat
+  output file from the Southampton ion-chemistry-electron
+  transport model. The function returns a structure with the
+  densities saved from a model run, together with some auxiliary
+  information. 
+ 
+ Calling:
+   dens = soton_ionchem_density_parser(filename)
+ Input;
+   filename - filename, with relative or full path to a
+              file with the emissions.dat output, long header
+              format assumed currently.
+ Output
+   density - a structure with fields:
+          SourceFile: Char array with file name of input script
+         nr_profiles: Integer with number of profiles saved for
+                      each timestep 
+        profile_vars: [NR_profiles x 1] - identifier-index into
+                      reactions_vec identifying the modeled profiles
+           alt_range: [2x1 double] with the upper and lower limit for
+                      altitude range
+            nr_p_alt: Number of altitude ranges
+           nr_p_chem: number of chemical reactions 
+       reactions_vec: {[nr_p_chem x 1 ]  {nr_p_chem x 1 cell} [nr_p_chem x 1 int32]}
+                      Cell array with first cell containing the
+                      reaction ID, second cell containing the
+                      reaction-name, and third cell containing
+                      something else.
+               t_out: [1 x NR_time_steps double] array with
+                      simulation time
+                data: [nr_p_alt x nr_profiles x NR_time_steps double]
+                      3-D array with model output.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [densities] = soton_ionchem_density_parser(filename)</a>
+0002 <span class="comment">% soton_ionchem_density_parser - Parses the SOTON IC *out*.dat</span>
+0003 <span class="comment">%  output file from the Southampton ion-chemistry-electron</span>
+0004 <span class="comment">%  transport model. The function returns a structure with the</span>
+0005 <span class="comment">%  densities saved from a model run, together with some auxiliary</span>
+0006 <span class="comment">%  information.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">%   dens = soton_ionchem_density_parser(filename)</span>
+0010 <span class="comment">% Input;</span>
+0011 <span class="comment">%   filename - filename, with relative or full path to a</span>
+0012 <span class="comment">%              file with the emissions.dat output, long header</span>
+0013 <span class="comment">%              format assumed currently.</span>
+0014 <span class="comment">% Output</span>
+0015 <span class="comment">%   density - a structure with fields:</span>
+0016 <span class="comment">%          SourceFile: Char array with file name of input script</span>
+0017 <span class="comment">%         nr_profiles: Integer with number of profiles saved for</span>
+0018 <span class="comment">%                      each timestep</span>
+0019 <span class="comment">%        profile_vars: [NR_profiles x 1] - identifier-index into</span>
+0020 <span class="comment">%                      reactions_vec identifying the modeled profiles</span>
+0021 <span class="comment">%           alt_range: [2x1 double] with the upper and lower limit for</span>
+0022 <span class="comment">%                      altitude range</span>
+0023 <span class="comment">%            nr_p_alt: Number of altitude ranges</span>
+0024 <span class="comment">%           nr_p_chem: number of chemical reactions</span>
+0025 <span class="comment">%       reactions_vec: {[nr_p_chem x 1 ]  {nr_p_chem x 1 cell} [nr_p_chem x 1 int32]}</span>
+0026 <span class="comment">%                      Cell array with first cell containing the</span>
+0027 <span class="comment">%                      reaction ID, second cell containing the</span>
+0028 <span class="comment">%                      reaction-name, and third cell containing</span>
+0029 <span class="comment">%                      something else.</span>
+0030 <span class="comment">%               t_out: [1 x NR_time_steps double] array with</span>
+0031 <span class="comment">%                      simulation time</span>
+0032 <span class="comment">%                data: [nr_p_alt x nr_profiles x NR_time_steps double]</span>
+0033 <span class="comment">%                      3-D array with model output.</span>
+0034 
+0035 <span class="comment">% Copyright Bjorn Gustavsson 20110128,</span>
+0036 <span class="comment">% % GPL version 3 or later applies.</span>
+0037 
+0038 fp = fopen(filename,<span class="string">'r'</span>);
+0039 
+0040 <span class="keyword">if</span> fp &lt; 0 
+0041   
+0042   error([<span class="string">'Could not open file: '</span>,filename])
+0043   
+0044 <span class="keyword">end</span>
+0045 
+0046 FileType = fgets(fp);<span class="comment">% Line with: 'IONCHEM output file'</span>
+0047 tmp_line = fgets(fp);<span class="comment">% Line with: 'Based on the scriptfile'</span>
+0048 densities.SourceFile = fgets(fp);<span class="comment">% Line with source file</span>
+0049 densities.SourceFile = deblank(densities.SourceFile);
+0050 
+0051 tmp_line = fgets(fp);<span class="comment">% Line with number of profiles saved</span>
+0052 nr_profiles = sscanf(tmp_line,<span class="string">'%f %f'</span>);
+0053 densities.nr_profiles = nr_profiles(1)+1;
+0054 profile_vars = [];
+0055 tmp_line = fgets(fp);<span class="comment">% Line with variables per index</span>
+0056 profile_vars = sscanf(tmp_line,<span class="string">'%d'</span>);
+0057 densities.profile_vars = profile_vars;
+0058 
+0059 [svars,sv_indx] = sort(profile_vars);
+0060 unsrt_indx = 1:length(profile_vars);
+0061 unsrt_indx(sv_indx) = unsrt_indx;
+0062 
+0063 tmp_line = fgets(fp);             <span class="comment">% Should be number of additional</span>
+0064                                   <span class="comment">% profiles?</span>
+0065 tmpI =  sscanf(tmp_line,<span class="string">'%d'</span>);
+0066 <span class="keyword">if</span> tmpI(1) &gt; 0
+0067   tmp_line = fgets(fp);<span class="comment">% Line with variables per index</span>
+0068   profile_vars = sscanf(tmp_line,<span class="string">'%d'</span>);
+0069   densities.profile_vars2 = profile_vars;
+0070 <span class="keyword">else</span>
+0071   densities.profile_vars2 = [];
+0072 <span class="keyword">end</span>
+0073 tmp_line = fgets(fp);             <span class="comment">% Should be: Altitude range, km</span>
+0074 tmp_line = fgets(fp);             <span class="comment">% Line with altitude range</span>
+0075 densities.alt_range = sscanf(tmp_line,<span class="string">'%f'</span>);
+0076 
+0077 tmp_line = fgets(fp);             <span class="comment">% Bla-bla line</span>
+0078 tmp_line = fgets(fp);             <span class="comment">% Line with number of points in altitude</span>
+0079 nr_p_alt = sscanf(tmp_line,<span class="string">'%f'</span>);
+0080 densities.nr_p_alt = nr_p_alt;
+0081 
+0082 tmp_line = fgets(fp);<span class="comment">% Should be: ###############</span>
+0083 <span class="comment">%disp('###############')</span>
+0084 tmp_line = fgets(fp);<span class="comment">% Should be: Species</span>
+0085 tmp_line = fgets(fp);<span class="comment">% Line with number of species</span>
+0086 nr_p_spec = sscanf(tmp_line,<span class="string">'%f'</span>);
+0087 densities.nr_p_spec = nr_p_spec;
+0088 
+0089 densities.species_vec = textscan(fp,<span class="string">'%d%s\n'</span>,nr_p_spec); <span class="comment">% Cell-array with chemical reactions</span>
+0090 
+0091 tmp_line = fgets(fp); <span class="comment">% Should be: ###############</span>
+0092 <span class="comment">%disp('###############')</span>
+0093 tmp_line = fgets(fp);<span class="comment">% Should be: Reactions</span>
+0094 tmp_line = fgets(fp);<span class="comment">% Line with number of reactions</span>
+0095 nr_reactions = sscanf(tmp_line,<span class="string">'%d'</span>);
+0096 
+0097 <span class="keyword">for</span> i1 = 1:nr_reactions,
+0098   tmp_line = fgets(fp);
+0099 <span class="keyword">end</span>
+0100 tmp_line = fgets(fp);<span class="comment">% Should be:  ###############</span>
+0101 tmp_line = fgets(fp);<span class="comment">% Should be:  Production/loss balance</span>
+0102 
+0103 <span class="keyword">for</span> i1 = 1:densities.nr_p_spec,
+0104   tmp_line = fgets(fp);<span class="comment">% Should be: Species name</span>
+0105   tmp_line = fgets(fp);<span class="comment">% Should be: sources #NR</span>
+0106   [qwe,nr_sources] = strtok(tmp_line);
+0107   nr_sources = str2num(nr_sources);
+0108   tmp_line = fgets(fp);<span class="comment">% Should be: losses  #NR</span>
+0109   [qwe,nr_losses] = strtok(tmp_line);
+0110   nr_losses = str2num(nr_losses);
+0111   <span class="keyword">for</span> i2 = 1:(nr_sources+nr_losses)
+0112     tmp_line = fgets(fp);
+0113   <span class="keyword">end</span>
+0114 <span class="keyword">end</span>
+0115 tmp_line = fgets(fp); <span class="comment">% Should be ###############</span>
+0116 
+0117 i0 = 0;
+0118 indx_t = 1;
+0119 tmp_line = fgets(fp); <span class="comment">% Should be first time step.</span>
+0120 densities.t_out(indx_t) = str2num(tmp_line);
+0121 <span class="keyword">while</span> ~feof(fp)
+0122   
+0123   densities.t_out(indx_t) = str2num(tmp_line);
+0124   tmp_line = fgets(fp);  <span class="comment">% should be profile-lable-line</span>
+0125   <span class="comment">%profiles = fscanf(fp,'%f ',[nr_p_alt,nr_profiles])</span>
+0126   densities.data(:,:,indx_t) = fscanf(fp,<span class="string">'%f '</span>,[densities.nr_profiles,nr_p_alt])';
+0127   tmp_line = fgets(fp);  <span class="comment">% should be something like the</span>
+0128                          <span class="comment">% profile-lable-line for the profile-2-lable-line</span>
+0129   densities.data2(:,:,indx_t) = fscanf(fp,<span class="string">'%f '</span>,[length(densities.profile_vars2)+1,nr_p_alt])';
+0130   <span class="comment">%plot(densities.data(:,2,indx_t),densities.data(:,1,indx_t),'color',rand(1,3))</span>
+0131   <span class="comment">%hold on</span>
+0132   <span class="comment">%drawnow</span>
+0133   tmp_line = fgets(fp);<span class="comment">% Should be: next time step</span>
+0134   i0 = i0+1;
+0135   indx_t = indx_t + 1;
+0136   <span class="comment">%disp(['i0 = ',sprintf('%d',i0)])</span>
+0137   
+0138 <span class="keyword">end</span>
+0139 fclose(fp);
+0140 
+0141 <span class="comment">%keyboard</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

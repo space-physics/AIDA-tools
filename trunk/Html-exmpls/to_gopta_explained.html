@@ -1,0 +1,286 @@
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>to_gopta_explained</title>
+      <meta name="generator" content="MATLAB 7.1">
+      <meta name="date" content="2006-03-01">
+      <meta name="m-file" content="to_gopta_explained"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows.  On Gecko-based browsers, the shrink-to-fit doesn't work. */ 
+p,h1,h2,div.content div {
+  /* for MATLAB's browser */
+  width: 600px;
+  /* for Mozilla, but the "width" tag overrides it anyway */
+  max-width: 600px;
+  /* for IE */
+  width:expression(document.body.clientWidth > 620 ? "600px": "auto" );
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h2>Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#1">to_gopta - how to</a></li>
+               <li><a href="#2">Camera set-up</a></li>
+               <li><a href="#4">Start and stop times</a></li>
+               <li><a href="#5">Filter sequence</a></li>
+               <li><a href="#7">Exposure times</a></li>
+               <li><a href="#8">Interval times</a></li>
+               <li><a href="#9">Position</a></li>
+               <li><a href="#10">Binning</a></li>
+            </ul>
+         </div>
+         <h2>to_gopta - how to<a name="1"></a></h2>
+         <p>The process of producing working experiment configuration files for ALIS would be difficult for simple experiment - if one
+            were to use one and the same filter sequence for all stations. With different filter sequences at different stations this
+            would soon turn into a typing nightmare.
+         </p>
+         <p>Fortunately there is help nearby when needed. The ALIS toolbox includes a function to_gopta that rapidly produces experiment
+            files for each station - at the same time it even produces documentation of the filter sequences for each station.
+         </p>
+         <p>This example script used to make gopta experiment configuration file for the ALIS-EISCAT-Heating campaign 200411</p><pre class="codeinput"><span class="comment">% Copyright Bjorn Gustavsson</span>
+</pre><h2>Camera set-up<a name="2"></a></h2>
+         <p>In addition to the problem keeping the filter sequences in order and at the right place is the more serious problem with giving
+            the cameras the right gain-tables. Therefore this table is vital to keep up to date:
+         </p><pre class="codeinput">sn =            {<span class="string">'botn'</span> <span class="string">'kiruna'</span> <span class="string">'silki'</span> <span class="string">'tjautjas'</span> <span class="string">'abisko'</span> <span class="string">'optics lab'</span>};
+mima_nr     =   [ 6      4        2         3        5         1];
+GTfast =        {<span class="string">'1,0'</span>  <span class="string">'1,0'</span>    <span class="string">'1,3'</span>     <span class="string">'1,0'</span>    <span class="string">'1,3'</span>      <span class="string">'1,2'</span>};
+GTlittlenoise = {<span class="string">'2,1'</span>  <span class="string">'2,1'</span>    <span class="string">'2,0'</span>     <span class="string">'2,1'</span>    <span class="string">'2,0'</span>      <span class="string">'1,2'</span>};
+GTlownoise =    {<span class="string">'3,2'</span>  <span class="string">'3,2'</span>    <span class="string">'3,1'</span>     <span class="string">'3,2'</span>    <span class="string">'3,1'</span>      <span class="string">'2,3'</span>};
+</pre><p><tt>sn</tt> is a cell-array with the station names. The first letter is used as identifier and one experiment file will be produced and
+            put into a directory with capitalized first letter (A/, B/, ...). The GTxxx is the gain table entries for the cameras 1-6,
+            GTlownoise is the slowest with the lowest read-out noise, typically 6-10 electrons, GTlittlenoise give a slightly larger read
+            noise (10-12 e^-) and a faster read-out. While GTfast gives about 50 per cent faster read-out but a read noise of around 15-25
+            e^-. Also the camera sensitivity is decreasing for the faster read-outs.
+         </p>
+         <h2>Start and stop times<a name="4"></a></h2>
+         <p>The start time should in most cases rather be seen as a synchronization time.</p><pre class="codeinput">Startstop = {<span class="string">'03:00:00'</span>    <span class="string">'03:00:00'</span>    <span class="string">'03:00:00'</span>
+             <span class="string">'06:30:00'</span>    <span class="string">'06:30:00'</span>    <span class="string">'06:30:00'</span>};
+</pre><h2>Filter sequence<a name="5"></a></h2>
+         <p>The real benefit of this procedure of producing experiment scripts is that it is easy to bend and permute any filter sequences.
+            For this experiment all filter sequences are 8 items long.
+         </p><pre class="codeinput">c_l1 =     [  8        8         8       8         8          8];
+</pre><p>And here are the individual filter sequences. One column for each station. This cell-array with filter names can of course
+            be produced in any way, but for this relatively short one it is still doable to put it down explicitly.
+         </p><pre class="codeinput">filter1 = {<span class="string">'4278'</span>    <span class="string">'4278'</span>    <span class="string">'4278'</span>    <span class="string">'4278'</span>    <span class="string">'4278'</span>   <span class="string">'5577'</span>
+           <span class="string">'5577'</span>    <span class="string">'5577'</span>    <span class="string">'5577'</span>    <span class="string">'5577'</span>    <span class="string">'5577'</span>   <span class="string">'4278'</span>
+           <span class="string">'4278'</span>    <span class="string">'4278'</span>    <span class="string">'4278'</span>    <span class="string">'4278'</span>    <span class="string">'4278'</span>   <span class="string">'5577'</span>
+           <span class="string">'5577'</span>    <span class="string">'5577'</span>    <span class="string">'5577'</span>    <span class="string">'5577'</span>    <span class="string">'5577'</span>   <span class="string">'4278'</span>
+           <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'6300'</span>   <span class="string">'6300'</span>
+           <span class="string">'4278'</span>    <span class="string">'4278'</span>    <span class="string">'4278'</span>    <span class="string">'5577'</span>    <span class="string">'4278'</span>   <span class="string">'5577'</span>
+           <span class="string">'5577'</span>    <span class="string">'5577'</span>    <span class="string">'5577'</span>    <span class="string">'4278'</span>    <span class="string">'5577'</span>   <span class="string">'4278'</span>
+           <span class="string">'8446'</span>    <span class="string">'8446'</span>    <span class="string">'4278'</span>    <span class="string">'8446'</span>    <span class="string">'4278'</span>   <span class="string">'8446'</span>
+          };
+</pre><h2>Exposure times<a name="7"></a></h2>
+         <p>Here the base exposure times are set to 1000 ms, uniformly, which might not be ideal under all circumstances, but for this
+            experiment intended for HF-pump experiments intended for quiet ionospheric conditions this will of course give the best synchronization.
+            As any matlab variable these matrices might be modified at will.
+         </p><pre class="codeinput">exptimes = [1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000];
+</pre><h2>Interval times<a name="8"></a></h2>
+         <p>Again uniform all over - at 4 s.</p><pre class="codeinput">interv = [ 4     4     4     4    4     4
+           4     4     4     4    4     4
+           4     4     4     4    4     4
+           4     4     4     4    4     4
+           4     4     4     4    4     4
+           4     4     4     4    4     4
+           4     4     4     4    4     4
+           4     4     4     4    4     4];
+</pre><h2>Position<a name="9"></a></h2>
+         <p>When only one position if given that will be set asap, and then kept during the entire run.</p><pre class="codeinput">POS = {<span class="string">''</span> <span class="string">'eiscat'</span> <span class="string">'eiscat'</span> <span class="string">'eiscat'</span> <span class="string">'eiscat'</span> <span class="string">'eiscat'</span>};
+</pre><h2>Binning<a name="10"></a></h2>
+         <p>Here we set the camera binning factor to 4 by 4. Since camera reconfiguration takes some time, we regularly try to reduce
+            the number of reconfigurations to keep the observational dead-time down.
+         </p><pre class="codeinput">OPS1.binning = <span class="string">'4,4'</span>;
+OPS1.observer =  <span class="string">'ALIS team 2005/6'</span>;
+</pre><p>Here we change all exposures to 2000ms</p><pre class="codeinput">exptimes(:) = 2000;
+</pre><p>In addition to the fields <tt>binning</tt> and <tt>observer</tt> the option struct keep <tt>object</tt>. Here we put a campaign subject relevant to the experiment file as well as a name for the filter cycle:
+         </p><pre class="codeinput">OPS1.object =  <span class="string">'Heating-200411: filter cycle tge_4_16'</span>;
+OK = to_gopta(<span class="string">'tge_4_16mn'</span>,sn,Startstop,c_l1,filter1   ,POS,exptimes-400,interv,GTlittlenoise,OPS1);
+<span class="comment">% In addition to the experiment set-up files to_gopta will produce</span>
+<span class="comment">% one .eps and one .png figure of the filter sequence with the same</span>
+<span class="comment">% name as the experiment - makes it easier to check out what</span>
+<span class="comment">% different experiments do at run-time.</span>
+<img vspace="5" hspace="5" src="to_gopta_explained_01.png"> <p class="footer"><br>
+            Published with MATLAB&reg; 7.1<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% to_gopta - how to
+% The process of producing working experiment configuration files
+% for ALIS would be difficult for simple experiment - if one were
+% to use one and the same filter sequence for all stations. With
+% different filter sequences at different stations this would soon
+% turn into a typing nightmare. 
+%
+% Foortunatelly there is help nearby when needed. The ALIS toolbox
+% includes a function to_gopta that rapidly produces experiment
+% files for each station - at the same time it even produces
+% documentation of the filter sequences for each station.
+% 
+% This example script used to make gopta experiment configuration
+% file for the ALIS-EISCAT-Heating campaign 200411
+
+% Copyright Bjorn Gustavsson
+%% Camera set-up
+% In addition to the problem keeping the filter sequences in order
+% and at the right place is the more serious problem with giving
+% the cameras the right gain-tables. Therefore this table is vital
+% to keep up to date:
+sn =            {'botn' 'kiruna' 'silki' 'tjautjas' 'abisko' 'optics lab'};
+mima_nr     =   [ 6      4        2         3        5         1];
+GTfast =        {'1,0'  '1,0'    '1,3'     '1,0'    '1,3'      '1,2'};
+GTlittlenoise = {'2,1'  '2,1'    '2,0'     '2,1'    '2,0'      '1,2'};
+GTlownoise =    {'3,2'  '3,2'    '3,1'     '3,2'    '3,1'      '2,3'};
+%% 
+% |sn| is a cell-array with the station names. The first letter
+% is used as identifier and one experiment file will be produced
+% and put into a directory with capitalized first letter (A/, B/,
+% ...). 
+% The GTxxx is the gain table entries for the cameras 1-6,
+% GTlownoise is the slowest with the lowest read-out noise,
+% typically 6-10 electrons, GTlittlenoise give a slightly larger
+% read noise (10-12 e^-) and a faster read-out. While GTfast gives
+% about 50 per cent faster read-out but a read noise of around
+% 15-25 e^-. Also the camera sensitivity is decreasing for the
+% faster read-outs.
+
+%% Start and stop times
+% The start time should in most cases rather be seen as a
+% syncronization time.
+Startstop = {'03:00:00'    '03:00:00'    '03:00:00'
+             '06:30:00'    '06:30:00'    '06:30:00'};
+
+%% Filter sequence
+% The real benefit of this procedure of producing experiment
+% scripts is that it is easy to bend and permute any filter
+% sequences. For this experiment all filter sequences are 8 items
+% long. 
+c_l1 =     [  8        8         8       8         8          8];
+%%
+% And here are the individual filter sequences. One column for each
+% station. This cell-array with filter names can of course be
+% produced in any way, but for this relatively short one it is
+% still doable to put it down explicitly.
+filter1 = {'4278'    '4278'    '4278'    '4278'    '4278'   '5577'
+           '5577'    '5577'    '5577'    '5577'    '5577'   '4278'
+           '4278'    '4278'    '4278'    '4278'    '4278'   '5577'
+           '5577'    '5577'    '5577'    '5577'    '5577'   '4278'
+           '6300'    '6300'    '6300'    '6300'    '6300'   '6300'
+           '4278'    '4278'    '4278'    '5577'    '4278'   '5577'
+           '5577'    '5577'    '5577'    '4278'    '5577'   '4278'
+           '8446'    '8446'    '4278'    '8446'    '4278'   '8446'
+          };
+%% Exposure times
+% Here the base exposure times are set to 1000 ms, uniformly, which
+% might not be ideal under all circumstances, but for this
+% experiment intended for HF-pump experiments intended for quiet
+% ionospheric conditions this will of course give the best
+% syncronisation. As any matlab variable these matrices might be
+% modified at will.
+exptimes = [1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000
+            1000        1000  1000        1000        1000      1000];
+%% Interval times
+% Again uniform all over - at 4 s.
+interv = [ 4     4     4     4    4     4
+           4     4     4     4    4     4
+           4     4     4     4    4     4
+           4     4     4     4    4     4
+           4     4     4     4    4     4
+           4     4     4     4    4     4
+           4     4     4     4    4     4
+           4     4     4     4    4     4];
+
+%% Position
+% When only one position if given that will be set asap, and then
+% kept during the entire run.
+POS = {'' 'eiscat' 'eiscat' 'eiscat' 'eiscat' 'eiscat'};
+
+%% Binning
+% Here we set the camera binning factor to 4 by 4. Since camera
+% reconfiguration takes some time, we regularly try to reduce the
+% number of reconfigurations to keep the observational dead-time
+% down.
+OPS1.binning = '4,4';
+OPS1.observer =  'ALIS team 2005/6';
+%%
+% Here we change all exposures to 2000ms
+exptimes(:) = 2000;
+%%
+% In addition to the fields |binning| and |observer| the option
+% struct keep |object|. Here we put a campaign subject relevant to
+% the experiment file as well as a name for the filter cycle:
+OPS1.object =  'Heating-200411: filter cycle tge_4_16';
+OK = to_gopta('tge_4_16mn',sn,Startstop,c_l1,filter1   ,POS,exptimes-400,interv,GTlittlenoise,OPS1);
+% In addition to the experiment set-up files to_gopta will produce
+% one .eps and one .png figure of the filter sequence with the same
+% name as the experiment - makes it easier to check out what
+% different experiments do at run-time.
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

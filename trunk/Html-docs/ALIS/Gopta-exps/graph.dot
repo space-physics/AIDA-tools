@@ -1,0 +1,21 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+
+  ALIS200412_DELTA [URL="ALIS200412_DELTA.html"];
+  ALIS_heating200503 [URL="ALIS_heating200503.html"];
+  ALIS_heating200510 [URL="ALIS_heating200510.html"];
+  ALIS_rapid_aeronomi [URL="ALIS_rapid_aeronomi.html"];
+  Eiscat_ALIS200411 [URL="Eiscat_ALIS200411.html"];
+  Eiscat_ALIS20056 [URL="Eiscat_ALIS20056.html"];
+  INDEX1 [URL="INDEX1.html"];
+  aindex1 [URL="aindex1.html"];
+  h2006_5mn [URL="h2006_5mn.html"];
+  kst [URL="kst.html"];
+  rgbi8 [URL="rgbi8.html"];
+  tindex1 [URL="tindex1.html"];
+  tindex1_k [URL="tindex1_k.html"];
+  tindex2 [URL="tindex2.html"];
+  tindex3 [URL="tindex3.html"];
+  to_gopta_explained [URL="to_gopta_explained.html"];
+  trakigt [URL="trakigt.html"];
+}

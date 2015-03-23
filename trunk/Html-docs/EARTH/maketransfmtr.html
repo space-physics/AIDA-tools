@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of maketransfmtr</title>
+  <meta name="keywords" content="maketransfmtr">
+  <meta name="description" content="MAKETRANSFMTR - the transformation rotation matrixes">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html EARTH -->
+<h1>maketransfmtr
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>MAKETRANSFMTR - the transformation rotation matrixes</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [trmtr] = maketransfmtr(lat0,long0,lat,long,already_degrees) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MAKETRANSFMTR - the transformation rotation matrixes
+ from the local coordinate system in LAT, LONG to the local
+ coordinate system in LAT0, LONG0, 
+ OBS! default Input in radians!!!
+
+ CALLING:
+ [trmtr] = maketransfmtr(lat0,long0,lat,long)
+ [trmtr] = maketransfmtr(lat0,long0,lat,long,already_degrees)
+ 
+ INPUT:
+    LAT0 latitude of reference point (origin of coordinates)
+    LONG0 longiture,of reference point (origin of coordinates)
+    LAT latitude,
+    LONG longiture,
+    DEGS_2_RADIANS - flag to switch to conversion from input in
+                     degrees 
+ ANGLES in _RADIANS BY DEFAULT!!!</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="e_local.html" class="code" title="function [e1,e2,e3] = e_local(lat0,long0,alt0)">e_local</a>	E_LOCAL - base vectors for local Cartesian coordinate in the GEO system</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="latlongh_2_xyz.html" class="code" title="function [r_out] = latlongh_2_xyz(lat0,long0,h0,lat,long,h)">latlongh_2_xyz</a>	LATLONGH_2_xyz transforms the point ( LONG, LAT, H ) to (X,Y,Z)</li><li><a href="../Fits_tools/AIDApositionize.html" class="code" title="function [stnXYZ,stnLongLat,trmtr] = AIDApositionize(stationNRs,central_stn_nr)">AIDApositionize</a>	AIDApositionize - calculate station lat-long and xyz positions</li><li><a href="../Fits_tools/AIDAstationize.html" class="code" title="function obs = AIDAstationize(obs,central_stn_nr)">AIDAstationize</a>	AIDAstationize - calculate station lat-long and xyz positions</li><li><a href="../Tomography/hh_tomo1234_New01.html" class="code" title="">hh_tomo1234_New01</a>	HH_TOMO1234_NEW01 - script for tomographing 2007 HIPAS-observations</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [trmtr] = maketransfmtr(lat0,long0,lat,long,already_degrees)</a>
+0002 <span class="comment">% MAKETRANSFMTR - the transformation rotation matrixes</span>
+0003 <span class="comment">% from the local coordinate system in LAT, LONG to the local</span>
+0004 <span class="comment">% coordinate system in LAT0, LONG0,</span>
+0005 <span class="comment">% OBS! default Input in radians!!!</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% CALLING:</span>
+0008 <span class="comment">% [trmtr] = maketransfmtr(lat0,long0,lat,long)</span>
+0009 <span class="comment">% [trmtr] = maketransfmtr(lat0,long0,lat,long,already_degrees)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% INPUT:</span>
+0012 <span class="comment">%    LAT0 latitude of reference point (origin of coordinates)</span>
+0013 <span class="comment">%    LONG0 longiture,of reference point (origin of coordinates)</span>
+0014 <span class="comment">%    LAT latitude,</span>
+0015 <span class="comment">%    LONG longiture,</span>
+0016 <span class="comment">%    DEGS_2_RADIANS - flag to switch to conversion from input in</span>
+0017 <span class="comment">%                     degrees</span>
+0018 <span class="comment">% ANGLES in _RADIANS BY DEFAULT!!!</span>
+0019 
+0020 <span class="comment">%   Copyright � 20000323 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0021 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0022 
+0023 <span class="keyword">if</span> nargin&gt;4 &amp; already_degrees
+0024   phi0 = lat0;
+0025   lambda0 = long0;
+0026   phi = lat;
+0027   lambda = long;
+0028 <span class="keyword">else</span>
+0029   lat0 = lat0*180/pi;
+0030   long0 = long0*180/pi;
+0031   lat = lat*180/pi;
+0032   long = long*180/pi;
+0033   
+0034   phi0 = lat0;
+0035   lambda0 = long0;
+0036   phi = lat;
+0037   lambda = long;
+0038 <span class="keyword">end</span>  
+0039 
+0040 [e1,e2,e3]    = <a href="e_local.html" class="code" title="function [e1,e2,e3] = e_local(lat0,long0,alt0)">e_local</a>(lat0,long0,0);
+0041 [e1p,e2p,e3p] = <a href="e_local.html" class="code" title="function [e1,e2,e3] = e_local(lat0,long0,alt0)">e_local</a>(lat,long,0);
+0042 
+0043 trmtr(1,1) = dot(e1p,e1);
+0044 trmtr(1,2) = dot(e2p,e1);
+0045 trmtr(1,3) = dot(e3p,e1);
+0046 trmtr(2,1) = dot(e1p,e2);
+0047 trmtr(2,2) = dot(e2p,e2);
+0048 trmtr(2,3) = dot(e3p,e2);
+0049 trmtr(3,1) = dot(e1p,e3);
+0050 trmtr(3,2) = dot(e2p,e3);
+0051 trmtr(3,3) = dot(e3p,e3);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

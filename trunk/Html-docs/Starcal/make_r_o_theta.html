@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of make_r_o_theta</title>
+  <meta name="keywords" content="make_r_o_theta">
+  <meta name="description" content="Function that determines the image coordinates of light from a">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>make_r_o_theta
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Function that determines the image coordinates of light from a</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [r,theta] = make_r_o_theta(az,ze,u,v,optpar,imgsize) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Function that determines the image coordinates of light from a
+ point source in the direction described by the azimuth and zenith
+ angles AZ, ZE. E1, E2 and E3 are the rotated camera coordinate
+ system. OPTPAR is the optical parameters
+ OPTPAR(1) is the horizontal focal widht (percent of the image size )
+ OPTPAR(2) is the vertical focal width (percent of the image size )
+ OPTPAR(6) is the horizontal displacement of the optical axis
+ OPTPAR(7) is the vertical displacement of the optical axis
+ OPTPAR(8) is a correction factor for deviations from a pin-hole
+ camera-model. All parameters are relative to the image size.
+ MODE is the camera-model-number.
+
+ Calling:
+ [r,theta] = make_r_o_theta(az,ze,u,v,optpar,mode,imgsize)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>	CAMERA_BASE - determine the coordinate system of the camera</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [r,theta] = make_r_o_theta(az,ze,u,v,optpar,imgsize)</a>
+0002 <span class="comment">% Function that determines the image coordinates of light from a</span>
+0003 <span class="comment">% point source in the direction described by the azimuth and zenith</span>
+0004 <span class="comment">% angles AZ, ZE. E1, E2 and E3 are the rotated camera coordinate</span>
+0005 <span class="comment">% system. OPTPAR is the optical parameters</span>
+0006 <span class="comment">% OPTPAR(1) is the horizontal focal widht (percent of the image size )</span>
+0007 <span class="comment">% OPTPAR(2) is the vertical focal width (percent of the image size )</span>
+0008 <span class="comment">% OPTPAR(6) is the horizontal displacement of the optical axis</span>
+0009 <span class="comment">% OPTPAR(7) is the vertical displacement of the optical axis</span>
+0010 <span class="comment">% OPTPAR(8) is a correction factor for deviations from a pin-hole</span>
+0011 <span class="comment">% camera-model. All parameters are relative to the image size.</span>
+0012 <span class="comment">% MODE is the camera-model-number.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Calling:</span>
+0015 <span class="comment">% [r,theta] = make_r_o_theta(az,ze,u,v,optpar,mode,imgsize)</span>
+0016 
+0017 <span class="comment">% OBSOLETE?</span>
+0018 
+0019 <span class="comment">%   Copyright � 20010330 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0020 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0021 
+0022 
+0023 <span class="comment">%global bx by</span>
+0024 disp(<span class="string">'Function: make_r_o_theta used from:'</span>)
+0025 dbstack
+0026 
+0027 f1 = optpar(1);
+0028 f2 = optpar(2);
+0029 az0 = optpar(3);
+0030 el0 = optpar(4);
+0031 roll = optpar(5);
+0032 dx = optpar(6);
+0033 dy = optpar(7);
+0034 alfa = optpar(8);
+0035 
+0036 <span class="keyword">if</span> isstruct(optpar)
+0037   [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(0,0,0);
+0038 <span class="keyword">else</span>
+0039   [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(az0,el0,roll);
+0040 <span class="keyword">end</span>
+0041 raz = az;
+0042 rze = ze;
+0043 
+0044 es(1,:) = sin(rze).*sin(raz);
+0045 es(2,:) = sin(rze).*cos(raz);
+0046 es(3,:) = cos(rze);
+0047 
+0048 ese1(1,:) = es(1,:)*e1(1);
+0049 ese1(2,:) = es(2,:)*e1(2);
+0050 ese1(3,:) = es(3,:)*e1(3);
+0051 sese1 = sum(ese1);
+0052 
+0053 ese2(1,:) = es(1,:)*e2(1);
+0054 ese2(2,:) = es(2,:)*e2(2);
+0055 ese2(3,:) = es(3,:)*e2(3);
+0056 sese2 = sum(ese2);
+0057 
+0058 ese3(1,:) = es(1,:)*e3(1);
+0059 ese3(2,:) = es(2,:)*e3(2);
+0060 ese3(3,:) = es(3,:)*e3(3);
+0061 sese3 = sum(ese3);
+0062 
+0063 theta = atan(((sese1).^2+(sese2).^2).^.5./(sese3));
+0064 <span class="comment">% For optmod == -1 there need to be some clever modifications here.</span>
+0065 <span class="comment">% optpar(6,7) should be where ze==pi/2,</span>
+0066 <span class="comment">% But as -1 assumes no rotations whatsoever this function is fairly</span>
+0067 <span class="comment">% esoteric</span>
+0068 r = ((u-imgsize(2)*(1/2+optpar(6))).^2+(v-imgsize(1)*(1/2+optpar(7))).^2).^.5;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

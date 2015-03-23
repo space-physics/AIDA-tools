@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of subdir</title>
+  <meta name="keywords" content="subdir">
+  <meta name="description" content="SUBDIR Performs a recursive file search">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>subdir
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SUBDIR Performs a recursive file search</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function varargout = subdir(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SUBDIR Performs a recursive file search
+
+ subdir
+ subdir(name)
+ files = subdir(...)
+
+ This function performs a recursive file search.  The input and output
+ format is identical to the dir function.
+
+ Input variables:
+
+   name:   pathname or filename for search, can be absolute or relative
+           and wildcards (*) are allowed.  If ommitted, the files in the
+           current working directory and its child folders are returned    
+
+ Output variables:
+
+   files:  m x 1 structure with the following fields:
+           name:   full filename
+           date:   modification date timestamp
+           bytes:  number of bytes allocated to the file
+           isdir:  1 if name is a directory; 0 if no
+
+ Example:
+
+   &gt;&gt; a = subdir(fullfile(matlabroot, 'toolbox', 'matlab', '*.mat'))
+
+   a = 
+
+   67x1 struct array with fields:
+       name
+       date
+       bytes
+       isdir
+
+   &gt;&gt; a(2)
+
+   ans = 
+
+        name: '/Applications/MATLAB73/toolbox/matlab/audiovideo/chirp.mat'
+        date: '14-Mar-2004 07:31:48'
+       bytes: 25276
+       isdir: 0
+
+ See also:
+
+   dir</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function varargout = subdir(varargin)</a>
+0002 <span class="comment">%SUBDIR Performs a recursive file search</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% subdir</span>
+0005 <span class="comment">% subdir(name)</span>
+0006 <span class="comment">% files = subdir(...)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% This function performs a recursive file search.  The input and output</span>
+0009 <span class="comment">% format is identical to the dir function.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Input variables:</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   name:   pathname or filename for search, can be absolute or relative</span>
+0014 <span class="comment">%           and wildcards (*) are allowed.  If ommitted, the files in the</span>
+0015 <span class="comment">%           current working directory and its child folders are returned</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Output variables:</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   files:  m x 1 structure with the following fields:</span>
+0020 <span class="comment">%           name:   full filename</span>
+0021 <span class="comment">%           date:   modification date timestamp</span>
+0022 <span class="comment">%           bytes:  number of bytes allocated to the file</span>
+0023 <span class="comment">%           isdir:  1 if name is a directory; 0 if no</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% Example:</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%   &gt;&gt; a = subdir(fullfile(matlabroot, 'toolbox', 'matlab', '*.mat'))</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%   a =</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%   67x1 struct array with fields:</span>
+0032 <span class="comment">%       name</span>
+0033 <span class="comment">%       date</span>
+0034 <span class="comment">%       bytes</span>
+0035 <span class="comment">%       isdir</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%   &gt;&gt; a(2)</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%   ans =</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%        name: '/Applications/MATLAB73/toolbox/matlab/audiovideo/chirp.mat'</span>
+0042 <span class="comment">%        date: '14-Mar-2004 07:31:48'</span>
+0043 <span class="comment">%       bytes: 25276</span>
+0044 <span class="comment">%       isdir: 0</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">% See also:</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%   dir</span>
+0049 
+0050 <span class="comment">% Copyright 2006 Kelly Kearney</span>
+0051 
+0052 
+0053 <span class="comment">%---------------------------</span>
+0054 <span class="comment">% Get folder and filter</span>
+0055 <span class="comment">%---------------------------</span>
+0056 
+0057 error(nargchk(0,1,nargin));
+0058 error(nargoutchk(0,1,nargout));
+0059 
+0060 <span class="keyword">if</span> nargin == 0
+0061     folder = pwd;
+0062     filter = <span class="string">'*'</span>;
+0063 <span class="keyword">else</span>
+0064     [folder, name, ext] = fileparts(varargin{1});
+0065     <span class="keyword">if</span> isempty(folder)
+0066         folder = pwd;
+0067     <span class="keyword">end</span>
+0068     <span class="keyword">if</span> isempty(ext)
+0069         <span class="keyword">if</span> isdir(fullfile(folder, name))
+0070             folder = fullfile(folder, name);
+0071             filter = <span class="string">'*'</span>;
+0072         <span class="keyword">end</span>
+0073     <span class="keyword">else</span>
+0074         filter = [name ext];
+0075     <span class="keyword">end</span>
+0076 <span class="keyword">end</span>
+0077 
+0078 <span class="comment">%---------------------------</span>
+0079 <span class="comment">% Search all folders</span>
+0080 <span class="comment">%---------------------------</span>
+0081 
+0082 pathstr = genpath(folder);
+0083 seplocs = findstr(pathstr, pathsep);
+0084 loc1 = [1 seplocs(1:end-1)+1];
+0085 loc2 = seplocs(1:end)-1;
+0086 pathfolders = arrayfun(@(a,b) pathstr(a:b), loc1, loc2, <span class="string">'UniformOutput'</span>, false);
+0087 
+0088 Files = [];
+0089 <span class="keyword">for</span> ifolder = 1:length(pathfolders)
+0090     NewFiles = dir(fullfile(pathfolders{ifolder}, filter));
+0091     <span class="keyword">if</span> ~isempty(NewFiles)
+0092         fullnames = cellfun(@(a) fullfile(pathfolders{ifolder}, a), {NewFiles.name}, <span class="string">'UniformOutput'</span>, false); 
+0093         [NewFiles.name] = deal(fullnames{:});
+0094         Files = [Files; NewFiles];
+0095     <span class="keyword">end</span>
+0096 <span class="keyword">end</span>
+0097 
+0098 <span class="comment">%---------------------------</span>
+0099 <span class="comment">% Output</span>
+0100 <span class="comment">%---------------------------</span>
+0101     
+0102 <span class="keyword">if</span> nargout == 0
+0103     <span class="keyword">if</span> ~isempty(Files)
+0104         fprintf(<span class="string">'\n'</span>);
+0105         fprintf(<span class="string">'%s\n'</span>, Files.name);
+0106         fprintf(<span class="string">'\n'</span>);
+0107     <span class="keyword">end</span>
+0108 <span class="keyword">elseif</span> nargout == 1
+0109     varargout{1} = Files;
+0110 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

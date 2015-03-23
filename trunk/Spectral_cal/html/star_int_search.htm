@@ -1,0 +1,175 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>star_int_search.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function synopsis</FONT></FONT></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1> [idstarsok,stars_par] = star_int_search(tbild,optpar,optmode,plstars,OPTS)                                                                          </FONT></FONT></P> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function comments</FONT></FONT></P> 
+<pre> 
+% 
+% STAR_INT_SEARCH identifies points in image with stars and get a parametrisation 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files that call star_int_search.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="spc_scan_for_stars.htm">spc_scan_for_stars</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of star_int_search.m</FONT></FONT></P> 
+<pre> 
+function [idstarsok,stars_par] = star_int_search(tbild,optpar,optmode,plstars,OPTS) 
+% [idstarsok,stars_par] = star_int_search(tbild,optpar,optmode,plstars,OPTS) 
+% 
+% STAR_INT_SEARCH identifies points in image with stars and get a parametrisation 
+ 
+%       Bjorn Gustavsson 
+%	Copyright (c) 1997 by Bjorn Gustavsson 
+%	$Revision: 1.1 $  $Date: 1997/12/17 14:46:49 $ 
+ 
+% 
+%       $Log: autoidentify.m,v $ 
+%       Revision 1.1  1997/12/17 14:46:49  bjorn 
+%       Initial revision 
+% 
+ 
+global bx by 
+%plstars = SkMp.plottstars; 
+%optpar = SkMp.optpar; 
+mode = optmode; 
+%bild = SkMp.img; 
+dl = 10; 
+if ~isempty(OPTS) & isfield(OPTS,'regsize') 
+  dl = OPTS.regsize; 
+end 
+ 
+ua = []; 
+va = []; 
+more off 
+b = size(tbild); 
+bx = b(2); 
+by = b(1); 
+ 
+imax = max(size(plstars)); 
+idnr = 0; 
+ 
+% Determine the coordinate system for the camera. 
+az0 = optpar(3); 
+el0 = optpar(4); 
+roll = optpar(5); 
+ 
+[Vmag,Ivmag] = sort(plstars(:,4)); 
+[e1,e2,e3] = camera_base(az0,el0,roll); 
+ 
+%for i = 1:imax, 
+for j = 1:length(Ivmag), 
+  i = Ivmag(j); 
+  %disp(i) 
+  clear sortids1 order x1 indx1 
+  %Determine the projected position of the star on the image 
+  az = plstars(i,1); 
+  ze = plstars(i,2); 
+ 
+  [x0,y0] = camera_model(az,ze,e1,e2,e3,optpar,mode); 
+ 
+  if ( ( 1 < x0 & x0 < bx ) & ( 1 < y0 & y0 < by ) ) 
+ 
+    % Determine the part of the image confining the star. 
+    xmin = floor(min(max(x0-dl/2,1),bx-dl)); 
+    xmax = floor(max(min(x0+dl/2,bx),(dl+1))); 
+    ymin = floor(min(max(y0-dl/2,1),by-dl)); 
+    ymax = floor(max(min(y0+dl/2,by),(dl+1))); 
+ 
+    % Find the star in the region of interest. 
+ 
+    starmat = tbild(ymin:ymax,xmin:xmax); 
+    starmat = medfilt2(starmat([1 1:end end],[1 1:end end]),[3 3]); 
+    starmat = starmat(2:end-1,2:end-1); 
+    x = xmin:xmax; 
+    y = ymin:ymax; 
+    [x1,y1] = meshgrid(x,y); 
+ 
+    if ~isempty(OPTS) & isfield(OPTS,'bgtype') & strcmp(OPTS.bgtype,'complicated') 
+ 
+      b = [starmat(1,:),starmat(end,:),starmat(:,1)',starmat(:,end)',starmat(3,:),starmat(end-2,:),starmat(:,3)',starmat(:,end-2)']; 
+      X = [x1(1,:),x1(end,:),x1(:,1)',x1(:,end)',x1(3,:),x1(end-2,:),x1(:,3)',x1(:,end-2)']; 
+      Y = [y1(1,:),y1(end,:),y1(:,1)',y1(:,end)',y1(3,:),y1(end-2,:),y1(:,3)',y1(:,end-2)']; 
+      bakgr2 = griddata(X,Y,b,x1,y1,'v4')*2/3+griddata(X,Y,b,x1,y1,'cubic')/3; 
+ 
+    else 
+ 
+      b = [starmat(1,:),starmat(end,:),starmat(:,1)',starmat(:,end)']; 
+      X = [x1(1,:),x1(end,:),x1(:,1)',x1(:,end)']; 
+      Y = [y1(1,:),y1(end,:),y1(:,1)',y1(:,end)']; 
+      bakgr2 = griddata(X,Y,b,x1,y1,'cubic'); 
+ 
+    end 
+ 
+    starmat = tbild(ymin:ymax,xmin:xmax); 
+ 
+    [max_I,indxmax] = max(starmat(:)-bakgr2(:)); 
+    startvec = [x1(indxmax),y1(indxmax),(tbild(y1(indxmax),x1(indxmax))-median(bakgr2(:)))/2,1^2,0,1^2]; 
+    starpar = fmins('stardiff3',startvec,[0,5e-2,0,0,0,0,0,0,0,0,0,0,0,3000],[],xmin,xmax,ymin,ymax,starmat-bakgr2,x1(indxmax),y1(indxmax)); 
+    fynd = starint3(starpar,xmin,xmax,ymin,ymax); 
+ 
+    if isfield(OPTS,'plotintermediates') 
+ 
+      subplot(2,2,1),imagesc(xmin:xmax,ymin:ymax,starmat),axis xy,colorbar 
+      subplot(2,2,2),imagesc(xmin:xmax,ymin:ymax,starmat-bakgr2),axis xy,colorbar 
+      subplot(2,2,3),imagesc(xmin:xmax,ymin:ymax,fynd),axis xy,colorbar 
+      hold on 
+      plot(x1(indxmax),y1(indxmax),'wp') 
+      plot(x0,y0,'kh') 
+      plot(starpar(1),starpar(2),'w.','markersize',15) 
+      hold off 
+      subplot(2,2,4),imagesc(xmin:xmax,ymin:ymax,starmat-bakgr2-fynd),axis xy,colorbar 
+      %disp([startvec;starpar]) 
+      pause 
+ 
+    end 
+ 
+    star_intm = (starmat-bakgr2).*(fynd>.07*(max(max(fynd)))); 
+ 
+    if ( xmin < starpar(1) & starpar(1) < xmax & ymin < starpar(2) & starpar(2) < ymax ) 
+ 
+      star_intt = sum(sum(star_intm)); 
+      star_max = max(max(star_intm)); 
+      idnr = idnr + 1; 
+      identstars(idnr,1) = i; 
+      identstars(idnr,2) = starpar(1); 	%starpos in image(x) 
+      identstars(idnr,3) = starpar(2); 	%starpos in image(y) 
+      identstars(idnr,4) = starpar(3);  % max of 2D-Gauss 
+      identstars(idnr,5) = star_max; 	%max count from star 
+      identstars(idnr,6) = star_intt; 	%total counts from star 
+      identstars(idnr,7) = sum(fynd(:));%total counts from star-fit 
+      identstars(idnr,8) = i; 
+      identstars(idnr,9) = plstars(i,3); %star index 
+      identstars(idnr,10) = sum((fynd(:)-starmat(:)-bakgr2(:)).^2); %total error 
+      identstars(idnr,11) = Vmag(i); 
+ 
+      stars_par(idnr,:) = starpar; 
+      % And remove the image intensity from this star to avoid 
+      % getting close stars picking up its intensity 
+      tbild(ymin:ymax,xmin:xmax) = tbild(ymin:ymax,xmin:xmax) - fynd; 
+      clear starpar starmat fynd ; 
+ 
+    end 
+ 
+  end 
+ 
+end 
+ 
+idstarsok = identstars; 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 16:26 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

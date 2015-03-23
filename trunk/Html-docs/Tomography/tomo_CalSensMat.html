@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_CalSensMat</title>
+  <meta name="keywords" content="tomo_CalSensMat">
+  <meta name="description" content="tomo_CalSensMat - calibration factors for FASTPROJECTION">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_CalSensMat
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>tomo_CalSensMat - calibration factors for FASTPROJECTION</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [CalMtr,stn] = tomo_CalSensMat(stn,Vem,X3D,Y3D,Z3D) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> tomo_CalSensMat - calibration factors for FASTPROJECTION
+ from volume emission rates (#photons/m^3/s) to Rayleighs.
+
+ Calling:
+  [CalMtr,stn] = tomo_CalSensMat(stn,Vem,X3D,Y3D,Z3D)
+ Input:
+  stn - tomo-stations struct, only one at a time 
+  Vem - 3-D array with volume emission distribution
+  X3D - 3-D array, Eastish coordinates, same size as Vem
+  Y3D - 3-D array, Northish coordinates, same size as Vem
+  Z3D - 3-D array, Up coordinates, same size as Vem
+ Output:
+  CalMtr - sensitivity matrix [Rayleigh/(#photon/m^3/s)] same size
+           as stns.img, this is to be used as the seventh argument
+           to fastprojection. 
+  
+ Example useage (sketch):
+   
+  for iStn = 1:length(stns),
+    Meta-code...
+    1, set up a flat Vem structure 80x80x20 perhaps
+    with a wide enough horizontal coverage to make sure that the
+    centre pixel enters the block-of-blobs from under and leaves
+    through the top - not from any side. This might require some
+    manual positioning of BOB for data where cameras have been
+    rotated far from zenith.
+    2, run camera_set_up_sc for stns(iStn),
+    3: [CalMtr,stns(iStn)] = tomo_CalSensMat(stn,Vem,X3D,Y3D,Z3D)
+    4  stns(iStn).CalMtr = CalMtr;
+    end</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>	CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA</li><li><a href="../Camera/inv_project_directions.html" class="code" title="function [az,ze] = inv_project_directions(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_directions</a>	INV_PROJECT_DIRECTIONS - pixels line-of-sight to azimuth and zenith angles</li><li><a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>	FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</li><li><a href="../tools/max2D.html" class="code" title="function [Imax,i1,i2] = max2D(Iin)">max2D</a>	max2D - maximum element and its indices in a 2-D array</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [CalMtr,stn] = tomo_CalSensMat(stn,Vem,X3D,Y3D,Z3D)</a>
+0002 <span class="comment">% tomo_CalSensMat - calibration factors for FASTPROJECTION</span>
+0003 <span class="comment">% from volume emission rates (#photons/m^3/s) to Rayleighs.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%  [CalMtr,stn] = tomo_CalSensMat(stn,Vem,X3D,Y3D,Z3D)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%  stn - tomo-stations struct, only one at a time</span>
+0009 <span class="comment">%  Vem - 3-D array with volume emission distribution</span>
+0010 <span class="comment">%  X3D - 3-D array, Eastish coordinates, same size as Vem</span>
+0011 <span class="comment">%  Y3D - 3-D array, Northish coordinates, same size as Vem</span>
+0012 <span class="comment">%  Z3D - 3-D array, Up coordinates, same size as Vem</span>
+0013 <span class="comment">% Output:</span>
+0014 <span class="comment">%  CalMtr - sensitivity matrix [Rayleigh/(#photon/m^3/s)] same size</span>
+0015 <span class="comment">%           as stns.img, this is to be used as the seventh argument</span>
+0016 <span class="comment">%           to fastprojection.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Example useage (sketch):</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%  for iStn = 1:length(stns),</span>
+0021 <span class="comment">%    Meta-code...</span>
+0022 <span class="comment">%    1, set up a flat Vem structure 80x80x20 perhaps</span>
+0023 <span class="comment">%    with a wide enough horizontal coverage to make sure that the</span>
+0024 <span class="comment">%    centre pixel enters the block-of-blobs from under and leaves</span>
+0025 <span class="comment">%    through the top - not from any side. This might require some</span>
+0026 <span class="comment">%    manual positioning of BOB for data where cameras have been</span>
+0027 <span class="comment">%    rotated far from zenith.</span>
+0028 <span class="comment">%    2, run camera_set_up_sc for stns(iStn),</span>
+0029 <span class="comment">%    3: [CalMtr,stns(iStn)] = tomo_CalSensMat(stn,Vem,X3D,Y3D,Z3D)</span>
+0030 <span class="comment">%    4  stns(iStn).CalMtr = CalMtr;</span>
+0031 <span class="comment">%    end</span>
+0032 
+0033 <span class="comment">%% 1 calculate the azimuth, zenith, polar and &quot;clock&quot; angles for</span>
+0034 <span class="comment">%    every pixel in the images. polar is relative to the optical</span>
+0035 <span class="comment">%    axis, clock angle is the azimuthal angle around the optical</span>
+0036 <span class="comment">%    axis, azimuth and clock angles are clock-wise from north and</span>
+0037 <span class="comment">%    image-vertical respectively.</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">% First step is to make a pixel grid:</span>
+0040 [u,v] = meshgrid(1:size(stn.img,2),1:size(stn.img,1));
+0041 <span class="comment">%%</span>
+0042 <span class="comment">% Pre-allocate the angular matrices:</span>
+0043 az = u;
+0044 ze = u;
+0045 phi = u;
+0046 theta = u;
+0047 <span class="comment">%%</span>
+0048 <span class="comment">% Then calculate angular arrays:</span>
+0049 [az(:),ze(:)] = <a href="../Camera/inv_project_directions.html" class="code" title="function [az,ze] = inv_project_directions(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_directions</a>(u(:)',v(:)',stn.img,stn.obs.xyz,stn.optpar(9),stn.optpar,[0 0 1],100);
+0050 [phi(:),theta(:)] = <a href="../Camera/camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>(u(:),v(:),stn.optpar,stn.optpar(9),size(stn.img));
+0051 
+0052 <span class="comment">% The &quot;flat-field-variation of the fastprojection function seems to</span>
+0053 <span class="comment">% be:</span>
+0054 sens_mtr = 1./cos(theta).^3;   <span class="comment">%(iC1).*cos(ze).^p2(iC2));</span>
+0055 
+0056 <span class="comment">%% 2 Calibration image,</span>
+0057 <span class="comment">%    from 1 photon/m^3s:</span>
+0058 stn.proj = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(ones(size(Vem)),<span class="keyword">...</span>
+0059                            stn.uv,<span class="keyword">...</span>
+0060                            stn.d,<span class="keyword">...</span>
+0061                            stn.l_cl,<span class="keyword">...</span>
+0062                            stn.bfk,<span class="keyword">...</span>
+0063                            size(stn.img),<span class="keyword">...</span>
+0064                            sens_mtr);
+0065 
+0066 <span class="comment">%% 3 pixel closest to Optical axis:</span>
+0067 [Imax,i1,i2] = <a href="../tools/max2D.html" class="code" title="function [Imax,i1,i2] = max2D(Iin)">max2D</a>(cos(theta));
+0068 
+0069 <span class="comment">%% 4 unit vector in direction of optical axis:</span>
+0070 e_OpticalAxis = [sin(az(i1,i2))*sin(ze(i1,i2)) cos(az(i1,i2))*sin(ze(i1,i2)) cos(ze(i1,i2))];
+0071 
+0072 <span class="comment">%% Line-of sight vector to bottom plane in Vem</span>
+0073 r_in  = stn.obs.xyz + e_OpticalAxis * min(Z3D(:))/e_OpticalAxis(3);
+0074 <span class="comment">%% Line-of sight vector to top plane in Vem</span>
+0075 r_out = stn.obs.xyz + e_OpticalAxis * max(Z3D(:))/e_OpticalAxis(3);
+0076 
+0077 <span class="comment">%% Distance along line-of-sight through Vem:</span>
+0078 l = norm(r_in-r_out)*1e3;
+0079 
+0080 <span class="comment">%% The image in stn.proj should now just be the image of 1</span>
+0081 <span class="comment">%  photon/m^3/s, and the fastprojection-flat-field is cos^3(theta)</span>
+0082 <span class="comment">%  so the calibrated factor should be:</span>
+0083 <span class="comment">%</span>
+0084 <span class="comment">%  Cal = 1/1e10 \int_l epsilon(l)dl</span>
+0085 <span class="comment">%</span>
+0086 <span class="comment">%  and since epsilon is 1 the integral becomes fairly simple to</span>
+0087 <span class="comment">%  calculate. So the calibrated conversion matrix becommes...</span>
+0088 <span class="comment">%</span>
+0089 <span class="comment">% Convert sens_mtr to Rayleighs/(#photons/(m^3s))</span>
+0090 CalMtr = 1e-10*l*sens_mtr;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

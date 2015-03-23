@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Heaven can wait, for only watching the skies...</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="../style.css">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+  </head>
+  
+  <body class="section-2" bgcolor="#FFFFF0">
+    <ul id="menu">
+      <li id="nav-1"><a href="../../Documentation/index.html">AIDA-home</a>
+      </li>
+      <li id="nav-2"><a href="../intros.html">Image analysis (tutorial)</a>
+	<ul id="subnav-2">
+	  <li><a href="../BBH.pdf">Tutorial</a></li>
+	  <li><a href="../optics.html">Camera</a></li>
+	  <li><a href="../starcal.html">Starcal</a></li>
+	  <li><a href="../Skymap/index.html">Skymap</a></li>
+	  <li><a href="../getting-started.html">Getting started</a></li>
+	</ul>
+      </li>
+      <li id="nav-3"><a href="../../Html-exmpls/index.html">Examples</a>
+      </li>
+      <li id="nav-4"><a href="../../Html-docs/index.html">Matlab-src-tree</a>
+      </li>
+    </ul>
+    <div id="contents">
+      <h1>Skymap</h1>
+      A medium accuracy star chart/sky map/ephemeris program for
+      matlab.
+      <a href="../images/skymap_fig02.jpg"><img ALIGN=LEFT HSPACE=11
+	  VSPACE=5 src="../images/skymap_fig02s.jpg" alt="Image of the
+	  main figure"></a> 
+      <h3>What does it provide?</h3>
+      <p>
+      This program provides an easy to use sky map with 
+      medium accuracy. That is it plots the stars as they would be
+      seen in the sky from a given point on the earth at any given
+      time. What is meant by ``medium accuracy'' is that the higher
+      order corrections (nutation, proper motion, parallax) for
+      calculating the azimuth and zenith position of the stars is
+      not taken into account.<BR>
+      Due to lack of marked needs, the program currently only plot he
+      stars from the 
+      <a
+      href="ftp://cdsarc.u-strasbg.fr/pub/cats/V/50">Bright Star Catalog (BSC)</a> 
+      <!--       <a -->
+      <!-- 	 href="ftp://adc.gsfc.nasa.gov/pub/adc/archives/catalogs/5/5050">Bright Star Catalog (BSC)</a>  -->
+      and no planets or other bright celestial objects.
+      </p>
+      <p>
+      In addition stellar spectra from the Pulkovo Spectrophotometric
+      Catalog can be extracted - for the 600-900 stars that have their
+      absolute spectral intensities tabulated.
+      </p>
+      <p>
+	The features are:
+      <ol>
+	<li>Rect ascension/Declination or Azimuth/Zenith grid</li>
+	<li>slide rulers for field-of-view and <em>THREE</em> rotation
+	  angles of the f-o-v.</li>
+	<li>Pop-up menu for faintest magnitude</li>
+	<li>Preference dialog for plot colors and sizes</li>
+	<li>Easily editable files of observatory names, and
+	  positions.</li>
+	<li>Integrated with the Pulkovo spectroscopic catalog -
+	  providing stellar spectra with 5&nbsp;nm resolution from 300-1100&nbsp;nm</li>
+	<li>Integrated with the <a href="../starcal.html">StarCal</a>
+	  camera calibration program.</li>
+      </ol>
+      <h3>Installation.</h3>
+      Simple. Really. 
+      <ol>
+	<li>Put the tar file to somewhere you want your mat-files, like
+	  ~/matlab</li>
+	<li>tar -xvf Skymap.tar</li>
+	<li>Add the Skymap directory to your matlab-path.</li>
+	<li>Done.</li>
+      </ol>
+      <h3>Customization</h3>
+      Not very much to customize, except the list of observation
+      sites. This is easily don by modify/add/remove
+      as wanted in the files .data/station.name and
+      .data/stationpos.dat. In stationpos.dat the format is
+      <pre>
+  67 50 26.58777 1 20 24 40.4508  1
+      </pre>
+      <pre>
+degrees arc-minutes arc-seconds NS-flag  degrees arcmin arcsec EW-flag
+      </pre>
+      Here NS-flag and EW-flag is positive for north and east
+      respectively.
+      <p>
+	A significantly more cumbersome customization is to add other
+	star catalogs to the program.<br>
+	The best way to do this is to
+	rewrite the functions related to loading the star catalog, if
+	you need to do this <a href="mailto:bjorn@irf.se">please
+	  contact the author for help</a> or 
+	<a href="../../Html-docs/Skymap/read_ybs.html">consult the source code documentation</a>. <br>
+	The easier way is possibly just to append additional stars into
+	the files stars/ybs.bjg and stars/ybs.org. This will of course
+	make the somewhat slow loading of the stars even slower.
+      </p>
+      <h3>Run the program</h3>
+      At the matlab prompt any of the following function calls will work:
+      <pre>
+ [SkMp] = skymap;
+ [SkMp] = skymap(pos,time);
+ [SkMp] = skymap(pos,time,SkMp);
+      </pre>
+      for programming reasons it is necessary to literary name the
+      output SkMp. &quot;pos&quot; should be a 2x1 vector with [lat
+      long] in degrees with north and east positive, and time should be
+      a 6x1 vector with format [yyyy mm dd hh mm ss.fos]. With no
+      arguments passed you will be prompted with a
+      <a href="../images/skymap_fig01.jpg">figure to select date and
+	time (UT) and observation position</a>. When pressing
+      &quot;Ok&quot; the program will load the star catalog and calculate
+      the positions of the stars. The usage of the GUI is
+      straightforward, the top slide ruler change the field of view the
+      right one change the rotation around the middle of the
+      field-of-view, the left and right rotates the field of view around
+      east-west and north-south. The pop-up menu sets the faintest stars
+      to display. From the &quot;Star&quot; menu you can select Ra/Decl
+      or Az/Ze grid and get information on a specific star. From the
+      &quot;Pos/time&quot; you can request the current values or change
+      to a new set of parameters. From the &quot;File&quot; menu you can
+      print the sky map, close the session, and set various
+      preferences.
+      <BR>
+      <h3>Documentation</h3>
+      The source code is <a href="../../Html-docs/index.html">well documented.</a>
+      <h3>Copyright</h3>
+      ...and available under the <a href="COPYRIGHT">GNU GENERAL PUBLIC LICENSE</a>
+    </div>
+    <address><a href="mailto:bjorn@irf.se">Bj&ouml;rn Gustavsson</a></address>
+    <!-- Created: Tue Apr  9 14:44:23 JST 2002 -->
+    <!-- hhmts start -->Last modified: Mon Apr 15 00:24:33 CEST 2013 <!-- hhmts end -->
+  </body>
+</html>

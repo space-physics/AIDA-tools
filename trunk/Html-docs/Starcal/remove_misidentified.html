@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of remove_misidentified</title>
+  <meta name="keywords" content="remove_misidentified">
+  <meta name="description" content="REMOVE_MISIDENTIFIED - Removes misidentified stars from SkMp">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>remove_misidentified
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>REMOVE_MISIDENTIFIED - Removes misidentified stars from SkMp</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function SkMp = remove_misidentified(SkMp,pixellimit) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">REMOVE_MISIDENTIFIED - Removes misidentified stars from SkMp
+
+ SkMp: position calibration structure from starcal.m
+ pixellimit: accepted radius of deviation (in pixel units)
+
+ Calling:
+  SkMp = remove_misidentified(SkMp,pixellimit)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>	PROJECT_DIRECTIONS - calculates the image positions [UA,WA] from (AZ,ZE)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function SkMp = remove_misidentified(SkMp,pixellimit)</a>
+0002 <span class="comment">%REMOVE_MISIDENTIFIED - Removes misidentified stars from SkMp</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% SkMp: position calibration structure from starcal.m</span>
+0005 <span class="comment">% pixellimit: accepted radius of deviation (in pixel units)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%  SkMp = remove_misidentified(SkMp,pixellimit)</span>
+0009 <span class="comment">%</span>
+0010 
+0011 <span class="comment">% Copyright Carl-Fredrik Enell 20080329, 2010024</span>
+0012 <span class="comment">%</span>
+0013 
+0014 <span class="comment">%%How much deviation (pixels) to accept?</span>
+0015 <span class="keyword">if</span> nargin&lt;2
+0016   pixellimit=3.0;
+0017 <span class="keyword">end</span>
+0018 
+0019 <span class="comment">%Calculate errors in pixel coordinates</span>
+0020 <span class="comment">%From starerrorplot.m</span>
+0021 u = SkMp.identstars(:,3);
+0022 v = SkMp.identstars(:,4);
+0023 
+0024 [ua,va] = <a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(SkMp.identstars(:,1)', <span class="keyword">...</span>
+0025                              SkMp.identstars(:,2)', <span class="keyword">...</span>
+0026                              SkMp.optpar,SkMp.optmod,size(SkMp.img));
+0027 ua = ua';
+0028 va = va';
+0029 du = abs(u-ua);
+0030 dv = abs(v-va);
+0031 
+0032 <span class="comment">%Find stars outside the limit</span>
+0033 wrong=((du.^2+dv.^2)&gt;pixellimit^2);
+0034 
+0035 <span class="comment">%Remove the deviating stars</span>
+0036 SkMp.identstars(wrong,:)=[];
+0037 <span class="comment">%%%%%</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

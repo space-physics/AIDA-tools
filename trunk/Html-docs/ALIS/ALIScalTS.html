@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ALIScalTS</title>
+  <meta name="keywords" content="ALIScalTS">
+  <meta name="description" content="ALIScalTS - Camera calibration factors calculated by Tima Sergienko">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>ALIScalTS
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ALIScalTS - Camera calibration factors calculated by Tima Sergienko</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function Ccam = ALIScalTS(camno,wl_NR,bin,exptime) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ALIScalTS - Camera calibration factors calculated by Tima Sergienko
+ 
+ Calling:
+   Ccam = ALIScalTS(camno,wl_NR,bin,exptime)
+ Input:
+  camno     - camera number [1:6], as in obs.camnr
+  wl_NR     - wavelength &quot;Number&quot; (emission) 1 = 4278 2 = 5577 3 = 6300 A
+  binfactor - 1 = 1x1, 4 = 2x2, 16 = 4x4
+  exp_time  - exposure time (s) 
+ Output:
+  Ccam - Camera sensitivity (counts/R)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function Ccam = ALIScalTS(camno,wl_NR,bin,exptime)</a>
+0002 <span class="comment">% ALIScalTS - Camera calibration factors calculated by Tima Sergienko</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   Ccam = ALIScalTS(camno,wl_NR,bin,exptime)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  camno     - camera number [1:6], as in obs.camnr</span>
+0008 <span class="comment">%  wl_NR     - wavelength &quot;Number&quot; (emission) 1 = 4278 2 = 5577 3 = 6300 A</span>
+0009 <span class="comment">%  binfactor - 1 = 1x1, 4 = 2x2, 16 = 4x4</span>
+0010 <span class="comment">%  exp_time  - exposure time (s)</span>
+0011 <span class="comment">% Output:</span>
+0012 <span class="comment">%  Ccam - Camera sensitivity (counts/R)</span>
+0013 
+0014 <span class="comment">% Copyright Carl-Fredrik Enell 20101028</span>
+0015 <span class="comment">% CFE 20101028</span>
+0016     
+0017     
+0018 <span class="comment">%prepare array, 3 wavelengths, 3 binnings, 6 cameras</span>
+0019 calib = zeros(3,3,6);
+0020     
+0021 <span class="comment">% TS calibration factors</span>
+0022 <span class="comment">% Cameras 1 and 2: preliminary calibration, same for all binninga</span>
+0023 <span class="comment">% Cameras 3-6: two sources at 5577 and 6300 (using mean for now),</span>
+0024 <span class="comment">% one source at 4278</span>
+0025 
+0026 
+0027 <span class="comment">% 4278, binnings 1,4,16</span>
+0028 calib(1,1,:) = [50.01 36.81 27.97 31.21 38.08 21.60];
+0029 calib(1,2,:) = [50.01 36.81 27.84 31.25 38.08 21.58];
+0030 calib(1,3,:) = [50.01 36.81 27.67 31.12 38.18 21.78];
+0031 
+0032 <span class="comment">% 5577, binnings 1,4,16</span>
+0033 calib(2,1,:) = [24.46 23.13 mean([13.40 14.58]) mean([15.56 16.37]) mean([19.74 21.09]) mean([14.64 14.92])];
+0034 calib(2,2,:) = [24.46 23.13 mean([13.78 14.53]) mean([15.62 16.36]) mean([19.84 21.11]) mean([14.64 14.91])];
+0035 calib(2,3,:) = [24.46 23.13 mean([13.72 14.46]) mean([15.62 16.33]) mean([19.82 21.11]) mean([14.88 15.10])];
+0036 
+0037 <span class="comment">% 6300, binnings 1,4,16</span>
+0038 calib(3,1,:) = [26.98 21.29 mean([14.85 14.79]) mean([16.53 16.44]) mean([15.63 15.72]) mean([11.16 11.05])];
+0039 calib(3,2,:) = [26.98 21.29 mean([14.72 14.69]) mean([16.57 16.47]) mean([15.63 15.75]) mean([11.14 11.05])];
+0040 calib(3,3,:) = [26.98 21.29 mean([14.65 14.62]) mean([16.59 16.48]) mean([15.65 15.75]) mean([11.34 11.18])];
+0041 
+0042 <span class="comment">%Calibration factor (Rs/counts) for given binning</span>
+0043 <span class="keyword">switch</span> bin
+0044  <span class="keyword">case</span> 1,
+0045   cft = calib(wl_NR,1,camno);
+0046   
+0047  <span class="keyword">case</span> 4,
+0048   cft = calib(wl_NR,2,camno)/4;
+0049   
+0050  <span class="keyword">case</span> 16,
+0051   cft = calib(wl_NR,3,camno)/16;
+0052   
+0053  <span class="keyword">otherwise</span>
+0054   error(<span class="string">'Wrong binning: use 1,4,16'</span>)
+0055   
+0056 <span class="keyword">end</span>
+0057 
+0058 <span class="comment">%Sensitivity factor (counts/R)</span>
+0059 Ccam = exptime/cft;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

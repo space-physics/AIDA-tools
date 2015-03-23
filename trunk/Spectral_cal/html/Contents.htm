@@ -1,0 +1,54 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>Contents.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Functions synopsis</FONT></FONT></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1> SpectralCal - a set of functions for absolute (or at least relative) camera calibration.
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of Contents.m</FONT></FONT></P> 
+<pre> 
+% SpectralCal - a set of functions for absolute (or at least 
+% relative) camera calibration by using stellar spectral 
+% intensities from the Pulkovo Spectrophotometric Catalog. 
+% 
+% Version (1.0) (20030901) 
+% Path ->  /home/bjorn/matlab/Spectral_cal 
+% 
+% The main program 
+%   <A HREF ="Spec_cal_jobb_mall.htm">Spec_cal_jobb_mall</A>        - Example script for spectral camera sensitivity calibration 
+% 
+% For setting the options 
+%   <A HREF ="spc_typical_ops.htm">spc_typical_ops</A>           - Provides a struct with the typical options 
+% 
+% The functions 
+%   <A HREF ="spc_scan_for_stars.htm">spc_scan_for_stars</A>        - Scan image files for stars with known spectras 
+%   <A HREF ="check_scan_for_stars.htm">check_scan_for_stars</A>      - Check the result of spc_scan_for_stars. 
+%   <A HREF ="spc_cal_bad_times.htm">spc_cal_bad_times</A>         - Find bad time periods for each star 
+%   <A HREF ="spc_sort_out_the_bad_ones.htm">spc_sort_out_the_bad_ones</A> - Remove stars that are "bad" 
+%   <A HREF ="spc_cal_bad_intens.htm">spc_cal_bad_intens</A>        - = ffs_correction2([256 256],optpar,optpar(end-1)); 
+%   <A HREF ="spc_spectral_int_conv.htm">spc_spectral_int_conv</A>     - - convert stellar intensity to 1e6#/m^2/s/fw 
+%   <A HREF ="spc_make_theta.htm">spc_make_theta</A>            - Calculate the angle from the optical axis, 
+%   <A HREF ="spc_sens_hist.htm">spc_sens_hist</A>             - - make histogram with parametrisation and uncertainty 
+% 
+%   <A HREF ="atm_att_est.htm">atm_att_est</A>               - variation of the star intensity with zenith angle 
+% 
+% Subfunctions 
+%   <A HREF ="star_int_search.htm">star_int_search</A>           - (c) 1997 by Bjorn Gustavsson 
+%   <A HREF ="star_int_model.htm">star_int_model</A>            - (c) 1997 by Bjorn Gustavsson 
+% 
+% Remains from too long ago. 
+%   <A HREF ="plot_scitf.htm">plot_scitf</A>                - (No help available) 
+%   <A HREF ="plot_itf.htm">plot_itf</A>                  - (No help available) 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 12:39 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

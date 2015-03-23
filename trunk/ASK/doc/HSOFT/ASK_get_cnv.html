@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_get_cnv</title>
+  <meta name="keywords" content="ASK_get_cnv">
+  <meta name="description" content="ASK_GET_CNV - gets the cnv from the vs common block and returns it in">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_get_cnv
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_GET_CNV - gets the cnv from the vs common block and returns it in</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [cnv,cnvscale] = ASK_get_cnv() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_GET_CNV - gets the cnv from the vs common block and returns it in
+ cnv. scale is also returned, which is the angular resolution in
+ degrees/pixel. 
+   
+ Calling:
+   [cnv,cnvscale] = ASK_get_cnv
+ Input:
+   None. 
+ Output:
+   cnv      - camera parameters
+   cnvscale - camera scaling parameters
+
+ Function takes the camera parameters from the global struct: vs</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [cnv,cnvscale] = ASK_get_cnv()</a>
+0002 <span class="comment">% ASK_GET_CNV - gets the cnv from the vs common block and returns it in</span>
+0003 <span class="comment">% cnv. scale is also returned, which is the angular resolution in</span>
+0004 <span class="comment">% degrees/pixel.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%   [cnv,cnvscale] = ASK_get_cnv</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%   None.</span>
+0010 <span class="comment">% Output:</span>
+0011 <span class="comment">%   cnv      - camera parameters</span>
+0012 <span class="comment">%   cnvscale - camera scaling parameters</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Function takes the camera parameters from the global struct: vs</span>
+0015 
+0016 <span class="comment">% Written to mimic get_cnv.pro</span>
+0017 <span class="comment">% Copyrigth Bjorn Gustavsson 20110207</span>
+0018 <span class="comment">% GNU Coplyleft 3.0 or later applies.</span>
+0019 
+0020 <span class="keyword">global</span> vs
+0021 cnv = vs.vcnv(vs.vsel,:);
+0022 cnvscale = cnv(2)*1e-3 * 180/pi;<span class="comment">% /!dtor</span></pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

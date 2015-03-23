@@ -1,0 +1,295 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of gen_susan</title>
+  <meta name="keywords" content="gen_susan">
+  <meta name="description" content="gen_susan - Generalized SUSAN 2-D filtering">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>gen_susan
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>gen_susan - Generalized SUSAN 2-D filtering</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function J = gen_susan(I,w,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> gen_susan - Generalized SUSAN 2-D filtering
+ SUSAN filtering with filter kernel W scaled with generalized
+ Gaussian of intensity difference. Different prefiltering
+ functions can be selected as well as width and exponent of the
+ intensity scaling. GEN_SUSAN can produce filtering with
+ caracteristics similar to wiener2 and medfilt2 and &quot;everything
+ inbetween&quot;
+ 
+ Calling:
+ J = gen_susan(I,w,OPS)
+ 
+ INPUT:
+ I - 2-D matrix,
+ W - Filter kernel, 
+       Default: ones(3)/9 
+ OPS - options struct with fields:
+   TAU - width of intensity weighting. 1/eps -&gt; filtering similar to
+         linear filter, std(I(:)) and I give results similar to
+         sigma-filter/wiener2. 
+         Default: 1, more useful values have to be set manually,
+         ex: 3 for std = 3*I.^0.5
+   GAMMA - shape factor, 2 &lt;-&gt; Gaussian, 1 &lt;-&gt; double sided
+         exponential, Wi(i,j) = W(i,j)*exp(-abs((Ip-I(i,j))/TAU).^GAMMA)
+         Default: 2
+   PRE_FILTER - [{'n'}|'f'|'w'|'m'|'s'], 'n' for none, 'f' for
+         FILTER2 (using same filter kernel), 'w' for
+         WIENER2 (using size(W) as neighbourhood region),
+         'm' for MEDFILT2, 's' for GEN_SUSAN, using same
+         filter kernel but others options default.
+   Kernelsize4pre_filter - size of kernel to use for prefiltering,
+         default is [3,3], set to [] to use fK.
+   INCLUDE_CENTER - [{1}|0] to include the center point or not to
+         include the center point, default is to include it.
+   PROPORTIONAL - 
+ OUTPUT:
+   J - Filtered image, always of type DOUBLE; ro
+       with no input arguments GEN_SUSAN returns the default
+       OPS-struct. 
+ 
+ GEN_SUSAN is a generalization of &quot;Smoothing over Univalue Segment
+ Assimilating Nucleus&quot; S.M. Smith and J.M. Brady. SUSAN - a new
+ approach to low level image processing.  Int. Journal of Computer
+ Vision, 23(1):45--78, May 1997.
+ 
+ No error checking.
+
+ See also: WIENER2, MEDFILT2, FILTER2, <a href="symnin_filter.html" class="code" title="function img_out = symnin_filter(img_in,n,OPS)">SYMNIN_FILTER</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="gen_susan.html" class="code" title="function J = gen_susan(I,w,OPS)">gen_susan</a>	gen_susan - Generalized SUSAN 2-D filtering</li><li><a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>	MEDFILT2 - 2 dimensional sliding median filter</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ASK/HSOFT/ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>	ASK_READ_V - Read ASK image #i1 from current camera in current "mega-block"</li><li><a href="../Fits_tools/pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>	PRE_PROC_IMG - systematic image correction and preprocessing of</li><li><a href="gen_susan.html" class="code" title="function J = gen_susan(I,w,OPS)">gen_susan</a>	gen_susan - Generalized SUSAN 2-D filtering</li><li><a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>	MEDFILT2 - 2 dimensional sliding median filter</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function J = gen_susan(I,w,OPS)</a>
+0002 <span class="comment">% gen_susan - Generalized SUSAN 2-D filtering</span>
+0003 <span class="comment">% SUSAN filtering with filter kernel W scaled with generalized</span>
+0004 <span class="comment">% Gaussian of intensity difference. Different prefiltering</span>
+0005 <span class="comment">% functions can be selected as well as width and exponent of the</span>
+0006 <span class="comment">% intensity scaling. GEN_SUSAN can produce filtering with</span>
+0007 <span class="comment">% caracteristics similar to wiener2 and medfilt2 and &quot;everything</span>
+0008 <span class="comment">% inbetween&quot;</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Calling:</span>
+0011 <span class="comment">% J = gen_susan(I,w,OPS)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% INPUT:</span>
+0014 <span class="comment">% I - 2-D matrix,</span>
+0015 <span class="comment">% W - Filter kernel,</span>
+0016 <span class="comment">%       Default: ones(3)/9</span>
+0017 <span class="comment">% OPS - options struct with fields:</span>
+0018 <span class="comment">%   TAU - width of intensity weighting. 1/eps -&gt; filtering similar to</span>
+0019 <span class="comment">%         linear filter, std(I(:)) and I give results similar to</span>
+0020 <span class="comment">%         sigma-filter/wiener2.</span>
+0021 <span class="comment">%         Default: 1, more useful values have to be set manually,</span>
+0022 <span class="comment">%         ex: 3 for std = 3*I.^0.5</span>
+0023 <span class="comment">%   GAMMA - shape factor, 2 &lt;-&gt; Gaussian, 1 &lt;-&gt; double sided</span>
+0024 <span class="comment">%         exponential, Wi(i,j) = W(i,j)*exp(-abs((Ip-I(i,j))/TAU).^GAMMA)</span>
+0025 <span class="comment">%         Default: 2</span>
+0026 <span class="comment">%   PRE_FILTER - [{'n'}|'f'|'w'|'m'|'s'], 'n' for none, 'f' for</span>
+0027 <span class="comment">%         FILTER2 (using same filter kernel), 'w' for</span>
+0028 <span class="comment">%         WIENER2 (using size(W) as neighbourhood region),</span>
+0029 <span class="comment">%         'm' for MEDFILT2, 's' for GEN_SUSAN, using same</span>
+0030 <span class="comment">%         filter kernel but others options default.</span>
+0031 <span class="comment">%   Kernelsize4pre_filter - size of kernel to use for prefiltering,</span>
+0032 <span class="comment">%         default is [3,3], set to [] to use fK.</span>
+0033 <span class="comment">%   INCLUDE_CENTER - [{1}|0] to include the center point or not to</span>
+0034 <span class="comment">%         include the center point, default is to include it.</span>
+0035 <span class="comment">%   PROPORTIONAL -</span>
+0036 <span class="comment">% OUTPUT:</span>
+0037 <span class="comment">%   J - Filtered image, always of type DOUBLE; ro</span>
+0038 <span class="comment">%       with no input arguments GEN_SUSAN returns the default</span>
+0039 <span class="comment">%       OPS-struct.</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">% GEN_SUSAN is a generalization of &quot;Smoothing over Univalue Segment</span>
+0042 <span class="comment">% Assimilating Nucleus&quot; S.M. Smith and J.M. Brady. SUSAN - a new</span>
+0043 <span class="comment">% approach to low level image processing.  Int. Journal of Computer</span>
+0044 <span class="comment">% Vision, 23(1):45--78, May 1997.</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">% No error checking.</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">% See also: WIENER2, MEDFILT2, FILTER2, SYMNIN_FILTER</span>
+0049 
+0050 
+0051 <span class="comment">%   Copyright � 20050129 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0052 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0053 
+0054 
+0055 <span class="comment">% If no input arguments give the OPS-struct with default options.</span>
+0056 <span class="keyword">if</span> nargin == 0
+0057   
+0058   J.gamma = 2;
+0059   J.pre_filter = <span class="string">'n'</span>;
+0060   J.kernelsize4pre_filter = [3,3];
+0061   J.tau = 1;
+0062   J.proportional = 0.5;
+0063   J.include_center = 0;
+0064   <span class="keyword">return</span>
+0065   
+0066 <span class="keyword">end</span>
+0067 
+0068 <span class="comment">% Default filter kernel</span>
+0069 <span class="keyword">if</span> nargin == 1 || isempty(w)
+0070   w = ones(3)/9;
+0071 <span class="keyword">end</span>
+0072 
+0073 <span class="comment">% If no OPS given creat a default one.</span>
+0074 <span class="keyword">if</span> nargin &lt;= 2
+0075   OPS = <a href="gen_susan.html" class="code" title="function J = gen_susan(I,w,OPS)">gen_susan</a>;
+0076 <span class="keyword">else</span>  <span class="comment">% If there are an OPS-struct complete it with defaults for</span>
+0077       <span class="comment">% missing fields.</span>
+0078   <span class="keyword">if</span> ~isfield(OPS,<span class="string">'gamma'</span>)
+0079     OPS.gamma = 2;
+0080   <span class="keyword">end</span>
+0081   <span class="keyword">if</span> ~isfield(OPS,<span class="string">'tau'</span>)
+0082     OPS.tau = 1;  <span class="comment">% Pretty useless value but there has to be something...</span>
+0083   <span class="keyword">end</span>
+0084   <span class="keyword">if</span> ~isfield(OPS,<span class="string">'pre_filter'</span>)
+0085     OPS.pre_filter = <span class="string">'n'</span>;
+0086   <span class="keyword">end</span>
+0087   <span class="keyword">if</span> ~isfield(OPS,<span class="string">'include_center'</span>)
+0088     OPS.include_center = 0;
+0089   <span class="keyword">end</span>
+0090   <span class="keyword">if</span> ~isfield(OPS,<span class="string">'proportional'</span>)
+0091     OPS.proportional = 0.5;
+0092   <span class="keyword">end</span>
+0093 <span class="keyword">end</span>
+0094 
+0095 class0 = class(I);
+0096 I = double(I);
+0097 
+0098 regsize = size(w);
+0099 
+0100 <span class="comment">% Constant extrapolation at the edges. Higher order extrap too</span>
+0101 <span class="comment">% complicated and since there is a need for filtering there should</span>
+0102 <span class="comment">% be some noise and that makes higher order extrapolation even worse?</span>
+0103 I_internal = I([ones(1,ceil((regsize(1)-1)/2)) 1:end size(I,1)*ones(1,(regsize(1)-1)/2)],<span class="keyword">...</span>
+0104                [ones(1,ceil((regsize(2)-1)/2)) 1:end size(I,2)*ones(1,(regsize(2)-1)/2)]);
+0105 
+0106 <span class="comment">% Pre-filtering</span>
+0107 <span class="keyword">switch</span> OPS.pre_filter
+0108  <span class="keyword">case</span> <span class="string">'f'</span>
+0109   <span class="keyword">if</span> isempty(OPS.kernelsize4pre_filter)
+0110     <span class="comment">%I_internal = filter2(w,I_internal);</span>
+0111     I = filter2(w,I);
+0112   <span class="keyword">else</span>
+0113     W = ones(OPS.kernelsize4pre_filter);
+0114     W = W/sum(W(:));
+0115     <span class="comment">%I_internal = filter2(W,I_internal);</span>
+0116     I = filter2(W,I);
+0117   <span class="keyword">end</span>
+0118  <span class="keyword">case</span> <span class="string">'w'</span>
+0119   <span class="keyword">try</span> 
+0120     <span class="keyword">if</span> isempty(OPS.kernelsize4pre_filter)
+0121       <span class="comment">%I_internal = wiener2(I_internal,size(w));</span>
+0122       I = wiener2(I,size(w));
+0123     <span class="keyword">else</span>
+0124       <span class="comment">%I_internal = wiener2(I_internal,OPS.kernelsize4pre_filter);</span>
+0125       I = wiener2(I,OPS.kernelsize4pre_filter);
+0126     <span class="keyword">end</span>
+0127   <span class="keyword">catch</span>
+0128     warning(<span class="string">'susan:nonexistinprefilter'</span>,<span class="keyword">...</span>
+0129             <span class="string">'Could not find WIENER2 for SUSAN prefiltering'</span>)
+0130   <span class="keyword">end</span>
+0131  <span class="keyword">case</span> <span class="string">'m'</span>
+0132   <span class="keyword">try</span> 
+0133     <span class="keyword">if</span> isempty(OPS.kernelsize4pre_filter)
+0134       <span class="comment">%I_internal = medfilt2(I_internal,size(w));</span>
+0135       I = <a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(I,size(w));
+0136     <span class="keyword">else</span>
+0137       <span class="comment">%I_internal = medfilt2(I_internal,OPS.kernelsize4pre_filter);</span>
+0138       I = <a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(I,OPS.kernelsize4pre_filter);
+0139     <span class="keyword">end</span>
+0140   <span class="keyword">catch</span>
+0141     warning(<span class="string">'susan:nonexistinprefilter'</span>,<span class="keyword">...</span>
+0142             <span class="string">'Could not find MEDFILT2 for SUSAN prefiltering'</span>)
+0143   <span class="keyword">end</span>
+0144  <span class="keyword">case</span> <span class="string">'s'</span>
+0145   <span class="keyword">if</span> isempty(OPS.kernelsize4pre_filter)
+0146     <span class="comment">%I_internal = gen_susan(I_internal,w);</span>
+0147     I = <a href="gen_susan.html" class="code" title="function J = gen_susan(I,w,OPS)">gen_susan</a>(I,w);
+0148   <span class="keyword">else</span>
+0149     W = ones(OPS.kernelsize4pre_filter);
+0150     W = W/sum(W(:));
+0151     <span class="comment">%I_internal = gen_susan(I_internal,W);</span>
+0152     I = <a href="gen_susan.html" class="code" title="function J = gen_susan(I,w,OPS)">gen_susan</a>(I,W);
+0153   <span class="keyword">end</span>
+0154  <span class="keyword">otherwise</span>
+0155   <span class="comment">% sit quiet and happy</span>
+0156 <span class="keyword">end</span>
+0157 
+0158 [Iy,Ix] = size(I);
+0159 
+0160 <span class="comment">% Initialization</span>
+0161 J = 0;
+0162 S_W = 0;
+0163 
+0164 
+0165 <span class="comment">%% Filtering</span>
+0166 <span class="comment">%          sy,sx</span>
+0167 <span class="comment">%          ___</span>
+0168 <span class="comment">%         \</span>
+0169 <span class="comment">% J(y,x) = &gt;  I(y+i-sy/2,x+j-sx/2)*W(i,j)*exp(-|Ip(y,x)-I(y+i-sy/2,x+j-sx/2)|^gamma/(tau*I(y+i-sy/2,x+j-sx/2))^gamma)</span>
+0170 <span class="comment">%         /___</span>
+0171 <span class="comment">%</span>
+0172 <span class="comment">%         i,j = 1,1</span>
+0173 <span class="comment">%        -------------------------------------------------------------------------------------</span>
+0174 <span class="comment">%          sy,sx</span>
+0175 <span class="comment">%          ___</span>
+0176 <span class="comment">%         \</span>
+0177 <span class="comment">%          &gt; W(i,j)*exp(-|Ip(y,x)-I(y+i-sy/2,x+j-sx/2)|^gamma/(tau*I(y+i-sy/2,x+j-sx/2))^gamma)</span>
+0178 <span class="comment">%         /___</span>
+0179 <span class="comment">%</span>
+0180 <span class="comment">%         i,j = 1,1</span>
+0181 <span class="comment">%</span>
+0182 <span class="comment">%</span>
+0183 <span class="keyword">for</span> i1 = 1:regsize(1),
+0184   
+0185   <span class="keyword">for</span> j2 = 1:regsize(2),
+0186     
+0187     <span class="keyword">if</span> OPS.include_center==0 &amp;&amp; abs(i1-(regsize(1)+1)/2)&lt;eps  &amp;&amp; abs(j2-(regsize(2)+1)/2)&lt;eps 
+0188       <span class="comment">% then do not include that point (center point)</span>
+0189     <span class="keyword">else</span>
+0190       WI = max(realmin,<span class="keyword">...</span>
+0191                exp( - abs((I-I_internal(i1:(i1-1+Iy),j2:(j2-1+Ix)))./<span class="keyword">...</span>
+0192                           (abs(max(1,I)).^OPS.proportional.*OPS.tau)).^OPS.gamma ));
+0193       W = w(1+end-i1,1+end-j2)*WI;
+0194       J = J+I_internal(i1:(i1-1+Iy),j2:(j2-1+Ix)).*W;
+0195       S_W = S_W + W;
+0196     <span class="keyword">end</span>
+0197   <span class="keyword">end</span>
+0198   
+0199 <span class="keyword">end</span>
+0200 
+0201 <span class="comment">% Trapping of error due to inf/nan in S_W. This can occur for cases</span>
+0202 <span class="comment">% where the image intensity varies too much from the center</span>
+0203 <span class="comment">% point. This is just a QD-HACK!</span>
+0204 <span class="comment">% Todo: Test this infnan avoiding problem - gen_susan</span>
+0205 S_W(~isfinite(S_W(:))) = 1; 
+0206 J = J./S_W;
+0207 J = cast(J,class0);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

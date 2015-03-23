@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_draw_fov</title>
+  <meta name="keywords" content="ASK_draw_fov">
+  <meta name="description" content="ASK_DRAW_FOV - Draw one cameras field-of-view in another cameras f-o-v">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_draw_fov
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_DRAW_FOV - Draw one cameras field-of-view in another cameras f-o-v</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [varargout] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_DRAW_FOV - Draw one cameras field-of-view in another cameras f-o-v
+            or just calculate the camera f-o-v edge
+ 
+ Calling:
+   [ph] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)
+   [u,v] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)
+   [u,v,ph] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)
+ Input:
+   imsiz1   - Size of image #1
+   optpar1  - Optical parameters of camera #1
+   imsiz2   - Size of image #2
+   optpar2  - Optical parameters of camera #2
+   r1       - location of camera #1 [x1,y1,z1] (km), optional
+   r2       - location of camera #1 [x2,y2,z2] (km), optional
+   alt      - altitude for which to calculate f-o-v
+   cmtr     - rotation matrix for transformation from local
+              horizontal coordinate systems at r1 and r2, If left
+              empty defaults to eye(3)
+   varargin - cell-array with property-value pairs sent forward to
+              plot function, see PLOT for details. Ex {'r--','linewidth',2}
+ Output:
+   ph - plot-handle to plotted lines
+   u  - horizontal image coordinates of f-o-v of camera #1 in
+        images from camera #2
+   v  - vertical image coordinates of f-o-v of camera #1 in
+        images from camera #2
+
+ If function is called with 2 output arguments only U and V is
+ calculated and no plotting is done, with other number of output
+ arguments plotting is done</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [varargout] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)</a>
+0002 <span class="comment">% ASK_DRAW_FOV - Draw one cameras field-of-view in another cameras f-o-v</span>
+0003 <span class="comment">%            or just calculate the camera f-o-v edge</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%   [ph] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)</span>
+0007 <span class="comment">%   [u,v] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)</span>
+0008 <span class="comment">%   [u,v,ph] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%   imsiz1   - Size of image #1</span>
+0011 <span class="comment">%   optpar1  - Optical parameters of camera #1</span>
+0012 <span class="comment">%   imsiz2   - Size of image #2</span>
+0013 <span class="comment">%   optpar2  - Optical parameters of camera #2</span>
+0014 <span class="comment">%   r1       - location of camera #1 [x1,y1,z1] (km), optional</span>
+0015 <span class="comment">%   r2       - location of camera #1 [x2,y2,z2] (km), optional</span>
+0016 <span class="comment">%   alt      - altitude for which to calculate f-o-v</span>
+0017 <span class="comment">%   cmtr     - rotation matrix for transformation from local</span>
+0018 <span class="comment">%              horizontal coordinate systems at r1 and r2, If left</span>
+0019 <span class="comment">%              empty defaults to eye(3)</span>
+0020 <span class="comment">%   varargin - cell-array with property-value pairs sent forward to</span>
+0021 <span class="comment">%              plot function, see PLOT for details. Ex {'r--','linewidth',2}</span>
+0022 <span class="comment">% Output:</span>
+0023 <span class="comment">%   ph - plot-handle to plotted lines</span>
+0024 <span class="comment">%   u  - horizontal image coordinates of f-o-v of camera #1 in</span>
+0025 <span class="comment">%        images from camera #2</span>
+0026 <span class="comment">%   v  - vertical image coordinates of f-o-v of camera #1 in</span>
+0027 <span class="comment">%        images from camera #2</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">% If function is called with 2 output arguments only U and V is</span>
+0030 <span class="comment">% calculated and no plotting is done, with other number of output</span>
+0031 <span class="comment">% arguments plotting is done</span>
+0032 
+0033 <span class="comment">% Modified from draw_fov.pro</span>
+0034 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0035 <span class="comment">% GPL 3.0 or later applies</span>
+0036 
+0037 <span class="comment">% common vs</span>
+0038 
+0039 <span class="keyword">if</span> nargin &lt; 7 
+0040   <span class="comment">% Then cameras assumed at same location...</span>
+0041   r1 = [0,0,0]; <span class="comment">% YUP that's right even</span>
+0042   r2 = [0,0,0]; <span class="comment">% if there are bot an r1 &amp; r2</span>
+0043   alt = 100;    <span class="comment">% but alt is missing then scrappit! Folk's that</span>
+0044                 <span class="comment">% don't understand that can go commit undescribable</span>
+0045                 <span class="comment">% acts on themself. BG 20110731</span>
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="keyword">if</span> nargin &lt; 8 | isempty(cmtr)
+0049   cmtr = eye(3);
+0050 <span class="keyword">end</span>
+0051 <span class="comment">% Calculate projection of camera #1 field-of-view at desired</span>
+0052 <span class="comment">% altitude - if cameras co-located any altitude will do, for</span>
+0053 <span class="comment">% example the default.</span>
+0054 [xx,yy,zz] = inv_project_img(ones(imsiz1),r1,optpar1(9),optpar1,[0 0 1],alt,cmtr);
+0055 <span class="comment">% Pack the edges into an array. This should make up a square in 3-D</span>
+0056 r = [ [xx(:,1);xx(<span class="keyword">end</span>,:)';xx(end:-1:1,end);xx(1,end:-1:1)'],<span class="keyword">...</span>
+0057       [yy(:,1);yy(<span class="keyword">end</span>,:)';yy(end:-1:1,end);yy(1,end:-1:1)'],<span class="keyword">...</span>
+0058       [zz(:,1);zz(<span class="keyword">end</span>,:)';zz(end:-1:1,end);zz(1,end:-1:1)'] ];
+0059 
+0060 <span class="comment">% Calculate the image coordinates of this array in camera #2 images</span>
+0061 [u,v] = project_point(r2,optpar2,r',eye(3),imsiz2);
+0062 
+0063 <span class="comment">% If no output argument is requeste</span>
+0064 <span class="keyword">if</span> ( nargout ~= 2 )
+0065   isholdon = ishold;
+0066   hold on
+0067   ph = plot(u,v,varargin{:});
+0068   <span class="keyword">if</span> ~isholdon
+0069     hold off
+0070   <span class="keyword">end</span>
+0071 <span class="keyword">end</span>
+0072 
+0073 <span class="keyword">if</span> nargout == 1
+0074   
+0075   varargout{1} = ph;
+0076   
+0077 <span class="keyword">elseif</span> nargout == 2
+0078   
+0079   varargout{1} = u;
+0080   varargout{2} = v;
+0081   
+0082 <span class="keyword">elseif</span> nargout == 3
+0083   
+0084   varargout{1} = u;
+0085   varargout{2} = v;
+0086   varargout{3} = ph;
+0087   
+0088 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

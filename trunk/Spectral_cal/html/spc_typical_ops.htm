@@ -1,0 +1,54 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>spc_typical_ops.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function synopsis</FONT></FONT></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1> OPTS = spc_typical_ops                                                                                                                              </FONT></FONT></P> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function comments</FONT></FONT></P> 
+<pre> 
+% 
+% spc_typical_ops  Provides a struct with the typical options 
+% OPS.maglimit is the limit in magnitude for stars to search for, 
+% OPS.regsize is the size of the image region surounding a star to 
+% use for background calculation, OPTS.bgtype is a string with 
+% either 'complicated' for a more complex background calculation or 
+% something else for as simple. 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files that call spc_typical_ops.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="Contents.htm">Contents</A></LI> 
+<LI><A HREF ="Spec_cal_jobb_mall.htm">Spec_cal_jobb_mall</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of spc_typical_ops.m</FONT></FONT></P> 
+<pre> 
+function OPTS = spc_typical_ops 
+% OPTS = spc_typical_ops 
+% 
+% spc_typical_ops  Provides a struct with the typical options 
+% OPS.maglimit is the limit in magnitude for stars to search for, 
+% OPS.regsize is the size of the image region surounding a star to 
+% use for background calculation, OPTS.bgtype is a string with 
+% either 'complicated' for a more complex background calculation or 
+% something else for as simple. 
+ 
+% Copyright Bjorn Gustavsson 20030901 
+ 
+OPTS.Mag_limit = 5; 
+OPTS.regsize = 10; 
+OPTS.bgtype = 'simple';  %/'complicated'; 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 16:26 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

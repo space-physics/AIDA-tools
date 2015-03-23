@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_v_select</title>
+  <meta name="keywords" content="ASK_v_select">
+  <meta name="description" content="ASK_V_SELECT - Set current camera index in global structure VS">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_v_select
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_V_SELECT - Set current camera index in global structure VS</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function ASK_v_select(indx,quiet) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_V_SELECT - Set current camera index in global structure VS
+   
+ Calling:
+   ASK_v_select(indx)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_get_imcal.html" class="code" title="function ASK_get_imcal()">ASK_get_imcal</a>	ASK_GET_IMCAL - routine filling the imcal common block with</li><li><a href="ASK_v_summary.html" class="code" title="function fp = ASK_v_summary(fp)">ASK_v_summary</a>	ASK_V_SUMMARY - print summary of event setup</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_add_int_radar.html" class="code" title="function I_of_T = ASK_add_int_radar(RadarSite,az,el,dphi,indices,Cams,optpar,r_camera,OPS)">ASK_add_int_radar</a>	ASK_ADD_INT_RADAR - Image intenisity inside radar beam.</li><li><a href="ASK_fanograms.html" class="code" title="function [Keos,time_V,u,v] = ASK_fanograms(Indices2do,Cams,shifts,e_fan,width,OPS)">ASK_fanograms</a>	ASK_FANOGRAMS - Produce keograms of a fan-beam-cut from an ASK image sequence</li><li><a href="ASK_image_sequence.html" class="code" title="function varargout = ASK_image_sequence(indices2show,Cams,OPS)">ASK_image_sequence</a>	ASK_IMAGE_SEQUENCE - to display an ASK image sequence as movie, and</li><li><a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li><li><a href="ASK_keograms.html" class="code" title="function [keo1,keo2,keo3,time_V] = ASK_keograms(fir,las,ste,width,x0,y0,angle,bkg,dist,OPS)">ASK_keograms</a>	ASK_KEOGRAMS - Produce keograms keograms from an ASK image sequence</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ASK_v_select(indx,quiet)</a>
+0002 <span class="comment">% ASK_V_SELECT - Set current camera index in global structure VS</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   ASK_v_select(indx)</span>
+0006 
+0007 <span class="comment">% Modified from add_multi.pro</span>
+0008 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0009 <span class="comment">% GPL 3.0 or later applies</span>
+0010 
+0011 <span class="keyword">global</span> vs
+0012 
+0013 max_camera_number = length(vs.vnf);
+0014 
+0015 <span class="comment">% Constrain indx to be between 1 and the maximum camera number:</span>
+0016 indx = max(1,min(max_camera_number,indx));
+0017 
+0018 vs.vsel = indx;
+0019 <a href="ASK_get_imcal.html" class="code" title="function ASK_get_imcal()">ASK_get_imcal</a>
+0020 <span class="keyword">if</span> nargin == 1 | ( quiet == 0 &amp; ~strcmp(quiet,<span class="string">'quiet'</span>))
+0021   <a href="ASK_v_summary.html" class="code" title="function fp = ASK_v_summary(fp)">ASK_v_summary</a>
+0022 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

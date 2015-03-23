@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sort_out</title>
+  <meta name="keywords" content="sort_out">
+  <meta name="description" content="SORT_OUT - finds the possible stars among the local maxima.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>sort_out
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SORT_OUT - finds the possible stars among the local maxima.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [identstars] = sort_out(in_i,in_j,in_I,bild) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SORT_OUT - finds the possible stars among the local maxima. 
+ The function takes the image coordinates and intensity of the
+ local maximas as well as the image as input.
+
+ Calling:
+ [identstars] = sort_out(in_i,in_j,in_I,bild)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="stardiff2.html" class="code" title="function [diff] = stardiff2(fv,xmin,xmax,ymin,ymax,starmat,x0,y0,d_x0y0)">stardiff2</a>	STARDIFF2 - total error of starfield fit.</li><li><a href="starint.html" class="code" title="function [starintens] = starint(fv,xmin,xmax,ymin,ymax)">starint</a>	STARINT evaluation of a 2D gaussian.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="find_the_stars.html" class="code" title="function [out_i,out_j,out_I] = find_the_stars(img_in)">find_the_stars</a>	FIND_THE_STARS - finds stars in images.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [identstars] = sort_out(in_i,in_j,in_I,bild)</a>
+0002 <span class="comment">% SORT_OUT - finds the possible stars among the local maxima.</span>
+0003 <span class="comment">% The function takes the image coordinates and intensity of the</span>
+0004 <span class="comment">% local maximas as well as the image as input.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% [identstars] = sort_out(in_i,in_j,in_I,bild)</span>
+0008 
+0009 <span class="comment">%   Copyright � 1998 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0010 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0011 
+0012 <span class="keyword">global</span> s_prefs
+0013 warning off
+0014 
+0015 star_lims = s_prefs.sz_rg_st.^-2;
+0016 
+0017 b = size(bild);
+0018 bx = b(2);
+0019 by = b(1);
+0020 tbild = bild-min(min(bild));
+0021 
+0022 imax = max(size(in_I));
+0023 idnr = 1;
+0024 
+0025 <span class="comment">%opt = [0,5e-2,0,0,0,0,0,0,0,0,0,0,0,2000];</span>
+0026 <span class="keyword">for</span> i = 1:imax,
+0027   
+0028   clear sortids1 order x1 indx1
+0029   
+0030   x0 = in_i(i);
+0031   y0 = in_j(i);
+0032   <span class="keyword">if</span> ( ( 5 &lt; x0 &amp; x0 &lt; bx-5 ) &amp; ( 5 &lt; y0 &amp; y0 &lt; by-5 ) )
+0033     
+0034     <span class="comment">% Determine the part of the image confining the star.</span>
+0035     xmin = floor(min(max(x0-5,1),bx-10));
+0036     xmax = floor(max(min(x0+5,bx),11));
+0037     ymin = floor(min(max(y0-5,1),by-10));
+0038     ymax = floor(max(min(y0+5,by),11));
+0039     
+0040     <span class="comment">% Find the star in the region of interest.</span>
+0041     starmat = tbild(ymin:ymax,xmin:xmax);
+0042     
+0043     bakgr2 = median( [starmat(1,:) starmat(11,:)  starmat(:,11)' starmat(:,1)' ]);
+0044     
+0045     startvec = [x0,y0,tbild(y0,x0)-bakgr2,1,.01,1];
+0046     <span class="keyword">if</span> ( startvec(3) &gt; 1.1*(max([starmat(1,:) starmat(11,:)  starmat(:,11)' starmat(:,1)' ])-bakgr2) )
+0047       
+0048       <span class="keyword">if</span> ( exist(<span class="string">'fminunc'</span>,<span class="string">'file'</span>) == 2 )
+0049     starpar = fminunc(<span class="string">'stardiff2'</span>,startvec,[0,5e-2,0,0,0,0,0,0,0,0,0,0,0,2000],[],xmin,xmax,ymin,ymax,starmat,x0,y0);
+0050       <span class="keyword">else</span>
+0051         <span class="keyword">try</span> 
+0052           starpar = fminsearch(<span class="string">'stardiff2'</span>,startvec,[0,5e-2,0,0,0,0,0,0,0,0,0,0,0,2000],[],xmin,xmax,ymin,ymax,starmat,x0,y0);
+0053         <span class="keyword">catch</span>
+0054           starpar = fminsearch(@(startvec) <a href="stardiff2.html" class="code" title="function [diff] = stardiff2(fv,xmin,xmax,ymin,ymax,starmat,x0,y0,d_x0y0)">stardiff2</a>(startvec,xmin,xmax,ymin,ymax,starmat,x0,y0),startvec);
+0055         <span class="keyword">end</span>
+0056       <span class="keyword">end</span>
+0057       fynd = <a href="starint.html" class="code" title="function [starintens] = starint(fv,xmin,xmax,ymin,ymax)">starint</a>(starpar,xmin,xmax,ymin,ymax);
+0058       star_intm = (starmat-bakgr2).*(fynd&gt;.07*(max(max(fynd))));
+0059       star_intt = sum(sum(star_intm));
+0060       star_max = max(max(star_intm));
+0061       
+0062       <span class="keyword">if</span> ( ( xmin&lt;starpar(1) &amp; starpar(1) &lt; xmax &amp; ymin &lt; starpar(2) &amp; starpar(2) &lt; ymax )<span class="keyword">...</span>
+0063         &amp; ( starpar(3) &gt; 1.2*(max([starmat(1,:) starmat(11,:)  starmat(:,11)' starmat(:,1)' ])-bakgr2) )<span class="keyword">...</span>
+0064         &amp; ( starpar(4)*starpar(6)-starpar(5)^2 &gt; 0 )<span class="keyword">...</span>
+0065         &amp; ( max(starpar(4),starpar(6))&lt;star_lims(1) &amp; min(starpar(4),starpar(6))&gt;star_lims(2) ) )
+0066     
+0067     <span class="comment">%out_i(idnr) = x0;</span>
+0068     <span class="comment">%out_j(idnr) = y0;</span>
+0069     <span class="comment">%out_I(idnr) = starpar(3);</span>
+0070     
+0071     identstars(idnr,3) = x0;     <span class="comment">%starpos in image(x)</span>
+0072     identstars(idnr,4) = y0;     <span class="comment">%starpos in image(y)</span>
+0073     identstars(idnr,5) = star_max;     <span class="comment">%max count from star</span>
+0074     identstars(idnr,6) = star_intt; <span class="comment">%total counts from star</span>
+0075     identstars(idnr,7) = 1;     <span class="comment">%good gaussian fit</span>
+0076     identstars(idnr,8) = 0;     <span class="comment">%wide circular gausian</span>
+0077     idnr = idnr + 1;
+0078     
+0079       <span class="keyword">end</span>
+0080       
+0081     <span class="keyword">end</span>
+0082     
+0083   <span class="keyword">end</span>
+0084   <span class="keyword">if</span> rem(i,20)==0
+0085     disp([<span class="string">'number of star-like maximas found in image: '</span>,num2str(idnr),<span class="string">' out of '</span>,num2str(i),<span class="string">' possible'</span>])
+0086   <span class="keyword">end</span>
+0087 <span class="keyword">end</span> <span class="comment">% for i = 1:imax,</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

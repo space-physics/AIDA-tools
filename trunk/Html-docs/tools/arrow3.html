@@ -1,0 +1,1118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of arrow3</title>
+  <meta name="keywords" content="arrow3">
+  <meta name="description" content="ARROW3 (R13)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>arrow3
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ARROW3 (R13)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function hn=arrow3(p1,p2,s,w,h,ip,alpha,beta) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ARROW3 (R13)
+   ARROW3(P1,P2) draws lines from P1 to P2 with directional arrowheads.
+   P1 and P2 are either nx2 or nx3 matrices.  Each row of P1 is an
+   initial point, and each row of P2 is a terminal point.
+
+   ARROW3(P1,P2,S,W,H,IP,ALPHA,BETA) can be used to specify properties
+   of the line, initial point marker, and arrowhead.  S is a character
+   string made with one element from any or all of the following 3
+   columns:
+
+     Color Switches      LineStyle            LineWidth
+     ------------------  -------------------  --------------------
+     k  blacK (default)  -  solid (default)   0.5 points (default)
+     y  Yellow           :  dotted            0   no lines
+     m  Magenta          -. dashdot           /   LineWidthOrder
+     c  Cyan             -- dashed
+     r  Red              *  LineStyleOrder            _______ __  
+     g  Green                                       ^        |    
+     b  Blue                                       / \       |    
+     w  White                        Arrowhead    /   \   Height  
+     a  Asparagus                                /     \     |    
+     d  Dark gray                               /       \    |    
+     e  Evergreen                              /___   ___\ __|__  
+     f  Firebrick                             |    | |    |       
+     h  Hot pink                              |-- Width --|       
+     i  Indigo                                |    | |    |       
+     j  Jade                                       | |            
+     l  Light gray                                 | |            
+     n  Nutbrown                                   | |            
+     p  Pear                                       | |            
+     q  kumQuat                      Line       --&gt;| |&lt;--LineWidth
+     s  Sky blue                                   | |            
+     t  Tawny                                      | |            
+     u  bUrgundy                                   | |            
+     v  Violet                                     | |            
+     z  aZure                                      | |            
+     x  random                       Initial      /   \           
+     o  colorOrder                   Point    --&gt;(     )&lt;--IP     
+     |  magnitude                    Marker       \_ _/           
+
+     -------------------------------------------------------------
+                          Color Equivalencies
+     -------------------------------------------------------------
+     ColorOrder     Arrow3         |     Simulink       Arrow3
+     ----------     ----------     |     ----------     ----------
+     Color1         Blue           |     LightBlue      aZure
+     Color2         Evergreen      |     DarkGreen      Asparagus
+     Color3         Red            |     Orange         kumQuat
+     Color4         Sky blue       |     Gray           Light gray
+     Color5         Violet         |
+     Color6         Pear           |
+     Color7         Dark gray      |
+     -------------------------------------------------------------
+
+   The components of S may be specified in any order.  Invalid
+   characters in S will be ignored and replaced by default settings.
+
+   Prefixing the color code with '_' produces a darker shade, e.g.
+   '_t' is dark tawny; prefixing the color code with '^' produces a
+   lighter shade, e.g. '^q' is light kumquat.  The relative brightness
+   of light and dark color shades is controlled by the scalar parameter
+   BETA.  Color code prefixes do not affect black (k), white (w), or
+   the special color switches (xo|).
+
+   ColorOrder may be achieved in two fashions:  The user may either
+   set the ColorOrder property (using RGB triples) or define the
+   global variable ColorOrder (using a string of valid color codes).
+   If the color switch is specified with 'o', and the global variable
+   ColorOrder is a string of color codes (color switches less 'xo|',
+   optionally prefixed with '_' or '^'), then the ColorOrder property
+   will be set to the sequence of colors indicated by the ColorOrder
+   variable.  The color sequence 'bersvpd' matches the default
+   ColorOrder property.  If the color switch is specified with 'o', and
+   the global variable ColorOrder is empty or invalid, then the current
+   ColorOrder property will be used.  Note that the ColorOrder variable
+   takes precedence over the ColorOrder property.
+
+   The magnitude color switch is used to visualize vector magnitudes
+   in conjunction with a colorbar.  If the color switch is specified
+   with '|', colors are linearly interpolated from the current ColorMap
+   according to the length of the associated line.  This option sets
+   CLim to [MinM,MaxM], where MinM and MaxM are the minimum and maximum
+   magnitudes, respectively.
+
+   The current LineStyleOrder property will be used if LineStyle is
+   specified with '*'.  MATLAB cycles through the line styles defined
+   by the LineStyleOrder property only after using all colors defined
+   by the ColorOrder property.  If however, the global variable
+   LineWidthOrder is defined, and LineWidth is specified with '/',
+   then each line will be drawn with sequential color, linestyle, and
+   linewidth.
+
+   W (default = 1) is a vector of arrowhead widths; use W = 0 for no
+   arrowheads.  H (default = 3W) is a vector of arrowhead heights.  If
+   vector IP is neither empty nor negative, initial point markers will
+   be plotted with diameter IP; for default diameter W, use IP = 0.
+   The units of W, H and IP are 1/72 of the PlotBox diagonal.
+
+   ALPHA (default = 1) is a vector of FaceAlpha values ranging between
+   0 (clear) and 1 (opaque).  FaceAlpha is a surface (arrowhead and
+   initial point marker) property and does not affect lines.  FaceAlpha
+   is not supported for 2D rendering.
+
+   BETA (default = 0.4) is a scalar that controls the relative
+   brightness of light and dark color shades, ranging between 0 (no
+   contrast) and 1 (maximum contrast).
+
+   Plotting lines with a single color, linestyle, and linewidth is
+   faster than plotting lines with multiple colors and/or linestyles.
+   Plotting lines with multiple linewidths is slower still.  ARROW3
+   chooses renderers that produce the best screen images; exported
+   or printed plots may benefit from different choices.
+
+   ARROW3(P1,P2,S,W,H,'cone',...) will plot cones with bases centered
+   on P1 in the direction given by P2.  In this instance, P2 is
+   interpreted as a direction vector instead of a terminal point.
+   Neither initial point markers nor lines are plotted with the 'cone'
+   option.
+
+   HN = ARROW3(P1,P2,...) returns a vector of handles to line and
+   surface objects created by ARROW3.
+
+   ARROW3 COLORS will plot a table of named colors with default
+   brightness.  ARROW3('colors',BETA) will plot a table of named
+   colors with brightness BETA.
+
+   ARROW3 attempts to preserve the appearance of existing axes.  In
+   particular, ARROW3 will not change XYZLim, View, or CameraViewAngle.
+   ARROW3 does not, however, support stretch-to-fill scaling.  AXIS
+   NORMAL will restore the current axis box to full size and remove any
+   restrictions on the scaling of units, but will likely result in
+   distorted arrowheads and initial point markers.  See
+   (arrow3_messes_up_my_plots.html).
+
+   If a particular aspect ratio or variable limit is required, use
+   DASPECT, PBASPECT, AXIS, or XYZLIM commands before calling ARROW3.
+   Changing limits or aspect ratios after calling ARROW3 may alter the
+   appearance of arrowheads and initial point markers.  ARROW3 sets
+   XYZCLimMode to manual for all plots, sets DataAspectRatioMode to
+   manual for linear plots, and sets PlotBoxAspectRatioMode to manual
+   for log plots and 3D plots.  CameraViewAngleMode is also set to
+   manual for 3D plots.
+
+   ARROW3 UPDATE will restore the appearance of arrowheads and
+   initial point markers that have become corrupted by changes to
+   limits or aspect ratios.  ARROW3('update',SF) will redraw initial
+   point markers and arrowheads with scale factor SF.  If SF has one
+   element, SF scales W, H and IP.  If SF has two elements, SF(1)
+   scales W and IP, and SF(2) scales H.  If SF has three elements,
+   SF(1) scales W, SF(2) scales H, and SF(3) scales IP.  All sizes are
+   relative to the current PlotBox diagonal.
+
+   ARROW3 UPDATE COLORS will update the magnitude coloring of
+   arrowheads, initial point markers, and lines to conform to the
+   current ColorMap.
+
+   HN = ARROW3('update',...) returns a vector of handles to updated
+   objects.
+
+   EXAMPLES:
+
+     % 2D vectors
+     arrow3([0 0],[1 3])
+     arrow3([0 0],[1 2],'-.e')
+     arrow3([0 0],[10 10],'--x2',1)
+     arrow3(zeros(10,2),50*rand(10,2),'x',1,3)
+     arrow3(zeros(10,2),[10*rand(10,1),500*rand(10,1)],'u')
+     arrow3(10*rand(10,2),50*rand(10,2),'x',1,[],1)
+
+     % 3D vectors
+     arrow3([0 0 0],[1 1 1])
+     arrow3(zeros(20,3),50*rand(20,3),'--x1.5',2)
+     arrow3(zeros(100,3),50*rand(100,3),'x',1,3)
+     arrow3(zeros(10,3),[10*rand(10,1),500*rand(10,1),50*rand(10,1)],'a')
+     arrow3(10*rand(10,3),50*rand(10,3),'x',[],[],0)
+
+     % 3D animation
+     t=(0:pi/40:8*pi)'; u=cos(t); v=sin(t);
+     plot3(20*t,u,v)
+     axis([0,600,-1.5,1.5,-1.5,1.5])
+     grid on, view(35,25)
+     hold on
+     pbaspect([1.8,1.4,1])
+     arrow3(zeros(3),diag([500,1.5,1.5]),'l',0.7,[],0)
+     p=[20*t,u,v]; inc=4:1:length(t);
+     p2=p(inc,:); p1=p(inc-1,:);
+     hn=arrow3(p1(1,:),p2(1,:),'0_b',0.7);
+     for i=2:1:length(p1)
+       delete(hn)
+       hn=arrow3(p1(i,:),p2(i,:),'0_b',0.7);
+       pause(0.01)
+     end
+     hold off
+
+     % Cone plot
+     t=(pi/8:pi/8:2*pi)'; p1=[cos(t) sin(t) t]; p2=repmat([0 0 1],16,1);
+     arrow3(p1,p2,'x',2,4,'cone'), hold on
+     plot3(p1(:,1),p1(:,2),p1(:,3)), hold off
+     pause % change cone size
+     arrow3('update',[1,2])
+
+     % Just for fun
+     arrow3(zeros(100,3),50*rand(100,3),'x',8,4,[],0.95)
+     light('position',[-10 -10 -10],'style','local')
+     light('position',[60,60,60]), lighting gouraud
+
+     % ColorOrder variable, color code prefixes, and Beta
+     global ColorOrder, ColorOrder='^ui^e_hq^v';
+     theta=[0:pi/22:pi/2]';
+     arrow3(zeros(12,2),[cos(theta),sin(theta)],'1.5o',1.5,[],[],[],0.5)
+
+     % ColorOrder property, LineStyleOrder, and LineWidthOrder
+     global ColorOrder, ColorOrder=[];
+     set(gca,'ColorOrder',[1,0,0;0,0,1;0.25,0.75,0.25;0,0,0])
+     set(gca,'LineStyleOrder',{'-','--','-.',':'})
+     global LineWidthOrder, LineWidthOrder=[1,2,4,8];
+     w=[1,2,3,4]; h=[4,6,4,2];
+     arrow3(zeros(4,2),[10*rand(4,1),500*rand(4,1)],'o*/',w,h,0)
+
+     % Magnitude coloring
+     colormap spring
+     arrow3(20*randn(20,3),50*randn(20,3),'|',[],[],0)
+     set(gca,'color',0.7*[1,1,1])
+     set(gcf,'color',0.5*[1,1,1]), grid on, colorbar
+     pause % change the ColorMap and update colors
+     colormap hot
+     arrow3('update','colors')
+
+     % LogLog plot
+     set(gca,'xscale','log','yscale','log');
+     axis([1e2,1e8,1e-2,1e-1]); hold on
+     p1=repmat([1e3,2e-2],15,1);
+     q1=[1e7,1e6,1e5,1e4,1e3,1e7,1e7,1e7,1e7,1e7,1e7,1e6,1e5,1e4,1e3];
+     q2=1e-2*[9,9,9,9,9,7,5,4,3,2,1,1,1,1,1]; p2=[q1',q2'];
+     global ColorOrder, ColorOrder=[];
+     set(gca,'ColorOrder',rand(15,3))
+     arrow3(p1,p2,'o'), grid on, hold off
+
+     % SemiLogX plot
+     set(gca,'xscale','log','yscale','linear');
+     axis([1e2,1e8,1e-2,1e-1]); hold on
+     p1=repmat([1e3,0.05],15,1);
+     q1=[1e7,1e6,1e5,1e4,1e3,1e7,1e7,1e7,1e7,1e7,1e7,1e6,1e5,1e4,1e3];
+     q2=1e-2*[9,9,9,9,9,7,5,4,3,2,1,1,1,1,1]; p2=[q1',q2'];
+     arrow3(p1,p2,'x'), grid on, hold off
+
+     % SemiLogY plot
+     set(gca,'xscale','linear','yscale','log');
+     axis([2,8,1e-2,1e-1]); hold on
+     p1=repmat([3,2e-2],17,1);
+     q1=[7,6,5,4,3,7,7,7,7,7,7,7,7,6,5,4,3];
+     q2=1e-2*[9,9,9,9,9,8,7,6,5,4,3,2,1,1,1,1,1]; p2=[q1',q2'];
+     set(gca,'LineStyleOrder',{'-','--','-.',':'})
+     arrow3(p1,p2,'*',1,[],0), grid on, hold off
+
+     % Color tables
+     arrow3('colors')           % default color table
+     arrow3('colors',0.3)       % low contrast color table
+     arrow3('colors',0.5)       % high contrast color table
+
+     % Update initial point markers and arrowheads
+     % relative to the current PlotBox diagonal
+     arrow3('update')           % redraw same size
+     arrow3('update',2)         % redraw double size
+     arrow3('update',0.5)       % redraw half size
+     arrow3('update',[0.5,2,1]) % redraw W half size,
+                                %        H double size, and
+                                %        IP same size
+
+     See also (arrow3_examples.html), (arrow3_messes_up_my_plots.html).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="arrow3.html" class="code" title="function hn=arrow3(p1,p2,s,w,h,ip,alpha,beta)">arrow3</a>	ARROW3 (R13)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Starcal/bquiver.html" class="code" title="function H = bquiver(x,y,dx,dy,l,s)">bquiver</a>	BQUIVER is a temporary interface to the function ARROW() that is</li><li><a href="arrow3.html" class="code" title="function hn=arrow3(p1,p2,s,w,h,ip,alpha,beta)">arrow3</a>	ARROW3 (R13)</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function H=LocalUpdate(fig,ax,ad,sf,flag)</a></li><li><a href="#_sub2" class="code">function LocalSetSurface(xys,xs,ys,dx,dy,xr,yr,x,y,z,a,c,H,n,m)</a></li><li><a href="#_sub3" class="code">function [vc,cn]=LocalColorTable(n,beta)</a></li><li><a href="#_sub4" class="code">function [C,failed]=LocalColorMap(c,vc,cn,beta)</a></li><li><a href="#_sub5" class="code">function C=LocalBrighten(c,beta)</a></li><li><a href="#_sub6" class="code">function B=LocalRepmat(A,siz)</a></li><li><a href="#_sub7" class="code">function v=LocalInterp(xmin,xmax,y,u)</a></li><li><a href="#_sub8" class="code">function [xs,ys,xys]=LocalLogCheck(ax)</a></li><li><a href="#_sub9" class="code">function [c,ls,lw]=LocalValidateCLSW(s)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function hn=arrow3(p1,p2,s,w,h,ip,alpha,beta)</a>
+0002 <span class="comment">% ARROW3 (R13)</span>
+0003 <span class="comment">%   ARROW3(P1,P2) draws lines from P1 to P2 with directional arrowheads.</span>
+0004 <span class="comment">%   P1 and P2 are either nx2 or nx3 matrices.  Each row of P1 is an</span>
+0005 <span class="comment">%   initial point, and each row of P2 is a terminal point.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   ARROW3(P1,P2,S,W,H,IP,ALPHA,BETA) can be used to specify properties</span>
+0008 <span class="comment">%   of the line, initial point marker, and arrowhead.  S is a character</span>
+0009 <span class="comment">%   string made with one element from any or all of the following 3</span>
+0010 <span class="comment">%   columns:</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%     Color Switches      LineStyle            LineWidth</span>
+0013 <span class="comment">%     ------------------  -------------------  --------------------</span>
+0014 <span class="comment">%     k  blacK (default)  -  solid (default)   0.5 points (default)</span>
+0015 <span class="comment">%     y  Yellow           :  dotted            0   no lines</span>
+0016 <span class="comment">%     m  Magenta          -. dashdot           /   LineWidthOrder</span>
+0017 <span class="comment">%     c  Cyan             -- dashed</span>
+0018 <span class="comment">%     r  Red              *  LineStyleOrder            _______ __</span>
+0019 <span class="comment">%     g  Green                                       ^        |</span>
+0020 <span class="comment">%     b  Blue                                       / \       |</span>
+0021 <span class="comment">%     w  White                        Arrowhead    /   \   Height</span>
+0022 <span class="comment">%     a  Asparagus                                /     \     |</span>
+0023 <span class="comment">%     d  Dark gray                               /       \    |</span>
+0024 <span class="comment">%     e  Evergreen                              /___   ___\ __|__</span>
+0025 <span class="comment">%     f  Firebrick                             |    | |    |</span>
+0026 <span class="comment">%     h  Hot pink                              |-- Width --|</span>
+0027 <span class="comment">%     i  Indigo                                |    | |    |</span>
+0028 <span class="comment">%     j  Jade                                       | |</span>
+0029 <span class="comment">%     l  Light gray                                 | |</span>
+0030 <span class="comment">%     n  Nutbrown                                   | |</span>
+0031 <span class="comment">%     p  Pear                                       | |</span>
+0032 <span class="comment">%     q  kumQuat                      Line       --&gt;| |&lt;--LineWidth</span>
+0033 <span class="comment">%     s  Sky blue                                   | |</span>
+0034 <span class="comment">%     t  Tawny                                      | |</span>
+0035 <span class="comment">%     u  bUrgundy                                   | |</span>
+0036 <span class="comment">%     v  Violet                                     | |</span>
+0037 <span class="comment">%     z  aZure                                      | |</span>
+0038 <span class="comment">%     x  random                       Initial      /   \</span>
+0039 <span class="comment">%     o  colorOrder                   Point    --&gt;(     )&lt;--IP</span>
+0040 <span class="comment">%     |  magnitude                    Marker       \_ _/</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">%     -------------------------------------------------------------</span>
+0043 <span class="comment">%                          Color Equivalencies</span>
+0044 <span class="comment">%     -------------------------------------------------------------</span>
+0045 <span class="comment">%     ColorOrder     Arrow3         |     Simulink       Arrow3</span>
+0046 <span class="comment">%     ----------     ----------     |     ----------     ----------</span>
+0047 <span class="comment">%     Color1         Blue           |     LightBlue      aZure</span>
+0048 <span class="comment">%     Color2         Evergreen      |     DarkGreen      Asparagus</span>
+0049 <span class="comment">%     Color3         Red            |     Orange         kumQuat</span>
+0050 <span class="comment">%     Color4         Sky blue       |     Gray           Light gray</span>
+0051 <span class="comment">%     Color5         Violet         |</span>
+0052 <span class="comment">%     Color6         Pear           |</span>
+0053 <span class="comment">%     Color7         Dark gray      |</span>
+0054 <span class="comment">%     -------------------------------------------------------------</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">%   The components of S may be specified in any order.  Invalid</span>
+0057 <span class="comment">%   characters in S will be ignored and replaced by default settings.</span>
+0058 <span class="comment">%</span>
+0059 <span class="comment">%   Prefixing the color code with '_' produces a darker shade, e.g.</span>
+0060 <span class="comment">%   '_t' is dark tawny; prefixing the color code with '^' produces a</span>
+0061 <span class="comment">%   lighter shade, e.g. '^q' is light kumquat.  The relative brightness</span>
+0062 <span class="comment">%   of light and dark color shades is controlled by the scalar parameter</span>
+0063 <span class="comment">%   BETA.  Color code prefixes do not affect black (k), white (w), or</span>
+0064 <span class="comment">%   the special color switches (xo|).</span>
+0065 <span class="comment">%</span>
+0066 <span class="comment">%   ColorOrder may be achieved in two fashions:  The user may either</span>
+0067 <span class="comment">%   set the ColorOrder property (using RGB triples) or define the</span>
+0068 <span class="comment">%   global variable ColorOrder (using a string of valid color codes).</span>
+0069 <span class="comment">%   If the color switch is specified with 'o', and the global variable</span>
+0070 <span class="comment">%   ColorOrder is a string of color codes (color switches less 'xo|',</span>
+0071 <span class="comment">%   optionally prefixed with '_' or '^'), then the ColorOrder property</span>
+0072 <span class="comment">%   will be set to the sequence of colors indicated by the ColorOrder</span>
+0073 <span class="comment">%   variable.  The color sequence 'bersvpd' matches the default</span>
+0074 <span class="comment">%   ColorOrder property.  If the color switch is specified with 'o', and</span>
+0075 <span class="comment">%   the global variable ColorOrder is empty or invalid, then the current</span>
+0076 <span class="comment">%   ColorOrder property will be used.  Note that the ColorOrder variable</span>
+0077 <span class="comment">%   takes precedence over the ColorOrder property.</span>
+0078 <span class="comment">%</span>
+0079 <span class="comment">%   The magnitude color switch is used to visualize vector magnitudes</span>
+0080 <span class="comment">%   in conjunction with a colorbar.  If the color switch is specified</span>
+0081 <span class="comment">%   with '|', colors are linearly interpolated from the current ColorMap</span>
+0082 <span class="comment">%   according to the length of the associated line.  This option sets</span>
+0083 <span class="comment">%   CLim to [MinM,MaxM], where MinM and MaxM are the minimum and maximum</span>
+0084 <span class="comment">%   magnitudes, respectively.</span>
+0085 <span class="comment">%</span>
+0086 <span class="comment">%   The current LineStyleOrder property will be used if LineStyle is</span>
+0087 <span class="comment">%   specified with '*'.  MATLAB cycles through the line styles defined</span>
+0088 <span class="comment">%   by the LineStyleOrder property only after using all colors defined</span>
+0089 <span class="comment">%   by the ColorOrder property.  If however, the global variable</span>
+0090 <span class="comment">%   LineWidthOrder is defined, and LineWidth is specified with '/',</span>
+0091 <span class="comment">%   then each line will be drawn with sequential color, linestyle, and</span>
+0092 <span class="comment">%   linewidth.</span>
+0093 <span class="comment">%</span>
+0094 <span class="comment">%   W (default = 1) is a vector of arrowhead widths; use W = 0 for no</span>
+0095 <span class="comment">%   arrowheads.  H (default = 3W) is a vector of arrowhead heights.  If</span>
+0096 <span class="comment">%   vector IP is neither empty nor negative, initial point markers will</span>
+0097 <span class="comment">%   be plotted with diameter IP; for default diameter W, use IP = 0.</span>
+0098 <span class="comment">%   The units of W, H and IP are 1/72 of the PlotBox diagonal.</span>
+0099 <span class="comment">%</span>
+0100 <span class="comment">%   ALPHA (default = 1) is a vector of FaceAlpha values ranging between</span>
+0101 <span class="comment">%   0 (clear) and 1 (opaque).  FaceAlpha is a surface (arrowhead and</span>
+0102 <span class="comment">%   initial point marker) property and does not affect lines.  FaceAlpha</span>
+0103 <span class="comment">%   is not supported for 2D rendering.</span>
+0104 <span class="comment">%</span>
+0105 <span class="comment">%   BETA (default = 0.4) is a scalar that controls the relative</span>
+0106 <span class="comment">%   brightness of light and dark color shades, ranging between 0 (no</span>
+0107 <span class="comment">%   contrast) and 1 (maximum contrast).</span>
+0108 <span class="comment">%</span>
+0109 <span class="comment">%   Plotting lines with a single color, linestyle, and linewidth is</span>
+0110 <span class="comment">%   faster than plotting lines with multiple colors and/or linestyles.</span>
+0111 <span class="comment">%   Plotting lines with multiple linewidths is slower still.  ARROW3</span>
+0112 <span class="comment">%   chooses renderers that produce the best screen images; exported</span>
+0113 <span class="comment">%   or printed plots may benefit from different choices.</span>
+0114 <span class="comment">%</span>
+0115 <span class="comment">%   ARROW3(P1,P2,S,W,H,'cone',...) will plot cones with bases centered</span>
+0116 <span class="comment">%   on P1 in the direction given by P2.  In this instance, P2 is</span>
+0117 <span class="comment">%   interpreted as a direction vector instead of a terminal point.</span>
+0118 <span class="comment">%   Neither initial point markers nor lines are plotted with the 'cone'</span>
+0119 <span class="comment">%   option.</span>
+0120 <span class="comment">%</span>
+0121 <span class="comment">%   HN = ARROW3(P1,P2,...) returns a vector of handles to line and</span>
+0122 <span class="comment">%   surface objects created by ARROW3.</span>
+0123 <span class="comment">%</span>
+0124 <span class="comment">%   ARROW3 COLORS will plot a table of named colors with default</span>
+0125 <span class="comment">%   brightness.  ARROW3('colors',BETA) will plot a table of named</span>
+0126 <span class="comment">%   colors with brightness BETA.</span>
+0127 <span class="comment">%</span>
+0128 <span class="comment">%   ARROW3 attempts to preserve the appearance of existing axes.  In</span>
+0129 <span class="comment">%   particular, ARROW3 will not change XYZLim, View, or CameraViewAngle.</span>
+0130 <span class="comment">%   ARROW3 does not, however, support stretch-to-fill scaling.  AXIS</span>
+0131 <span class="comment">%   NORMAL will restore the current axis box to full size and remove any</span>
+0132 <span class="comment">%   restrictions on the scaling of units, but will likely result in</span>
+0133 <span class="comment">%   distorted arrowheads and initial point markers.  See</span>
+0134 <span class="comment">%   (arrow3_messes_up_my_plots.html).</span>
+0135 <span class="comment">%</span>
+0136 <span class="comment">%   If a particular aspect ratio or variable limit is required, use</span>
+0137 <span class="comment">%   DASPECT, PBASPECT, AXIS, or XYZLIM commands before calling ARROW3.</span>
+0138 <span class="comment">%   Changing limits or aspect ratios after calling ARROW3 may alter the</span>
+0139 <span class="comment">%   appearance of arrowheads and initial point markers.  ARROW3 sets</span>
+0140 <span class="comment">%   XYZCLimMode to manual for all plots, sets DataAspectRatioMode to</span>
+0141 <span class="comment">%   manual for linear plots, and sets PlotBoxAspectRatioMode to manual</span>
+0142 <span class="comment">%   for log plots and 3D plots.  CameraViewAngleMode is also set to</span>
+0143 <span class="comment">%   manual for 3D plots.</span>
+0144 <span class="comment">%</span>
+0145 <span class="comment">%   ARROW3 UPDATE will restore the appearance of arrowheads and</span>
+0146 <span class="comment">%   initial point markers that have become corrupted by changes to</span>
+0147 <span class="comment">%   limits or aspect ratios.  ARROW3('update',SF) will redraw initial</span>
+0148 <span class="comment">%   point markers and arrowheads with scale factor SF.  If SF has one</span>
+0149 <span class="comment">%   element, SF scales W, H and IP.  If SF has two elements, SF(1)</span>
+0150 <span class="comment">%   scales W and IP, and SF(2) scales H.  If SF has three elements,</span>
+0151 <span class="comment">%   SF(1) scales W, SF(2) scales H, and SF(3) scales IP.  All sizes are</span>
+0152 <span class="comment">%   relative to the current PlotBox diagonal.</span>
+0153 <span class="comment">%</span>
+0154 <span class="comment">%   ARROW3 UPDATE COLORS will update the magnitude coloring of</span>
+0155 <span class="comment">%   arrowheads, initial point markers, and lines to conform to the</span>
+0156 <span class="comment">%   current ColorMap.</span>
+0157 <span class="comment">%</span>
+0158 <span class="comment">%   HN = ARROW3('update',...) returns a vector of handles to updated</span>
+0159 <span class="comment">%   objects.</span>
+0160 <span class="comment">%</span>
+0161 <span class="comment">%   EXAMPLES:</span>
+0162 <span class="comment">%</span>
+0163 <span class="comment">%     % 2D vectors</span>
+0164 <span class="comment">%     arrow3([0 0],[1 3])</span>
+0165 <span class="comment">%     arrow3([0 0],[1 2],'-.e')</span>
+0166 <span class="comment">%     arrow3([0 0],[10 10],'--x2',1)</span>
+0167 <span class="comment">%     arrow3(zeros(10,2),50*rand(10,2),'x',1,3)</span>
+0168 <span class="comment">%     arrow3(zeros(10,2),[10*rand(10,1),500*rand(10,1)],'u')</span>
+0169 <span class="comment">%     arrow3(10*rand(10,2),50*rand(10,2),'x',1,[],1)</span>
+0170 <span class="comment">%</span>
+0171 <span class="comment">%     % 3D vectors</span>
+0172 <span class="comment">%     arrow3([0 0 0],[1 1 1])</span>
+0173 <span class="comment">%     arrow3(zeros(20,3),50*rand(20,3),'--x1.5',2)</span>
+0174 <span class="comment">%     arrow3(zeros(100,3),50*rand(100,3),'x',1,3)</span>
+0175 <span class="comment">%     arrow3(zeros(10,3),[10*rand(10,1),500*rand(10,1),50*rand(10,1)],'a')</span>
+0176 <span class="comment">%     arrow3(10*rand(10,3),50*rand(10,3),'x',[],[],0)</span>
+0177 <span class="comment">%</span>
+0178 <span class="comment">%     % 3D animation</span>
+0179 <span class="comment">%     t=(0:pi/40:8*pi)'; u=cos(t); v=sin(t);</span>
+0180 <span class="comment">%     plot3(20*t,u,v)</span>
+0181 <span class="comment">%     axis([0,600,-1.5,1.5,-1.5,1.5])</span>
+0182 <span class="comment">%     grid on, view(35,25)</span>
+0183 <span class="comment">%     hold on</span>
+0184 <span class="comment">%     pbaspect([1.8,1.4,1])</span>
+0185 <span class="comment">%     arrow3(zeros(3),diag([500,1.5,1.5]),'l',0.7,[],0)</span>
+0186 <span class="comment">%     p=[20*t,u,v]; inc=4:1:length(t);</span>
+0187 <span class="comment">%     p2=p(inc,:); p1=p(inc-1,:);</span>
+0188 <span class="comment">%     hn=arrow3(p1(1,:),p2(1,:),'0_b',0.7);</span>
+0189 <span class="comment">%     for i=2:1:length(p1)</span>
+0190 <span class="comment">%       delete(hn)</span>
+0191 <span class="comment">%       hn=arrow3(p1(i,:),p2(i,:),'0_b',0.7);</span>
+0192 <span class="comment">%       pause(0.01)</span>
+0193 <span class="comment">%     end</span>
+0194 <span class="comment">%     hold off</span>
+0195 <span class="comment">%</span>
+0196 <span class="comment">%     % Cone plot</span>
+0197 <span class="comment">%     t=(pi/8:pi/8:2*pi)'; p1=[cos(t) sin(t) t]; p2=repmat([0 0 1],16,1);</span>
+0198 <span class="comment">%     arrow3(p1,p2,'x',2,4,'cone'), hold on</span>
+0199 <span class="comment">%     plot3(p1(:,1),p1(:,2),p1(:,3)), hold off</span>
+0200 <span class="comment">%     pause % change cone size</span>
+0201 <span class="comment">%     arrow3('update',[1,2])</span>
+0202 <span class="comment">%</span>
+0203 <span class="comment">%     % Just for fun</span>
+0204 <span class="comment">%     arrow3(zeros(100,3),50*rand(100,3),'x',8,4,[],0.95)</span>
+0205 <span class="comment">%     light('position',[-10 -10 -10],'style','local')</span>
+0206 <span class="comment">%     light('position',[60,60,60]), lighting gouraud</span>
+0207 <span class="comment">%</span>
+0208 <span class="comment">%     % ColorOrder variable, color code prefixes, and Beta</span>
+0209 <span class="comment">%     global ColorOrder, ColorOrder='^ui^e_hq^v';</span>
+0210 <span class="comment">%     theta=[0:pi/22:pi/2]';</span>
+0211 <span class="comment">%     arrow3(zeros(12,2),[cos(theta),sin(theta)],'1.5o',1.5,[],[],[],0.5)</span>
+0212 <span class="comment">%</span>
+0213 <span class="comment">%     % ColorOrder property, LineStyleOrder, and LineWidthOrder</span>
+0214 <span class="comment">%     global ColorOrder, ColorOrder=[];</span>
+0215 <span class="comment">%     set(gca,'ColorOrder',[1,0,0;0,0,1;0.25,0.75,0.25;0,0,0])</span>
+0216 <span class="comment">%     set(gca,'LineStyleOrder',{'-','--','-.',':'})</span>
+0217 <span class="comment">%     global LineWidthOrder, LineWidthOrder=[1,2,4,8];</span>
+0218 <span class="comment">%     w=[1,2,3,4]; h=[4,6,4,2];</span>
+0219 <span class="comment">%     arrow3(zeros(4,2),[10*rand(4,1),500*rand(4,1)],'o*/',w,h,0)</span>
+0220 <span class="comment">%</span>
+0221 <span class="comment">%     % Magnitude coloring</span>
+0222 <span class="comment">%     colormap spring</span>
+0223 <span class="comment">%     arrow3(20*randn(20,3),50*randn(20,3),'|',[],[],0)</span>
+0224 <span class="comment">%     set(gca,'color',0.7*[1,1,1])</span>
+0225 <span class="comment">%     set(gcf,'color',0.5*[1,1,1]), grid on, colorbar</span>
+0226 <span class="comment">%     pause % change the ColorMap and update colors</span>
+0227 <span class="comment">%     colormap hot</span>
+0228 <span class="comment">%     arrow3('update','colors')</span>
+0229 <span class="comment">%</span>
+0230 <span class="comment">%     % LogLog plot</span>
+0231 <span class="comment">%     set(gca,'xscale','log','yscale','log');</span>
+0232 <span class="comment">%     axis([1e2,1e8,1e-2,1e-1]); hold on</span>
+0233 <span class="comment">%     p1=repmat([1e3,2e-2],15,1);</span>
+0234 <span class="comment">%     q1=[1e7,1e6,1e5,1e4,1e3,1e7,1e7,1e7,1e7,1e7,1e7,1e6,1e5,1e4,1e3];</span>
+0235 <span class="comment">%     q2=1e-2*[9,9,9,9,9,7,5,4,3,2,1,1,1,1,1]; p2=[q1',q2'];</span>
+0236 <span class="comment">%     global ColorOrder, ColorOrder=[];</span>
+0237 <span class="comment">%     set(gca,'ColorOrder',rand(15,3))</span>
+0238 <span class="comment">%     arrow3(p1,p2,'o'), grid on, hold off</span>
+0239 <span class="comment">%</span>
+0240 <span class="comment">%     % SemiLogX plot</span>
+0241 <span class="comment">%     set(gca,'xscale','log','yscale','linear');</span>
+0242 <span class="comment">%     axis([1e2,1e8,1e-2,1e-1]); hold on</span>
+0243 <span class="comment">%     p1=repmat([1e3,0.05],15,1);</span>
+0244 <span class="comment">%     q1=[1e7,1e6,1e5,1e4,1e3,1e7,1e7,1e7,1e7,1e7,1e7,1e6,1e5,1e4,1e3];</span>
+0245 <span class="comment">%     q2=1e-2*[9,9,9,9,9,7,5,4,3,2,1,1,1,1,1]; p2=[q1',q2'];</span>
+0246 <span class="comment">%     arrow3(p1,p2,'x'), grid on, hold off</span>
+0247 <span class="comment">%</span>
+0248 <span class="comment">%     % SemiLogY plot</span>
+0249 <span class="comment">%     set(gca,'xscale','linear','yscale','log');</span>
+0250 <span class="comment">%     axis([2,8,1e-2,1e-1]); hold on</span>
+0251 <span class="comment">%     p1=repmat([3,2e-2],17,1);</span>
+0252 <span class="comment">%     q1=[7,6,5,4,3,7,7,7,7,7,7,7,7,6,5,4,3];</span>
+0253 <span class="comment">%     q2=1e-2*[9,9,9,9,9,8,7,6,5,4,3,2,1,1,1,1,1]; p2=[q1',q2'];</span>
+0254 <span class="comment">%     set(gca,'LineStyleOrder',{'-','--','-.',':'})</span>
+0255 <span class="comment">%     arrow3(p1,p2,'*',1,[],0), grid on, hold off</span>
+0256 <span class="comment">%</span>
+0257 <span class="comment">%     % Color tables</span>
+0258 <span class="comment">%     arrow3('colors')           % default color table</span>
+0259 <span class="comment">%     arrow3('colors',0.3)       % low contrast color table</span>
+0260 <span class="comment">%     arrow3('colors',0.5)       % high contrast color table</span>
+0261 <span class="comment">%</span>
+0262 <span class="comment">%     % Update initial point markers and arrowheads</span>
+0263 <span class="comment">%     % relative to the current PlotBox diagonal</span>
+0264 <span class="comment">%     arrow3('update')           % redraw same size</span>
+0265 <span class="comment">%     arrow3('update',2)         % redraw double size</span>
+0266 <span class="comment">%     arrow3('update',0.5)       % redraw half size</span>
+0267 <span class="comment">%     arrow3('update',[0.5,2,1]) % redraw W half size,</span>
+0268 <span class="comment">%                                %        H double size, and</span>
+0269 <span class="comment">%                                %        IP same size</span>
+0270 <span class="comment">%</span>
+0271 <span class="comment">%     See also (arrow3_examples.html), (arrow3_messes_up_my_plots.html).</span>
+0272 
+0273 <span class="comment">%   Copyright(c)2002-2013 Version 5.15</span>
+0274 <span class="comment">%     Tom Davis (tdavis@metzgerwillard.com)</span>
+0275 <span class="comment">%     Jeff Chang</span>
+0276 
+0277 <span class="comment">%   Revision History:</span>
+0278 <span class="comment">%</span>
+0279 <span class="comment">%     01/15/13 - Use AppData instead of UserData. (TD)</span>
+0280 <span class="comment">%     07/27/11 - Added animation example. (TD)</span>
+0281 <span class="comment">%     05/13/09 - Corrected spelling errors (TD)</span>
+0282 <span class="comment">%     03/16/08 - Updated contact information (TD)</span>
+0283 <span class="comment">%     10/23/07 - Corrected zero magnitude exclusion (TD)</span>
+0284 <span class="comment">%     09/08/07 - Added cone plot option; removed adaptive grid</span>
+0285 <span class="comment">%                spacing; corrected scale factor; removed &quot;nearly&quot;</span>
+0286 <span class="comment">%                tight limits (TD)</span>
+0287 <span class="comment">%     07/24/07 - Ignore zero-magnitude input (TD)</span>
+0288 <span class="comment">%     07/08/07 - Modified named colors to match named Simulink</span>
+0289 <span class="comment">%                colors; added light and dark shades for basic</span>
+0290 <span class="comment">%                colors (ymcrgb) (TD)</span>
+0291 <span class="comment">%     07/01/07 - Modified named colors to match default ColorOrder</span>
+0292 <span class="comment">%                colors (TD)</span>
+0293 <span class="comment">%     06/24/07 - Error checking for empty P1, P2 (TD)</span>
+0294 <span class="comment">%     06/17/07 - Trim colors,W,H,IP,ALPHA to LENGTH(P1) (TD)</span>
+0295 <span class="comment">%     05/27/07 - Magnitude coloring and documentation revision (TD)</span>
+0296 <span class="comment">%     03/10/07 - Improved code metrics (TD)</span>
+0297 <span class="comment">%     02/21/07 - Preserve existing axis appearance;</span>
+0298 <span class="comment">%                use relative sizes for W, H, and IP;</span>
+0299 <span class="comment">%                removed version checking; minor bug fixes (TD)</span>
+0300 <span class="comment">%     01/09/04 - Replaced calls to LINSPACE, INTERP1, and</span>
+0301 <span class="comment">%                COLORMAP (TD)</span>
+0302 <span class="comment">%     12/17/03 - Semilog examples, CAXIS support, magnitude</span>
+0303 <span class="comment">%                coloring, and color updating; use CData instead</span>
+0304 <span class="comment">%                of FaceColor; minor bug fixes (TD)</span>
+0305 <span class="comment">%     07/17/03 - Changed 2D rendering from OpenGL to ZBuffer;</span>
+0306 <span class="comment">%                defined HN for COLORS and UPDATE options (TD)</span>
+0307 <span class="comment">%     02/27/03 - Replaced calls to RANDPERM, VIEW, REPMAT, SPHERE,</span>
+0308 <span class="comment">%                and CYLINDER; added ZBuffer for log plots, RESET</span>
+0309 <span class="comment">%                for CLA and CLF, and ABS for W and H (TD)</span>
+0310 <span class="comment">%     02/01/03 - Added UPDATE scale factor and MATLAB version</span>
+0311 <span class="comment">%                checking, replaced call to CROSS (TD)</span>
+0312 <span class="comment">%     12/26/02 - Added UserData and UPDATE option (TD)</span>
+0313 <span class="comment">%     11/16/02 - Added more named colors, color code prefix,</span>
+0314 <span class="comment">%                global ColorOrder, ALPHA , and BETA (TD)</span>
+0315 <span class="comment">%     10/12/02 - Added global LineWidthOrder,</span>
+0316 <span class="comment">%                vectorized W, H and IP (TD)</span>
+0317 <span class="comment">%     10/05/02 - Changed CLF to CLA for subplot support,</span>
+0318 <span class="comment">%                added ColorOrder and LineStyleOrder support (TD)</span>
+0319 <span class="comment">%     04/27/02 - Minor log plot revisions (TD)</span>
+0320 <span class="comment">%     03/26/02 - Added log plot support (TD)</span>
+0321 <span class="comment">%     03/24/02 - Adaptive grid spacing control to trade off</span>
+0322 <span class="comment">%                appearance vs. speed based on size of matrix (JC)</span>
+0323 <span class="comment">%     03/16/02 - Added &quot;axis tight&quot; for improved appearance (JC)</span>
+0324 <span class="comment">%     03/12/02 - Added initial point marker (TD)</span>
+0325 <span class="comment">%     03/03/02 - Added aspect ratio support (TD)</span>
+0326 <span class="comment">%     03/02/02 - Enhanced program's user friendliness (JC)</span>
+0327 <span class="comment">%                (lump Color, LineStyle, and LineWidth together)</span>
+0328 <span class="comment">%     03/01/02 - Replaced call to ROTATE (TD)</span>
+0329 <span class="comment">%     02/28/02 - Modified line plotting,</span>
+0330 <span class="comment">%                added linewidth and linestyle (TD)</span>
+0331 <span class="comment">%     02/27/02 - Minor enhancements on 3D appearance (JC)</span>
+0332 <span class="comment">%     02/26/02 - Minor enhancements for speed (TD&amp;JC)</span>
+0333 <span class="comment">%     02/26/02 - Optimize PLOT3 and SURF for speed (TD)</span>
+0334 <span class="comment">%     02/25/02 - Return handler, error handling, color effect,</span>
+0335 <span class="comment">%                generalize for 2D/3D vectors (JC)</span>
+0336 <span class="comment">%     02/24/02 - Optimize PLOT3 and SURF for speed (TD)</span>
+0337 <span class="comment">%     02/23/02 - First release (JC&amp;TD)</span>
+0338 
+0339 <span class="comment">%-------------------------------------------------------------------------</span>
+0340 <span class="comment">% Error Checking</span>
+0341 <span class="keyword">global</span> LineWidthOrder ColorOrder
+0342 <span class="keyword">if</span> nargin&lt;8 || isempty(beta), beta=0.4; <span class="keyword">end</span>
+0343 beta=abs(beta(1)); <span class="keyword">if</span> nargout, hn=[]; <span class="keyword">end</span>
+0344 <span class="keyword">if</span> strcmpi(p1,<span class="string">'colors'</span>)                            <span class="comment">% plot color table</span>
+0345   <span class="keyword">if</span> nargin&gt;1, beta=abs(p2(1)); <span class="keyword">end</span>
+0346   <a href="#_sub3" class="code" title="subfunction [vc,cn]=LocalColorTable(n,beta)">LocalColorTable</a>(1,beta); <span class="keyword">return</span>
+0347 <span class="keyword">end</span>
+0348 fig=gcf; ax=gca;
+0349 <span class="keyword">if</span> strcmpi(p1,<span class="string">'update'</span>), ad=getappdata(ax,<span class="string">'Arrow3'</span>);    <span class="comment">% update</span>
+0350   <a href="#_sub8" class="code" title="subfunction [xs,ys,xys]=LocalLogCheck(ax)">LocalLogCheck</a>(ax);
+0351   <span class="keyword">if</span> size(ad,2)&lt;13, error(<span class="string">'Invalid AppData'</span>), <span class="keyword">end</span>
+0352   setappdata(ax,<span class="string">'Arrow3'</span>,[]); sf=[1,1,1]; flag=0;
+0353   <span class="keyword">if</span> nargin&gt;1
+0354     <span class="keyword">if</span> strcmpi(p2,<span class="string">'colors'</span>), flag=1;               <span class="comment">% update colors</span>
+0355     <span class="keyword">elseif</span> ~isempty(p2)                            <span class="comment">% update surfaces</span>
+0356       sf=p2(1)*sf; n=length(p2(:));
+0357       <span class="keyword">if</span> n&gt;1, sf(2)=p2(2); <span class="keyword">if</span> n&gt;2, sf(3)=p2(3); <span class="keyword">end</span>, <span class="keyword">end</span>
+0358     <span class="keyword">end</span>
+0359   <span class="keyword">end</span>
+0360   H=<a href="#_sub1" class="code" title="subfunction H=LocalUpdate(fig,ax,ad,sf,flag)">LocalUpdate</a>(fig,ax,ad,sf,flag); <span class="keyword">if</span> nargout, hn=H; <span class="keyword">end</span>, <span class="keyword">return</span>
+0361 <span class="keyword">end</span>
+0362 InputError=[<span class="string">'Invalid input, type HELP '</span>,upper(mfilename),<span class="keyword">...</span>
+0363   <span class="string">' for usage examples'</span>];
+0364 <span class="keyword">if</span> nargin&lt;2, error(InputError), <span class="keyword">end</span>
+0365 [r1,c1]=size(p1); [r2,c2]=size(p2);
+0366 <span class="keyword">if</span> c1&lt;2 || c1&gt;3 || r1*r2==0, error(InputError), <span class="keyword">end</span>
+0367 <span class="keyword">if</span> r1~=r2, error(<span class="string">'P1 and P2 must have same number of rows'</span>), <span class="keyword">end</span>
+0368 <span class="keyword">if</span> c1~=c2, error(<span class="string">'P1 and P2 must have same number of columns'</span>), <span class="keyword">end</span>
+0369 p=sum(abs(p2-p1),2)~=0; cone=0;
+0370 <span class="keyword">if</span> nargin&gt;5 &amp;&amp; ~isempty(ip) &amp;&amp; strcmpi(ip,<span class="string">'cone'</span>)  <span class="comment">% cone plot</span>
+0371   cone=1; p=sum(p2,2)~=0;
+0372   <span class="keyword">if</span> ~any(p), error(<span class="string">'P2 cannot equal 0'</span>), <span class="keyword">end</span>
+0373   set(ax,<span class="string">'tag'</span>,<span class="string">'Arrow3ConePlot'</span>);
+0374 <span class="keyword">elseif</span> ~any(p), error(<span class="string">'P1 cannot equal P2'</span>)
+0375 <span class="keyword">end</span>
+0376 <span class="keyword">if</span> ~all(p)
+0377   warning(<span class="string">'Arrow3:ZeroMagnitude'</span>,<span class="string">'Zero magnitude ignored'</span>)
+0378   p1=p1(p,:); p2=p2(p,:); [r1,c1]=size(p1);
+0379 <span class="keyword">end</span>
+0380 n=r1; Zeros=zeros(n,1);
+0381 <span class="keyword">if</span> c1==2, p1=[p1,Zeros]; p2=[p2,Zeros];
+0382 <span class="keyword">elseif</span> ~any([p1(:,3);p2(:,3)]), c1=2; <span class="keyword">end</span>
+0383 L=get(ax,<span class="string">'LineStyleOrder'</span>); C=get(ax,<span class="string">'ColorOrder'</span>);
+0384 ST=get(ax,<span class="string">'DefaultSurfaceTag'</span>); LT=get(ax,<span class="string">'DefaultLineTag'</span>);
+0385 EC=get(ax,<span class="string">'DefaultSurfaceEdgeColor'</span>);
+0386 <span class="keyword">if</span> strcmp(get(ax,<span class="string">'nextplot'</span>),<span class="string">'add'</span>) &amp;&amp; strcmp(get(fig,<span class="string">'nextplot'</span>),<span class="string">'add'</span>)
+0387   Xr=get(ax,<span class="string">'xlim'</span>); Yr=get(ax,<span class="string">'ylim'</span>); Zr=get(ax,<span class="string">'zlim'</span>);
+0388   [xs,ys,xys]=<a href="#_sub8" class="code" title="subfunction [xs,ys,xys]=LocalLogCheck(ax)">LocalLogCheck</a>(ax); restore=1;
+0389   <span class="keyword">if</span> xys, mode=<span class="string">'auto'</span>;
+0390     <span class="keyword">if</span> any([p1(:,3);p2(:,3)]), error(<span class="string">'3D log plot not supported'</span>), <span class="keyword">end</span>
+0391     <span class="keyword">if</span> (xs &amp;&amp; ~all([p1(:,1);p2(:,1)]&gt;0)) || <span class="keyword">...</span>
+0392        (ys &amp;&amp; ~all([p1(:,2);p2(:,2)]&gt;0))
+0393        error(<span class="string">'Nonpositive log data not supported'</span>)
+0394     <span class="keyword">end</span>
+0395   <span class="keyword">else</span> mode=<span class="string">'manual'</span>;
+0396     <span class="keyword">if</span> strcmp(get(ax,<span class="string">'WarpToFill'</span>),<span class="string">'on'</span>)
+0397       warning(<span class="string">'Arrow3:WarpToFill'</span>,[<span class="string">'Stretch-to-fill scaling not '</span>,<span class="keyword">...</span>
+0398         <span class="string">'supported;\nuse DASPECT or PBASPECT before calling ARROW3.'</span>]);
+0399     <span class="keyword">end</span>
+0400   <span class="keyword">end</span>
+0401   set(ax,<span class="string">'XLimMode'</span>,mode,<span class="string">'YLimMode'</span>,mode,<span class="string">'ZLimMode'</span>,mode,<span class="keyword">...</span>
+0402     <span class="string">'CLimMode'</span>,<span class="string">'manual'</span>);
+0403 <span class="keyword">else</span> restore=0; cla reset; xys=0; set(fig,<span class="string">'nextplot'</span>,<span class="string">'add'</span>);
+0404   <span class="keyword">if</span> c1==2, azel=[0,90]; <span class="keyword">else</span> azel=[-37.5,30]; <span class="keyword">end</span>
+0405   setappdata(ax,<span class="string">'Arrow3'</span>,[]);
+0406   set(ax,<span class="string">'nextplot'</span>,<span class="string">'add'</span>,<span class="string">'View'</span>,azel);
+0407 <span class="keyword">end</span>
+0408 
+0409 <span class="comment">%-------------------------------------------------------------------------</span>
+0410 <span class="comment">% Style Control</span>
+0411 [vc,cn]=<a href="#_sub3" class="code" title="subfunction [vc,cn]=LocalColorTable(n,beta)">LocalColorTable</a>(0); prefix=<span class="string">''</span>; OneColor=0;
+0412 <span class="keyword">if</span> nargin&lt;3, [c,ls,lw]=<a href="#_sub9" class="code" title="subfunction [c,ls,lw]=LocalValidateCLSW(s)">LocalValidateCLSW</a>;<span class="comment">% default color, linestyle/width</span>
+0413 <span class="keyword">else</span> 
+0414   [c,ls,lw]=<a href="#_sub9" class="code" title="subfunction [c,ls,lw]=LocalValidateCLSW(s)">LocalValidateCLSW</a>(s);
+0415   <span class="keyword">if</span> length(c)&gt;1, <span class="keyword">if</span> sum(<span class="string">'_^'</span>==c(1)), prefix=c(1); <span class="keyword">end</span>, c=c(2); <span class="keyword">end</span>
+0416   <span class="keyword">if</span> c==<span class="string">'x'</span>                              <span class="comment">% random named color (less white)</span>
+0417     [ignore,i]=sort(rand(1,23)); c=cn(i,:);        <span class="comment">%#ok</span>
+0418   <span class="keyword">elseif</span> c==<span class="string">'o'</span>                                    <span class="comment">% ColorOrder</span>
+0419     <span class="keyword">if</span> length(ColorOrder)
+0420       [c,failed]=<a href="#_sub4" class="code" title="subfunction [C,failed]=LocalColorMap(c,vc,cn,beta)">LocalColorMap</a>(lower(ColorOrder),vc,cn,beta);
+0421       <span class="keyword">if</span> failed, ColorOrderWarning=[<span class="string">'Invalid ColorOrder '</span>,<span class="keyword">...</span>
+0422         <span class="string">'variable, current ColorOrder property will be used'</span>];
+0423         warning(<span class="string">'Arrow3:ColorOrder'</span>,ColorOrderWarning)
+0424       <span class="keyword">else</span> C=c;
+0425       <span class="keyword">end</span>
+0426     <span class="keyword">end</span>, c=C;
+0427   <span class="keyword">elseif</span> c==<span class="string">'|'</span>, map=get(fig,<span class="string">'colormap'</span>);          <span class="comment">% magnitude coloring</span>
+0428     M=(p1-p2); M=sqrt(sum(M.*M,2)); minM=min(M); maxM=max(M);
+0429     <span class="keyword">if</span> maxM-minM&lt;1, minM=0; <span class="keyword">end</span>
+0430     set(ax,<span class="string">'clim'</span>,[minM,maxM]); c=<a href="#_sub7" class="code" title="subfunction v=LocalInterp(xmin,xmax,y,u)">LocalInterp</a>(minM,maxM,map,M);
+0431   <span class="keyword">elseif</span> ~sum(vc==c), c=<span class="string">'k'</span>; ColorWarning=[<span class="string">'Invalid color switch, '</span>,<span class="keyword">...</span>
+0432     <span class="string">'default color (black) will be used'</span>];
+0433     warning(<span class="string">'Arrow3:Color'</span>,ColorWarning)
+0434   <span class="keyword">end</span>
+0435 <span class="keyword">end</span>
+0436 <span class="keyword">if</span> length(c)==1                                    <span class="comment">% single color</span>
+0437   c=<a href="#_sub4" class="code" title="subfunction [C,failed]=LocalColorMap(c,vc,cn,beta)">LocalColorMap</a>([prefix,c],vc,cn,beta); OneColor=1;
+0438 <span class="keyword">end</span>
+0439 set(ax,<span class="string">'ColorOrder'</span>,c); c=<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(c,[ceil(n/size(c,1)),1]);
+0440 <span class="keyword">if</span> ls~=<span class="string">'*'</span>, set(ax,<span class="string">'LineStyleOrder'</span>,ls); <span class="keyword">end</span>       <span class="comment">% LineStyleOrder</span>
+0441 <span class="keyword">if</span> lw==<span class="string">'/'</span>                                         <span class="comment">% LineWidthOrder</span>
+0442   <span class="keyword">if</span> length(LineWidthOrder)
+0443     lw=<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(LineWidthOrder(:),[ceil(n/length(LineWidthOrder)),1]);
+0444   <span class="keyword">else</span> lw=0.5; LineWidthOrderWarning=[<span class="string">'Undefined LineWidthOrder, '</span>,<span class="keyword">...</span>
+0445     <span class="string">'default width (0.5) will be used'</span>];
+0446     warning(<span class="string">'Arrow3:LineWidthOrder'</span>,LineWidthOrderWarning)
+0447   <span class="keyword">end</span>
+0448 <span class="keyword">end</span>
+0449 <span class="keyword">if</span> nargin&lt;4 || isempty(w), w=1; <span class="keyword">end</span>                <span class="comment">% width</span>
+0450 w=<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(abs(w(:)),[ceil(n/length(w)),1]);
+0451 <span class="keyword">if</span> nargin&lt;5 || isempty(h), h=3*w; <span class="keyword">end</span>              <span class="comment">% height</span>
+0452 h=<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(abs(h(:)),[ceil(n/length(h)),1]);
+0453 <span class="keyword">if</span> nargin&gt;5 &amp;&amp; ~isempty(ip) &amp;&amp; ~cone               <span class="comment">% ip</span>
+0454   ip=<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(ip(:),[ceil(n/length(ip)),1]);
+0455   i=find(ip==0); ip(i)=w(i);
+0456 <span class="keyword">else</span> ip=-ones(n,1);
+0457 <span class="keyword">end</span>
+0458 <span class="keyword">if</span> nargin&lt;7 || isempty(alpha), alpha=1; <span class="keyword">end</span>
+0459 a=<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(alpha(:),[ceil(n/length(alpha)),1]); <span class="comment">% FaceAlpha</span>
+0460 
+0461 <span class="comment">%-------------------------------------------------------------------------</span>
+0462 <span class="comment">% Log Plot</span>
+0463 <span class="keyword">if</span> xys
+0464   units=get(ax,<span class="string">'units'</span>); set(ax,<span class="string">'units'</span>,<span class="string">'points'</span>);
+0465   pos=get(ax,<span class="string">'position'</span>); set(ax,<span class="string">'units'</span>,units);
+0466   <span class="keyword">if</span> strcmp(get(ax,<span class="string">'PlotBoxAspectRatioMode'</span>),<span class="string">'auto'</span>)
+0467     set(ax,<span class="string">'PlotBoxAspectRatio'</span>,[pos(3),pos(4),1]);
+0468   <span class="keyword">end</span>
+0469   par=get(ax,<span class="string">'PlotBoxAspectRatio'</span>);
+0470   set(ax,<span class="string">'DataAspectRatio'</span>,[par(2),par(1),par(3)]);
+0471   <span class="comment">% map coordinates onto unit square</span>
+0472   q=[p1;p2]; xr=Xr; yr=Yr;
+0473   <span class="keyword">if</span> xs, xr=log10(xr); q(:,1)=log10(q(:,1)); <span class="keyword">end</span>
+0474   <span class="keyword">if</span> ys, yr=log10(yr); q(:,2)=log10(q(:,2)); <span class="keyword">end</span>
+0475   q=q-<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>([xr(1),yr(1),0],[2*n,1]);
+0476   dx=xr(2)-xr(1); dy=yr(2)-yr(1);
+0477   q=q*diag([1/dx,1/dy,1]);
+0478   q1=q(1:n,:); q2=q(n+1:<span class="keyword">end</span>,:);
+0479 <span class="keyword">else</span> xs=0; ys=0; dx=0; dy=0; xr=0; yr=0;
+0480 <span class="keyword">end</span>
+0481 
+0482 <span class="comment">%-------------------------------------------------------------------------</span>
+0483 <span class="comment">% Line</span>
+0484 <span class="keyword">if</span> ~cone
+0485   set(ax,<span class="string">'DefaultLineTag'</span>,<span class="string">'arrow3'</span>);
+0486   <span class="keyword">if</span> length(lw)==1
+0487     <span class="keyword">if</span> lw&gt;0
+0488       <span class="keyword">if</span> OneColor &amp;&amp; ls(end)~=<span class="string">'*'</span> &amp;&amp; n&gt;1 <span class="comment">% single color, linestyle/width</span>
+0489         P=zeros(3*n,3); i=1:n;
+0490         P(3*i-2,:)=p1(i,:); P(3*i-1,:)=p2(i,:); P(3*i,1)=NaN;
+0491         H1=plot3(P(:,1),P(:,2),P(:,3),<span class="string">'LineWidth'</span>,lw);
+0492       <span class="keyword">else</span>                               <span class="comment">% single linewidth</span>
+0493         H1=plot3([p1(:,1),p2(:,1)]',[p1(:,2),p2(:,2)]',<span class="keyword">...</span>
+0494           [p1(:,3),p2(:,3)]',<span class="string">'LineWidth'</span>,lw);
+0495       <span class="keyword">end</span>
+0496     <span class="keyword">else</span> H1=[];
+0497     <span class="keyword">end</span>
+0498   <span class="keyword">else</span>                                   <span class="comment">% use LineWidthOrder</span>
+0499     ls=<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(cellstr(L),[ceil(n/size(L,1)),1]);
+0500     H1=Zeros;
+0501     <span class="keyword">for</span> i=1:n
+0502       H1(i)=plot3([p1(i,1),p2(i,1)],[p1(i,2),p2(i,2)],<span class="keyword">...</span>
+0503         [p1(i,3),p2(i,3)],ls{i},<span class="string">'Color'</span>,c(i,:),<span class="string">'LineWidth'</span>,lw(i));
+0504     <span class="keyword">end</span>
+0505   <span class="keyword">end</span>
+0506 <span class="keyword">else</span>                                     <span class="comment">% cone plot</span>
+0507   P=zeros(3*n,3); i=1:n;
+0508   P(3*i-2,:)=p1(i,:); P(3*i-1,:)=p1(i,:); P(3*i,1)=NaN;
+0509   H1=plot3(P(:,1),P(:,2),P(:,3));
+0510 <span class="keyword">end</span>
+0511 
+0512 <span class="comment">%-------------------------------------------------------------------------</span>
+0513 <span class="comment">% Scale</span>
+0514 <span class="keyword">if</span> ~restore, axis tight, <span class="keyword">end</span>
+0515 ar=get(ax,<span class="string">'DataAspectRatio'</span>); ar=sqrt(3)*ar/norm(ar);
+0516 set(ax,<span class="string">'DataAspectRatioMode'</span>,<span class="string">'manual'</span>);
+0517 <span class="keyword">if</span> xys, sf=1;
+0518 <span class="keyword">else</span> xr=get(ax,<span class="string">'xlim'</span>); yr=get(ax,<span class="string">'ylim'</span>); zr=get(ax,<span class="string">'zlim'</span>);
+0519   sf=norm(diff([xr;yr;zr],1,2)./ar')/72;
+0520 <span class="keyword">end</span>
+0521 
+0522 <span class="comment">%-------------------------------------------------------------------------</span>
+0523 <span class="comment">% AppData</span>
+0524 c=c(1:n,:); w=w(1:n); h=h(1:n); ip=ip(1:n); a=a(1:n);
+0525 setappdata(ax,<span class="string">'Arrow3'</span>,[getappdata(ax,<span class="string">'Arrow3'</span>);p1,p2,c,w,h,ip,a]);
+0526 
+0527 <span class="comment">%-------------------------------------------------------------------------</span>
+0528 <span class="comment">% Arrowhead</span>
+0529 whip=sf*[w,h,ip];
+0530 <span class="keyword">if</span> xys, whip=whip*sqrt(2)/72; p1=q1; p2=q2; <span class="keyword">end</span>
+0531 w=whip(:,1); h=whip(:,2); ip=whip(:,3);
+0532 <span class="keyword">if</span> cone                                            <span class="comment">% cone plot</span>
+0533   delete(H1), H1=[];
+0534   p2=p2./<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(sqrt(sum(p2.*p2,2)),[1,3]);
+0535   p2=p1+p2.*<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(ar,[n,1]).*<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(h,[1,3]);
+0536 <span class="keyword">end</span>
+0537 W=(p1-p2)./<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(ar,[n,1]);
+0538 W=W./<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(sqrt(sum(W.*W,2)),[1,3]);         <span class="comment">% new z direction</span>
+0539 U=[-W(:,2),W(:,1),Zeros];
+0540 N=sqrt(sum(U.*U,2)); i=find(N&lt;eps); j=length(i);
+0541 U(i,:)=<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>([1,0,0],[j,1]); N(i)=ones(j,1);
+0542 U=U./<a href="#_sub6" class="code" title="subfunction B=LocalRepmat(A,siz)">LocalRepmat</a>(N,[1,3]);                         <span class="comment">% new x direction</span>
+0543 V=[W(:,2).*U(:,3)-W(:,3).*U(:,2),<span class="keyword">...</span><span class="comment">               % new y direction</span>
+0544   W(:,3).*U(:,1)-W(:,1).*U(:,3),<span class="keyword">...</span>
+0545   W(:,1).*U(:,2)-W(:,2).*U(:,1)];
+0546 
+0547 m=20;                               <span class="comment">% surface grid spacing</span>
+0548 set(ax,<span class="string">'DefaultSurfaceTag'</span>,<span class="string">'arrow3'</span>,<span class="string">'DefaultSurfaceEdgeColor'</span>,<span class="string">'none'</span>);
+0549 r=[0;1]; theta=(0:m)/m*2*pi; Ones=ones(1,m+1);
+0550 x=r*cos(theta); y=r*sin(theta); z=r*Ones;
+0551 G=surface(x/2,y/2,z); dar=diag(ar);
+0552 X=get(G,<span class="string">'XData'</span>); Y=get(G,<span class="string">'YData'</span>); Z=get(G,<span class="string">'ZData'</span>);
+0553 H2=Zeros; [j,k]=size(X);
+0554 <span class="keyword">for</span> i=1:n                           <span class="comment">% translate, rotate, and scale</span>
+0555   H2(i)=copyobj(G,ax);
+0556   xyz=[w(i)*X(:),w(i)*Y(:),h(i)*Z(:)]*[U(i,:);V(i,:);W(i,:)]*dar;
+0557   x=reshape(xyz(:,1),j,k)+p2(i,1);
+0558   y=reshape(xyz(:,2),j,k)+p2(i,2);
+0559   z=reshape(xyz(:,3),j,k)+p2(i,3);
+0560   <a href="#_sub2" class="code" title="subfunction LocalSetSurface(xys,xs,ys,dx,dy,xr,yr,x,y,z,a,c,H,n,m)">LocalSetSurface</a>(xys,xs,ys,dx,dy,xr,yr,<span class="keyword">...</span>
+0561     x,y,z,a(i),c(i,:),H2(i),2,m+1);
+0562 <span class="keyword">end</span>
+0563 delete(G);
+0564 
+0565 <span class="comment">%-------------------------------------------------------------------------</span>
+0566 <span class="comment">% Initial Point Marker</span>
+0567 <span class="keyword">if</span> any(ip&gt;0)
+0568   theta=(-m:2:m)/m*pi; phi=(-m:2:m)'/m*pi/2; cosphi=cos(phi);
+0569   x=cosphi*cos(theta); y=cosphi*sin(theta); z=sin(phi)*Ones;
+0570   G=surface(x*ar(1)/2,y*ar(2)/2,z*ar(3)/2);
+0571   X=get(G,<span class="string">'XData'</span>); Y=get(G,<span class="string">'YData'</span>); Z=get(G,<span class="string">'ZData'</span>);
+0572   H3=zeros(n,1);
+0573   <span class="keyword">for</span> i=1:n                                        <span class="comment">% translate</span>
+0574     <span class="keyword">if</span> ip(i)&gt;0
+0575       H3(i)=copyobj(G,ax);
+0576       x=p1(i,1)+X*ip(i); y=p1(i,2)+Y*ip(i); z=p1(i,3)+Z*ip(i);
+0577       <a href="#_sub2" class="code" title="subfunction LocalSetSurface(xys,xs,ys,dx,dy,xr,yr,x,y,z,a,c,H,n,m)">LocalSetSurface</a>(xys,xs,ys,dx,dy,xr,yr,<span class="keyword">...</span>
+0578         x,y,z,a(i),c(i,:),H3(i),m+1,m+1);
+0579     <span class="keyword">end</span>
+0580   <span class="keyword">end</span>, delete(G);
+0581 <span class="keyword">else</span> H3=[];
+0582 <span class="keyword">end</span>
+0583 
+0584 <span class="comment">%-------------------------------------------------------------------------</span>
+0585 <span class="comment">% Finish</span>
+0586 <span class="keyword">if</span> restore, xr=Xr; yr=Yr; zr=Zr;
+0587   <span class="keyword">if</span> xys, set(ax,<span class="string">'DataAspectRatioMode'</span>,<span class="string">'auto'</span>); <span class="keyword">end</span>
+0588 <span class="keyword">else</span>
+0589   axis tight
+0590   xr=get(ax,<span class="string">'xlim'</span>); yr=get(ax,<span class="string">'ylim'</span>); zr=get(ax,<span class="string">'zlim'</span>);
+0591   set(ax,<span class="string">'nextplot'</span>,<span class="string">'replace'</span>);
+0592 <span class="keyword">end</span>
+0593 azel=get(ax,<span class="string">'view'</span>);
+0594 <span class="keyword">if</span> abs(azel(2))==90, renderer=<span class="string">'ZBuffer'</span>; <span class="keyword">else</span> renderer=<span class="string">'OpenGL'</span>; c1=3; <span class="keyword">end</span>
+0595 set(fig,<span class="string">'Renderer'</span>,renderer);
+0596 set(ax,<span class="string">'LineStyleOrder'</span>,L,<span class="string">'ColorOrder'</span>,C,<span class="string">'DefaultLineTag'</span>,LT,<span class="keyword">...</span>
+0597   <span class="string">'DefaultSurfaceTag'</span>,ST,<span class="string">'DefaultSurfaceEdgeColor'</span>,EC,<span class="keyword">...</span>
+0598   <span class="string">'xlim'</span>,xr,<span class="string">'ylim'</span>,yr,<span class="string">'zlim'</span>,zr,<span class="string">'clim'</span>,get(ax,<span class="string">'CLim'</span>));
+0599 <span class="keyword">if</span> c1==3, set(ax,<span class="string">'CameraViewAngle'</span>,get(ax,<span class="string">'CameraViewAngle'</span>),<span class="keyword">...</span>
+0600    <span class="string">'PlotBoxAspectRatio'</span>,get(ax,<span class="string">'PlotBoxAspectRatio'</span>));
+0601 <span class="keyword">end</span>
+0602 <span class="keyword">if</span> nargout, hn=[H1(:);H2(:);H3(:)]; <span class="keyword">end</span>
+0603 
+0604 <span class="comment">%-------------------------------------------------------------------------</span>
+0605 <span class="comment">% Local Functions</span>
+0606 <span class="comment">%-------------------------------------------------------------------------</span>
+0607 <span class="comment">% Update</span>
+0608 <a name="_sub1" href="#_subfunctions" class="code">function H=LocalUpdate(fig,ax,ad,sf,flag)</a>
+0609 <span class="keyword">global</span> ColorOrder
+0610 p1=ad(:,1:3); p2=ad(:,4:6); c=ad(:,7:9); a=ad(:,13);
+0611 w=sf(1)*ad(:,10); h=sf(2)*ad(:,11); ip=sf(3)*ad(:,12);
+0612 H=get(ax,<span class="string">'children'</span>); tag=get(H,<span class="string">'tag'</span>); type=get(H,<span class="string">'type'</span>);
+0613 delete(H(strcmp(tag,<span class="string">'arrow3'</span>) &amp; strcmp(type,<span class="string">'surface'</span>)));
+0614 set(fig,<span class="string">'nextplot'</span>,<span class="string">'add'</span>); set(ax,<span class="string">'nextplot'</span>,<span class="string">'add'</span>); H1=[];
+0615 <span class="keyword">if</span> flag, map=get(fig,<span class="string">'colormap'</span>);                  <span class="comment">% update colors</span>
+0616   M=(p1-p2); M=sqrt(sum(M.*M,2)); minM=min(M); maxM=max(M);
+0617   H1=H(strcmp(tag,<span class="string">'arrow3'</span>) &amp; strcmp(type,<span class="string">'line'</span>));
+0618   MagnitudeWarning=[<span class="string">'Cannot perform magnitude coloring on lines '</span>,<span class="keyword">...</span>
+0619     <span class="string">'that\nwere drawn with a single color, linestyle, and linewidth'</span>];
+0620   <span class="keyword">if</span> length(H1)&gt;1
+0621     <span class="keyword">for</span> i=1:length(H1)                             <span class="comment">% update line colors</span>
+0622       x=get(H1(i),<span class="string">'xdata'</span>); y=get(H1(i),<span class="string">'ydata'</span>); z=get(H1(i),<span class="string">'zdata'</span>);
+0623       <span class="keyword">if</span> length(x)&gt;2                               <span class="comment">% multiple lines</span>
+0624         warning(<span class="string">'Arrow3:Magnitude'</span>,MagnitudeWarning), <span class="keyword">continue</span>
+0625       <span class="keyword">end</span>
+0626       m=sqrt((x(1)-x(2))^2+(y(1)-y(2))^2+(z(1)-z(2))^2);
+0627       c=<a href="#_sub7" class="code" title="subfunction v=LocalInterp(xmin,xmax,y,u)">LocalInterp</a>(minM,maxM,map,m); set(H1(i),<span class="string">'color'</span>,c);
+0628     <span class="keyword">end</span>
+0629   <span class="keyword">elseif</span> length(H1)==1
+0630     warning(<span class="string">'Arrow3:Magnitude'</span>,MagnitudeWarning)
+0631   <span class="keyword">end</span>
+0632   c=<a href="#_sub7" class="code" title="subfunction v=LocalInterp(xmin,xmax,y,u)">LocalInterp</a>(minM,maxM,map,M);
+0633 <span class="keyword">end</span>
+0634 set(ax,<span class="string">'ColorOrder'</span>,c);                            <span class="comment">% update surfaces</span>
+0635 ColorOrder=[];
+0636 <span class="keyword">if</span> strcmp(get(ax,<span class="string">'tag'</span>),<span class="string">'Arrow3ConePlot'</span>)
+0637      H=<a href="arrow3.html" class="code" title="function hn=arrow3(p1,p2,s,w,h,ip,alpha,beta)">arrow3</a>(p1,p2,<span class="string">'o'</span> ,w,h,<span class="string">'cone'</span>,a);            <span class="comment">% update cones</span>
+0638 <span class="keyword">else</span> H=<a href="arrow3.html" class="code" title="function hn=arrow3(p1,p2,s,w,h,ip,alpha,beta)">arrow3</a>(p1,p2,<span class="string">'o0'</span>,w,h,    ip,a);
+0639 <span class="keyword">end</span>, H=[H1(:);H(:)];
+0640 set(ax,<span class="string">'nextplot'</span>,<span class="string">'replace'</span>);
+0641 
+0642 <span class="comment">%-------------------------------------------------------------------------</span>
+0643 <span class="comment">% SetSurface</span>
+0644 <a name="_sub2" href="#_subfunctions" class="code">function LocalSetSurface(xys,xs,ys,dx,dy,xr,yr,x,y,z,a,c,H,n,m)</a>
+0645 <span class="keyword">if</span> xys
+0646   x=x*dx+xr(1); y=y*dy+yr(1);
+0647   <span class="keyword">if</span> xs, x=10.^x; <span class="keyword">end</span>
+0648   <span class="keyword">if</span> ys, y=10.^y; <span class="keyword">end</span>
+0649 <span class="keyword">end</span>
+0650 cd=zeros(n,m,3); cd(:,:,1)=c(1); cd(:,:,2)=c(2); cd(:,:,3)=c(3);
+0651 set(H,<span class="string">'XData'</span>,x,<span class="string">'YData'</span>,y,<span class="string">'ZData'</span>,z,<span class="string">'CData'</span>,cd,<span class="string">'FaceAlpha'</span>,a);
+0652 
+0653 <span class="comment">%-------------------------------------------------------------------------</span>
+0654 <span class="comment">% ColorTable</span>
+0655 <a name="_sub3" href="#_subfunctions" class="code">function [vc,cn]=LocalColorTable(n,beta)</a>
+0656 vc=<span class="string">'kymcrgbadefhijlnpqstuvzw'</span>;                     <span class="comment">% valid color codes</span>
+0657 <span class="comment">%                k               y               m               c</span>
+0658 cn=[0.00,0.00,0.00; 1.00,1.00,0.00; 1.00,0.00,1.00; 0.00,1.00,1.00;
+0659 <span class="comment">%                r               g               b               a</span>
+0660     1.00,0.00,0.00; 0.00,1.00,0.00; 0.00,0.00,1.00; 0.42,0.59,0.24;
+0661 <span class="comment">%                d               e               f               h</span>
+0662     0.25,0.25,0.25; 0.00,0.50,0.00; 0.70,0.13,0.13; 1.00,0.41,0.71;
+0663 <span class="comment">%                i               j               l               n</span>
+0664     0.29,0.00,0.51; 0.00,0.66,0.42; 0.50,0.50,0.50; 0.50,0.20,0.00;
+0665 <span class="comment">%                p               q               s               t</span>
+0666     0.75,0.75,0.00; 1.00,0.50,0.00; 0.00,0.75,0.75; 0.80,0.34,0.00;
+0667 <span class="comment">%                u               v               z               w</span>
+0668     0.50,0.00,0.13; 0.75,0.00,0.75; 0.38,0.74,0.99; 1.00,1.00,1.00];
+0669 
+0670 <span class="comment">% Named Simulink Colors (zaql)</span>
+0671 <span class="comment">% LightBlue = 0.38  0.74  0.99 = aZure</span>
+0672 <span class="comment">% DarkGreen = 0.42  0.59  0.24 = Asparagus</span>
+0673 <span class="comment">% Orange    = 1.00  0.50  0.00 = kumQuat</span>
+0674 <span class="comment">% Gray      = 0.50  0.50  0.50 = Light gray</span>
+0675 <span class="comment">%</span>
+0676 <span class="comment">% Default ColorOrder Property Colors (bersvpd)</span>
+0677 <span class="comment">% Color1    = 0.00  0.00  1.00 = Blue</span>
+0678 <span class="comment">% Color2    = 0.00  0.50  0.00 = Evergreen</span>
+0679 <span class="comment">% Color3    = 1.00  0.00  0.00 = Red</span>
+0680 <span class="comment">% Color4    = 0.00  0.75  0.75 = Sky blue</span>
+0681 <span class="comment">% Color5    = 0.75  0.00  0.75 = Violet</span>
+0682 <span class="comment">% Color6    = 0.75  0.75  0.00 = Pear</span>
+0683 <span class="comment">% Color7    = 0.25  0.25  0.25 = Dark gray</span>
+0684 
+0685 <span class="keyword">if</span> n, clf reset                                    <span class="comment">% plot color table</span>
+0686   name={<span class="string">'blacK'</span>,<span class="string">'Yellow'</span>,<span class="string">'Magenta'</span>,<span class="string">'Cyan'</span>,<span class="keyword">...</span>
+0687     <span class="string">'Red'</span>,<span class="string">'Green'</span>,<span class="string">'Blue'</span>,<span class="string">'Asparagus'</span>,<span class="keyword">...</span>
+0688     <span class="string">'Dark gray'</span>,<span class="string">'Evergreen'</span>,<span class="string">'Firebrick'</span>,<span class="string">'Hot pink'</span>,<span class="keyword">...</span>
+0689     <span class="string">'Indigo'</span>,<span class="string">'Jade'</span>,<span class="string">'Light gray'</span>,<span class="string">'Nutbrown'</span>,<span class="keyword">...</span>
+0690     <span class="string">'Pear'</span>,<span class="string">'kumQuat'</span>,<span class="string">'Sky blue'</span>,<span class="string">'Tawny'</span>,<span class="keyword">...</span>
+0691     <span class="string">'bUrgundy'</span>,<span class="string">'Violet'</span>,<span class="string">'aZure'</span>,<span class="string">'White'</span>};
+0692   c=[<span class="string">'yptn'</span>;<span class="string">'gjae'</span>;<span class="string">'czsb'</span>;<span class="string">'hmvi'</span>;<span class="string">'qrfu'</span>;<span class="string">'wldk'</span>];
+0693   set(gcf,<span class="string">'DefaultAxesXTick'</span>,[],<span class="string">'DefaultAxesYTick'</span>,[],<span class="keyword">...</span>
+0694     <span class="string">'DefaultAxesXTickLabel'</span>,[],<span class="string">'DefaultAxesYTickLabel'</span>,[],<span class="keyword">...</span>
+0695     <span class="string">'DefaultAxesXLim'</span>,[0,0.75],<span class="string">'DefaultAxesYLim'</span>,[0,0.75],<span class="keyword">...</span>
+0696     <span class="string">'DefaultRectangleEdgeColor'</span>,<span class="string">'none'</span>);
+0697   <span class="keyword">for</span> i=1:24, subplot(4,6,i); box on
+0698     j=find(vc==c(i)); title(name{j});
+0699     dark=<a href="#_sub5" class="code" title="subfunction C=LocalBrighten(c,beta)">LocalBrighten</a>(cn(j,:),-beta);
+0700     light=<a href="#_sub5" class="code" title="subfunction C=LocalBrighten(c,beta)">LocalBrighten</a>(cn(j,:),beta);
+0701     rectangle(<span class="string">'Position'</span>,[0,0.00,0.75,0.25],<span class="string">'FaceColor'</span>,dark);
+0702     rectangle(<span class="string">'Position'</span>,[0,0.25,0.75,0.25],<span class="string">'FaceColor'</span>,cn(j,:));
+0703     rectangle(<span class="string">'Position'</span>,[0,0.50,0.75,0.25],<span class="string">'FaceColor'</span>,light);
+0704     rectangle(<span class="string">'Position'</span>,[0,0.00,0.75,0.75],<span class="string">'EdgeColor'</span>,<span class="string">'k'</span>);
+0705     <span class="keyword">if</span> rem(i,6)==1
+0706       set(gca,<span class="string">'YTickLabel'</span>,{<span class="string">'dark'</span>,<span class="string">'normal'</span>,<span class="string">'light'</span>},<span class="keyword">...</span>
+0707         <span class="string">'YTick'</span>,[0.125,0.375,0.625]);
+0708       <span class="keyword">if</span> i==19
+0709         text(0,-0.25,[<span class="string">'{\bf\itARROW3}  Named Color Table  '</span>,<span class="keyword">...</span>
+0710             <span class="string">'( \beta = '</span>,num2str(beta),<span class="string">' )'</span>]);
+0711       <span class="keyword">end</span>
+0712     <span class="keyword">end</span>
+0713   <span class="keyword">end</span>
+0714 <span class="keyword">end</span>
+0715 
+0716 <span class="comment">%-------------------------------------------------------------------------</span>
+0717 <span class="comment">% ColorMap</span>
+0718 <a name="_sub4" href="#_subfunctions" class="code">function [C,failed]=LocalColorMap(c,vc,cn,beta)</a>
+0719 n=length(c); failed=0; C=zeros(n,3); i=1; j=1;
+0720 <span class="keyword">while</span> 1
+0721   <span class="keyword">if</span> ~sum([vc,<span class="string">'_^'</span>]==c(i)), failed=1; <span class="keyword">break</span>, <span class="keyword">end</span>
+0722   <span class="keyword">if</span> sum(<span class="string">'_^'</span>==c(i))
+0723     <span class="keyword">if</span> i+1&gt;n, failed=1; <span class="keyword">break</span>, <span class="keyword">end</span>
+0724     <span class="keyword">if</span> ~sum(vc==c(i+1)), failed=1; <span class="keyword">break</span>, <span class="keyword">end</span>
+0725     cc=cn(vc==c(i+1),:); gamma=beta;
+0726     <span class="keyword">if</span> c(i)==<span class="string">'_'</span>, gamma=-beta; <span class="keyword">end</span>
+0727     C(j,:)=<a href="#_sub5" class="code" title="subfunction C=LocalBrighten(c,beta)">LocalBrighten</a>(cc,gamma); i=i+2;
+0728   <span class="keyword">else</span> C(j,:)=cn(vc==c(i),:); i=i+1;
+0729   <span class="keyword">end</span>
+0730   <span class="keyword">if</span> i&gt;n, <span class="keyword">break</span>, <span class="keyword">end</span>, j=j+1;
+0731 <span class="keyword">end</span>
+0732 <span class="keyword">if</span> n&gt;j, C(j+1:n,:)=[]; <span class="keyword">end</span>
+0733 
+0734 <span class="comment">%-------------------------------------------------------------------------</span>
+0735 <span class="comment">% Brighten</span>
+0736 <a name="_sub5" href="#_subfunctions" class="code">function C=LocalBrighten(c,beta)</a>
+0737 <span class="keyword">if</span> sum([c==0,c==1])==3 &amp;&amp; sum(c==0)&lt;3 &amp;&amp; sum(c==1)&lt;3
+0738   <span class="keyword">if</span> beta&lt;0
+0739     C=(1+beta)*c;
+0740   <span class="keyword">else</span>
+0741     C=c;  C(C==0)=beta;
+0742   <span class="keyword">end</span>
+0743 <span class="keyword">else</span>
+0744   C=c.^((1-min(1-sqrt(eps),abs(beta)))^sign(beta));
+0745 <span class="keyword">end</span>
+0746 
+0747 <span class="comment">%-------------------------------------------------------------------------</span>
+0748 <span class="comment">% Repmat</span>
+0749 <a name="_sub6" href="#_subfunctions" class="code">function B=LocalRepmat(A,siz)</a>
+0750 <span class="keyword">if</span> length(A)==1, B(prod(siz))=A; B(:)=A; B=reshape(B,siz);
+0751 <span class="keyword">else</span> [m,n]=size(A); mind=(1:m)'; nind=(1:n)';
+0752   mind=mind(:,ones(1,siz(1))); nind=nind(:,ones(1,siz(2)));
+0753   B=A(mind,nind);
+0754 <span class="keyword">end</span>
+0755 
+0756 <span class="comment">%-------------------------------------------------------------------------</span>
+0757 <span class="comment">% Interp</span>
+0758 <a name="_sub7" href="#_subfunctions" class="code">function v=LocalInterp(xmin,xmax,y,u)</a>
+0759 [m,n]=size(y); h=(xmax-xmin)/(m-1); p=length(u); v=zeros(p,n);
+0760 k=min(max(1+floor((u-xmin)/h),1),m-1); s=(u-xmin)/h-k+1;
+0761 <span class="keyword">for</span> j=1:n, v(:,j)=y(k,j)+s.*(y(k+1,j)-y(k,j)); <span class="keyword">end</span>
+0762 v(v&lt;0)=0; v(v&gt;1)=1;
+0763 
+0764 <span class="comment">%-------------------------------------------------------------------------</span>
+0765 <span class="comment">% Check for supported log scales</span>
+0766 <a name="_sub8" href="#_subfunctions" class="code">function [xs,ys,xys]=LocalLogCheck(ax)</a>
+0767 xs=strcmp(get(ax,<span class="string">'xscale'</span>),<span class="string">'log'</span>);
+0768 ys=strcmp(get(ax,<span class="string">'yscale'</span>),<span class="string">'log'</span>);
+0769 zs=strcmp(get(ax,<span class="string">'zscale'</span>),<span class="string">'log'</span>);
+0770 <span class="keyword">if</span> zs, error(<span class="string">'Z log scale not supported'</span>), <span class="keyword">end</span>
+0771 xys=xs+ys;
+0772 <span class="keyword">if</span> xys, azel=get(ax,<span class="string">'view'</span>);
+0773   <span class="keyword">if</span> abs(azel(2))~=90, error(<span class="string">'3D log plot not supported'</span>), <span class="keyword">end</span>
+0774 <span class="keyword">end</span>
+0775 
+0776 <span class="comment">%-------------------------------------------------------------------------</span>
+0777 <span class="comment">% Generate valid value for color, linestyle and linewidth</span>
+0778 <a name="_sub9" href="#_subfunctions" class="code">function [c,ls,lw]=LocalValidateCLSW(s)</a>
+0779 <span class="keyword">if</span> nargin&lt;1, c=<span class="string">'k'</span>; ls=<span class="string">'-'</span>; lw=0.5;
+0780 <span class="keyword">else</span>
+0781   <span class="comment">% identify linestyle</span>
+0782   <span class="keyword">if</span> findstr(s,<span class="string">'--'</span>), ls=<span class="string">'--'</span>; s=strrep(s,<span class="string">'--'</span>,<span class="string">''</span>);
+0783   <span class="keyword">elseif</span> findstr(s,<span class="string">'-.'</span>), ls=<span class="string">'-.'</span>; s=strrep(s,<span class="string">'-.'</span>,<span class="string">''</span>);
+0784   <span class="keyword">elseif</span> findstr(s,<span class="string">'-'</span>), ls=<span class="string">'-'</span>; s=strrep(s,<span class="string">'-'</span>,<span class="string">''</span>);
+0785   <span class="keyword">elseif</span> findstr(s,<span class="string">':'</span>), ls=<span class="string">':'</span>; s=strrep(s,<span class="string">':'</span>,<span class="string">''</span>);
+0786   <span class="keyword">elseif</span> findstr(s,<span class="string">'*'</span>), ls=<span class="string">'*'</span>; s=strrep(s,<span class="string">'*'</span>,<span class="string">''</span>);
+0787   <span class="keyword">else</span> ls=<span class="string">'-'</span>;
+0788   <span class="keyword">end</span>
+0789 
+0790   <span class="comment">% identify linewidth</span>
+0791   tmp=double(s);
+0792   tmp=find(tmp&gt;45 &amp; tmp&lt;58);
+0793   <span class="keyword">if</span> length(tmp)
+0794     <span class="keyword">if</span> any(s(tmp)==<span class="string">'/'</span>), lw=<span class="string">'/'</span>; <span class="keyword">else</span> lw=str2double(s(tmp)); <span class="keyword">end</span>
+0795     s(tmp)=<span class="string">''</span>;
+0796   <span class="keyword">else</span> lw=0.5;
+0797   <span class="keyword">end</span>
+0798 
+0799   <span class="comment">% identify color</span>
+0800   <span class="keyword">if</span> length(s), s=lower(s);
+0801     <span class="keyword">if</span> length(s)&gt;1, c=s(1:2);
+0802     <span class="keyword">else</span> c=s(1); <span class="keyword">end</span>
+0803   <span class="keyword">else</span> c=<span class="string">'k'</span>;
+0804   <span class="keyword">end</span>
+0805 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of starerrorplot</title>
+  <meta name="keywords" content="starerrorplot">
+  <meta name="description" content="STARERRORPLOT - Plots the error of the starprojection.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>starerrorplot
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STARERRORPLOT - Plots the error of the starprojection.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function starerrorplot(SkMp,nr) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STARERRORPLOT - Plots the error of the starprojection.
+   
+ Calling:
+ starerrorplot(SkMp,nr)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>	PROJECT_DIRECTIONS - calculates the image positions [UA,WA] from (AZ,ZE)</li><li><a href="bquiver.html" class="code" title="function H = bquiver(x,y,dx,dy,l,s)">bquiver</a>	BQUIVER is a temporary interface to the function ARROW() that is</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function starerrorplot(SkMp,nr)</a>
+0002 <span class="comment">% STARERRORPLOT - Plots the error of the starprojection.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% starerrorplot(SkMp,nr)</span>
+0006 
+0007 <span class="comment">%   Copyright � 20011105 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0008 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0009 
+0010 u = SkMp.identstars(:,3);
+0011 v = SkMp.identstars(:,4);
+0012 
+0013 [ua,va] = <a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(SkMp.identstars(:,1)', <span class="keyword">...</span>
+0014                  SkMp.identstars(:,2)', <span class="keyword">...</span>
+0015                  SkMp.optpar,SkMp.optmod,size(SkMp.img));
+0016 ua = ua';
+0017 va = va';
+0018 
+0019 figure(SkMp.errorfig)
+0020 <span class="keyword">switch</span>(nr)
+0021   
+0022  <span class="keyword">case</span> 1,
+0023   
+0024   clf
+0025   axis([0 size(SkMp.img,2) 0 size(SkMp.img,1)])
+0026   <span class="comment">% H =</span>
+0027   <a href="bquiver.html" class="code" title="function H = bquiver(x,y,dx,dy,l,s)">bquiver</a>(u,v,u-ua,v-va,SkMp.prefs.sc_er_ar,SkMp.prefs.cl_er_ar);
+0028   xlabel(<span class="string">'Horizontal image coordinate (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0029   ylabel(<span class="string">'Vertical image coordinate (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0030   title(<span class="string">'Error arrows  *10'</span>,<span class="string">'fontsize'</span>,14)
+0031   
+0032  <span class="keyword">case</span> 2,
+0033   
+0034   clf
+0035   plot(u-ua,v-va,[SkMp.prefs.cl_er_pt,<span class="string">'.'</span>],<span class="string">'markersize'</span>,SkMp.prefs.sz_er_pt)
+0036   ax = axis;
+0037   hold on
+0038   plot([-1 1 1 -1 -1],[-1 -1 1 1 -1])
+0039   xlabel(<span class="string">'Horizontal error (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0040   ylabel(<span class="string">'Vertical error (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0041   title(<span class="string">'Error scatter'</span>,<span class="string">'fontsize'</span>,14)
+0042   grid on
+0043   hold off
+0044   ax = [-max(abs(ax(1:2))) max(abs(ax(1:2))) -max(abs(ax(3:4))) <span class="keyword">...</span>
+0045     max(abs(ax(3:4)))];
+0046   ax(1) = min(ax(1),-1);
+0047   ax(2) = max(ax(2),1);
+0048   ax(3) = min(ax(3),-1);
+0049   ax(4) = max(ax(4),1);
+0050   axis([-max(abs(ax(1:2))) max(abs(ax(1:2))) -max(abs(ax(3:4))) max(abs(ax(3:4)))])
+0051   
+0052  <span class="keyword">case</span> 3
+0053   
+0054   clf
+0055   plot(u,u-ua,[SkMp.prefs.cl_er_pt,<span class="string">'.'</span>],<span class="string">'markersize'</span>,SkMp.prefs.sz_er_pt)
+0056   <span class="comment">%TBR?: xa = axis;</span>
+0057   grid on
+0058   xlabel(<span class="string">'Horizontal image coordinate (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0059   ylabel(<span class="string">'Horizontal error (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0060   title(<span class="string">'Horizontal error'</span>,<span class="string">'fontsize'</span>,14)
+0061   
+0062  <span class="keyword">case</span> 4
+0063   
+0064   clf
+0065   plot(v,v-va,[SkMp.prefs.cl_er_pt,<span class="string">'.'</span>],<span class="string">'markersize'</span>,SkMp.prefs.sz_er_pt)
+0066   <span class="comment">%TBR?: xa = axis;</span>
+0067   grid on
+0068   xlabel(<span class="string">'Vertical image coordinate (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0069   ylabel(<span class="string">'Vertical error (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0070   title(<span class="string">'Vertical error'</span>,<span class="string">'fontsize'</span>,14)
+0071   
+0072  <span class="keyword">case</span> 5
+0073   
+0074   clf
+0075   r = ((u-size(SkMp.img,2)/2).^2+(v-size(SkMp.img,1)/2).^2).^.5;
+0076   ra = ((ua-size(SkMp.img,2)/2).^2+(va-size(SkMp.img,1)/2).^2).^.5;
+0077   plot(r,r-ra,[SkMp.prefs.cl_er_pt,<span class="string">'.'</span>],<span class="string">'markersize'</span>,SkMp.prefs.sz_er_pt)
+0078   <span class="comment">%TBR?: xa = axis;</span>
+0079   grid on
+0080   xlabel(<span class="string">'Radial image coordinate (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0081   ylabel(<span class="string">'Radial error (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0082   title(<span class="string">'Radial error'</span>,<span class="string">'fontsize'</span>,14)
+0083   
+0084  <span class="keyword">case</span> 6
+0085   
+0086   clf
+0087   fi = atan2((u-size(SkMp.img,2)/2),(v-size(SkMp.img,1)/2))*180/pi;
+0088   fia = atan2((ua-size(SkMp.img,2)/2),(va-size(SkMp.img,1)/2))*180/pi;
+0089   plot(fi,fi-fia,[SkMp.prefs.cl_er_pt,<span class="string">'.'</span>],<span class="string">'markersize'</span>,SkMp.prefs.sz_er_pt)
+0090   grid on
+0091   xlabel(<span class="string">'Angular image coordinate (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0092   ylabel(<span class="string">'Angular error (degrees)'</span>,<span class="string">'fontsize'</span>,14)
+0093   title(<span class="string">'Angular error'</span>,<span class="string">'fontsize'</span>,14)
+0094   
+0095  <span class="keyword">case</span> 7
+0096   
+0097   clf
+0098   hist(u-ua)
+0099   grid on
+0100   xlabel(<span class="string">'Horizontal error (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0101   title(<span class="string">'Horizontal error histogram'</span>,<span class="string">'fontsize'</span>,14)
+0102   
+0103  <span class="keyword">case</span> 8
+0104   
+0105   clf
+0106   hist(v-va)
+0107   grid on
+0108   xlabel(<span class="string">'Vertical error (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0109   title(<span class="string">'Vertical error histogram'</span>,<span class="string">'fontsize'</span>,14)
+0110   
+0111  <span class="keyword">case</span> 9
+0112   
+0113   clf
+0114   r = ((u-size(SkMp.img,2)/2).^2+(v-size(SkMp.img,1)/2).^2).^.5;
+0115   ra = ((ua-size(SkMp.img,2)/2).^2+(va-size(SkMp.img,1)/2).^2).^.5;
+0116   hist(r-ra)
+0117   <span class="comment">%TBR?: xa = axis;</span>
+0118   grid on
+0119   xlabel(<span class="string">'Radial error (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0120   title(<span class="string">'Radial error histogram'</span>,<span class="string">'fontsize'</span>,14)
+0121   
+0122  <span class="keyword">case</span> 10
+0123   
+0124   clf
+0125   fi = atan2((u-size(SkMp.img,2)/2),(v-size(SkMp.img,1)/2))*180/pi;
+0126   fia = atan2((ua-size(SkMp.img,2)/2),(va-size(SkMp.img,1)/2))*180/pi;
+0127   hist(fi-fia)
+0128   <span class="comment">%TBR? xa = axis;</span>
+0129   grid on
+0130   xlabel(<span class="string">'Angular error (degrees)'</span>,<span class="string">'fontsize'</span>,14)
+0131   title(<span class="string">'Angular error histogram'</span>,<span class="string">'fontsize'</span>,14)
+0132   
+0133  <span class="keyword">case</span> 11
+0134   
+0135   clf
+0136   r = ((u-size(SkMp.img,2)/2).^2+(v-size(SkMp.img,1)/2).^2).^.5;
+0137   fi = atan2((u-size(SkMp.img,2)/2),(v-size(SkMp.img,1)/2))*180/pi;
+0138   fia = atan2((ua-size(SkMp.img,2)/2),(va-size(SkMp.img,1)/2))*180/pi;
+0139   plot(r,fi-fia,[SkMp.prefs.cl_er_pt,<span class="string">'.'</span>],<span class="string">'markersize'</span>,SkMp.prefs.sz_er_pt)
+0140   <span class="comment">%TBR?: xa = axis;</span>
+0141   grid on
+0142   xlabel(<span class="string">'Radial image coordinate (pixels)'</span>,<span class="string">'fontsize'</span>,14)
+0143   ylabel(<span class="string">'Angular error (degrees)'</span>,<span class="string">'fontsize'</span>,14)
+0144   title(<span class="string">'Angular error'</span>,<span class="string">'fontsize'</span>,14)
+0145   
+0146  <span class="keyword">otherwise</span>
+0147   
+0148   disp([<span class="string">'Errorplot number: '</span>,num2str(nr),<span class="string">' is not yet implemented'</span>])
+0149   
+0150 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

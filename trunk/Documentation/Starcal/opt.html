@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>And another...</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="../style.css">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+  </head>
+  
+  <body class="section-2">
+    <ul id="menu">
+      <li id="nav-1"><a href="../index.html">AIDA-home</a>
+      </li>
+      <li id="nav-2"><a href="../intros.html">Image analysis (tutorial)</a>
+	<ul id="subnav-2">
+	  <li><a href="../BBH.pdf">Tutorial</a></li>
+	  <li><a href="../optics.html">Camera</a></li>
+	  <li><a href="../starcal.html">Starcal</a></li>
+	  <li><a href="../Skymap/index.html">Skymap</a></li>
+	</ul>
+      </li>
+      <li id="nav-3"><a href="../../Html-exmpls/index.html">Examples</a>
+      </li>
+      <li id="nav-4"><a href="../../Html-docs/index.html">Matlab-src-tree</a>
+      </li>
+    </ul>
+    <div id="contents">
+      <h1>The optpar format</h1>
+      <p>
+	The optpar format is the format internally used in most
+	functions in the Camera and Starcal toolboxes. It is built as:
+      <pre>fu fv Alpha Beta Gamma du dv alfa</pre>
+      Where fu is the horizontal focal width, fv the vertical; Alpha,
+      Beta, Gamma are the three rotation angles used by e.g.
+      <a href="../../Html-docs/Camera/camera_rot.html">camera_rot.m</a>; du and dv are
+      the horizontal and vertical shift from the middle of the image of
+      the projection of the optical axis.
+      <h1>The UNITS</h1>
+      Here it is in place to make a short comment on the units. For the
+      rotation angles the parameters are stored in degrees, this is
+      because it is much easier to see whether the results are
+      reasonable limits if given in degrees than in radians.<br>
+      For the focal widths (fu, fv) and the optical-axis-shifts (du, dv)
+      the best choice appeared to be to use relative units. With this
+      choice it is possible to use the same value for the optical
+      parameters for all re-binning and linear re-sampling of the images -
+      provided that the full image is used.
+    </div>
+    <address><a href="mailto:bjorn@irf.se">Bj&ouml;rn Gustavsson</a></address>
+    <!-- Created: Tue Apr  9 20:22:37 JST 2002 -->
+    <!-- hhmts start -->Last modified: Mon Apr 15 00:22:31 CEST 2013 <!-- hhmts end -->
+  </body>
+</html>

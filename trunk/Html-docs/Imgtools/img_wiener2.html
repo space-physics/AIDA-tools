@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of img_wiener2</title>
+  <meta name="keywords" content="img_wiener2">
+  <meta name="description" content="IMG_WIENER2 - Lee's sigma-filter, local statistics filter">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>img_wiener2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>IMG_WIENER2 - Lee's sigma-filter, local statistics filter</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [f,noise] = img_wiener2(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> IMG_WIENER2 - Lee's sigma-filter, local statistics filter
+  My implementation of mathworks wiener2, should be transparently
+  identical, and will use wiener2 if the image processing toolbox
+  is available.
+ 
+ Calling:
+  [Img_out] = img_wiener2(Img_in,[M,N],noise);
+  [Img_out] = img_wiener2(Img_in,[M,N]); % Noise will be estimated from average variance
+  [Img_out] = img_wiener2(Img_in);       % [M,N] will default to [3,3]
+ Input:
+  Img_in - input image 2-D
+  region - [M,N] integers for the size of the N-by-M neighbourhood
+           to calculate the image mean and standard deviation over
+  noise - (optional) either scalar or same sized as IMG_IN
+          estimate of local variance
+ Output:
+  Img_out - filtered version, same size as Img_in, always double.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/interference_rem_auto.html" class="code" title="function img_out = interference_rem_auto(img_in,if_level,method,wpsm)">interference_rem_auto</a>	INTERFERENCE_REM_RAUTO - automatic high frequency interference reduction</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [f,noise] = img_wiener2(varargin)</a>
+0002 <span class="comment">% IMG_WIENER2 - Lee's sigma-filter, local statistics filter</span>
+0003 <span class="comment">%  My implementation of mathworks wiener2, should be transparently</span>
+0004 <span class="comment">%  identical, and will use wiener2 if the image processing toolbox</span>
+0005 <span class="comment">%  is available.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%  [Img_out] = img_wiener2(Img_in,[M,N],noise);</span>
+0009 <span class="comment">%  [Img_out] = img_wiener2(Img_in,[M,N]); % Noise will be estimated from average variance</span>
+0010 <span class="comment">%  [Img_out] = img_wiener2(Img_in);       % [M,N] will default to [3,3]</span>
+0011 <span class="comment">% Input:</span>
+0012 <span class="comment">%  Img_in - input image 2-D</span>
+0013 <span class="comment">%  region - [M,N] integers for the size of the N-by-M neighbourhood</span>
+0014 <span class="comment">%           to calculate the image mean and standard deviation over</span>
+0015 <span class="comment">%  noise - (optional) either scalar or same sized as IMG_IN</span>
+0016 <span class="comment">%          estimate of local variance</span>
+0017 <span class="comment">% Output:</span>
+0018 <span class="comment">%  Img_out - filtered version, same size as Img_in, always double.</span>
+0019 
+0020 
+0021 <span class="comment">%   Copyright � 2009 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0022 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0023 
+0024 
+0025 <span class="keyword">try</span>
+0026   [f,noise] = wiener2(varargin);
+0027   <span class="keyword">return</span>
+0028 <span class="keyword">catch</span>
+0029 <span class="keyword">end</span>
+0030 
+0031 D = varargin{1};
+0032 <span class="keyword">if</span> nargin &gt; 1
+0033   nhood = varargin{2};
+0034 <span class="keyword">else</span>
+0035   nhood = [3,3];
+0036 <span class="keyword">end</span>
+0037 <span class="keyword">if</span> nargin &gt; 2
+0038   noise = varargin{3};
+0039 <span class="keyword">else</span>
+0040   noise = [];
+0041 <span class="keyword">end</span>
+0042 
+0043 D_class = class(D);
+0044 <span class="keyword">if</span> ~isa(D, <span class="string">'double'</span>)
+0045   D = im2double(D);
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="comment">% Estimate the local mean of f.</span>
+0049 localMean = filter2(ones(nhood), D) / prod(nhood);
+0050 
+0051 <span class="comment">% Estimate of the local variance of f.</span>
+0052 <span class="comment">% Var = &lt;Y^2&gt; -&lt;Y&gt;^2</span>
+0053 localVar = filter2(ones(nhood), D.^2) / prod(nhood) - localMean.^2;
+0054 
+0055 <span class="comment">% Estimate the noise power if necessary.</span>
+0056 <span class="keyword">if</span> (isempty(noise))
+0057   noise = mean(localVar(:));
+0058 <span class="keyword">end</span>
+0059 
+0060 <span class="comment">% Compute result</span>
+0061 f = localMean + (max(0, localVar - noise) ./ <span class="keyword">...</span>
+0062                  max(localVar, noise)) .* (D - localMean);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of updstraut</title>
+  <meta name="keywords" content="updstraut">
+  <meta name="description" content="UPDSTRAUT - fit image location size and intensity of star.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Starcal --><!-- menu.html M6 -->
+<h1>updstraut
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>UPDSTRAUT - fit image location size and intensity of star.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [starpar] = updstraut(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> UPDSTRAUT - fit image location size and intensity of star.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Starcal/starint.html" class="code" title="function [starintens] = starint(fv,xmin,xmax,ymin,ymax)">starint</a>	STARINT evaluation of a 2D gaussian.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [starpar] = updstraut(SkMp)</a>
+0002 <span class="comment">% UPDSTRAUT - fit image location size and intensity of star.</span>
+0003 <span class="comment">%</span>
+0004 
+0005 <span class="comment">%   Copyright � 1997 Bjorn Gustavsson&lt;bjorn.gustavsson@irf.se&gt;</span>
+0006 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0007 
+0008 <span class="keyword">global</span> bxy bx by
+0009 
+0010 bxy = size(SkMp.img);
+0011 bx = bxy(1);
+0012 by = bxy(2);
+0013 
+0014 figure( SkMp.figzoom )
+0015 
+0016 [x0,y0,button] = ginput(1);
+0017 dl = SkMp.prefs.sz_z_r;
+0018 
+0019 x0 = floor(x0);
+0020 y0 = floor(y0);
+0021 
+0022 xmin = floor(min(max(x0-dl/2,1),by-dl));
+0023 xmax = floor(max(min(x0+dl/2,by),dl+1));
+0024 ymin = floor(min(max(y0-dl/2,1),bx-dl));
+0025 ymax = floor(max(min(y0+dl/2,bx),dl+1));
+0026 
+0027 set(SkMp.figzoom,<span class="string">'pointer'</span>,<span class="string">'watch'</span>)
+0028 starmat = SkMp.img(ymin:ymax,xmin:xmax);
+0029 startvec = [x0,y0,SkMp.img(y0,x0),1,.01,1];
+0030 
+0031 starpar = fminsearch(<span class="string">'stardiff'</span>,<span class="keyword">...</span>
+0032              startvec,[0,5e-2,0,0,0,0,0,0,0,0,0,0,0,2000],[],<span class="keyword">...</span>
+0033              xmin,xmax,ymin,ymax,starmat);
+0034 
+0035 set(SkMp.figzoom,<span class="string">'pointer'</span>,<span class="string">'arrow'</span>)
+0036 
+0037 fynd = <a href="../../Starcal/starint.html" class="code" title="function [starintens] = starint(fv,xmin,xmax,ymin,ymax)">starint</a>(starpar,xmin,xmax,ymin,ymax);
+0038 
+0039 hold off
+0040 <span class="keyword">if</span> ( max(max(starmat)) - min(min(starmat)) &gt; eps )
+0041   
+0042   contour(xmin:xmax,ymin:ymax,starmat,8,<span class="string">'b'</span>)
+0043   
+0044 <span class="keyword">end</span>
+0045 hold on
+0046 <span class="keyword">if</span> ( max(max(fynd)) - min(min(fynd)) &gt; eps )
+0047   
+0048   contour(xmin:xmax,ymin:ymax,fynd,8,<span class="string">'r'</span>)
+0049   
+0050 <span class="keyword">end</span>
+0051 hold off</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

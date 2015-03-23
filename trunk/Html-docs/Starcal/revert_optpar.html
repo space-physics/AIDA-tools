@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of revert_optpar</title>
+  <meta name="keywords" content="revert_optpar">
+  <meta name="description" content="REVERT_OPTPAR - revert optical parameters to initial guess">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>revert_optpar
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>REVERT_OPTPAR - revert optical parameters to initial guess</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function SkMp = revert_optpar(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> REVERT_OPTPAR - revert optical parameters to initial guess
+   
+ Calling:
+ SkMp = revert_optpar(SkMp)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Skymap/updstrpl.html" class="code" title="function [SkMp] = updstrpl(SkMp)">updstrpl</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function SkMp = revert_optpar(SkMp)</a>
+0002 <span class="comment">% REVERT_OPTPAR - revert optical parameters to initial guess</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% SkMp = revert_optpar(SkMp)</span>
+0006 
+0007 <span class="comment">% ATTEMPTED: Rephrased revert_optpar into fcn!</span>
+0008 
+0009 <span class="comment">%   Copyright � 2007 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0010 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0011 
+0012 SkMp.optpar = SkMp.previous_optpar;
+0013 SkMp.optmod = SkMp.previous_optmod;
+0014 optpar = SkMp.optpar;
+0015 SkMp.oldfov = 0;
+0016 set(SkMp.ui3(3),<span class="string">'value'</span>,optpar(3))
+0017 set(SkMp.ui3(1),<span class="string">'value'</span>,-optpar(4))
+0018 set(SkMp.ui3(4),<span class="string">'value'</span>,180/pi*atan(1/2/optpar(2)))
+0019 set(SkMp.ui3(2),<span class="string">'value'</span>,optpar(5))
+0020 [SkMp] = <a href="../Skymap/updstrpl.html" class="code" title="function [SkMp] = updstrpl(SkMp)">updstrpl</a>(SkMp);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

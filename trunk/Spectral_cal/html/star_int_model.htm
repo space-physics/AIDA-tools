@@ -1,0 +1,133 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>star_int_model.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files that call star_int_model.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="check_scan_for_stars.htm">check_scan_for_stars</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of star_int_model.m</FONT></FONT></P> 
+<pre> 
+function [idstarsok,stars_par] = star_int_model(tbild,optpar,optmode,plstars,starpar,OPTS) 
+ 
+%       Bjorn Gustavsson 
+%	Copyright (c) 1997 by Bjorn Gustavsson 
+%	$Revision: 1.1 $  $Date: 1997/12/17 14:46:49 $ 
+ 
+% 
+%       $Log: autoidentify.m,v $ 
+%       Revision 1.1  1997/12/17 14:46:49  bjorn 
+%       Initial revision 
+% 
+ 
+global bx by 
+%plstars = SkMp.plottstars; 
+%optpar = SkMp.optpar; 
+mode = optmode; 
+%bild = SkMp.img; 
+dl = 10; 
+if ~isempty(OPTS) & isfield(OPTS,'regsize') 
+  dl = OPTS.regsize; 
+end 
+ 
+ua = []; 
+va = []; 
+more off 
+b = size(tbild); 
+bx = b(2); 
+by = b(1); 
+ 
+imax = min(max(size(plstars),max(size(starpar)))); 
+idnr = 0; 
+ 
+% Determine the coordinate system for the camera. 
+az0 = optpar(3); 
+el0 = optpar(4); 
+roll = optpar(5); 
+ 
+[e1,e2,e3] = camera_base(az0,el0,roll); 
+ 
+for i = 1:imax, 
+ 
+  clear sortids1 order x1 indx1 
+  %Determine the projected position of the star on the image 
+  az = plstars(i,1); 
+  ze = plstars(i,2); 
+ 
+  [x0,y0] = camera_model(az,ze,e1,e2,e3,optpar,mode); 
+ 
+  if ( ( 1 < x0 & x0 < bx ) & ( 1 < y0 & y0 < by ) ) 
+ 
+    % Determine the part of the image confining the star. 
+    xmin = floor(min(max(x0-dl/2,1),bx-dl)); 
+    xmax = floor(max(min(x0+dl/2,bx),(dl+1))); 
+    ymin = floor(min(max(y0-dl/2,1),by-dl)); 
+    ymax = floor(max(min(y0+dl/2,by),(dl+1))); 
+ 
+    % Find the star in the region of interest. 
+ 
+    starmat = tbild(ymin:ymax,xmin:xmax); 
+    starmat = medfilt2(starmat([1 1:end end],[1 1:end end]),[3 3]); 
+    starmat = starmat(2:end-1,2:end-1); 
+    x = xmin:xmax; 
+    y = ymin:ymax; 
+    [x1,y1] = meshgrid(x,y); 
+    if ~isempty(OPTS) & isfield(OPTS,'bgtype') & strcmp(OPTS.bgtype,'complicated') 
+ 
+      b = [starmat(1,:),starmat(end,:),starmat(:,1)',starmat(:,end)',starmat(3,:),starmat(end-2,:),starmat(:,3)',starmat(:,end-2)']; 
+      X = [x1(1,:),x1(end,:),x1(:,1)',x1(:,end)',x1(3,:),x1(end-2,:),x1(:,3)',x1(:,end-2)']; 
+      Y = [y1(1,:),y1(end,:),y1(:,1)',y1(:,end)',y1(3,:),y1(end-2,:),y1(:,3)',y1(:,end-2)']; 
+      bakgr2 = griddata(X,Y,b,x1,y1,'v4')*2/3+griddata(X,Y,b,x1,y1,'cubic')/3; 
+ 
+    else 
+ 
+      b = [starmat(1,:),starmat(end,:),starmat(:,1)',starmat(:,end)']; 
+      X = [x1(1,:),x1(end,:),x1(:,1)',x1(:,end)']; 
+      Y = [y1(1,:),y1(end,:),y1(:,1)',y1(:,end)']; 
+      bakgr2 = griddata(X,Y,b,x1,y1,'cubic'); 
+ 
+    end 
+ 
+    starmat = tbild(ymin:ymax,xmin:xmax); 
+ 
+% $$$     startvec = [x0,y0,tbild(y0,x0)-median(bakgr2(:)),1,.01,1]; 
+% $$$     starpar = fmins('stardiff2',startvec,[0,5e-2,0,0,0,0,0,0,0,0,0,0,0,2000],[],xmin,xmax,ymin,ymax,starmat-bakgr2,x0,y0); 
+    fynd = starint(starpar(i,:),xmin,xmax,ymin,ymax); 
+    star_intm = (starmat-bakgr2).*(fynd>.07*(max(max(fynd)))); 
+    subplot(2,2,1) 
+    imagesc(xmin:xmax,ymin:ymax,starmat) 
+    hold on 
+    plot(starpar(i,1),starpar(i,2),'w.','markersize',16) 
+    hold off 
+    colorbar 
+    subplot(2,2,2) 
+    imagesc(bakgr2) 
+    colorbar 
+    subplot(2,2,3) 
+    imagesc(fynd) 
+    colorbar 
+    subplot(2,2,4) 
+    imagesc(starmat-fynd-bakgr2) 
+    colorbar 
+    title(num2str(starpar(i,:))) 
+    drawnow 
+    pause(1) 
+ 
+  end 
+ 
+end 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 16:26 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of auto_quicktriang</title>
+  <meta name="keywords" content="auto_quicktriang">
+  <meta name="description" content="AUTO_QUICKTRIANG - Automatic triangulation of structured surfaces">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>auto_quicktriang
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>AUTO_QUICKTRIANG - Automatic triangulation of structured surfaces</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [ZZ,CC,cc3d] = auto_quicktriang(img1,r1,optmod1,optp1,img2,r2,optmod2,optp2,X,Y,Z,blksz,cm1,cm2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> AUTO_QUICKTRIANG - Automatic triangulation of structured surfaces
+ 
+ Calling
+ [ZZ,CC,cc3d] = auto_quicktriang(img1,r1,optmod1,optp1,img2,r2,optmod2,optp2,X,Y,Z,blksz,cm1,cm2)
+ 
+ Input:
+  IMG1 - intensity image #1 taken from
+  R1 - Point in space of camera #1
+  OPTMOD1 - optical model of camera #1
+  OPTP1 - optical parameters for OPTMOD1
+  IMG2 - intensity image #2 taken from
+  R2 - Point in space of camera #2
+  OPTMOD2 - optical model of camera #2
+  OPTP2 - optical parameters for OPTMOD2
+  X - 3-D block of east-coordinates to project images on 
+  Y - 3-D block of north-coordinates to project images on 
+  Z - 3-D block of up-coordinates to project images on 
+  BLKSZ - size of blocks to calculate/comare image correlations on
+  CM1 - Correction matrix for rotation of camera #1
+  CM2 - Correction matrix for rotation of camera #2
+
+ Output:
+   ZZ - Best Altitudes.
+   CC - Best correlation
+   CC3D - 3D correlation
+ 
+ See also <a href="auto_p_triang.html" class="code" title="function [xtr,ytr,ztr,tu1,tv1,tu2,tv2] = auto_p_triang(img1,r1,optp1,img2,r2,optp2,checktmp,cm1,cm2)">AUTO_P_TRIANG</a> <a href="auto_triangulate.html" class="code" title="function [XX,YY,ZZ,CC,cc3d] = auto_triangulate(img1,r1,optmod1,optp1,img2,r2,optmod2,optp2,e_n,l_range,Xlim,Ylim,blksz,cm1,cm2)">AUTO_TRIANGULATE</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>	PROJECT_POINT - project a point in space R down onto an image</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ZZ,CC,cc3d] = auto_quicktriang(img1,r1,optmod1,optp1,img2,r2,optmod2,optp2,X,Y,Z,blksz,cm1,cm2)</a>
+0002 <span class="comment">% AUTO_QUICKTRIANG - Automatic triangulation of structured surfaces</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling</span>
+0005 <span class="comment">% [ZZ,CC,cc3d] = auto_quicktriang(img1,r1,optmod1,optp1,img2,r2,optmod2,optp2,X,Y,Z,blksz,cm1,cm2)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%  IMG1 - intensity image #1 taken from</span>
+0009 <span class="comment">%  R1 - Point in space of camera #1</span>
+0010 <span class="comment">%  OPTMOD1 - optical model of camera #1</span>
+0011 <span class="comment">%  OPTP1 - optical parameters for OPTMOD1</span>
+0012 <span class="comment">%  IMG2 - intensity image #2 taken from</span>
+0013 <span class="comment">%  R2 - Point in space of camera #2</span>
+0014 <span class="comment">%  OPTMOD2 - optical model of camera #2</span>
+0015 <span class="comment">%  OPTP2 - optical parameters for OPTMOD2</span>
+0016 <span class="comment">%  X - 3-D block of east-coordinates to project images on</span>
+0017 <span class="comment">%  Y - 3-D block of north-coordinates to project images on</span>
+0018 <span class="comment">%  Z - 3-D block of up-coordinates to project images on</span>
+0019 <span class="comment">%  BLKSZ - size of blocks to calculate/comare image correlations on</span>
+0020 <span class="comment">%  CM1 - Correction matrix for rotation of camera #1</span>
+0021 <span class="comment">%  CM2 - Correction matrix for rotation of camera #2</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% Output:</span>
+0024 <span class="comment">%   ZZ - Best Altitudes.</span>
+0025 <span class="comment">%   CC - Best correlation</span>
+0026 <span class="comment">%   CC3D - 3D correlation</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">% See also AUTO_P_TRIANG AUTO_TRIANGULATE</span>
+0029 
+0030 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0031 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0032 
+0033 <span class="keyword">if</span> nargin &gt; 13 &amp; all(size(cm1)==[3 3])
+0034   Cm1 = cm1;
+0035 <span class="keyword">else</span>
+0036   Cm1 = eye(3);
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="keyword">if</span> nargin &gt; 14 &amp; all(size(cm1)==[3 3])
+0040   Cm2 = cm2;
+0041 <span class="keyword">else</span>
+0042   Cm2 = eye(3);
+0043 <span class="keyword">end</span>
+0044 
+0045 ccm = -10*ones(size(blkproc2(X(:,:,1),Y(:,:,1),blksz,<span class="string">'corr_coef_cmt'</span>)));
+0046 ZZ = -10*ones(size(ccm));
+0047 <span class="keyword">for</span> i1 = size(Z,3):-1:1,
+0048   
+0049   r(:,1) = reshape(X(:,:,i1),[numel(X(:,:,i1)) 1]);
+0050   r(:,2) = reshape(Y(:,:,i1),[numel(X(:,:,i1)) 1]);
+0051   r(:,3) = reshape(Z(:,:,i1),[numel(X(:,:,i1)) 1]);
+0052   
+0053   u1 = X(:,:,i1);
+0054   v1 = Y(:,:,i1);
+0055   <span class="keyword">if</span> optmod1 &gt; 0
+0056     [u1(:),v1(:)] = <a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(r1,[optp1(1:8) optmod1 0],r',Cm1);
+0057   <span class="keyword">else</span>
+0058     [u1(:),v1(:)] = <a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(r1,optp1,r',Cm1);
+0059   <span class="keyword">end</span>
+0060   u2 = X(:,:,i1);
+0061   v2 = Y(:,:,i1);
+0062   <span class="keyword">if</span> optmod2 &gt; 0
+0063     [u2(:),v2(:)] = <a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(r2,[optp2(1:8) optmod2 0],r',Cm2);
+0064   <span class="keyword">else</span>
+0065     [u2(:),v2(:)] = <a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(r2,optp2,r',Cm2);
+0066   <span class="keyword">end</span>
+0067 
+0068   C1 = interp2(img1,u1,v1);
+0069   C2 = interp2(img2,u2,v2);
+0070   
+0071   subplot(1,3,1)
+0072   pcolor(squeeze(X(:,:,1)),squeeze(Y(:,:,1)),C1),shading flat
+0073   hold on
+0074   contour(squeeze(X(1,:,1)),squeeze(Y(:,1,1)),wiener2(C2),<span class="string">'k'</span>)
+0075   hold off
+0076   subplot(1,3,2)
+0077   pcolor(squeeze(X(:,:,1)),squeeze(Y(:,:,1)),C2),shading flat
+0078   hold on
+0079   contour(squeeze(X(:,:,1)),squeeze(Y(:,:,1)),wiener2(C1),<span class="string">'k'</span>)
+0080   title(num2str(Z(1,1,i1)))
+0081   hold off
+0082   subplot(1,3,3)
+0083   I = find(~isfinite(C1(:)));
+0084   C1(I) = randn(size(C1(I)));
+0085   I = find(~isfinite(C2(:)));
+0086   C2(I) = randn(size(C2(I)));
+0087   pcolor(squeeze(X(:,:,1)),squeeze(Y(:,:,1)),<span class="keyword">...</span>
+0088          (C2-conv2(C2,ones(50)/50^2,<span class="string">'same'</span>)).*<span class="keyword">...</span>
+0089          (C1-conv2(C1,ones(50)/50^2,<span class="string">'same'</span>))),shading flat<span class="comment">%./...</span>
+0090   
+0091   td(i1) = sum(sum(abs(C2/max(max(wiener2(C2)))-C1/max(max(wiener2(C1))))));
+0092   drawnow
+0093   CC = blkproc2(C1,C2,blksz,<span class="string">'corr_coef_cmt'</span>);
+0094   
+0095   I = find(CC(:)&gt;ccm(:));
+0096   ZZ(I) = Z(1,1,i1);
+0097   ccm(I) = CC(I);
+0098   cc3d(:,:,i1) = CC;
+0099   
+0100 <span class="keyword">end</span>
+0101 CC = ccm;
+0102 clf
+0103 plot(td,unique(Z(:)))</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_plot_line</title>
+  <meta name="keywords" content="ASK_plot_line">
+  <meta name="description" content="ASK_PLOT_LINE - make a line plot with time axis">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_plot_line
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_PLOT_LINE - make a line plot with time axis</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function ph = ASK_plot_line(mjs,time,data,mjsStart,time2end,titleStr,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_PLOT_LINE - make a line plot with time axis
+ 
+ Calling:
+  ph = ASK_plot_line(mjs,time,data,mjsStart,time2end,titleStr,varargin)
+ inputs: 
+   mjs  - start time of the data sequence
+   time - time in seconds relative to the start time
+   data - 1D array of the data to plot
+ optional (keywords):
+   mjsStart - start time of the plot
+   time2end - length of the plot in seconds
+   titleStr - title of the plot
+
+ VARARGIN is passed to the plot function, and should consist of a
+ cell array with matlab's property-value pairs, suitable for
+ setting stuff by plot, such as 'linewidth', 'linestyle', 'color',
+
+ SEE PLOT for details.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>	TIMETICK - change axis-labels to time/date format. Clever choice</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ph = ASK_plot_line(mjs,time,data,mjsStart,time2end,titleStr,varargin)</a>
+0002 <span class="comment">% ASK_PLOT_LINE - make a line plot with time axis</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  ph = ASK_plot_line(mjs,time,data,mjsStart,time2end,titleStr,varargin)</span>
+0006 <span class="comment">% inputs:</span>
+0007 <span class="comment">%   mjs  - start time of the data sequence</span>
+0008 <span class="comment">%   time - time in seconds relative to the start time</span>
+0009 <span class="comment">%   data - 1D array of the data to plot</span>
+0010 <span class="comment">% optional (keywords):</span>
+0011 <span class="comment">%   mjsStart - start time of the plot</span>
+0012 <span class="comment">%   time2end - length of the plot in seconds</span>
+0013 <span class="comment">%   titleStr - title of the plot</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% VARARGIN is passed to the plot function, and should consist of a</span>
+0016 <span class="comment">% cell array with matlab's property-value pairs, suitable for</span>
+0017 <span class="comment">% setting stuff by plot, such as 'linewidth', 'linestyle', 'color',</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% SEE PLOT for details.</span>
+0020 
+0021 <span class="comment">% Modified from plot_line.pro</span>
+0022 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0023 <span class="comment">% GPL 3.0 or later applies</span>
+0024 
+0025 
+0026 <span class="comment">% TODO make use of time_axis function</span>
+0027 
+0028 ftSz = 14;
+0029 
+0030 <span class="keyword">if</span> nargin &lt; 4 || isempty(mjsStart)
+0031   mjsStart = mjs;
+0032 <span class="keyword">end</span>
+0033 <span class="keyword">if</span> nargin &lt; 5 || isempty(time2end)
+0034   time2end = max(time);
+0035 <span class="keyword">end</span>
+0036 
+0037 indx2plot = find(mjsStart-mjs&lt;=time&amp;time&lt;=mjsStart+time2end);
+0038 
+0039 ph = plot(time+mjs-mjsStart,data,varargin{:});
+0040 <span class="keyword">if</span> nargin &gt; 5 &amp; ~isempty(titleStr)
+0041   title(titleStr,<span class="string">'fontsize'</span>,ftSz)
+0042 <span class="keyword">end</span>
+0043 ax1 = axis;
+0044 axis([0 time2end,ax1(3:4)])
+0045 <a href="../../tools/timetick.html" class="code" title="function timetick(x)">timetick</a></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

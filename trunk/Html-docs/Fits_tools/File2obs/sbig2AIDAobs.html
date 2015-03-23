@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sbig2AIDAobs</title>
+  <meta name="keywords" content="sbig2AIDAobs">
+  <meta name="description" content="sbig2AIDAops - extracts and converts information from SBIG header">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Fits_tools --><!-- menu.html File2obs -->
+<h1>sbig2AIDAobs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>sbig2AIDAops - extracts and converts information from SBIG header</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [obs] = sbig2AIDAobs(sbigOBS,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> sbig2AIDAops - extracts and converts information from SBIG header
+ struct, that contain much in string format.
+ 
+ Calling:
+    [obs] = sbig2AIDAobs(sbigOBS,varagin)
+ 
+ INPUT: 
+   sbigOBS  - an SBIG header structure as returned from sbig.
+   varargin - cell array with name-value pairs to complete the
+              necessary fields of an AIDA-obs-struct:
+              latlong, xyz, az, ze, trmtr, that might not be
+              possible to get from the BIG-header-struct.
+ OUTPUT:
+    OBS the output is a struct with some relevant key parameters
+    such as camera rotation, exposure time, time and date of
+    exposure filter camera number, camera position.
+ SBIG2AIDAOBS is typically used as the log2obs function in the
+ preprocessing options struct. Normally the SBIG header contains
+ insufficient information for AIDA-tools, then additional
+ information can be passed as name-value pairs. For example with
+ this setting:
+ PO = typical_pre_proc_ops('sbig');
+ PO.log2obs = @(S) sbig2AIDAobs(S,'xyz',[0 0 0],'longlat',[-145.1500 62.3930],'station',401);
+
+ The fields of the obs-struct for 'xyz', 'longlat' and 'station'
+ will be set to xyz: [0 0 0], longlat and station to values for
+ HIPAS, Alaska,. So this function can be used to ammend incomplete
+ SBIG headers, with relevant and correct meta-data. This function
+ uses dynamical field naming, this requires matlab versions &gt;= XX.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [obs] = sbig2AIDAobs(sbigOBS,varargin)</a>
+0002 <span class="comment">% sbig2AIDAops - extracts and converts information from SBIG header</span>
+0003 <span class="comment">% struct, that contain much in string format.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%    [obs] = sbig2AIDAobs(sbigOBS,varagin)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% INPUT:</span>
+0009 <span class="comment">%   sbigOBS  - an SBIG header structure as returned from sbig.</span>
+0010 <span class="comment">%   varargin - cell array with name-value pairs to complete the</span>
+0011 <span class="comment">%              necessary fields of an AIDA-obs-struct:</span>
+0012 <span class="comment">%              latlong, xyz, az, ze, trmtr, that might not be</span>
+0013 <span class="comment">%              possible to get from the BIG-header-struct.</span>
+0014 <span class="comment">% OUTPUT:</span>
+0015 <span class="comment">%    OBS the output is a struct with some relevant key parameters</span>
+0016 <span class="comment">%    such as camera rotation, exposure time, time and date of</span>
+0017 <span class="comment">%    exposure filter camera number, camera position.</span>
+0018 <span class="comment">% SBIG2AIDAOBS is typically used as the log2obs function in the</span>
+0019 <span class="comment">% preprocessing options struct. Normally the SBIG header contains</span>
+0020 <span class="comment">% insufficient information for AIDA-tools, then additional</span>
+0021 <span class="comment">% information can be passed as name-value pairs. For example with</span>
+0022 <span class="comment">% this setting:</span>
+0023 <span class="comment">% PO = typical_pre_proc_ops('sbig');</span>
+0024 <span class="comment">% PO.log2obs = @(S) sbig2AIDAobs(S,'xyz',[0 0 0],'longlat',[-145.1500 62.3930],'station',401);</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% The fields of the obs-struct for 'xyz', 'longlat' and 'station'</span>
+0027 <span class="comment">% will be set to xyz: [0 0 0], longlat and station to values for</span>
+0028 <span class="comment">% HIPAS, Alaska,. So this function can be used to ammend incomplete</span>
+0029 <span class="comment">% SBIG headers, with relevant and correct meta-data. This function</span>
+0030 <span class="comment">% uses dynamical field naming, this requires matlab versions &gt;= XX.</span>
+0031 
+0032 
+0033 
+0034 <span class="comment">%   Copyright © 2008 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0035 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0036 
+0037 FITS_HOME = which(<span class="string">'inimg'</span>);
+0038 FITS_HOME = fileparts(FITS_HOME);
+0039 
+0040 
+0041 delimiters = [9:13 32];
+0042 delimiters = [delimiters,<span class="string">'~=+*/^()[]{}&lt;&gt;,;:'''</span>];
+0043 
+0044 obs.time = [];
+0045 obs.pos = [];
+0046 obs.station = [];
+0047 obs.xyz = [];
+0048 obs.longlat = [];
+0049 obs.alpha = [];
+0050 obs.beta = [];
+0051 obs.az = [];
+0052 obs.ze = [];
+0053 obs.camnr = [];
+0054 obs.exptime = [];
+0055 obs.filter = [];
+0056 obs.trmtr = eye(3);
+0057 
+0058 date = datevec(sbigOBS.date);
+0059 time = datevec(sbigOBS.time,<span class="string">'HH:MM:SS'</span>);
+0060 
+0061 obs.time = [date(1:3),time(end-2:end)];
+0062 
+0063 obs.exptime = str2double(sbigOBS.exposure);
+0064 obs.filter = str2double(sbigOBS.filter);
+0065 obs.size = [str2double(sbigOBS.height), str2double(sbigOBS.width)];
+0066  
+0067 <span class="comment">% time: [2011 3 29 5 46 12]</span>
+0068 <span class="comment">% filter: 5577</span>
+0069 <span class="comment">% size: [269 268]</span>
+0070 <span class="comment">% exptime: 90</span>
+0071 <span class="comment">%pos: [-145.1500 62.3930]</span>
+0072 <span class="comment">%longlat: [-145.1500 62.3930]</span>
+0073 <span class="comment">%camnr: 0</span>
+0074 <span class="comment">%beta: []</span>
+0075 <span class="comment">%alfa: []</span>
+0076 <span class="comment">%az: 0</span>
+0077 <span class="comment">%ze: 0</span>
+0078 <span class="comment">%station: 401</span>
+0079 <span class="comment">%xyz: [0 0 0]</span>
+0080 <span class="comment">%trmtr: [3x3 double]</span>
+0081 
+0082 <span class="keyword">for</span> i1 = 1:2:length(varargin)
+0083   obs.(varargin{i1}) =  varargin{i1+1};
+0084 <span class="keyword">end</span>
+0085</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

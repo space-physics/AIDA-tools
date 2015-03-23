@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_fanograms</title>
+  <meta name="keywords" content="ASK_fanograms">
+  <meta name="description" content="ASK_FANOGRAMS - Produce keograms of a fan-beam-cut from an ASK image sequence">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_fanograms
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_FANOGRAMS - Produce keograms of a fan-beam-cut from an ASK image sequence</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [Keos,time_V,u,v] = ASK_fanograms(Indices2do,Cams,shifts,e_fan,width,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_FANOGRAMS - Produce keograms of a fan-beam-cut from an ASK image sequence
+
+ CALLING:
+   OPS           = ASK_fanograms
+   [Keos,time_V] = ASK_fanograms(sIndices2do,Cams,shifts,e_fan,width,OPS)
+ INPUTS:
+   indices2show - either array of image sequence numbers to
+                  display, or a triplett [first, step, last] or
+                  [first, last, step] with index to the first
+                  image to load the step to take to the next and
+                  the latest frame number to show. This means that
+                  one cannot display sequences of three arbitrary
+                  images - choose either 4 arbitrary and scrap the
+                  last.
+   Cams         - and array with the ASK camera numbers to read
+                  [1 x nC] where nC [1, 2, 3], if scalar only the
+                  images from the corresponding camera is processed.
+   shifts       - shift between concurrent images in the ASK camera
+                  sequences.
+   e_fan        - unit vectors for the lines-of-sight of the
+                  fan-beam to cut. [n x 3]
+   width        - width of the band that is used for creating the
+                  keogram,  
+ 
+   OPS      - options struct, with the default options returned
+              when ASK_image_sequence is called without
+              arguments. Fields: 
+              filtertype = Cell array with strings for filter
+                functions to use selection from: 'none' 'sigma'
+                'wiener2' 'median' 'medfilt2' and 'susan'. See the
+                documentation for wiener2 (sigma, wiener2),
+                medfilt2 (median, medfilt2) gen_susan (susan) for
+                further arguments and workings. 
+              filterArgs = Cell array with cell-arrays of further
+                arguments except the image to pass to the
+                filterfunctions. Example
+                OPS.filtertype = {'sigma','medfilt2'}
+                OPS.filterArgs = {{[3,3]},{[3,3],'symmetric'}}
+                For filtering the image thusly:
+                Iout = medfilt2(wiener2(Iin,[3,3]),[3,3],'symmetric');
+ 
+ WARNING: If data is not calibrated this routine will crash!
+ First of all the ASK meta-data has to be read in with read_vs!
+ If the data is 512x512 pixels, the images will first be binned to
+ 256x256 pixels</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_get_ask_cal.html" class="code" title="function retval = ASK_get_ask_cal(mjs,cam)">ASK_get_ask_cal</a>	ASK_GET_ASK_CAL - get  absolute intensity calibration factors</li><li><a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>	ASK_INDX2DATEVEC - Convert a frame index into a [yyyy,mm,dd,HH,MM,SS.FFF]</li><li><a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>	ASK_READ_V - Read ASK image #i1 from current camera in current "mega-block"</li><li><a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>	ASK_V_SELECT - Set current camera index in global structure VS</li><li><a href="../../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>	PROJECT_POINT - project a point in space R down onto an image</li><li><a href="../../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>	INPAINT_NANS: in-paints over nans in an array</li><li><a href="../../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Keos,time_V,u,v] = ASK_fanograms(Indices2do,Cams,shifts,e_fan,width,OPS)</a>
+0002 <span class="comment">% ASK_FANOGRAMS - Produce keograms of a fan-beam-cut from an ASK image sequence</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% CALLING:</span>
+0005 <span class="comment">%   OPS           = ASK_fanograms</span>
+0006 <span class="comment">%   [Keos,time_V] = ASK_fanograms(sIndices2do,Cams,shifts,e_fan,width,OPS)</span>
+0007 <span class="comment">% INPUTS:</span>
+0008 <span class="comment">%   indices2show - either array of image sequence numbers to</span>
+0009 <span class="comment">%                  display, or a triplett [first, step, last] or</span>
+0010 <span class="comment">%                  [first, last, step] with index to the first</span>
+0011 <span class="comment">%                  image to load the step to take to the next and</span>
+0012 <span class="comment">%                  the latest frame number to show. This means that</span>
+0013 <span class="comment">%                  one cannot display sequences of three arbitrary</span>
+0014 <span class="comment">%                  images - choose either 4 arbitrary and scrap the</span>
+0015 <span class="comment">%                  last.</span>
+0016 <span class="comment">%   Cams         - and array with the ASK camera numbers to read</span>
+0017 <span class="comment">%                  [1 x nC] where nC [1, 2, 3], if scalar only the</span>
+0018 <span class="comment">%                  images from the corresponding camera is processed.</span>
+0019 <span class="comment">%   shifts       - shift between concurrent images in the ASK camera</span>
+0020 <span class="comment">%                  sequences.</span>
+0021 <span class="comment">%   e_fan        - unit vectors for the lines-of-sight of the</span>
+0022 <span class="comment">%                  fan-beam to cut. [n x 3]</span>
+0023 <span class="comment">%   width        - width of the band that is used for creating the</span>
+0024 <span class="comment">%                  keogram,</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%   OPS      - options struct, with the default options returned</span>
+0027 <span class="comment">%              when ASK_image_sequence is called without</span>
+0028 <span class="comment">%              arguments. Fields:</span>
+0029 <span class="comment">%              filtertype = Cell array with strings for filter</span>
+0030 <span class="comment">%                functions to use selection from: 'none' 'sigma'</span>
+0031 <span class="comment">%                'wiener2' 'median' 'medfilt2' and 'susan'. See the</span>
+0032 <span class="comment">%                documentation for wiener2 (sigma, wiener2),</span>
+0033 <span class="comment">%                medfilt2 (median, medfilt2) gen_susan (susan) for</span>
+0034 <span class="comment">%                further arguments and workings.</span>
+0035 <span class="comment">%              filterArgs = Cell array with cell-arrays of further</span>
+0036 <span class="comment">%                arguments except the image to pass to the</span>
+0037 <span class="comment">%                filterfunctions. Example</span>
+0038 <span class="comment">%                OPS.filtertype = {'sigma','medfilt2'}</span>
+0039 <span class="comment">%                OPS.filterArgs = {{[3,3]},{[3,3],'symmetric'}}</span>
+0040 <span class="comment">%                For filtering the image thusly:</span>
+0041 <span class="comment">%                Iout = medfilt2(wiener2(Iin,[3,3]),[3,3],'symmetric');</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">% WARNING: If data is not calibrated this routine will crash!</span>
+0044 <span class="comment">% First of all the ASK meta-data has to be read in with read_vs!</span>
+0045 <span class="comment">% If the data is 512x512 pixels, the images will first be binned to</span>
+0046 <span class="comment">% 256x256 pixels</span>
+0047 <span class="comment">%</span>
+0048 
+0049 <span class="comment">% Modified from add_multi.pro</span>
+0050 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0051 <span class="comment">% GPL 3.0 or later applies</span>
+0052 
+0053 <span class="keyword">global</span> vs
+0054 
+0055 
+0056 <span class="comment">% Default options:</span>
+0057 dOPS.loud = 0;
+0058 dOPS.filtertype = {<span class="string">'none'</span>};
+0059 dOPS.filterArgs = {};
+0060 <span class="comment">% If no input arguments return the default options:</span>
+0061 <span class="keyword">if</span> nargin == 0
+0062   Keos = dOPS;
+0063   <span class="keyword">return</span>
+0064 <span class="keyword">end</span>
+0065 <span class="comment">% If there is an options struct in the inputs, merge that ontop of</span>
+0066 <span class="comment">% the default ones.</span>
+0067 <span class="keyword">if</span> nargin &gt; 5
+0068   dOPS = <a href="../../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0069 <span class="keyword">end</span>
+0070 
+0071 width = round(width);
+0072 
+0073 <span class="comment">% Determine the image size of the current images;</span>
+0074 imsiz = [vs.dimy(vs.vsel),vs.dimx(vs.vsel)];
+0075 
+0076 <span class="comment">% Preallocate the sizes for the output:</span>
+0077 <span class="keyword">for</span> cam = Cams,
+0078   Keos{cam} = zeros(length(e_fan),length(Indices2do));
+0079 <span class="keyword">end</span>
+0080 
+0081 <span class="keyword">if</span> dOPS.loud
+0082   wbh = waitbar(0,<span class="string">'Making keograms'</span>);
+0083 <span class="keyword">end</span>
+0084 <span class="keyword">for</span> cam = Cams,
+0085   
+0086   i1 = 1; <span class="comment">% was l???</span>
+0087   <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>(cam,<span class="string">'quiet'</span>); <span class="comment">% Select the current camera</span>
+0088   calib = <a href="ASK_get_ask_cal.html" class="code" title="function retval = ASK_get_ask_cal(mjs,cam)">ASK_get_ask_cal</a>(vs.vmjs(vs.vsel),cam); <span class="comment">% Get the calibration factors</span>
+0089   <span class="comment">% Calculate the image coordinates of the fan line-of-sights</span>
+0090   [u{cam},v{cam}] = <a href="../../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>([0,0,0],[vs.vcnv(vs.vsel,:),11],e_fan',eye(3),imsiz);
+0091   <span class="comment">% 2-D unit vector of fan's image coordinates</span>
+0092   E_pix  = [u{cam}(125)-u{cam}(124);v{cam}(125)-v{cam}(124)];
+0093   <span class="comment">% Rotate it 90 degrees to get a perpendicular vector</span>
+0094   E_perp = [0 1;-1,0]*E_pix;
+0095   <span class="comment">% Build a 2-D grid for the fan with the requested width:</span>
+0096   U = repmat(u{cam}',1,width) + repmat(linspace(-width/2,width/2,width),length(e_fan),1)*E_perp(1);
+0097   V = repmat(v{cam}',1,width) + repmat(linspace(-width/2,width/2,width),length(e_fan),1)*E_perp(2);
+0098   U = <a href="../../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>(U);
+0099   V = <a href="../../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>(V);
+0100   <span class="comment">%keyboard</span>
+0101   <span class="keyword">for</span> num = Indices2do,
+0102     
+0103     im{cam} = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(num+shifts(cam),[],[],[],dOPS); <span class="comment">% Read the current ASK image</span>
+0104     time_V(i1,:) = <a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>(num+shifts(cam));
+0105     <span class="comment">% Extract and average the intensities in the fan</span>
+0106     Keos{cam}(:,i1) = mean(interp2(im{cam},U,V,<span class="string">'linear'</span>,0),2)*calib/vs.vres(vs.vsel);
+0107     i1 = i1+1;
+0108     <span class="keyword">if</span> dOPS.loud
+0109       waitbar(1/3*(cam-1)+i1/length(Indices2do)/3,wbh);
+0110       <span class="keyword">if</span> dOPS.loud &gt; 1
+0111         clf
+0112         subplot(2,1,1)
+0113         imagesc(im{cam})
+0114         hold on
+0115         plot(U,V)
+0116         plot(U(180,:),V(180,:),<span class="string">'r+'</span>)
+0117         plot(U(140,:),V(140,:),<span class="string">'b+'</span>)
+0118         plot(U(220,:),V(220,:),<span class="string">'g+'</span>)
+0119         subplot(2,1,2)
+0120         plot(Keos{cam}(:,i1-1))
+0121         hold on
+0122         plot(mean(interp2(im{cam},U,V+10,<span class="string">'linear'</span>,0),2)*calib/vs.vres(vs.vsel),<span class="string">'g'</span>)
+0123         plot(mean(interp2(im{cam},U,V+20,<span class="string">'linear'</span>,0),2)*calib/vs.vres(vs.vsel),<span class="string">'r'</span>)
+0124         title(sprintf(<span class="string">'Cam %d i1 %d'</span>,cam,i1))
+0125         drawnow
+0126         <span class="comment">%keyboard</span>
+0127         pause(0.5)
+0128       <span class="keyword">end</span>
+0129     <span class="keyword">end</span>
+0130     
+0131   <span class="keyword">end</span>
+0132   
+0133 <span class="keyword">end</span>
+0134 
+0135 <span class="keyword">if</span> dOPS.loud
+0136   close(wbh)
+0137 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of blackman</title>
+  <meta name="keywords" content="blackman">
+  <meta name="description" content="BLACKMAN - blackman window (of length L)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>blackman
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>BLACKMAN - blackman window (of length L)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function w = blackman(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> BLACKMAN - blackman window (of length L)
+ SYNOPSIS:
+                     w = blackman(L);
+                     w = blackman(L, a);
+
+    if only one parameter is given, the result will be the classic
+    blackman window. this is usually what the user wants anyway.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Starcal/find_loc_max_2d.html" class="code" title="function [lmaxi,lmaxj,lmaxI] = find_loc_max_2d(in_matrix)">find_loc_max_2d</a>	FIND_LOC_MAX_2D find a set of local maximas i a matrix</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function w = blackman(varargin)</a>
+0002 <span class="comment">% BLACKMAN - blackman window (of length L)</span>
+0003 <span class="comment">% SYNOPSIS:</span>
+0004 <span class="comment">%                     w = blackman(L);</span>
+0005 <span class="comment">%                     w = blackman(L, a);</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%    if only one parameter is given, the result will be the classic</span>
+0008 <span class="comment">%    blackman window. this is usually what the user wants anyway.</span>
+0009 <span class="comment">%</span>
+0010 
+0011 alpha = 0.16;
+0012 L = varargin{1}-1;
+0013 
+0014 <span class="keyword">if</span> nargin ~= 1
+0015  alpha = varargin{2};
+0016 <span class="keyword">end</span>
+0017 
+0018 a0 = (1-alpha)/2;
+0019 a1 = 0.5;
+0020 a2 = alpha/2;
+0021 
+0022 w = a0 - a1*cos((2*pi*(0:L))/L) - a2*cos((4*pi*(0:L))/L);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

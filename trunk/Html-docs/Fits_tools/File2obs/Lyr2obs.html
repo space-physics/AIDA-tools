@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of Lyr2obs</title>
+  <meta name="keywords" content="Lyr2obs">
+  <meta name="description" content="LYR_OBS - Observation struct from filename">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Fits_tools --><!-- menu.html File2obs -->
+<h1>Lyr2obs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>LYR_OBS - Observation struct from filename</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function o = Lyr2obs(filename,t0,longlat) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> LYR_OBS - Observation struct from filename
+   This function sets the fields for observations from LYR at
+   2005-12-03, and counts the time from 2005 12 03 15 57 00 with
+   25 frames/s.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../tools/find_in_cellstr.html" class="code" title="function ind_true = find_in_cellstr(in_str,in_cellstr)">find_in_cellstr</a>	FIND_IN_CELLSTR - search for string in cellstrings</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function o = Lyr2obs(filename,t0,longlat)</a>
+0002 <span class="comment">% LYR_OBS - Observation struct from filename</span>
+0003 <span class="comment">%   This function sets the fields for observations from LYR at</span>
+0004 <span class="comment">%   2005-12-03, and counts the time from 2005 12 03 15 57 00 with</span>
+0005 <span class="comment">%   25 frames/s.</span>
+0006 <span class="comment">%</span>
+0007 
+0008 <span class="keyword">if</span> nargin &lt; 2 | isempty(t0)
+0009   t0 = [2005 12 3 15 57 0];
+0010 <span class="keyword">end</span>
+0011 <span class="keyword">if</span> nargin &lt; 3 | isempty(longlat)
+0012   longlat = [16+2/60 78+9/60];
+0013 <span class="keyword">end</span>
+0014 
+0015 f_dir = fileparts(filename);
+0016 
+0017 f_names = dir(fullfile([f_dir],<span class="string">'*.png'</span>));
+0018 qwe = str2mat({f_names.name});
+0019 [qwe,idx] = sortrows(qwe);
+0020 f_names = f_names(idx);
+0021 
+0022 f_indx = <a href="../../tools/find_in_cellstr.html" class="code" title="function ind_true = find_in_cellstr(in_str,in_cellstr)">find_in_cellstr</a>(filename,{f_names(:).name});
+0023 
+0024 
+0025 o.time = t0 + [0 0 0 0 0 1/25*(f_indx-2)];
+0026 o.longlat = longlat;
+0027 o.longlat = o.pos;
+0028 
+0029 o.station = 12;
+0030 o.camnr = 0;
+0031 o.beta = 0;
+0032 o.alpha = 0;
+0033 o.az = 180;
+0034 o.ze = 8;
+0035 o.exptime = 1/25;
+0036 o.filter = -1;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

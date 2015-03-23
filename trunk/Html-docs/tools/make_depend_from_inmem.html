@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of make_depend_from_inmem</title>
+  <meta name="keywords" content="make_depend_from_inmem">
+  <meta name="description" content="MAKE_DEPEND_FROM_INMEM - Extracts currently used functions with">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>make_depend_from_inmem
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>MAKE_DEPEND_FROM_INMEM - Extracts currently used functions with</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function Wb = make_depend_from_inmem(filename_pattern) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MAKE_DEPEND_FROM_INMEM - Extracts currently used functions with
+   filename_pattern in the full path to the file.
+   
+ Example:
+   filename_pattern = 'home/usrnm'
+   Wb = make_depend_from_inmem(filename_pattern);</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function Wb = make_depend_from_inmem(filename_pattern)</a>
+0002 <span class="comment">% MAKE_DEPEND_FROM_INMEM - Extracts currently used functions with</span>
+0003 <span class="comment">%   filename_pattern in the full path to the file.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Example:</span>
+0006 <span class="comment">%   filename_pattern = 'home/usrnm'</span>
+0007 <span class="comment">%   Wb = make_depend_from_inmem(filename_pattern);</span>
+0008 
+0009 M = inmem;
+0010 Wb = {};
+0011 <span class="keyword">for</span> i = 1:length(M),
+0012   
+0013   W{i} = which(M{i});
+0014   
+0015 <span class="keyword">end</span>
+0016 W = sort(W);
+0017 <span class="keyword">for</span> i = 1:length(W),
+0018   a = strfind(W{i},filename_pattern);
+0019   <span class="keyword">if</span> ~isempty(a)
+0020     Wb{end+1} = W{i};
+0021   <span class="keyword">end</span>
+0022   a = [];
+0023 <span class="keyword">end</span>
+0024 Wb = str2mat(Wb);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

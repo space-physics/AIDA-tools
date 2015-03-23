@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of kosch_double2fits</title>
+  <meta name="keywords" content="kosch_double2fits">
+  <meta name="description" content="KOSCH_DOUBLE2FITS - Transform Kosch's double-format images to fits format.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>kosch_double2fits
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>KOSCH_DOUBLE2FITS - Transform Kosch's double-format images to fits format.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function ok = kosch_double2fits(filename,filename_out) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> KOSCH_DOUBLE2FITS - Transform Kosch's double-format images to fits format.
+   
+ Calling:
+ ok = kosch_double2fits(filename,filename_out)
+   
+ Input:
+   FILENAME - string with filename (relative or full path) of
+              image in M. Kosch's image format for the DASI
+   FILENAME_OUT string with name (relative or full path) of the
+   fits-file to create. Header information is taken from filename
+   and end of file.
+
+ See also <a href="kosch_double2fits.html" class="code" title="function ok = kosch_double2fits(filename,filename_out)">KOSCH_DOUBLE2FITS</a> <a href="kosch_float2fits.html" class="code" title="function ok = kosch_float2fits(filename,filename_out)">KOSCH_FLOAT2FITS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="wfits.html" class="code" title="function ok = wfits(header,data,name)">wfits</a>	WFITS - function to write fits files.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ok = kosch_double2fits(filename,filename_out)</a>
+0002 <span class="comment">% KOSCH_DOUBLE2FITS - Transform Kosch's double-format images to fits format.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% ok = kosch_double2fits(filename,filename_out)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%   FILENAME - string with filename (relative or full path) of</span>
+0009 <span class="comment">%              image in M. Kosch's image format for the DASI</span>
+0010 <span class="comment">%   FILENAME_OUT string with name (relative or full path) of the</span>
+0011 <span class="comment">%   fits-file to create. Header information is taken from filename</span>
+0012 <span class="comment">%   and end of file.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% See also KOSCH_DOUBLE2FITS KOSCH_FLOAT2FITS</span>
+0015 
+0016 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0017 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0018 
+0019 
+0020 
+0021 fp = fopen(filename,<span class="string">'r'</span>);
+0022 
+0023 <span class="keyword">if</span> fp &lt; 0 
+0024   
+0025   error([<span class="string">'could not open file: '</span>,filename])
+0026   
+0027 <span class="keyword">end</span>
+0028 
+0029 img = fread(fp,[2*384 512],<span class="string">'uint8'</span>);
+0030 asd = fread(fp,[10 1],<span class="string">'uint16'</span>);
+0031 
+0032 head = <span class="string">'SIMPLE  =   T'</span>;
+0033 head = str2mat(head,<span class="string">'BZERO  =   -127'</span>);
+0034 head = str2mat(head,<span class="string">'BITPIX  =       8'</span>);
+0035 head = str2mat(head,<span class="string">'NAXIS   =       2'</span>);
+0036 head = str2mat(head,<span class="string">'NAXIS1  =     512'</span>);
+0037 head = str2mat(head,<span class="string">'NAXIS2  =     768'</span>);
+0038 <span class="comment">% date and time stuff</span>
+0039 year = str2num(filename(1:2));
+0040 <span class="keyword">if</span> year &gt; 80
+0041   year = 1900+year;
+0042 <span class="keyword">else</span>
+0043   year = 2000+year;
+0044 <span class="keyword">end</span>
+0045 year = sprintf(<span class="string">'%.4d'</span>,year);
+0046 
+0047 <span class="keyword">if</span> length(asd)&gt;=9
+0048   month = sprintf(<span class="string">'%.2d'</span>,asd(6));
+0049   day = sprintf(<span class="string">'%.2d'</span>,asd(4));
+0050   obs_time = flipud(asd(1:3));
+0051   expt = asd(9);
+0052   gain = asd(7:8)';
+0053 <span class="keyword">else</span>
+0054   month = datestr(str2num(filename(end-2:end)),5);
+0055   day = datestr(str2num(filename(end-2:end)),7);
+0056   obs_time = str2num([filename(3:4),<span class="string">' '</span>,filename(5:6),<span class="string">' '</span>,filename(7:8)]);
+0057   expt = 1; <span class="comment">% dont kno better!</span>
+0058   gain = [1 1]; <span class="comment">%dont know better!</span>
+0059 <span class="keyword">end</span>
+0060 head = str2mat(head,[<span class="string">'DATE-OBS= '''</span>,year,<span class="string">'-'</span>,month,<span class="string">'-'</span>,day,<span class="string">'T'</span>,sprintf(<span class="string">'%.2d:%.2d:%.2d'</span>,obs_time),<span class="string">''''</span>]);
+0061 head = str2mat(head,[<span class="string">'INSTRUME= ''Kosch''s DASI-imager 0'' /'</span>]);
+0062 head = str2mat(head,[<span class="string">'EXPTIME = '</span>,num2str(expt)]);
+0063 head = str2mat(head,[<span class="string">'GAIN    =  '</span>,num2str(gain)]);
+0064 head = str2mat(head,[<span class="string">'ALIS-STN=                      11'</span>]);
+0065 head = str2mat(head,[<span class="string">'ALIS-CCD=                  100100'</span>]);
+0066 head = str2mat(head,[<span class="string">'ZEANGLE =                       0'</span>]);
+0067 head = str2mat(head,[<span class="string">'AZIMUTH =                       0'</span>]);
+0068 head = str2mat(head,<span class="string">'END'</span>);
+0069 head(<span class="keyword">end</span>,80) = <span class="string">' '</span>;
+0070 
+0071 fclose(fp);
+0072 
+0073 <span class="keyword">if</span> nargout ~=0
+0074   ok = <a href="wfits.html" class="code" title="function ok = wfits(header,data,name)">wfits</a>(head,img,filename_out);
+0075 <span class="keyword">else</span>
+0076   <a href="wfits.html" class="code" title="function ok = wfits(header,data,name)">wfits</a>(head,img,filename_out);
+0077 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

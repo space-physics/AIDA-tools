@@ -1,0 +1,52 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  gen_susan -> gen_susan;
+  img_morphing -> errFcnAuroralFlow;
+  img_optflow -> errFcnAuroralFlow;
+  img_optflow -> parsOnrefinedGrid4AF;
+  img_splinefilter -> imgs_smart_caxis;
+  img_svdfilter -> imgs_smart_caxis;
+  imgs_movie_r -> imgs_smart_caxis;
+  imgs_plot -> imgs_smart_caxis;
+  imgs_plot_bg_red -> imgs_smart_caxis;
+  imgs_plot_bg_red1l -> imgs_smart_caxis;
+  imgs_plot_bg_red_clall -> imgs_smart_caxis;
+
+  Contents [URL="Contents.html"];
+  errFcnAuroralFlow [URL="errFcnAuroralFlow.html"];
+  gen_susan [URL="gen_susan.html"];
+  genqt_statfilt [URL="genqt_statfilt.html"];
+  img_histeq [URL="img_histeq.html"];
+  img_morphing [URL="img_morphing.html"];
+  img_optflow [URL="img_optflow.html"];
+  img_overplot_llh [URL="img_overplot_llh.html"];
+  img_reg_bg_red [URL="img_reg_bg_red.html"];
+  img_rot [URL="img_rot.html"];
+  img_splinefilter [URL="img_splinefilter.html"];
+  img_stack2fanogram [URL="img_stack2fanogram.html"];
+  img_stack2keo [URL="img_stack2keo.html"];
+  img_svdfilter [URL="img_svdfilter.html"];
+  img_wiener2 [URL="img_wiener2.html"];
+  imgs2timeserieses [URL="imgs2timeserieses.html"];
+  imgs_deconv_crude [URL="imgs_deconv_crude.html"];
+  imgs_deinterlace [URL="imgs_deinterlace.html"];
+  imgs_edge_tap [URL="imgs_edge_tap.html"];
+  imgs_interp_data_wrpt [URL="imgs_interp_data_wrpt.html"];
+  imgs_interp_weights_wrpt [URL="imgs_interp_weights_wrpt.html"];
+  imgs_keograms [URL="imgs_keograms.html"];
+  imgs_keograms_r3 [URL="imgs_keograms_r3.html"];
+  imgs_movie_r [URL="imgs_movie_r.html"];
+  imgs_plot [URL="imgs_plot.html"];
+  imgs_plot_bg_red [URL="imgs_plot_bg_red.html"];
+  imgs_plot_bg_red1l [URL="imgs_plot_bg_red1l.html"];
+  imgs_plot_bg_red_clall [URL="imgs_plot_bg_red_clall.html"];
+  imgs_regs_mmmm [URL="imgs_regs_mmmm.html"];
+  imgs_rgb_keograms_r3 [URL="imgs_rgb_keograms_r3.html"];
+  imgs_smart_caxis [URL="imgs_smart_caxis.html"];
+  imgs_spec_ratio2E0fO [URL="imgs_spec_ratio2E0fO.html"];
+  imgs_stereo [URL="imgs_stereo.html"];
+  imgstack_regs_mmmm [URL="imgstack_regs_mmmm.html"];
+  mk_imgkeos_db [URL="mk_imgkeos_db.html"];
+  parsOnrefinedGrid4AF [URL="parsOnrefinedGrid4AF.html"];
+  symnin_filter [URL="symnin_filter.html"];
+}

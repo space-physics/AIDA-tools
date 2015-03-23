@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of img_stack2keo</title>
+  <meta name="keywords" content="img_stack2keo">
+  <meta name="description" content="imgs_stack2keo - make keograms from stack of images">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>img_stack2keo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>imgs_stack2keo - make keograms from stack of images</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [Keo] = img_stack2keo(Imstack,locnrs,line_not_columns,optp,PO) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> imgs_stack2keo - make keograms from stack of images
+   relative path) LOCNRS should be an Nx1 or 1xN array with line
+   numbers for the lines or columns to take from an
+   image. LINE_NOT_COLUMNS binary array with same size as LOCNRS
+   (1 for taking a line 0 for column at the corresponging
+   position) OPTP should be an array with OPTPAR, PO should be a
+   struct with PRE_PROC_OPS
+ 
+ Example
+   lines_or_column_nr = [21, 12, 123, ...,32];
+   lines_not_columns =  [ 1,  1,   0, ..., 1]; 
+   Keo = img_stack2keo(Imstack,locnrs,line_not_columns,optp,PO)
+  
+ See also: INIMG, STARCAL, TYPICAL_PRE_PROC_OPS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>	FITSFINDINHEADER finds string S in fitsheader H</li><li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="../Fits_tools/time_from_header.html" class="code" title="function [time,timestr] = time_from_header(header)">time_from_header</a>	TIME_FROM_HEADER parses a ALIS header for time</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Keo] = img_stack2keo(Imstack,locnrs,line_not_columns,optp,PO)</a>
+0002 <span class="comment">% imgs_stack2keo - make keograms from stack of images</span>
+0003 <span class="comment">%   relative path) LOCNRS should be an Nx1 or 1xN array with line</span>
+0004 <span class="comment">%   numbers for the lines or columns to take from an</span>
+0005 <span class="comment">%   image. LINE_NOT_COLUMNS binary array with same size as LOCNRS</span>
+0006 <span class="comment">%   (1 for taking a line 0 for column at the corresponging</span>
+0007 <span class="comment">%   position) OPTP should be an array with OPTPAR, PO should be a</span>
+0008 <span class="comment">%   struct with PRE_PROC_OPS</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Example</span>
+0011 <span class="comment">%   lines_or_column_nr = [21, 12, 123, ...,32];</span>
+0012 <span class="comment">%   lines_not_columns =  [ 1,  1,   0, ..., 1];</span>
+0013 <span class="comment">%   Keo = img_stack2keo(Imstack,locnrs,line_not_columns,optp,PO)</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% See also: INIMG, STARCAL, TYPICAL_PRE_PROC_OPS</span>
+0016 
+0017 
+0018 <span class="comment">%   Copyright � 20050109 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0019 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0020 
+0021 <span class="keyword">if</span> numel(line_not_columns)==1
+0022   line_not_columns = line_not_columns*ones(size(locnrs));
+0023 <span class="keyword">end</span>
+0024 
+0025 <span class="keyword">for</span> i1 = size(files,1):-1:1,
+0026   <span class="comment">%disp(i1)</span>
+0027   [data1,head1,o] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(i1,:),PO);
+0028   <span class="keyword">if</span> isempty(data1)
+0029     <span class="comment">% In case inimg returns an empty image just skip the rest and</span>
+0030     <span class="comment">% try with the next image.</span>
+0031     <span class="keyword">continue</span>
+0032   <span class="keyword">end</span>
+0033   exptimes(i1) =  o.exptime;
+0034   <span class="keyword">try</span>
+0035     optps(i1,:) = o.optpar;
+0036   <span class="keyword">catch</span>
+0037     optps(i1,:) = nan;
+0038   <span class="keyword">end</span>
+0039   <span class="comment">%%%  Exposures shorter than 100 is assumed to be in s and</span>
+0040   <span class="comment">%%%  converted to ms.</span>
+0041   <span class="keyword">if</span> exptimes(i1)&lt;100
+0042     exptimes(i1) = 1000*exptimes(i1);
+0043   <span class="keyword">end</span>
+0044   <span class="keyword">if</span> ~isempty(o.time)
+0045     Tstrs(i1,:) = o.time;
+0046   <span class="keyword">else</span>
+0047     Tstrs(i1,:) = <a href="../Fits_tools/time_from_header.html" class="code" title="function [time,timestr] = time_from_header(header)">time_from_header</a>(head1);
+0048   <span class="keyword">end</span>
+0049   <span class="keyword">if</span> ~isempty(o.filter)
+0050     filters(i1) = o.filter;
+0051   <span class="keyword">else</span>
+0052     hindx = <a href="../Fits_tools/fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(head1,<span class="string">'ALISEMI'</span>);
+0053     <span class="keyword">if</span> ~isempty(hindx)
+0054       <span class="comment">%filters(i1) = str2num(head1(hindx,12:30));</span>
+0055       filters(i1) = str2double(head1(hindx,12:30));
+0056     <span class="keyword">else</span>
+0057       filters(i1) = 0;
+0058     <span class="keyword">end</span>
+0059   <span class="keyword">end</span>
+0060   data1 = 1000*data1./ff/exptimes(i1);
+0061   <span class="keyword">for</span> j2 = 1:length(locnrs)
+0062     
+0063     <span class="keyword">if</span> line_not_columns(j2) &gt; 0
+0064       
+0065       utargs(i1,j2,:) = data1(locnrs(j2),:);
+0066       
+0067     <span class="keyword">else</span>
+0068       
+0069       utargs(i1,j2,:) = data1(:,locnrs(j2));
+0070       
+0071     <span class="keyword">end</span>
+0072     
+0073   <span class="keyword">end</span>
+0074   
+0075 <span class="keyword">end</span>
+0076 
+0077 <span class="keyword">for</span> i1 = length(locnrs):-1:1,
+0078   
+0079   varargout(i1) = {squeeze(utargs(:,i1,:))};
+0080   
+0081 <span class="keyword">end</span>
+0082 
+0083 <span class="keyword">if</span> nargout&gt;length(locnrs)
+0084   
+0085   varargout(length(locnrs)+1) = {exptimes};
+0086   
+0087 <span class="keyword">end</span>
+0088 <span class="keyword">if</span> nargout&gt;length(locnrs)+1
+0089   
+0090   varargout(length(locnrs)+2) = {Tstrs};
+0091   
+0092 <span class="keyword">end</span>
+0093 <span class="keyword">if</span> nargout&gt;length(locnrs)+2
+0094   
+0095   varargout(length(locnrs)+3) = {filters};
+0096   
+0097 <span class="keyword">end</span>
+0098 <span class="keyword">if</span> nargout&gt;length(locnrs)+3
+0099   
+0100   varargout(length(locnrs)+4) = {optps};
+0101   
+0102 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

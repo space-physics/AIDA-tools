@@ -1,0 +1,334 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of read_img</title>
+  <meta name="keywords" content="read_img">
+  <meta name="description" content="READ_IMG - reads image data and process header info.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>read_img
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>READ_IMG - reads image data and process header info.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> READ_IMG - reads image data and process header info.
+   FILENAME is a string with the filename to load.
+   PREPRO_OPS is a struct with preprocess options:
+ 
+ Calling:
+  [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)
+
+   Possible fields of PREPRO_OPS are:
+    LE/BE              - File in little or big endian')
+    defaultccd6        - Default unwrapping of ALIS camera 6')
+    quadfix            - Quadrant balancing with over-scan-strips')
+    quadfixsize        - size of overscan strip')
+    bias_correction    - Remove zero level bias -  requires bias file')
+                       - OK for some ALIS camera-binning combinations')
+    replaceborder      - Replace outermost line/columns')
+    C_cam              - pixel sensitivity, either scalar or size of image')
+    badpixfix          - Fix bad pixels')
+    imreg              - cut to region of interest in image')
+    remove_these_stars - remove stars (cmp bad pixels)')
+                       - requires optpar as well')
+    size_r_t_s         - size (pixels) of removed stars')
+    v_interf_notches   - remove vertical interference pattern')
+    medianfilter       - median/wiener filter image')
+    psf                - psf to deconvolve with (preferably not done here)')
+    imreg              - cut from total image [xmin xmax ymin ymax]')
+    outimgsize         - post-binning/resampling image')</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/File2obs/FMInSGOpng2obs.html" class="code" title="function obs = FMInSGOpng2obs(filename)">FMInSGOpng2obs</a>	FMInSGOpng2obs - Build obs-struct for FMI/SGO-png images</li><li><a href="find_optpar.html" class="code" title="function optpar = find_optpar(obs,OPS)">find_optpar</a>	FIND_OPTPAR - search the optpar data-base for best OPTPAR</li><li><a href="fits1.html" class="code" title="function [header,data] = fits1(name)">fits1</a>	FITS1 reads fits files stored in LE</li><li><a href="fits2.html" class="code" title="function [header,data] = fits2(name)">fits2</a>	FITS2 reads fits files stored in BE</li><li><a href="fits_frames.html" class="code" title="function [data_frames] = fits_frames(fid,info,out_frames)">fits_frames</a>	FITS_FRAMES - reads fits data frames from fits file</li><li><a href="fits_header.html" class="code" title="function [header] = fits_header(fid,filename)">fits_header</a>	FITS_HEADER reads the first fits-file header, returns header and fid</li><li><a href="fits_header2infostruct.html" class="code" title="function info = fits_header2infostruct(header,filename2parseheader)">fits_header2infostruct</a>	FITS_HEADER2INFOSTRUCT - parse fits header, make struct of meta-data</li><li><a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>	FITSFINDINHEADER finds string S in fitsheader H</li><li><a href="imwrapper.html" class="code" title="function [h,d] = imwrapper(filename)">imwrapper</a>	IMWRAPPER - simple wrapping function for image reading</li><li><a href="read_PGIASC.html" class="code" title="function [D,o] = read_PGIASC(filename,frames,precision)">read_PGIASC</a>	READ_PGIASC - read PGI All Sky Images.</li><li><a href="read_arl_keo.html" class="code" title="function [d,o] = read_arl_keo(filename)">read_arl_keo</a>	READ_ARL_KEO - reads Airforce research labs (Todd Pedersen's) KEO image format</li><li><a href="read_arl_raw.html" class="code" title="function [d,o] = read_arl_raw(filename)">read_arl_raw</a>	READ_ARL_RAW - reads Airforce research labs (Todd Pedersen's) raw image format</li><li><a href="read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>	READ_IMG - reads image data and process header info.</li><li><a href="read_miracle.html" class="code" title="function [d,h,o] = read_miracle(filename)">read_miracle</a>	READ_miracle - reads MIRACLE ASC jpg or png images</li><li><a href="sbig.html" class="code" title="function [hheader,data,obs,header] = sbig(fname,fixheader2fits)">sbig</a>	SBIG - reads files in SBIG image format,</li><li><a href="try_to_be_smart.html" class="code" title="function [obs] = try_to_be_smart(img_head,ALIS_FITS,PO)">try_to_be_smart</a>	TRY_TO_BE_SMART parses an (ALIS) fits header for observation info</li><li><a href="typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>	TYPICAL_PRE_PROC_OPS - Typical ALIS-fits preprocessing options</li><li><a href="../Starcal/IOfcns/inputall.html" class="code" title="function [img,obs] = inputall(filename)">inputall</a>	[rbild,gbild,bbild,tid,station,optpar] = inputall(filename,stardir,make_opt)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>	READ_IMG - reads image data and process header info.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)</a>
+0002 <span class="comment">% READ_IMG - reads image data and process header info.</span>
+0003 <span class="comment">%   FILENAME is a string with the filename to load.</span>
+0004 <span class="comment">%   PREPRO_OPS is a struct with preprocess options:</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%  [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   Possible fields of PREPRO_OPS are:</span>
+0010 <span class="comment">%    LE/BE              - File in little or big endian')</span>
+0011 <span class="comment">%    defaultccd6        - Default unwrapping of ALIS camera 6')</span>
+0012 <span class="comment">%    quadfix            - Quadrant balancing with over-scan-strips')</span>
+0013 <span class="comment">%    quadfixsize        - size of overscan strip')</span>
+0014 <span class="comment">%    bias_correction    - Remove zero level bias -  requires bias file')</span>
+0015 <span class="comment">%                       - OK for some ALIS camera-binning combinations')</span>
+0016 <span class="comment">%    replaceborder      - Replace outermost line/columns')</span>
+0017 <span class="comment">%    C_cam              - pixel sensitivity, either scalar or size of image')</span>
+0018 <span class="comment">%    badpixfix          - Fix bad pixels')</span>
+0019 <span class="comment">%    imreg              - cut to region of interest in image')</span>
+0020 <span class="comment">%    remove_these_stars - remove stars (cmp bad pixels)')</span>
+0021 <span class="comment">%                       - requires optpar as well')</span>
+0022 <span class="comment">%    size_r_t_s         - size (pixels) of removed stars')</span>
+0023 <span class="comment">%    v_interf_notches   - remove vertical interference pattern')</span>
+0024 <span class="comment">%    medianfilter       - median/wiener filter image')</span>
+0025 <span class="comment">%    psf                - psf to deconvolve with (preferably not done here)')</span>
+0026 <span class="comment">%    imreg              - cut from total image [xmin xmax ymin ymax]')</span>
+0027 <span class="comment">%    outimgsize         - post-binning/resampling image')</span>
+0028 
+0029 
+0030 
+0031 <span class="comment">%   Copyright © 1997-2010 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0032 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0033 
+0034 
+0035 <span class="keyword">if</span> nargin == 0
+0036   
+0037   help <a href="read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>
+0038   disp(<span class="string">'possible preprocessing steps:'</span>)
+0039   disp(<span class="string">'LE/BE              % File in little or big endian'</span>)
+0040   disp(<span class="string">'defaultccd6        % Default unwrapping of ALIS camera 6'</span>)
+0041   disp(<span class="string">'quadfix            % Quadrant balancing with over-scan-strips'</span>)
+0042   disp(<span class="string">'quadfixsize        % size of overscan strip'</span>)
+0043   disp(<span class="string">'bias_correction    % Remove zero level bias -  requires bias file'</span>)
+0044   disp(<span class="string">'                   % OK for some ALIS camera-binning combinations'</span>)
+0045   disp(<span class="string">'replaceborder      % Replace outermost line/columns'</span>)
+0046   disp(<span class="string">'C_cam              % pixel sensitivity, either scalar or size of image'</span>)
+0047   disp(<span class="string">'badpixfix          % Fix bad pixels'</span>)
+0048   disp(<span class="string">'imreg              % cut to region of interest in image'</span>)
+0049   disp(<span class="string">'remove_these_stars % remove stars (cmp bad pixels)'</span>)
+0050   disp(<span class="string">'                   % requires optpar as well'</span>)
+0051   disp(<span class="string">'size_r_t_s         % size (pixels) of removed stars'</span>)
+0052   disp(<span class="string">'v_interf_notches   % remove vertical interference pattern'</span>)
+0053   disp(<span class="string">'medianfilter       % median/wiener filter image'</span>)
+0054   disp(<span class="string">'psf                % psf to deconvolve with (preferably not done here)'</span>)
+0055   disp(<span class="string">'imreg              % cut from total image [xmin xmax ymin ymax]'</span>)
+0056   disp(<span class="string">'outimgsize         % post-binning/resampling image'</span>)
+0057   disp(<span class="string">' '</span>)
+0058   <span class="comment">% If no input arguments give the default PO-struct</span>
+0059   img_out = <a href="typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>;
+0060   <span class="keyword">return</span>
+0061   
+0062 <span class="keyword">end</span>
+0063 
+0064 <span class="keyword">if</span> nargin == 1
+0065   <span class="comment">% Just get a default P_O-struct</span>
+0066   PREPRO_OPS = <a href="typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>(<span class="string">'n'</span>);
+0067   
+0068 <span class="keyword">end</span>
+0069 
+0070 <span class="keyword">if</span> isstruct(filename)
+0071   filename = filename.name;
+0072 <span class="keyword">end</span>
+0073 <span class="comment">%img_out = [];</span>
+0074 img_head = [];
+0075 obs = [];
+0076 
+0077 flt = PREPRO_OPS.filetype;
+0078 <span class="keyword">switch</span> flt
+0079  <span class="keyword">case</span> <span class="string">'fits'</span>
+0080   <span class="comment">% For reading fits images we have to possibly adjust for ALIS</span>
+0081   <span class="comment">% images being in either LE or BE. PREPRO_OPS should have a field</span>
+0082   <span class="comment">% telling which Endian the images is.</span>
+0083   <span class="keyword">if</span> isfield(PREPRO_OPS,<span class="string">'frames'</span>)
+0084     
+0085     fp = fopen(filename,<span class="string">'r'</span>,<span class="string">'ieee-be'</span>);
+0086     img_head =  <a href="fits_header.html" class="code" title="function [header] = fits_header(fid,filename)">fits_header</a>(fp,filename);
+0087     <span class="comment">% TODO: fix the filename2parseheader!</span>
+0088     info = <a href="fits_header2infostruct.html" class="code" title="function info = fits_header2infostruct(header,filename2parseheader)">fits_header2infostruct</a>(img_head,<span class="string">'filename2parseheader'</span>);
+0089     <span class="comment">%obs = try_to_be_smart(img_head);</span>
+0090     [img_out] = <a href="fits_frames.html" class="code" title="function [data_frames] = fits_frames(fid,info,out_frames)">fits_frames</a>(fp,info,PREPRO_OPS.frames);
+0091     le_oR_BE = <span class="string">'BE'</span>;
+0092     fclose(fp);
+0093   <span class="keyword">elseif</span> isfield(PREPRO_OPS,<span class="string">'LE'</span>)
+0094     
+0095     [img_head,img_out] = <a href="fits1.html" class="code" title="function [header,data] = fits1(name)">fits1</a>(filename);
+0096     le_oR_BE = <span class="string">'LE'</span>;
+0097     
+0098   <span class="keyword">elseif</span> isfield(PREPRO_OPS,<span class="string">'BE'</span>)
+0099     
+0100     [img_head,img_out] = <a href="fits2.html" class="code" title="function [header,data] = fits2(name)">fits2</a>(filename);
+0101     le_oR_BE = <span class="string">'BE'</span>;
+0102     
+0103   <span class="keyword">else</span> <span class="comment">% Otherwise we have to try both and se which is mangled</span>
+0104     
+0105     <span class="comment">% Reading the file in both LE and BE and then automatically guess</span>
+0106     <span class="comment">% which is better...</span>
+0107     [img_out2,img_out2] = <a href="fits2.html" class="code" title="function [header,data] = fits2(name)">fits2</a>(filename);
+0108     [img_head,img_out] = <a href="fits1.html" class="code" title="function [header,data] = fits1(name)">fits1</a>(filename);
+0109     <span class="keyword">if</span> isempty(img_out)
+0110       <span class="keyword">return</span>
+0111     <span class="keyword">end</span>
+0112     le_oR_BE = <span class="string">'LE'</span>;
+0113     <span class="keyword">if</span> sum(sum(abs(del2(img_out2))))&lt;sum(sum(abs(del2(img_out))))
+0114       img_out = img_out2;
+0115       le_oR_BE = <span class="string">'BE'</span>;
+0116       clear img_out2
+0117     <span class="keyword">end</span>
+0118     
+0119   <span class="keyword">end</span>
+0120  <span class="keyword">case</span> <span class="string">'sbig'</span> <span class="comment">% For reading files in SBIG format. Almost fits.</span>
+0121   [img_head,img_out,img_head] = <a href="sbig.html" class="code" title="function [hheader,data,obs,header] = sbig(fname,fixheader2fits)">sbig</a>(filename);
+0122  <span class="keyword">case</span> <span class="string">'afrl-raw'</span> <span class="comment">% For reading AirForce Research Labs raw image format</span>
+0123   [img_out,obs] = <a href="read_arl_raw.html" class="code" title="function [d,o] = read_arl_raw(filename)">read_arl_raw</a>(filename);
+0124   img_head = [];
+0125   <span class="keyword">if</span> ~isempty(PREPRO_OPS.log2obs)
+0126     obs = PREPRO_OPS.log2obs(obs);
+0127   <span class="keyword">end</span>
+0128   <span class="comment">% And then we're done!</span>
+0129   <span class="keyword">return</span>
+0130  <span class="keyword">case</span> <span class="string">'afrl-keo'</span> <span class="comment">% For reading AirForce Research Labs raw image format</span>
+0131   [img_out,obs] = <a href="read_arl_keo.html" class="code" title="function [d,o] = read_arl_keo(filename)">read_arl_keo</a>(filename);
+0132   img_head = [];
+0133   <span class="comment">% And then we're done!</span>
+0134   <span class="keyword">return</span>
+0135   
+0136  <span class="keyword">case</span> <span class="string">'PGI-ASC'</span> <span class="comment">% For reading AirForce Research Labs raw image format</span>
+0137   [img_out,obs] = <a href="read_PGIASC.html" class="code" title="function [D,o] = read_PGIASC(filename,frames,precision)">read_PGIASC</a>(filename,PREPRO_OPS.frames,PREPRO_OPS.precision);
+0138   img_head = [];
+0139   <span class="comment">% And then we're done!</span>
+0140   <span class="keyword">return</span>
+0141   
+0142  <span class="keyword">case</span> <span class="string">'KASC'</span> <span class="comment">% For reading Kiruna All-sky camera</span>
+0143   [img_out,obs] = read_KASC(filename);
+0144   img_head = [];
+0145   <span class="comment">% And then we're done!</span>
+0146  <span class="keyword">return</span> 
+0147 
+0148  <span class="keyword">case</span> <span class="string">'miracle_asc'</span> <span class="comment">% used to read MIRACLE ASC images</span>
+0149   <span class="comment">%[img_out,obs,h]= read_miracle_asc(filename);</span>
+0150   [img_out,obs,h]= <a href="read_miracle.html" class="code" title="function [d,h,o] = read_miracle(filename)">read_miracle</a>(filename);
+0151   img_head=h;
+0152   <span class="comment">%Here we have to check whether to load existing projection</span>
+0153   <span class="comment">%parameters. The rest of this script will be ignored.</span>
+0154   <span class="keyword">if</span> PREPRO_OPS.find_optpar
+0155     optpar = <a href="find_optpar.html" class="code" title="function optpar = find_optpar(obs,OPS)">find_optpar</a>(obs,PREPRO_OPS);
+0156     <span class="keyword">if</span> ~isempty(optpar)
+0157       obs.optpar = optpar;
+0158     <span class="keyword">else</span>
+0159       error(<span class="string">'No matching optical parameters found'</span>)
+0160     <span class="keyword">end</span>
+0161   <span class="keyword">end</span>
+0162   <span class="comment">% And then we're done!</span>
+0163   <span class="keyword">return</span>
+0164 
+0165   <span class="comment">% Here is where to add function calls for other formats.</span>
+0166  <span class="keyword">case</span> <span class="string">'SF-png'</span>
+0167   [img_head,img_out] = <a href="imwrapper.html" class="code" title="function [h,d] = imwrapper(filename)">imwrapper</a>(filename);
+0168   obs = <a href="../Fits_tools/File2obs/FMInSGOpng2obs.html" class="code" title="function obs = FMInSGOpng2obs(filename)">FMInSGOpng2obs</a>(filename);
+0169   <span class="keyword">return</span>
+0170   
+0171  <span class="keyword">case</span> <span class="string">'taco-pgm'</span> <span class="comment">%Torsten Aslaksen's PGM format</span>
+0172   img_out = imread(filename); <span class="comment">%handles PGM</span>
+0173   [a,b] = system([<span class="string">'tacodate2 '</span>,filename]);
+0174   obs.time = str2num(b);
+0175   obs.camnr = 0;
+0176   obs.station = 11; <span class="comment">% input('Station (ALIS numbering, Ramfjord=11) ? Yup!');</span>
+0177   obs.optpar = [-3.17 -3.17 4.5 -17.5 7.5 0 0 1 1 0];
+0178   <span class="comment">%Comment out - these are just for 2011 Eiscat setup in</span>
+0179   <span class="comment">%Mike Kosch's hut</span>
+0180   <span class="comment">% And then we're done!</span>
+0181   <span class="keyword">return</span>
+0182   
+0183  <span class="keyword">otherwise</span> 
+0184   <span class="comment">% and here is where we read other formats that have not yet made</span>
+0185   <span class="comment">% it into the permanent realm</span>
+0186   <span class="comment">%</span>
+0187   <span class="comment">% First try reading files with a supplied function handle</span>
+0188   <span class="keyword">if</span> ( isfield(PREPRO_OPS,<span class="string">'read_data_fcn'</span>) &amp; <span class="keyword">...</span>
+0189      ~isempty(PREPRO_OPS.read_data_fcn) )
+0190     <span class="keyword">try</span>
+0191       [img_head,img_out] = PREPRO_OPS.read_data_fcn(filename);
+0192     <span class="keyword">catch</span>
+0193       [img_head,img_out] = feval(PREPRO_OPS.read_data_fcn,filename);
+0194     <span class="keyword">end</span>
+0195   <span class="keyword">else</span>
+0196     <span class="keyword">if</span> isfield(PREPRO_OPS,<span class="string">'keep_rgb'</span>) &amp; PREPRO_OPS.keep_rgb
+0197       img_out = double(imread(filename));
+0198     <span class="keyword">else</span>
+0199       <span class="comment">% Try with imread and load</span>
+0200       [img_out] = <a href="../Starcal/IOfcns/inputall.html" class="code" title="function [img,obs] = inputall(filename)">inputall</a>(filename);
+0201     <span class="keyword">end</span>
+0202   <span class="keyword">end</span>
+0203   <span class="comment">% To be sure: cast to double explicitly.</span>
+0204   <span class="keyword">if</span> ( length(size(img_out)) &gt; 2 )
+0205     <span class="keyword">if</span> isfield(PREPRO_OPS,<span class="string">'keep_rgb'</span>) &amp; PREPRO_OPS.keep_rgb
+0206     <span class="keyword">else</span>
+0207       img_out = sum(double(img_out),3);
+0208     <span class="keyword">end</span>
+0209   <span class="keyword">else</span>
+0210     
+0211     img_out = double(img_out);
+0212     
+0213   <span class="keyword">end</span>
+0214   
+0215 <span class="keyword">end</span>
+0216 <span class="comment">% In case img_out is empty just return with empty out_args and hope</span>
+0217 <span class="comment">% for the best.</span>
+0218 <span class="keyword">if</span> isempty(img_out)
+0219   <span class="keyword">return</span>
+0220 <span class="keyword">end</span>
+0221 <span class="comment">% Else proceed:</span>
+0222 <span class="comment">% By here the image data should be read.</span>
+0223 <span class="comment">%</span>
+0224 <span class="comment">% What remains is to parse information about the image, from an</span>
+0225 <span class="comment">% image header or by some other means</span>
+0226 
+0227 <span class="comment">% If no handles to either a log2obs-function of a</span>
+0228 <span class="comment">% try_to_be_smart-function is provided</span>
+0229 <span class="keyword">if</span> ( isempty(PREPRO_OPS.log2obs) &amp; <span class="keyword">...</span>
+0230      isempty(PREPRO_OPS.try_to_be_smart_fnc) )
+0231   <span class="comment">% we use the default one that works for ALIS-format fits</span>
+0232   <span class="comment">% headers, and for other fits-headers it prompts for information</span>
+0233   <span class="comment">% needed but not found.</span>
+0234   ai = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(img_head,<span class="string">'ALIS'</span>);
+0235   obs = <a href="try_to_be_smart.html" class="code" title="function [obs] = try_to_be_smart(img_head,ALIS_FITS,PO)">try_to_be_smart</a>(img_head,length(ai),PREPRO_OPS);
+0236   <span class="keyword">if</span> exist(<span class="string">'le_oR_BE'</span>,<span class="string">'var'</span>)
+0237     obs.le_or_be = le_oR_BE;
+0238   <span class="keyword">else</span>
+0239     obs.le_or_be = nan;
+0240   <span class="keyword">end</span>
+0241 <span class="keyword">elseif</span> ~isempty(PREPRO_OPS.log2obs)
+0242   <span class="keyword">try</span>
+0243     obs = PREPRO_OPS.log2obs(img_head);
+0244   <span class="keyword">catch</span>
+0245     obs = feval(PREPRO_OPS.log2obs,img_head);
+0246   <span class="keyword">end</span>
+0247 <span class="keyword">elseif</span> ~isempty(PREPRO_OPS.try_to_be_smart_fnc)
+0248   <span class="keyword">try</span>
+0249     obs = PREPRO_OPS.try_to_be_smart_fnc(filename);
+0250   <span class="keyword">catch</span>
+0251     obs = feval(PREPRO_OPS.try_to_be_smart_fnc,filename);
+0252   <span class="keyword">end</span>
+0253 <span class="keyword">else</span>
+0254   your_try_to_be_smart_type = exist(<span class="string">'your_try_to_be_smart'</span>,<span class="string">'file'</span>);
+0255   <span class="keyword">if</span> any(your_try_to_be_smart_type==[2 3 5 6])
+0256     obs = your_try_to_be_smart(filename);
+0257   <span class="keyword">else</span>
+0258     disp(<span class="string">'You should make a file/function ''your_try_to_be_smart'''</span>)
+0259     disp(<span class="string">'This function should give the same kind of struct as the'</span>)
+0260     disp(<span class="string">'try_to_be_smart function. Now trying the standard one...'</span>)
+0261     obs = <a href="try_to_be_smart.html" class="code" title="function [obs] = try_to_be_smart(img_head,ALIS_FITS,PO)">try_to_be_smart</a>(img_head,0,PREPRO_OPS);
+0262   <span class="keyword">end</span>
+0263 <span class="keyword">end</span>
+0264 <span class="keyword">if</span> PREPRO_OPS.find_optpar
+0265   optpar = <a href="find_optpar.html" class="code" title="function optpar = find_optpar(obs,OPS)">find_optpar</a>(obs,PREPRO_OPS);
+0266   obs.optpar = optpar;
+0267 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

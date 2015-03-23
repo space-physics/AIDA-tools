@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of read_BSC</title>
+  <meta name="keywords" content="read_BSC">
+  <meta name="description" content="READ_BSC loads stars from the Bright Star Catalogue, (BSC Star">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>read_BSC
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>READ_BSC loads stars from the Bright Star Catalogue, (BSC Star</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [possiblestars,star_list] = read_BSC(pos0,date,time0) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> READ_BSC loads stars from the Bright Star Catalogue, (BSC Star
+ Catalog.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>	STARPOS2 gives the azimuth, zenith and apparent zenith angles</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [possiblestars,star_list] = read_BSC(pos0,date,time0)</a>
+0002 <span class="comment">% READ_BSC loads stars from the Bright Star Catalogue, (BSC Star</span>
+0003 <span class="comment">% Catalog.</span>
+0004 
+0005 <span class="comment">% latitude [deg]) at time TIME0 (UTC)</span>
+0006 <span class="comment">% on the day DATE.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">% [possiblestars,star_list] = read_BSC(pos0,date,time0)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% See also INFOV, PLOTTABLESTARS.</span>
+0012 
+0013 
+0014 <span class="comment">%   Copyright � 2012 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0015 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0016 
+0017 
+0018 <span class="keyword">global</span> stardir
+0019 
+0020 star_types = {<span class="string">'S'</span>,<span class="string">'D'</span>,<span class="string">'D'</span>,<span class="string">'D'</span>,<span class="string">'V'</span>,<span class="string">'V'</span>,<span class="string">'V'</span>,<span class="string">'D-V'</span>,<span class="string">''</span>,<span class="string">''</span>,<span class="string">''</span>,<span class="string">''</span>,<span class="string">''</span>};
+0021 indxNR  = [  1:4  ]; <span class="comment">% index for Bright Star Number</span>
+0022 indxRAd = [ 76:77 ]; <span class="comment">% index for Right ascension degrees</span>
+0023 indxRAm = [ 78:79 ]; <span class="comment">% index for Right ascension minutes</span>
+0024 indxRAs = [ 80:83 ]; <span class="comment">% index for Right ascension seconds</span>
+0025 indxDEd = [ 84:86 ]; <span class="comment">% index for Declination degrees</span>
+0026 indxDEm = [ 87:88 ]; <span class="comment">% index for Declination minutes</span>
+0027 indxDEs = [ 89:90 ]; <span class="comment">% index for Declination seconds</span>
+0028 indxMg  = [103:107]; <span class="comment">% index for Visual magnitude</span>
+0029 indxSp  = [128:147]; <span class="comment">% index for Spectral type</span>
+0030 indxTy  = [  44   ]; <span class="comment">% index for Type</span>
+0031 indxNm  = [ 5:14  ];   <span class="comment">% index for Name</span>
+0032 
+0033 fname = fullfile(stardir,<span class="string">'stars'</span>,<span class="string">'catalog.dat'</span>);
+0034 FID = fopen(fname,<span class="string">'r'</span>);
+0035 
+0036 catalog = fread(FID,[197 9096],<span class="string">'uint8=&gt;char'</span>)';
+0037 
+0038 fclose(FID);
+0039 
+0040 SAO_Star_Nr = str2num(catalog(:,indxNR));
+0041 raD         = str2num(catalog(:,indxRAd));
+0042 raM         = str2num(catalog(:,indxRAm));
+0043 raS         = str2num(catalog(:,indxRAs));
+0044 declD       = str2num(catalog(:,indxDEd));
+0045 declM       = str2num(catalog(:,indxDEm));
+0046 declS       = str2num(catalog(:,indxDEs));
+0047 magn        = str2num(catalog(:,indxMg));
+0048 Spec        = catalog(:,indxTy);
+0049 typeID      = str2num(catalog(:,indxTy));
+0050 name        = catalog(:,indxNm);
+0051 
+0052 long = pos0(1);
+0053 lat = pos0(2);
+0054 
+0055 
+0056 ra   =   raD +   raM/60 +   raS/3600;
+0057 decl = declD + declM/60 + declS/3600;
+0058 
+0059 [az,ze,apze] = <a href="starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>(ra,decl,date,time0,lat,long);
+0060 [i1] = find(ze&lt;pi/2);
+0061 
+0062 possiblestars(:,1:7) = [az(i1) ze(i1) i1 magn(i1) zeros(size(i1)) SAO_Star_Nr(i1) apze(i1)];
+0063 
+0064   
+0065 <span class="keyword">for</span> i1 = length(catalog):-1:1,
+0066   
+0067   line = catalog(i1,:);
+0068   type = <span class="string">'Star'</span>;
+0069   multiple = ~isempty(deblank(line(44)));
+0070   <span class="keyword">if</span> multiple
+0071     type = <span class="string">'Multiple star'</span>;
+0072     <span class="keyword">if</span> line(44) == <span class="string">'A'</span> | str2num(line(50:51)) == 2
+0073       type =<span class="string">'Double star'</span>;
+0074     <span class="keyword">else</span>
+0075       <span class="keyword">if</span> ~isempty(deblank(line(50:51)))
+0076         type = [type,<span class="string">' ('</span>,deblank(line(50:51)),<span class="string">')'</span>];
+0077       <span class="keyword">end</span>
+0078     <span class="keyword">end</span>
+0079   <span class="keyword">end</span>
+0080   variable = ~isempty(deblank(line(52:60)));
+0081   <span class="keyword">if</span> variable
+0082     type = [<span class="string">'Variable '</span>,type];
+0083   <span class="keyword">end</span>
+0084   star_list(i1) = struct(<span class="string">'Name'</span>,name(i1,:),<span class="keyword">...</span>
+0085                          <span class="string">'Spectral type'</span>,Spec(i1,:),<span class="keyword">...</span>
+0086                          <span class="string">'Type'</span>,type{i1},<span class="keyword">...</span>
+0087                          <span class="string">'Ra'</span>,ra(i1),<span class="keyword">...</span>
+0088                          <span class="string">'Decl'</span>,decl(i1),<span class="keyword">...</span>
+0089                          <span class="string">'Magn'</span>,magn(i1),<span class="keyword">...</span>
+0090                          <span class="string">'Azimuth'</span>,az(i1),<span class="keyword">...</span>
+0091                          <span class="string">'Zenith'</span>,ze(i1),<span class="keyword">...</span>
+0092                          <span class="string">'App_Zenith'</span>,apze(i1),<span class="keyword">...</span>
+0093                          <span class="string">'Bright_Star_Nr'</span>,SAO_Star_Nr(i1));
+0094   
+0095 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

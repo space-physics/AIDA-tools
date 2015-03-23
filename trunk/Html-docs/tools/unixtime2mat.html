@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of unixtime2mat</title>
+  <meta name="keywords" content="unixtime2mat">
+  <meta name="description" content="unixtime2mat  Converts unix time stamps (seconds since Jan 1, 1970) to">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>unixtime2mat
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>unixtime2mat  Converts unix time stamps (seconds since Jan 1, 1970) to</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function matlab_time = unixtime2mat(unix_time) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> unixtime2mat  Converts unix time stamps (seconds since Jan 1, 1970) to
+               Matlab serial date number (decimal days since Jan 1 0000).
+               
+               USAGE:
+                      unixtime2mat(unix_time)
+
+
+               The function may not handle leap years or leap seconds
+               appropriately.  
+
+               Val Schmidt 
+               Center for Coastal and Ocean Mapping
+               2007</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function matlab_time = unixtime2mat(unix_time)</a>
+0002 <span class="comment">% unixtime2mat  Converts unix time stamps (seconds since Jan 1, 1970) to</span>
+0003 <span class="comment">%               Matlab serial date number (decimal days since Jan 1 0000).</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%               USAGE:</span>
+0006 <span class="comment">%                      unixtime2mat(unix_time)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%               The function may not handle leap years or leap seconds</span>
+0010 <span class="comment">%               appropriately.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%               Val Schmidt</span>
+0013 <span class="comment">%               Center for Coastal and Ocean Mapping</span>
+0014 <span class="comment">%               2007</span>
+0015 
+0016 unix_epoch = datenum(1970,1,1,0,0,0);
+0017 matlab_time = unix_time./86400 + unix_epoch;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

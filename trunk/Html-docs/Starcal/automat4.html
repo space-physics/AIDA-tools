@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of automat4</title>
+  <meta name="keywords" content="automat4">
+  <meta name="description" content="AUTOMAT4 - give sum tanh(dr)^2 between the image and catalog position of star">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>automat4
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>AUTOMAT4 - give sum tanh(dr)^2 between the image and catalog position of star</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [diff] = automat4(sp,starteauw,optmod,sp2,lock_par, imsiz) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> AUTOMAT4 - give sum tanh(dr)^2 between the image and catalog position of star
+ in the image and the projected position. Input SP is the optical
+ parameters, STARTEAUW is a matrix that gives the identified
+ stars, OPTMOD is scalar that specifies the optical transfer
+ function. SP2 is a priori values for SP and LOCK_PAR is a penalty
+ magnitude vector.
+ 
+ Calling:
+ [diff] = automat4(sp,starteauw,optmod,sp2,lock_par)
+ 
+ See also: <a href="automat2.html" class="code" title="function [diff] = automat2(optpar,starteauw,mode,optpar2,lock_par,imsiz)">AUTOMAT2</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>	CAMERA_BASE - determine the coordinate system of the camera</li><li><a href="../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>	CAMERA_MODEL - determine the image coordinates of light from [az,ze]</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Starcal/M7/trackemdown.html" class="code" title="function [SkMp,identstars,optpar] = trackemdown(SkMp)">trackemdown</a>	TRACKEMDOWN - makes an automatic starcalibration.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [diff] = automat4(sp,starteauw,optmod,sp2,lock_par, imsiz)</a>
+0002 <span class="comment">% AUTOMAT4 - give sum tanh(dr)^2 between the image and catalog position of star</span>
+0003 <span class="comment">% in the image and the projected position. Input SP is the optical</span>
+0004 <span class="comment">% parameters, STARTEAUW is a matrix that gives the identified</span>
+0005 <span class="comment">% stars, OPTMOD is scalar that specifies the optical transfer</span>
+0006 <span class="comment">% function. SP2 is a priori values for SP and LOCK_PAR is a penalty</span>
+0007 <span class="comment">% magnitude vector.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Calling:</span>
+0010 <span class="comment">% [diff] = automat4(sp,starteauw,optmod,sp2,lock_par)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% See also: AUTOMAT2</span>
+0013 
+0014 <span class="comment">%   Copyright �  1997 by Bjorn Gustavsson &lt;bjorn.gustavsson@irf.se&gt;</span>
+0015 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0016 
+0017 <span class="keyword">global</span> s_prefs
+0018 
+0019 hnl = s_prefs.hu_nm_ln;
+0020 <span class="comment">%time = 1;</span>
+0021 
+0022 alpha0 = sp(3);
+0023 beta0 = sp(4);
+0024 gamma0 = sp(5);
+0025 <span class="keyword">if</span> length(sp) &gt; 9
+0026   [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(alpha0,beta0,gamma0,sp(10));
+0027 <span class="keyword">else</span>
+0028   [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(alpha0,beta0,gamma0);
+0029 <span class="keyword">end</span>
+0030 <span class="comment">% $$$ az0 = sp(3);</span>
+0031 <span class="comment">% $$$ el0 = sp(4);</span>
+0032 <span class="comment">% $$$ roll0 = sp(5);</span>
+0033 qwe = sp(8);
+0034 
+0035 <span class="comment">% $$$ [e1,e2,e3] = camera_base(az0,el0,roll0);</span>
+0036 
+0037 Nrstj = size(starteauw,1);
+0038 tdiff = 0;
+0039 
+0040 <span class="keyword">for</span> i = 1:Nrstj,
+0041   
+0042   az = starteauw(i,1);
+0043   el = starteauw(i,2);
+0044   
+0045   [u,w] = <a href="../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>(az,el,e1,e2,e3,sp,optmod,imsiz);
+0046   pdiff = ((u-(starteauw(i,3)))^2+(w-(starteauw(i,4)))^2)^.5;
+0047   
+0048   <span class="comment">% Huber-type Norm that more and more disregards errors larger</span>
+0049   <span class="comment">% than pdiff &gt;~ 5</span>
+0050   tdiff = tdiff + hnl^2*tanh(pdiff/hnl)^2;
+0051   
+0052 <span class="keyword">end</span>
+0053 
+0054 <span class="keyword">if</span> ( optmod ~= 3 )
+0055   
+0056   diff = tdiff^.5 + ( qwe - 1 )^2;
+0057   
+0058 <span class="keyword">else</span>
+0059   
+0060   diff = tdiff^.5;
+0061   
+0062 <span class="keyword">end</span>
+0063 
+0064 <span class="comment">%Wheighted penalty function with respect to start guess</span>
+0065 fix = abs((sp-sp2).^2.*lock_par);
+0066 diff = diff + fix*fix';</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

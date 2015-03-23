@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of skymap</title>
+  <meta name="keywords" content="skymap">
+  <meta name="description" content="SKYMAP An easy to astronomical starchart.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>skymap
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SKYMAP An easy to astronomical starchart.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [SkMp] = skymap(pos,time,SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SKYMAP An easy to astronomical starchart.
+ It sets up a graphiczal user ingerface for the
+ skymap and an input figure for selection of observation sites,
+ date and time. 
+
+ Calling:
+   SkMp = skymap(pos,time,SkMp);</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/station_reader.html" class="code" title="function [long,lat,alts,StnNames,stnNR] = station_reader()">station_reader</a>	STATION_READER - collects station number, name, long, lat</li><li><a href="checkisok.html" class="code" title="function [SkMp] = checkisok(SkMp)">checkisok</a>	</li><li><a href="checkok.html" class="code" title="function [stnnames,SkMp] = checkok(SkMp)">checkok</a>	CHECKOK - displays time and observation site GUI for user choise.</li><li><a href="def_s_preferences.html" class="code" title="function SkMp = def_s_preferences(SkMp)">def_s_preferences</a>	DEF_S_PREFERENCES - default preferences for starcal</li><li><a href="../Starcal/def_s_preferences.html" class="code" title="function SkMp = def_s_preferences(SkMp)">def_s_preferences</a>	DEF_S_PREFERENCES - default preferences for starcal</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Starcal/stargui.html" class="code" title="">stargui</a>	STARGUI - sets up the GUI for starcal</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [SkMp] = skymap(pos,time,SkMp)</a>
+0002 <span class="comment">% SKYMAP An easy to astronomical starchart.</span>
+0003 <span class="comment">% It sets up a graphiczal user ingerface for the</span>
+0004 <span class="comment">% skymap and an input figure for selection of observation sites,</span>
+0005 <span class="comment">% date and time.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%   SkMp = skymap(pos,time,SkMp);</span>
+0009 <span class="comment">%</span>
+0010 
+0011 
+0012 <span class="comment">%   Copyright � 20010401 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0013 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0014 
+0015 <span class="keyword">global</span> stardir
+0016 verstr = version;
+0017 version_nr = str2num(verstr(1:3));
+0018 
+0019 
+0020 stardir = fileparts(which(<span class="string">'skymap'</span>));
+0021 
+0022 checkokstr = <span class="string">'[stnnames,SkMp] = checkok(SkMp);'</span>;
+0023 updstrplstr = <span class="string">'[SkMp] = updstrpl(SkMp);'</span>;
+0024 str0 =  [<span class="string">'SkMp.radecl_or_azze = 0;'</span>,updstrplstr];
+0025 str1 = [<span class="string">'SkMp.radecl_or_azze = 1;'</span>,updstrplstr];
+0026 
+0027 SkMp.set_up_file = fullfile(stardir,<span class="string">'set_up_file.dat'</span>);
+0028 SkMp.radecl_or_azze = 1;
+0029 <span class="keyword">if</span> nargin &lt; 3
+0030   SkMp.optpar = [];
+0031   SkMp.img = [];
+0032   SkMp.identstars = [];
+0033 <span class="keyword">end</span>
+0034 
+0035 [long,lat,alts,StnNames,stnNR] = <a href="../Fits_tools/station_reader.html" class="code" title="function [long,lat,alts,StnNames,stnNR] = station_reader()">station_reader</a>;
+0036 <span class="comment">% $$$ Cannot completely remove Pelle and Kalle, can I?</span>
+0037 <span class="comment">% $$$ Nope, They'll remain as characters in this script for as long as I live!</span>
+0038 <span class="comment">% $$$ load(fullfile(stardir,'Stations','stationpos.dat'))</span>
+0039 <span class="comment">% $$$ pelle = stationpos(:,4).*(stationpos(:,1) + stationpos(:,2)/60 + stationpos(:,3)/3600);</span>
+0040 <span class="comment">% $$$ if abs(stationpos(:,8)) == 1</span>
+0041 <span class="comment">% $$$   kalle = stationpos(:,8).*(stationpos(:,5) + stationpos(:,6)/60 + stationpos(:,7)/3600);</span>
+0042 <span class="comment">% $$$ else</span>
+0043 <span class="comment">% $$$   kalle = (stationpos(:,5) + stationpos(:,6)/60 + stationpos(:,7)/3600);</span>
+0044 <span class="comment">% $$$ end</span>
+0045 <span class="comment">% $$$ stationpos = [kalle,pelle];</span>
+0046 SkMp.stationpos = [long,lat];
+0047 SkMp.longlat = [long,lat];
+0048 SkMp.StnNames = StnNames;
+0049 SkMp.stnNR = stnNR;
+0050 SkMp.figchok = [];
+0051 
+0052 <span class="keyword">if</span> ~isfield(SkMp,<span class="string">'prefs'</span>)
+0053    SkMp = <a href="def_s_preferences.html" class="code" title="function SkMp = def_s_preferences(SkMp)">def_s_preferences</a>(SkMp);
+0054 <span class="keyword">end</span>
+0055 
+0056 <span class="keyword">try</span> 
+0057   Mon_Pos = get(0,<span class="string">'MonitorPositions'</span>);
+0058 <span class="keyword">catch</span>
+0059   Mon_Pos = [0 0 700 700];
+0060 <span class="keyword">end</span>
+0061 
+0062 SkMp.figsky = figure(<span class="string">'Name'</span>,<span class="string">'Skyview'</span>,<span class="keyword">...</span>
+0063              <span class="string">'Position'</span>,[Mon_Pos(3)-600,Mon_Pos(4)-600,540,530],<span class="keyword">...</span>
+0064              <span class="string">'Resize'</span>,<span class="string">'on'</span>,<span class="keyword">...</span>
+0065              <span class="string">'MenuBar'</span>,<span class="string">'none'</span>);
+0066 
+0067 figure(SkMp.figsky);
+0068 <span class="comment">% The slider on the left edge</span>
+0069 SkMp.ui3(1) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0070             <span class="string">'Style'</span>,<span class="string">'Slider'</span>,<span class="keyword">...</span>
+0071             <span class="string">'Position'</span>,[.01,.1,.03,.8],<span class="keyword">...</span>
+0072             <span class="string">'Min'</span>,-90,<span class="keyword">...</span>
+0073             <span class="string">'Max'</span>,90,<span class="keyword">...</span>
+0074             <span class="string">'Value'</span>,0,<span class="keyword">...</span>
+0075             <span class="string">'Callback'</span>,updstrplstr);
+0076 <span class="comment">% The slider on the right edge</span>
+0077 SkMp.ui3(2) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0078             <span class="string">'Style'</span>,<span class="string">'Slider'</span>,<span class="keyword">...</span>
+0079             <span class="string">'Position'</span>,[.96,.1,.03,.8],<span class="keyword">...</span>
+0080             <span class="string">'Min'</span>,-180,<span class="keyword">...</span>
+0081             <span class="string">'Max'</span>,180,<span class="keyword">...</span>
+0082             <span class="string">'Value'</span>,0,<span class="keyword">...</span>
+0083             <span class="string">'Callback'</span>,updstrplstr);
+0084 <span class="comment">% The slider on the lower edge</span>
+0085 SkMp.ui3(3) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0086             <span class="string">'Style'</span>,<span class="string">'Slider'</span>,<span class="keyword">...</span>
+0087             <span class="string">'Position'</span>,[.1,.01,.8,.03],<span class="keyword">...</span>
+0088             <span class="string">'Min'</span>,-90,<span class="keyword">...</span>
+0089             <span class="string">'Max'</span>,90,<span class="keyword">...</span>
+0090             <span class="string">'Value'</span>,0,<span class="keyword">...</span>
+0091             <span class="string">'Callback'</span>,updstrplstr);
+0092 <span class="comment">% The slider on the upper edge.</span>
+0093 SkMp.ui3(4) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0094             <span class="string">'Style'</span>,<span class="string">'Slider'</span>,<span class="keyword">...</span>
+0095             <span class="string">'Position'</span>,[.1,.96,.8,.03],<span class="keyword">...</span>
+0096             <span class="string">'Min'</span>,0,<span class="keyword">...</span>
+0097             <span class="string">'Max'</span>,100,<span class="keyword">...</span>
+0098             <span class="string">'Value'</span>,45,<span class="keyword">...</span>
+0099             <span class="string">'Callback'</span>,updstrplstr);
+0100 <span class="comment">% Pop-up menu for star magnitudes:</span>
+0101 SkMp.ui3(5) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0102             <span class="string">'Style'</span>,<span class="string">'Popup'</span>,<span class="keyword">...</span>
+0103             <span class="string">'String'</span>,<span class="string">'magn|2|2.5|3|3.5|4|4.5|5|5.5|6|6.5|7|7.5|8|8.5|9|9.5'</span>,<span class="keyword">...</span>
+0104             <span class="string">'Position'</span>,[.01,.94,.075,.05],<span class="keyword">...</span>
+0105             <span class="string">'Min'</span>,-180,<span class="keyword">...</span>
+0106             <span class="string">'Max'</span>,180,<span class="keyword">...</span>
+0107             <span class="string">'Value'</span>,8,<span class="keyword">...</span>
+0108             <span class="string">'Callback'</span>,updstrplstr);
+0109 <span class="comment">% Uimenues:</span>
+0110 SkMp.uic3(1,1) = uimenu(<span class="string">'Label'</span>,<span class="string">'File'</span>);
+0111 SkMp.uic3(1,2) = uimenu(SkMp.uic3(1,1),<span class="keyword">...</span>
+0112             <span class="string">'Label'</span>,<span class="string">'Figure'</span>,<span class="keyword">...</span>
+0113             <span class="string">'Callback'</span>,<span class="string">'figure'</span>,<span class="keyword">...</span>
+0114             <span class="string">'position'</span>,1);
+0115 SkMp.uic3(1,3) = uimenu(SkMp.uic3(1,1),<span class="keyword">...</span>
+0116             <span class="string">'Label'</span>,<span class="string">'Close'</span>,<span class="keyword">...</span>
+0117             <span class="string">'Callback'</span>,<span class="string">'skmp_close'</span>,<span class="keyword">...</span>
+0118             <span class="string">'position'</span>,2);
+0119 SkMp.uic3(1,4) = uimenu(SkMp.uic3(1,1),<span class="keyword">...</span>
+0120             <span class="string">'Label'</span>,<span class="string">'Page setup'</span>,<span class="keyword">...</span>
+0121             <span class="string">'Callback'</span>,<span class="string">'pagesetupdlg'</span>,<span class="keyword">...</span>
+0122             <span class="string">'position'</span>,3);
+0123 SkMp.uic3(1,5) = uimenu(SkMp.uic3(1,1),<span class="keyword">...</span>
+0124             <span class="string">'Label'</span>,<span class="string">'Print'</span>,<span class="keyword">...</span>
+0125             <span class="string">'Callback'</span>,<span class="string">'printdlg'</span>,<span class="keyword">...</span>
+0126             <span class="string">'position'</span>,4);
+0127 SkMp.uic3(1,6) = uimenu(SkMp.uic3(1,1),<span class="keyword">...</span>
+0128             <span class="string">'Label'</span>,<span class="string">'Preferences'</span>,<span class="keyword">...</span>
+0129             <span class="string">'position'</span>,5);
+0130 SkMp.uic3(1,7) = uimenu(SkMp.uic3(1,6),<span class="keyword">...</span>
+0131             <span class="string">'Label'</span>,<span class="string">'Default'</span>,<span class="keyword">...</span>
+0132             <span class="string">'Callback'</span>,<span class="string">'SkMp = s_preferences(SkMp,0);'</span>);
+0133 SkMp.uic3(1,7) = uimenu(SkMp.uic3(1,6),<span class="keyword">...</span>
+0134             <span class="string">'Label'</span>,<span class="string">'Plot'</span>,<span class="keyword">...</span>
+0135             <span class="string">'Callback'</span>,<span class="string">'SkMp = s_preferences(SkMp,2);'</span>);
+0136 SkMp.uic3(1,8) = uimenu(SkMp.uic3(1,6),<span class="keyword">...</span>
+0137             <span class="string">'Label'</span>,<span class="string">'Plot color'</span>,<span class="keyword">...</span>
+0138             <span class="string">'Callback'</span>,<span class="string">'SkMp = s_preferences(SkMp,3);'</span>);
+0139 SkMp.uic3(1,9) = uimenu(SkMp.uic3(1,6),<span class="keyword">...</span>
+0140             <span class="string">'Label'</span>,<span class="string">'Plot sizes'</span>,<span class="keyword">...</span>
+0141             <span class="string">'Callback'</span>,<span class="string">'SkMp = s_preferences(SkMp,4);'</span>);
+0142 
+0143 SkMp.uic3(2,1) = uimenu(<span class="string">'Label'</span>,<span class="string">'Pos/time'</span>);
+0144 SkMp.uic3(2,2) = uimenu(SkMp.uic3(2,1),<span class="keyword">...</span>
+0145             <span class="string">'Label'</span>,<span class="string">'Display Pos/time'</span>,<span class="keyword">...</span>
+0146             <span class="string">'Callback'</span>,<span class="string">'skmp_disp_pos_time(SkMp)'</span>);
+0147 SkMp.uic3(2,3) = uimenu(SkMp.uic3(2,1),<span class="keyword">...</span>
+0148             <span class="string">'Label'</span>,<span class="string">'New Pos/time'</span>,<span class="keyword">...</span>
+0149             <span class="string">'Callback'</span>,checkokstr);
+0150 SkMp.uic3(3,1) = uimenu(<span class="string">'Label'</span>,<span class="string">'Star'</span>);
+0151 SkMp.uic3(3,2) = uimenu(SkMp.uic3(3,1),<span class="keyword">...</span>
+0152             <span class="string">'Label'</span>,<span class="string">'Inform'</span>,<span class="keyword">...</span>
+0153             <span class="string">'Callback'</span>,<span class="string">'[SkMp,staraz,starze,starid,starmagn,thisstar] = updstrinfo(SkMp);'</span>);
+0154 SkMp.uic3(3,3) = uimenu(SkMp.uic3(3,1),<span class="string">'Label'</span>,<span class="string">'Plot star spectra'</span>,<span class="string">'Callback'</span>,<span class="string">'[ph,SkMp]=plotspec(SkMp);'</span>);
+0155 SkMp.uic3(3,4) = uimenu(SkMp.uic3(3,1),<span class="string">'Label'</span>,<span class="string">'assign star spectra'</span>,<span class="string">'Callback'</span>,<span class="string">'guigetspec(SkMp)'</span>);
+0156 SkMp.uic3(3,5) = uimenu(SkMp.uic3(3,1),<span class="string">'Label'</span>,<span class="string">'Ra/decl'</span>,<span class="string">'Callback'</span>,str0);
+0157 SkMp.uic3(3,6) = uimenu(SkMp.uic3(3,1),<span class="string">'Label'</span>,<span class="string">'Azim/Zen'</span>,<span class="string">'Callback'</span>,str1);
+0158 
+0159 SkMp.uic3(4,1) = uimenu(<span class="string">'Label'</span>,<span class="string">'Help'</span>);
+0160 SkMp.uic3(4,2) = uimenu(SkMp.uic3(4,1),<span class="keyword">...</span>
+0161             <span class="string">'Label'</span>,<span class="string">'Help'</span>,<span class="keyword">...</span>
+0162             <span class="string">'Callback'</span>,<span class="string">'skyhelp(5)'</span>);
+0163 SkMp.uic3(4,3) = uimenu(SkMp.uic3(4,1),<span class="keyword">...</span>
+0164             <span class="string">'Label'</span>,<span class="string">'WARRANTY'</span>,<span class="keyword">...</span>
+0165             <span class="string">'Callback'</span>,<span class="string">'skyhelp(6)'</span>);
+0166 SkMp.uic3(4,4) = uimenu(SkMp.uic3(4,1),<span class="keyword">...</span>
+0167             <span class="string">'Label'</span>,<span class="string">'Copyright'</span>,<span class="keyword">...</span>
+0168             <span class="string">'Callback'</span>,<span class="string">'skyhelp(7)'</span>);
+0169 
+0170 
+0171 set(SkMp.uic3(:),<span class="string">'handlevisibility'</span>,<span class="string">'callback'</span>)
+0172 set(SkMp.ui3(:),<span class="string">'handlevisibility'</span>,<span class="string">'callback'</span>)
+0173 
+0174 <span class="keyword">if</span> ( version_nr &gt; 5.1 )
+0175   
+0176   set(SkMp.ui3(1),<span class="string">'TooltipString'</span>,<span class="string">'Change NORTH-SOUTH angle'</span>);
+0177   set(SkMp.ui3(2),<span class="string">'TooltipString'</span>,<span class="string">'Change ROLL angle'</span>);
+0178   set(SkMp.ui3(3),<span class="string">'TooltipString'</span>,<span class="string">'Change EAST-WEST angle'</span>);
+0179   set(SkMp.ui3(4),<span class="string">'TooltipString'</span>,<span class="string">'Change FIELD OF VIEW angle'</span>);
+0180   set(SkMp.ui3(5),<span class="string">'TooltipString'</span>,<span class="string">'Change MAGNITUDE OF FAINTEST STAR'</span>);
+0181   
+0182 <span class="keyword">else</span>
+0183   
+0184   set(SkMp.uic3(1,4),<span class="string">'Callback'</span>,<span class="string">'pagedlg'</span>)
+0185   
+0186 <span class="keyword">end</span>
+0187 <span class="keyword">if</span> nargin &gt; 1
+0188   
+0189   SkMp.ui815 = [];
+0190   SkMp.tid0 = time;
+0191   SkMp.pos0 = pos;
+0192   [SkMp] = <a href="checkisok.html" class="code" title="function [SkMp] = checkisok(SkMp)">checkisok</a>(SkMp);
+0193   
+0194 <span class="keyword">else</span>
+0195   
+0196   [stnnames,SkMp] = <a href="checkok.html" class="code" title="function [stnnames,SkMp] = checkok(SkMp)">checkok</a>(SkMp);
+0197   
+0198 <span class="keyword">end</span>
+0199 
+0200 <span class="keyword">if</span> nargout == 0
+0201   
+0202   assignin(<span class="string">'base'</span>,<span class="string">'SkMp'</span>,SkMp)
+0203   
+0204 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of imgs_keograms</title>
+  <meta name="keywords" content="imgs_keograms">
+  <meta name="description" content="imgs_keograms - make keograms from sequence of image files.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>imgs_keograms
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>imgs_keograms - make keograms from sequence of image files.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [varargout] = imgs_keograms(files,locnrs,line_not_columns,optp,PO) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> imgs_keograms - make keograms from sequence of image files.
+   FILES should be a char arry with filenames (readable) (full or
+   relative path) LOCNRS should be an Nx1 or 1xN array with line
+   numbers for the lines or columns to take from an
+   image. LINE_NOT_COLUMNS binary array with same size as LOCNRS
+   (1 for taking a line 0 for column at the corresponging
+   position) OPTP should be an array with OPTPAR, PO should be a
+   struct with PRE_PROC_OPS
+ 
+ Example
+ lines_or_column_nr = [21, 12, 123, ...,32];
+ lines_not_columns =  [ 1,  1,   0, ..., 1]; 
+ [K1,K2,...,Kn,exp_T,obs_Times,filt_id] = imgs_keograms(files,locnrs,line_not_columns,optp,PO)
+ 
+   See also: INIMG, STARCAL, TYPICAL_PRE_PROC_OPS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>	FFS_CORRECTION2 - flat-field variation for optical transfer</li><li><a href="../Fits_tools/fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>	FITSFINDINHEADER finds string S in fitsheader H</li><li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="../Fits_tools/time_from_header.html" class="code" title="function [time,timestr] = time_from_header(header)">time_from_header</a>	TIME_FROM_HEADER parses a ALIS header for time</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/alis_imgs2keos.html" class="code" title="function [keo,wl_emi,t_obs,optps,filenames,exptimes] = alis_imgs2keos(filenames,PO)">alis_imgs2keos</a>	ALIS_IMGS2KEOS - make overview-keograms</li><li><a href="../Tomography/tomo20061212ariel3.html" class="code" title="">tomo20061212ariel3</a>	TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</li><li><a href="../Tomography/tomo20080305FinalIR_082011.html" class="code" title="">tomo20080305FinalIR_082011</a>	TOMO20080305FinalIR_082011 - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="../Tomography/tomo20080305NewBeginnings.html" class="code" title="">tomo20080305NewBeginnings</a>	TOMO20080305NewBeginnings - script for tomographing ALIS 20080305 event, 18:40 UT</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [varargout] = imgs_keograms(files,locnrs,line_not_columns,optp,PO)</a>
+0002 <span class="comment">% imgs_keograms - make keograms from sequence of image files.</span>
+0003 <span class="comment">%   FILES should be a char arry with filenames (readable) (full or</span>
+0004 <span class="comment">%   relative path) LOCNRS should be an Nx1 or 1xN array with line</span>
+0005 <span class="comment">%   numbers for the lines or columns to take from an</span>
+0006 <span class="comment">%   image. LINE_NOT_COLUMNS binary array with same size as LOCNRS</span>
+0007 <span class="comment">%   (1 for taking a line 0 for column at the corresponging</span>
+0008 <span class="comment">%   position) OPTP should be an array with OPTPAR, PO should be a</span>
+0009 <span class="comment">%   struct with PRE_PROC_OPS</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Example</span>
+0012 <span class="comment">% lines_or_column_nr = [21, 12, 123, ...,32];</span>
+0013 <span class="comment">% lines_not_columns =  [ 1,  1,   0, ..., 1];</span>
+0014 <span class="comment">% [K1,K2,...,Kn,exp_T,obs_Times,filt_id] = imgs_keograms(files,locnrs,line_not_columns,optp,PO)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   See also: INIMG, STARCAL, TYPICAL_PRE_PROC_OPS</span>
+0017 
+0018 
+0019 <span class="comment">%   Copyright � 20050109 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0020 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0021 
+0022 <span class="keyword">if</span> numel(line_not_columns)==1
+0023   line_not_columns = line_not_columns*ones(size(locnrs));
+0024 <span class="keyword">end</span>
+0025 
+0026 <span class="keyword">if</span> nargin&gt;=4 &amp;&amp; length(optp)&gt;9
+0027   ff = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>(PO.outimgsize.*[1 1],optp,optp(9));
+0028 <span class="keyword">else</span>
+0029   <span class="keyword">try</span>
+0030     ff = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>(PO.outimgsize.*[1 1],optp,optp.mod);
+0031   <span class="keyword">catch</span>
+0032     ff = 1;
+0033   <span class="keyword">end</span>
+0034 <span class="keyword">end</span>
+0035 <span class="keyword">if</span> isempty(ff)
+0036   ff = 1;
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="keyword">for</span> i1 = size(files,1):-1:1,
+0040   <span class="comment">%disp(i1)</span>
+0041   [data1,head1,o] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(i1,:),PO);
+0042   <span class="keyword">if</span> isempty(data1)
+0043     <span class="comment">% In case inimg returns an empty image just skip the rest and</span>
+0044     <span class="comment">% try with the next image.</span>
+0045     <span class="keyword">continue</span>
+0046   <span class="keyword">end</span>
+0047   exptimes(i1) =  o.exptime;
+0048   <span class="keyword">try</span>
+0049     optps(i1,:) = o.optpar;
+0050   <span class="keyword">catch</span>
+0051     optps(i1,:) = nan;
+0052   <span class="keyword">end</span>
+0053   <span class="comment">%%%  Exposures shorter than 100 is assumed to be in s and</span>
+0054   <span class="comment">%%%  converted to ms.</span>
+0055   <span class="keyword">if</span> exptimes(i1)&lt;100
+0056     exptimes(i1) = 1000*exptimes(i1);
+0057   <span class="keyword">end</span>
+0058   <span class="keyword">if</span> ~isempty(o.time)
+0059     Tstrs(i1,:) = o.time;
+0060   <span class="keyword">else</span>
+0061     Tstrs(i1,:) = <a href="../Fits_tools/time_from_header.html" class="code" title="function [time,timestr] = time_from_header(header)">time_from_header</a>(head1);
+0062   <span class="keyword">end</span>
+0063   <span class="keyword">if</span> ~isempty(o.filter)
+0064     filters(i1) = o.filter;
+0065   <span class="keyword">else</span>
+0066     hindx = <a href="../Fits_tools/fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(head1,<span class="string">'ALISEMI'</span>);
+0067     <span class="keyword">if</span> ~isempty(hindx)
+0068       <span class="comment">%filters(i1) = str2num(head1(hindx,12:30));</span>
+0069       filters(i1) = str2double(head1(hindx,12:30));
+0070     <span class="keyword">else</span>
+0071       filters(i1) = 0;
+0072     <span class="keyword">end</span>
+0073   <span class="keyword">end</span>
+0074   data1 = 1000*data1./ff/exptimes(i1);
+0075   <span class="keyword">for</span> j2 = 1:length(locnrs)
+0076     
+0077     <span class="keyword">if</span> line_not_columns(j2) &gt; 0
+0078       
+0079       utargs(i1,j2,:) = data1(locnrs(j2),:);
+0080       
+0081     <span class="keyword">else</span>
+0082       
+0083       utargs(i1,j2,:) = data1(:,locnrs(j2));
+0084       
+0085     <span class="keyword">end</span>
+0086     
+0087   <span class="keyword">end</span>
+0088   
+0089 <span class="keyword">end</span>
+0090 
+0091 <span class="keyword">for</span> i1 = length(locnrs):-1:1,
+0092   
+0093   varargout(i1) = {squeeze(utargs(:,i1,:))};
+0094   
+0095 <span class="keyword">end</span>
+0096 
+0097 <span class="keyword">if</span> nargout&gt;length(locnrs)
+0098   
+0099   varargout(length(locnrs)+1) = {exptimes};
+0100   
+0101 <span class="keyword">end</span>
+0102 <span class="keyword">if</span> nargout&gt;length(locnrs)+1
+0103   
+0104   varargout(length(locnrs)+2) = {Tstrs};
+0105   
+0106 <span class="keyword">end</span>
+0107 <span class="keyword">if</span> nargout&gt;length(locnrs)+2
+0108   
+0109   varargout(length(locnrs)+3) = {filters};
+0110   
+0111 <span class="keyword">end</span>
+0112 <span class="keyword">if</span> nargout&gt;length(locnrs)+3
+0113   
+0114   varargout(length(locnrs)+4) = {optps};
+0115   
+0116 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

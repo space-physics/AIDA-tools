@@ -1,0 +1,16 @@
+#! /usr/bin/gawk -f
+
+#Searches Unix time stamps from TACO Luca data files
+#and prints as UTC date
+
+$1 ~ /^#Tid.*/ {
+ 
+  #NB third argument to strftime: 1=always UTC, not locale timezone
+  #printf("File:%s Date:%s\n",FILENAME,strftime("%FT%H:%M:%S",$2,1))
+  printf("%s\n",strftime("%Y %m %d %H %M %S",$2,1))
+
+  #no need to search through the rest of the image file!!
+  nextfile 
+
+}
+

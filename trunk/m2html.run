@@ -1,0 +1,23 @@
+
+Question: I would like to create a full dependency graph of my functions, m2html creates one for each separate directory.
+    Answer: To build the dependency graph of all your files (by default, it builds a dependency graph for each directory), the solution is:
+
+        run m2html recursively using these options:
+
+        >> m2html(..., 'recursive','on', 'global','on', 'save','on', ...)
+
+        This will parse all the files recursively ('recursive'), will look for all dependencies ('global') and will save the parsing in a MAT-file ('save').
+        then you should have a 'm2html.mat' file in the output directory that can be used with 'mdot.m' to create the graph you want:
+
+        >> mdot('PATHTODOC/m2html.mat','m2html.dot');
+        >> !dot -Tpng m2html.dot -o m2html.png 
+
+        and then you have your full dependency graph m2html.png.
+
+    This dependency graph has been created this way.
+    In the next release of M2HTML, this full dependency graph will be automatically generated if optional parameters 'global' and 'graph' are activated.
+
+
+dirs4doc = {'ALIS','ASK/HSOFT','ASK/IC','Aurora','Camera','EARTH','Fits_tools','Geometry','I3D','Imgtools','Inversion','Skymap','Spectral_cal','Starcal','Tomography','tools'}
+
+m2html('mfiles',dirs4doc,'htmldir','Html-Docs','recursive','on','global','on','todo','on','graph','on','template','frame','index','menu','save','on')

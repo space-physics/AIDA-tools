@@ -1,0 +1,364 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of freezeColors</title>
+  <meta name="keywords" content="freezeColors">
+  <meta name="description" content="freezeColors  Lock colors of plot, enabling multiple colormaps per figure. (v2.3)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>freezeColors
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>freezeColors  Lock colors of plot, enabling multiple colormaps per figure. (v2.3)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function freezeColors(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> freezeColors  Lock colors of plot, enabling multiple colormaps per figure. (v2.3)
+
+   Problem: There is only one colormap per figure. This function provides
+       an easy solution when plots using different colomaps are desired 
+       in the same figure.
+
+   freezeColors freezes the colors of graphics objects in the current axis so 
+       that subsequent changes to the colormap (or caxis) will not change the
+       colors of these objects. freezeColors works on any graphics object 
+       with CData in indexed-color mode: surfaces, images, scattergroups, 
+       bargroups, patches, etc. It works by converting CData to true-color rgb
+       based on the colormap active at the time freezeColors is called.
+
+   The original indexed color data is saved, and can be restored using
+       unfreezeColors, making the plot once again subject to the colormap and
+       caxis.
+
+
+   Usage:
+       freezeColors        applies to all objects in current axis (gca),
+       freezeColors(axh)   same, but works on axis axh.
+
+   Example:
+       subplot(2,1,1); imagesc(X); colormap hot; freezeColors
+       subplot(2,1,2); imagesc(Y); colormap hsv; freezeColors etc...
+
+       Note: colorbars must also be frozen. Due to Matlab 'improvements' this can
+                no longer be done with freezeColors. Instead, please
+                use the function CBFREEZE by Carlos Adrian Vargas Aguilera
+                that can be downloaded from the MATLAB File Exchange
+                (http://www.mathworks.com/matlabcentral/fileexchange/24371)
+
+       h=colorbar; cbfreeze(h), or simply cbfreeze(colorbar)
+
+       For additional examples, see test/test_main.m
+
+   Side effect on render mode: freezeColors does not work with the painters
+       renderer, because Matlab doesn't support rgb color data in
+       painters mode. If the current renderer is painters, freezeColors
+       changes it to zbuffer. This may have unexpected effects on other aspects
+          of your plots.
+
+       See also unfreezeColors, freezeColors_pub.html, cbfreeze.
+
+
+   John Iversen (iversen@nsi.edu) 3/23/05</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function hout = getCDataHandles(h)</a></li><li><a href="#_sub2" class="code">function hAx = getParentAxes(h)</a></li><li><a href="#_sub3" class="code">function [h, nancolor] = checkArgs(args)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function freezeColors(varargin)</a>
+0002 <span class="comment">% freezeColors  Lock colors of plot, enabling multiple colormaps per figure. (v2.3)</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   Problem: There is only one colormap per figure. This function provides</span>
+0005 <span class="comment">%       an easy solution when plots using different colomaps are desired</span>
+0006 <span class="comment">%       in the same figure.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   freezeColors freezes the colors of graphics objects in the current axis so</span>
+0009 <span class="comment">%       that subsequent changes to the colormap (or caxis) will not change the</span>
+0010 <span class="comment">%       colors of these objects. freezeColors works on any graphics object</span>
+0011 <span class="comment">%       with CData in indexed-color mode: surfaces, images, scattergroups,</span>
+0012 <span class="comment">%       bargroups, patches, etc. It works by converting CData to true-color rgb</span>
+0013 <span class="comment">%       based on the colormap active at the time freezeColors is called.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   The original indexed color data is saved, and can be restored using</span>
+0016 <span class="comment">%       unfreezeColors, making the plot once again subject to the colormap and</span>
+0017 <span class="comment">%       caxis.</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   Usage:</span>
+0021 <span class="comment">%       freezeColors        applies to all objects in current axis (gca),</span>
+0022 <span class="comment">%       freezeColors(axh)   same, but works on axis axh.</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%   Example:</span>
+0025 <span class="comment">%       subplot(2,1,1); imagesc(X); colormap hot; freezeColors</span>
+0026 <span class="comment">%       subplot(2,1,2); imagesc(Y); colormap hsv; freezeColors etc...</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%       Note: colorbars must also be frozen. Due to Matlab 'improvements' this can</span>
+0029 <span class="comment">%                no longer be done with freezeColors. Instead, please</span>
+0030 <span class="comment">%                use the function CBFREEZE by Carlos Adrian Vargas Aguilera</span>
+0031 <span class="comment">%                that can be downloaded from the MATLAB File Exchange</span>
+0032 <span class="comment">%                (http://www.mathworks.com/matlabcentral/fileexchange/24371)</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%       h=colorbar; cbfreeze(h), or simply cbfreeze(colorbar)</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%       For additional examples, see test/test_main.m</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%   Side effect on render mode: freezeColors does not work with the painters</span>
+0039 <span class="comment">%       renderer, because Matlab doesn't support rgb color data in</span>
+0040 <span class="comment">%       painters mode. If the current renderer is painters, freezeColors</span>
+0041 <span class="comment">%       changes it to zbuffer. This may have unexpected effects on other aspects</span>
+0042 <span class="comment">%          of your plots.</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">%       See also unfreezeColors, freezeColors_pub.html, cbfreeze.</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">%   John Iversen (iversen@nsi.edu) 3/23/05</span>
+0048 <span class="comment">%</span>
+0049 
+0050 <span class="comment">%   Changes:</span>
+0051 <span class="comment">%   JRI (iversen@nsi.edu) 4/19/06   Correctly handles scaled integer cdata</span>
+0052 <span class="comment">%   JRI 9/1/06   should now handle all objects with cdata: images, surfaces,</span>
+0053 <span class="comment">%                scatterplots. (v 2.1)</span>
+0054 <span class="comment">%   JRI 11/11/06 Preserves NaN colors. Hidden option (v 2.2, not uploaded)</span>
+0055 <span class="comment">%   JRI 3/17/07  Preserve caxis after freezing--maintains colorbar scale (v 2.3)</span>
+0056 <span class="comment">%   JRI 4/12/07  Check for painters mode as Matlab doesn't support rgb in it.</span>
+0057 <span class="comment">%   JRI 4/9/08   Fix preserving caxis for objects within hggroups (e.g. contourf)</span>
+0058 <span class="comment">%   JRI 4/7/10   Change documentation for colorbars</span>
+0059 
+0060 <span class="comment">% Hidden option for NaN colors:</span>
+0061 <span class="comment">%   Missing data are often represented by NaN in the indexed color</span>
+0062 <span class="comment">%   data, which renders transparently. This transparency will be preserved</span>
+0063 <span class="comment">%   when freezing colors. If instead you wish such gaps to be filled with</span>
+0064 <span class="comment">%   a real color, add 'nancolor',[r g b] to the end of the arguments. E.g.</span>
+0065 <span class="comment">%   freezeColors('nancolor',[r g b]) or freezeColors(axh,'nancolor',[r g b]),</span>
+0066 <span class="comment">%   where [r g b] is a color vector. This works on images &amp; pcolor, but not on</span>
+0067 <span class="comment">%   surfaces.</span>
+0068 <span class="comment">%   Thanks to Fabiano Busdraghi and Jody Klymak for the suggestions. Bugfixes</span>
+0069 <span class="comment">%   attributed in the code.</span>
+0070 
+0071 <span class="comment">% Free for all uses, but please retain the following:</span>
+0072 <span class="comment">%   Original Author:</span>
+0073 <span class="comment">%   John Iversen, 2005-10</span>
+0074 <span class="comment">%   john_iversen@post.harvard.edu</span>
+0075 
+0076 appdatacode = <span class="string">'JRI__freezeColorsData'</span>;
+0077 
+0078 [h, nancolor] = <a href="#_sub3" class="code" title="subfunction [h, nancolor] = checkArgs(args)">checkArgs</a>(varargin);
+0079 
+0080 <span class="comment">%gather all children with scaled or indexed CData</span>
+0081 cdatah = <a href="#_sub1" class="code" title="subfunction hout = getCDataHandles(h)">getCDataHandles</a>(h);
+0082 
+0083 <span class="comment">%current colormap</span>
+0084 cmap = colormap;
+0085 nColors = size(cmap,1);
+0086 cax = caxis;
+0087 
+0088 <span class="comment">% convert object color indexes into colormap to true-color data using</span>
+0089 <span class="comment">%  current colormap</span>
+0090 <span class="keyword">for</span> hh = cdatah',
+0091     g = get(hh);
+0092     
+0093     <span class="comment">%preserve parent axis clim</span>
+0094     parentAx = <a href="#_sub2" class="code" title="subfunction hAx = getParentAxes(h)">getParentAxes</a>(hh);
+0095     originalClim = get(parentAx, <span class="string">'clim'</span>);    
+0096    
+0097     <span class="comment">%   Note: Special handling of patches: For some reason, setting</span>
+0098     <span class="comment">%   cdata on patches created by bar() yields an error,</span>
+0099     <span class="comment">%   so instead we'll set facevertexcdata instead for patches.</span>
+0100     <span class="keyword">if</span> ~strcmp(g.Type,<span class="string">'patch'</span>),
+0101         cdata = g.CData;
+0102     <span class="keyword">else</span>
+0103         cdata = g.FaceVertexCData; 
+0104     <span class="keyword">end</span>
+0105     
+0106     <span class="comment">%get cdata mapping (most objects (except scattergroup) have it)</span>
+0107     <span class="keyword">if</span> isfield(g,<span class="string">'CDataMapping'</span>),
+0108         scalemode = g.CDataMapping;
+0109     <span class="keyword">else</span>
+0110         scalemode = <span class="string">'scaled'</span>;
+0111     <span class="keyword">end</span>
+0112     
+0113     <span class="comment">%save original indexed data for use with unfreezeColors</span>
+0114     siz = size(cdata);
+0115     setappdata(hh, appdatacode, {cdata scalemode});
+0116 
+0117     <span class="comment">%convert cdata to indexes into colormap</span>
+0118     <span class="keyword">if</span> strcmp(scalemode,<span class="string">'scaled'</span>),
+0119         <span class="comment">%4/19/06 JRI, Accommodate scaled display of integer cdata:</span>
+0120         <span class="comment">%       in MATLAB, uint * double = uint, so must coerce cdata to double</span>
+0121         <span class="comment">%       Thanks to O Yamashita for pointing this need out</span>
+0122         idx = ceil( (double(cdata) - cax(1)) / (cax(2)-cax(1)) * nColors);
+0123     <span class="keyword">else</span> <span class="comment">%direct mapping</span>
+0124         idx = cdata;
+0125         <span class="comment">%10/8/09 in case direct data is non-int (e.g. image;freezeColors)</span>
+0126         <span class="comment">% (Floor mimics how matlab converts data into colormap index.)</span>
+0127         <span class="comment">% Thanks to D Armyr for the catch</span>
+0128         idx = floor(idx);
+0129     <span class="keyword">end</span>
+0130     
+0131     <span class="comment">%clamp to [1, nColors]</span>
+0132     idx(idx&lt;1) = 1;
+0133     idx(idx&gt;nColors) = nColors;
+0134 
+0135     <span class="comment">%handle nans in idx</span>
+0136     nanmask = isnan(idx);
+0137     idx(nanmask)=1; <span class="comment">%temporarily replace w/ a valid colormap index</span>
+0138 
+0139     <span class="comment">%make true-color data--using current colormap</span>
+0140     realcolor = zeros(siz);
+0141     <span class="keyword">for</span> i = 1:3,
+0142         c = cmap(idx,i);
+0143         c = reshape(c,siz);
+0144         c(nanmask) = nancolor(i); <span class="comment">%restore Nan (or nancolor if specified)</span>
+0145         realcolor(:,:,i) = c;
+0146     <span class="keyword">end</span>
+0147     
+0148     <span class="comment">%apply new true-color color data</span>
+0149     
+0150     <span class="comment">%true-color is not supported in painters renderer, so switch out of that</span>
+0151     <span class="keyword">if</span> strcmp(get(gcf,<span class="string">'renderer'</span>), <span class="string">'painters'</span>),
+0152         set(gcf,<span class="string">'renderer'</span>,<span class="string">'zbuffer'</span>);
+0153     <span class="keyword">end</span>
+0154     
+0155     <span class="comment">%replace original CData with true-color data</span>
+0156     <span class="keyword">if</span> ~strcmp(g.Type,<span class="string">'patch'</span>),
+0157         set(hh,<span class="string">'CData'</span>,realcolor);
+0158     <span class="keyword">else</span>
+0159         set(hh,<span class="string">'faceVertexCData'</span>,permute(realcolor,[1 3 2]))
+0160     <span class="keyword">end</span>
+0161     
+0162     <span class="comment">%restore clim (so colorbar will show correct limits)</span>
+0163     <span class="keyword">if</span> ~isempty(parentAx),
+0164         set(parentAx,<span class="string">'clim'</span>,originalClim)
+0165     <span class="keyword">end</span>
+0166     
+0167 <span class="keyword">end</span> <span class="comment">%loop on indexed-color objects</span>
+0168 
+0169 
+0170 <span class="comment">% ============================================================================ %</span>
+0171 <span class="comment">% Local functions</span>
+0172 
+0173 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0174 <span class="comment">%% getCDataHandles -- get handles of all descendents with indexed CData</span>
+0175 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0176 
+0177 <a name="_sub1" href="#_subfunctions" class="code">function hout = getCDataHandles(h)</a>
+0178 <span class="comment">% getCDataHandles  Find all objects with indexed CData</span>
+0179 
+0180 <span class="comment">%recursively descend object tree, finding objects with indexed CData</span>
+0181 <span class="comment">% An exception: don't include children of objects that themselves have CData:</span>
+0182 <span class="comment">%   for example, scattergroups are non-standard hggroups, with CData. Changing</span>
+0183 <span class="comment">%   such a group's CData automatically changes the CData of its children,</span>
+0184 <span class="comment">%   (as well as the children's handles), so there's no need to act on them.</span>
+0185 
+0186 error(nargchk(1,1,nargin,<span class="string">'struct'</span>))
+0187 
+0188 hout = [];
+0189 <span class="keyword">if</span> isempty(h),<span class="keyword">return</span>;<span class="keyword">end</span>
+0190 
+0191 ch = get(h,<span class="string">'children'</span>);
+0192 <span class="keyword">for</span> hh = ch'
+0193     g = get(hh);
+0194     <span class="keyword">if</span> isfield(g,<span class="string">'CData'</span>),     <span class="comment">%does object have CData?</span>
+0195         <span class="comment">%is it indexed/scaled?</span>
+0196         <span class="keyword">if</span> ~isempty(g.CData) &amp;&amp; isnumeric(g.CData) &amp;&amp; size(g.CData,3)==1, 
+0197             hout = [hout; hh]; <span class="comment">%#ok&lt;AGROW&gt; %yes, add to list</span>
+0198         <span class="keyword">end</span>
+0199     <span class="keyword">else</span> <span class="comment">%no CData, see if object has any interesting children</span>
+0200             hout = [hout; <a href="#_sub1" class="code" title="subfunction hout = getCDataHandles(h)">getCDataHandles</a>(hh)]; <span class="comment">%#ok&lt;AGROW&gt;</span>
+0201     <span class="keyword">end</span>
+0202 <span class="keyword">end</span>
+0203 
+0204 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0205 <span class="comment">%% getParentAxes -- return handle of axes object to which a given object belongs</span>
+0206 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0207 <a name="_sub2" href="#_subfunctions" class="code">function hAx = getParentAxes(h)</a>
+0208 <span class="comment">% getParentAxes  Return enclosing axes of a given object (could be self)</span>
+0209 
+0210 error(nargchk(1,1,nargin,<span class="string">'struct'</span>))
+0211 <span class="comment">%object itself may be an axis</span>
+0212 <span class="keyword">if</span> strcmp(get(h,<span class="string">'type'</span>),<span class="string">'axes'</span>),
+0213     hAx = h;
+0214     <span class="keyword">return</span>
+0215 <span class="keyword">end</span>
+0216 
+0217 parent = get(h,<span class="string">'parent'</span>);
+0218 <span class="keyword">if</span> (strcmp(get(parent,<span class="string">'type'</span>), <span class="string">'axes'</span>)),
+0219     hAx = parent;
+0220 <span class="keyword">else</span>
+0221     hAx = <a href="#_sub2" class="code" title="subfunction hAx = getParentAxes(h)">getParentAxes</a>(parent);
+0222 <span class="keyword">end</span>
+0223 
+0224 
+0225 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0226 <span class="comment">%% checkArgs -- Validate input arguments</span>
+0227 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0228 
+0229 <a name="_sub3" href="#_subfunctions" class="code">function [h, nancolor] = checkArgs(args)</a>
+0230 <span class="comment">% checkArgs  Validate input arguments to freezeColors</span>
+0231 
+0232 nargs = length(args);
+0233 error(nargchk(0,3,nargs,<span class="string">'struct'</span>))
+0234 
+0235 <span class="comment">%grab handle from first argument if we have an odd number of arguments</span>
+0236 <span class="keyword">if</span> mod(nargs,2),
+0237     h = args{1};
+0238     <span class="keyword">if</span> ~ishandle(h),
+0239         error(<span class="string">'JRI:freezeColors:checkArgs:invalidHandle'</span>,<span class="keyword">...</span>
+0240             <span class="string">'The first argument must be a valid graphics handle (to an axis)'</span>)
+0241     <span class="keyword">end</span>
+0242     <span class="comment">% 4/2010 check if object to be frozen is a colorbar</span>
+0243     <span class="keyword">if</span> strcmp(get(h,<span class="string">'Tag'</span>),<span class="string">'Colorbar'</span>),
+0244       <span class="keyword">if</span> ~exist(<span class="string">'cbfreeze.m'</span>),
+0245         warning(<span class="string">'JRI:freezeColors:checkArgs:cannotFreezeColorbar'</span>,<span class="keyword">...</span>
+0246             [<span class="string">'You seem to be attempting to freeze a colorbar. This no longer'</span><span class="keyword">...</span>
+0247             <span class="string">'works. Please read the help for freezeColors for the solution.'</span>])
+0248       <span class="keyword">else</span>
+0249         cbfreeze(h);
+0250         <span class="keyword">return</span>
+0251       <span class="keyword">end</span>
+0252     <span class="keyword">end</span>
+0253     args{1} = [];
+0254     nargs = nargs-1;
+0255 <span class="keyword">else</span>
+0256     h = gca;
+0257 <span class="keyword">end</span>
+0258 
+0259 <span class="comment">%set nancolor if that option was specified</span>
+0260 nancolor = [nan nan nan];
+0261 <span class="keyword">if</span> nargs == 2,
+0262     <span class="keyword">if</span> strcmpi(args{end-1},<span class="string">'nancolor'</span>),
+0263         nancolor = args{end};
+0264         <span class="keyword">if</span> ~all(size(nancolor)==[1 3]),
+0265             error(<span class="string">'JRI:freezeColors:checkArgs:badColorArgument'</span>,<span class="keyword">...</span>
+0266                 <span class="string">'nancolor must be [r g b] vector'</span>);
+0267         <span class="keyword">end</span>
+0268         nancolor(nancolor&gt;1) = 1; nancolor(nancolor&lt;0) = 0;
+0269     <span class="keyword">else</span>
+0270         error(<span class="string">'JRI:freezeColors:checkArgs:unrecognizedOption'</span>,<span class="keyword">...</span>
+0271             <span class="string">'Unrecognized option (%s). Only ''nancolor'' is valid.'</span>,args{end-1})
+0272     <span class="keyword">end</span>
+0273 <span class="keyword">end</span>
+0274 
+0275</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

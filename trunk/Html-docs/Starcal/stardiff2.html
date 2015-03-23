@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of stardiff2</title>
+  <meta name="keywords" content="stardiff2">
+  <meta name="description" content="STARDIFF2 - total error of starfield fit.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>stardiff2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STARDIFF2 - total error of starfield fit.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [diff] = stardiff2(fv,xmin,xmax,ymin,ymax,starmat,x0,y0,d_x0y0) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STARDIFF2 - total error of starfield fit.
+ 
+ STARDIFF2 calculates the sum of the square of deviation of 
+ a 2D gaussian clock and the intensity  of the image ( 10x10 )
+ above the mean of the frame  of the image.
+ 
+ The function is used for automatic fitting of a 2D Gaussian to
+ fit a star intensity distribution, and thus finding the star.
+
+ Calling:
+  [diff] = stardiff2(fv,xmin,xmax,ymin,ymax,starmat,x0,y0,d_x0y0)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>	x = xx( phi, lambda , alt )</li><li><a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>	y = yy( phi, lambda, alt)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Starcal/M7/autoidentify.html" class="code" title="function [idstarsok,stars_par] = autoidentify(SkMp)">autoidentify</a>	AUTOIDENTIFY - automatically identify all the stars of PLSTARS</li><li><a href="sort_out.html" class="code" title="function [identstars] = sort_out(in_i,in_j,in_I,bild)">sort_out</a>	SORT_OUT - finds the possible stars among the local maxima.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [diff] = stardiff2(fv,xmin,xmax,ymin,ymax,starmat,x0,y0,d_x0y0)</a>
+0002 <span class="comment">% STARDIFF2 - total error of starfield fit.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% STARDIFF2 calculates the sum of the square of deviation of</span>
+0005 <span class="comment">% a 2D gaussian clock and the intensity  of the image ( 10x10 )</span>
+0006 <span class="comment">% above the mean of the frame  of the image.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% The function is used for automatic fitting of a 2D Gaussian to</span>
+0009 <span class="comment">% fit a star intensity distribution, and thus finding the star.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Calling:</span>
+0012 <span class="comment">%  [diff] = stardiff2(fv,xmin,xmax,ymin,ymax,starmat,x0,y0,d_x0y0)</span>
+0013 
+0014 <span class="comment">%   Copyright � 19981022 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0015 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0016 
+0017 delta_x0y0 = 100;
+0018 <span class="keyword">if</span> nargin&gt;8
+0019   
+0020   delta_x0y0 = d_x0y0;
+0021   
+0022 <span class="keyword">end</span>
+0023 x = xmin:xmax;
+0024 y = ymin:ymax;
+0025 [<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>,<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>] = meshgrid(x,y);
+0026 <span class="comment">% xx = xx;</span>
+0027 <span class="comment">% yy = yy;</span>
+0028 
+0029 background = ( mean(starmat(1,:))   + mean(starmat(<span class="keyword">end</span>,:)) + <span class="keyword">...</span>
+0030            mean(starmat(:,end)) + mean(starmat(:,1)) )/4;
+0031 stari = fv(3)*exp(- ((fv(4)*(<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>-fv(1)).^2 + <span class="keyword">...</span>
+0032                       2*fv(5)*(<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>-fv(1)).*(<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>-fv(2)) + <span class="keyword">...</span>
+0033                       fv(6)*(<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>-fv(2)).^2)));
+0034 
+0035 diffm = starmat-background-stari+abs(fv(3)*(fv(3)&lt;0));
+0036 diff = sum(diffm(:).^2) + delta_x0y0*((fv(1)-x0)^2+(fv(2)-y0)^2);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

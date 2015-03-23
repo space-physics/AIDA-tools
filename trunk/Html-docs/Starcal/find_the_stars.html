@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of find_the_stars</title>
+  <meta name="keywords" content="find_the_stars">
+  <meta name="description" content="FIND_THE_STARS - finds stars in images.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>find_the_stars
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>FIND_THE_STARS - finds stars in images.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [out_i,out_j,out_I] = find_the_stars(img_in) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FIND_THE_STARS - finds stars in images. 
+ OUT_I, OUT_J, are the horizontal and vertical image coordinates
+ of the stars; OUT_I is the star intensity. IMG_IN is the image.
+ 
+ Calling:
+ [out_i,out_j,out_I] = find_the_stars(img_in)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="find_loc_max_2d.html" class="code" title="function [lmaxi,lmaxj,lmaxI] = find_loc_max_2d(in_matrix)">find_loc_max_2d</a>	FIND_LOC_MAX_2D find a set of local maximas i a matrix</li><li><a href="sort_bckgr.html" class="code" title="function [sI,indx] = sort_bckgr(i,j,I,bild)">sort_bckgr</a>	SORT_BCKGR - sorts the local image maxima in I(i,j)</li><li><a href="sort_out.html" class="code" title="function [identstars] = sort_out(in_i,in_j,in_I,bild)">sort_out</a>	SORT_OUT - finds the possible stars among the local maxima.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Starcal/M6/trackemdown.html" class="code" title="function [SkMp,identstars,optpar] = trackemdown(SkMp)">trackemdown</a>	TRACKEMDOWN - makes an automatic starcalibration.</li><li><a href="../Starcal/M7/trackemdown.html" class="code" title="function [SkMp,identstars,optpar] = trackemdown(SkMp)">trackemdown</a>	TRACKEMDOWN - makes an automatic starcalibration.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [out_i,out_j,out_I] = find_the_stars(img_in)</a>
+0002 <span class="comment">% FIND_THE_STARS - finds stars in images.</span>
+0003 <span class="comment">% OUT_I, OUT_J, are the horizontal and vertical image coordinates</span>
+0004 <span class="comment">% of the stars; OUT_I is the star intensity. IMG_IN is the image.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% [out_i,out_j,out_I] = find_the_stars(img_in)</span>
+0008 <span class="comment">%</span>
+0009 
+0010 <span class="comment">%   Copyright �  1998-2010 by Bjorn Gustavsson &lt;bjorn.gustavsson@irf.se&gt;</span>
+0011 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0012 
+0013 <span class="keyword">global</span> s_prefs
+0014 [lmaxi,lmaxj,lmaxI] = <a href="find_loc_max_2d.html" class="code" title="function [lmaxi,lmaxj,lmaxI] = find_loc_max_2d(in_matrix)">find_loc_max_2d</a>(img_in);
+0015 
+0016 [sI,indx] = <a href="sort_bckgr.html" class="code" title="function [sI,indx] = sort_bckgr(i,j,I,bild)">sort_bckgr</a>(lmaxi,lmaxj,lmaxI,img_in);
+0017 si = lmaxi(indx);
+0018 sj = lmaxj(indx);
+0019 
+0020 sI = fliplr(sI);
+0021 si = fliplr(si);
+0022 sj = fliplr(sj);
+0023 
+0024 max_n = min(max(size(sI)),s_prefs.mx_nr_st);
+0025 [starpars] = <a href="sort_out.html" class="code" title="function [identstars] = sort_out(in_i,in_j,in_I,bild)">sort_out</a>(si(1:max_n),sj(1:max_n),sI(1:max_n),img_in);
+0026 
+0027 [out_I,indx] = sort(starpars(:,6));
+0028 out_i = starpars(indx,3);
+0029 out_j = starpars(indx,4);
+0030 
+0031 out_I = flipud(out_I);
+0032 out_i = flipud(out_i);
+0033 out_j = flipud(out_j);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

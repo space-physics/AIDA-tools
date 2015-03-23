@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of saveas_acc</title>
+  <meta name="keywords" content="saveas_acc">
+  <meta name="description" content="SAVEAS_ACC - function to save optical parameters">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>saveas_acc
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SAVEAS_ACC - function to save optical parameters</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function saveok = saveas_acc(optpar,tvec,name,stnnr,az,ze,om) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SAVEAS_ACC - function to save optical parameters
+ in an improved format. 
+   
+ Calling:
+ saveok = saveas_acc(optpar,tvec,name,stnnr,az,ze,om)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Skymap/date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>	DATE2JULIANDATE calculates the julian date at 0h UT</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="loadparam.html" class="code" title="function SkMp = loadparam(SkMp, model, stnn)">loadparam</a>	LOADPARAM - loads parameters for lens model tests and</li><li><a href="saveacc.html" class="code" title="function saveok = saveacc(SkMp)">saveacc</a>	SAVEACC - save optical parameters as ACC-file</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function saveok = saveas_acc(optpar,tvec,name,stnnr,az,ze,om)</a>
+0002 <span class="comment">% SAVEAS_ACC - function to save optical parameters</span>
+0003 <span class="comment">% in an improved format.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">% saveok = saveas_acc(optpar,tvec,name,stnnr,az,ze,om)</span>
+0007 
+0008 
+0009 <span class="comment">%   Copyright � 2011 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0010 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0011 
+0012 <span class="keyword">if</span> om &lt; 0
+0013   name = [name,<span class="string">'.mat'</span>];
+0014   disp([<span class="string">'Non-parametric optical parameters for '</span>,num2str(tvec,<span class="string">'%4d%02d%02d-%02d:%02d:%02d'</span>)])
+0015   disp(optpar)
+0016   disp([<span class="string">'Is beeing saved in: '</span>,name])
+0017   save(name,<span class="string">'optpar'</span>)
+0018 <span class="keyword">else</span>
+0019   accvec = [stnnr, az, ze, <a href="../Skymap/date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>(tvec(1:3)-[0 4 0]) <span class="keyword">...</span>
+0020             <a href="../Skymap/date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>(tvec(1:3)+[0 6 0]) om optpar 0];
+0021   
+0022   disp(accvec)
+0023   disp([<span class="string">'Is beeing saved in: '</span>,name])
+0024   save(name,<span class="string">'accvec'</span>,<span class="string">'-ascii'</span>)
+0025   
+0026 <span class="keyword">end</span>
+0027 saveok = 1;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

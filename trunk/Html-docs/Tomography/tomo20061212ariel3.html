@@ -1,0 +1,369 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo20061212ariel3</title>
+  <meta name="keywords" content="tomo20061212ariel3">
+  <meta name="description" content="TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo20061212ariel3
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/alis_event_reader.html" class="code" title="function events = alis_event_reader(filename)">alis_event_reader</a>	ALIS_EVENT_READER - parse event-list for automatic data-processing</li><li><a href="../ALIS/alis_find_data2.html" class="code" title="function Filenames = alis_find_data2(STNs,date,start_time,stop_time,ALIS_data_dir)">alis_find_data2</a>	ALIS_FIND_DATA - search for ALIS data from station STN at DATE</li><li><a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>	FFS_CORRECTION2 - flat-field variation for optical transfer</li><li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>	TYPICAL_PRE_PROC_OPS - Typical ALIS-fits preprocessing options</li><li><a href="../Imgtools/imgs_keograms.html" class="code" title="function [varargout] = imgs_keograms(files,locnrs,line_not_columns,optp,PO)">imgs_keograms</a>	imgs_keograms - make keograms from sequence of image files.</li><li><a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>	imgs_smart_caxis - alpha-percentile setting of color-axis,</li><li><a href="camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">camera_set_up_sc</a>	CAMERA_SET_UP_SC - Calculates the projection matrix from 3-D simple cubic grid</li><li><a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>	FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</li><li><a href="make_tomo_ops.html" class="code" title="function tomo_ops = make_tomo_ops(stns)">make_tomo_ops</a>	MAKE_TOMO_OPS - User interface to set some parameters for the</li><li><a href="sc_positioning.html" class="code" title="function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)">sc_positioning</a>	SC_POSITIONING - position voxels/base-functions in SC grid.</li><li><a href="tomo_inp_images.html" class="code" title="function stns = tomo_inp_images(file_list,stns,img_ops)">tomo_inp_images</a>	TOMO_INP_IMAGES - Preprocessing of images for tomography plus</li><li><a href="tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>	TOMO_STEPS - tomographic itterative step(s).</li><li><a href="../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>	TIMETICK - change axis-labels to time/date format. Clever choice</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</span>
+0002 <span class="keyword">if</span> 1
+0003   data_dir = <span class="string">'/media/My Book/ALIS/stdnames/'</span>;
+0004   data_dir = <span class="string">'/export/data/bjg1c10/ALIS/stdnames/'</span>;
+0005   cd(data_dir)
+0006   events = <a href="../ALIS/alis_event_reader.html" class="code" title="function events = alis_event_reader(filename)">alis_event_reader</a>(<span class="string">'/home/bjg1c10/ALIS-ASK/ALIS-ASK-events.txt'</span>);
+0007   PO = <a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>(<span class="string">'alis'</span>);
+0008   PO.find_optpar = 0;
+0009   PO.fix_missalign = 0;
+0010   POs(1:7) = PO;
+0011   i1 = 14;
+0012   dFiles = <a href="../ALIS/alis_find_data2.html" class="code" title="function Filenames = alis_find_data2(STNs,date,start_time,stop_time,ALIS_data_dir)">alis_find_data2</a>(events(i1).stns,<span class="keyword">...</span>
+0013                            events(i1).date,<span class="keyword">...</span>
+0014                            events(i1).start_time,<span class="keyword">...</span>
+0015                            events(i1).stop_time,<span class="keyword">...</span>
+0016                            data_dir);
+0017   cd 2006/12/12/
+0018   
+0019   load S03_2006121219201500S.acc
+0020   load S05_2006121220191000A.acc
+0021   load S010_2006121219320000B.acc <span class="comment">% S010_2006121219222500B.acc</span>
+0022   load S04_2006121219495500T.acc
+0023   optpB = S010_2006121219320000B([7:14 6 end]);
+0024   optpA = S05_2006121220191000A([7:14 6 end]);
+0025   optpT = S04_2006121219495500T([7:14 6 end]);
+0026   optpS = S03_2006121219201500S([7:14 6 end]);
+0027   POs(1).optpar = optpB;
+0028   POs(2).optpar = optpA;
+0029   POs(3).optpar = optpS;
+0030   POs(6).optpar = optpT;
+0031   <span class="keyword">for</span> i2 = [1 2 3 6],
+0032     [keoBAST{i2},exptimes{i2},Tstrs{i2},filters{i2},optps{i2}] = <a href="../Imgtools/imgs_keograms.html" class="code" title="function [varargout] = imgs_keograms(files,locnrs,line_not_columns,optp,PO)">imgs_keograms</a>(dFiles{i2},120,0,POs(i2).optpar,POs(i2));
+0033     t{i2} = Tstrs{i2}(:,4) + Tstrs{i2}(:,5)/60 + Tstrs{i2}(:,6)/3600;
+0034   <span class="keyword">end</span>
+0035   <span class="keyword">if</span> 1
+0036     plot(t{1}(filters{1}==4278),1,<span class="string">'b.'</span>,<span class="string">'markersize'</span>,18)
+0037     hold on
+0038     plot(t{1}(filters{1}==5577),1,<span class="string">'g.'</span>,<span class="string">'markersize'</span>,18)
+0039     plot(t{1}(filters{1}==6300),1,<span class="string">'r.'</span>,<span class="string">'markersize'</span>,18)
+0040     plot(t{1}(filters{1}==8446),1,<span class="string">'k.'</span>,<span class="string">'markersize'</span>,18)
+0041     plot(t{2}(filters{2}==4278),2,<span class="string">'b.'</span>,<span class="string">'markersize'</span>,18)
+0042     plot(t{2}(filters{2}==5577),2,<span class="string">'g.'</span>,<span class="string">'markersize'</span>,18)
+0043     plot(t{2}(filters{2}==6300),2,<span class="string">'r.'</span>,<span class="string">'markersize'</span>,18)
+0044     plot(t{3}(filters{3}==4278),3,<span class="string">'b.'</span>,<span class="string">'markersize'</span>,18)
+0045     plot(t{3}(filters{3}==5577),3,<span class="string">'g.'</span>,<span class="string">'markersize'</span>,18)
+0046     plot(t{3}(filters{3}==6300),3,<span class="string">'r.'</span>,<span class="string">'markersize'</span>,18)
+0047     plot(t{6}(filters{6}==4278),4,<span class="string">'b.'</span>,<span class="string">'markersize'</span>,18)
+0048     plot(t{6}(filters{6}==5577),4,<span class="string">'g.'</span>,<span class="string">'markersize'</span>,18)
+0049     plot(t{6}(filters{6}==6300),4,<span class="string">'r.'</span>,<span class="string">'markersize'</span>,18)
+0050     plot(t{6}(filters{6}==8446),4,<span class="string">'k.'</span>,<span class="string">'markersize'</span>,18)
+0051   <span class="keyword">end</span>
+0052   <a href="../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>
+0053   axis([19+1/3 19+22/60 0 5])
+0054   
+0055   i_tb = find(filters{1}==4278);
+0056   i_tg = find(filters{1}==5577);
+0057   
+0058 <span class="keyword">end</span>
+0059 
+0060 
+0061 file_list = str2mat(dFiles{1}(1,:),dFiles{2}(1,:),dFiles{3}(1,:),dFiles{6}(1,:));
+0062 
+0063 stns = <a href="tomo_inp_images.html" class="code" title="function stns = tomo_inp_images(file_list,stns,img_ops)">tomo_inp_images</a>(file_list,[],POs([1 2 3 6]));
+0064 
+0065 r_B = stns(1).obs.xyz;
+0066 
+0067 Vem = zeros([100 100 74]);
+0068 <span class="comment">% set the lower south-west corner:</span>
+0069 ds = 2.5;
+0070 r0 = [-128 -64 80];
+0071 r0 = r_B + [-64*ds -64*ds 80]+[10 0 0];
+0072 <span class="comment">% Define the latice unit vectors</span>
+0073 dr1 = [ds 0 0];
+0074 dr2 = [0 ds 0];
+0075 <span class="comment">% With e3 || vertical:</span>
+0076 dr3 = [0 0 ds];
+0077 <span class="comment">% or || magnetic zenith:</span>
+0078 dr3 = [0 -ds*tan(pi*12/180) ds];
+0079 <span class="comment">% Calculate duplicate arrays for the position of the base functions:</span>
+0080 [r,X,Y,Z] = <a href="sc_positioning.html" class="code" title="function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)">sc_positioning</a>(r0,dr1,dr2,dr3,Vem);
+0081 XfI = r0(1)+dr1(1)*(X-1)+dr2(1)*(Y-1)+dr3(1)*(Z-1);
+0082 YfI = r0(2)+dr1(2)*(X-1)+dr2(2)*(Y-1)+dr3(2)*(Z-1);
+0083 ZfI = r0(3)+dr1(3)*(X-1)+dr2(3)*(Y-1)+dr3(3)*(Z-1);
+0084 
+0085 <span class="comment">%% Set the number of size layers</span>
+0086 <span class="comment">% the projection algorithm divides the base into classes based on</span>
+0087 <span class="comment">% the size of their footprint in the image. Here it is needed to</span>
+0088 <span class="comment">% select the number of layers to use in the image projection, more</span>
+0089 <span class="comment">% is better and slower: 8 minimum, 10 better, 16 getting on the</span>
+0090 <span class="comment">% slow side...</span>
+0091 nr_layers = 10;
+0092 
+0093 <span class="comment">%% Creating the station  structure</span>
+0094 <span class="comment">% Here we make the structure array holding the projection matrix,</span>
+0095 <span class="comment">% the filter kernels and size grouping of the base functions needed</span>
+0096 <span class="comment">% for the fast projection.</span>
+0097 <span class="comment">% Set up the stuff on the camera and 3D structure needed for the</span>
+0098 <span class="comment">% fast projection.</span>
+0099 <span class="keyword">for</span> i1 = 1:length(stns),
+0100   
+0101   rstn = stns(i1).obs.xyz;
+0102   optpar = stns(i1).optpar;
+0103   imgsize = size(stns(i1).img);
+0104   cmtr = stns(i1).obs.trmtr;
+0105   [stns(i1).uv,stns(i1).d,stns(i1).l_cl,stns(i1).bfk] = <a href="camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">camera_set_up_sc</a>(r,<span class="keyword">...</span>
+0106                                                     X,<span class="keyword">...</span>
+0107                                                     Y,<span class="keyword">...</span>
+0108                                                     Z,<span class="keyword">...</span>
+0109                                                     optpar,<span class="keyword">...</span>
+0110                                                     rstn,<span class="keyword">...</span>
+0111                                                     imgsize,<span class="keyword">...</span>
+0112                                                     nr_layers,<span class="keyword">...</span>
+0113                                                     cmtr);
+0114   
+0115 <span class="keyword">end</span>
+0116 
+0117 <span class="keyword">for</span> i1 = 1:length(stns),
+0118   stns(i1).r = stns(i1).obs.xyz;
+0119 <span class="keyword">end</span>
+0120 
+0121 <span class="keyword">for</span> i1 = 1:length(stns),
+0122   stns(i1).proj = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(ones(size(X)),<span class="keyword">...</span>
+0123                                  stns(i1).uv,<span class="keyword">...</span>
+0124                                  stns(i1).d,<span class="keyword">...</span>
+0125                                  stns(i1).l_cl,<span class="keyword">...</span>
+0126                                  stns(i1).bfk,<span class="keyword">...</span>
+0127                                  [256 256],1);
+0128   subplot(2,2,i1)
+0129   imagesc(stns(i1).proj)
+0130   
+0131 <span class="keyword">end</span>
+0132 
+0133 tomo_ops = <a href="make_tomo_ops.html" class="code" title="function tomo_ops = make_tomo_ops(stns)">make_tomo_ops</a>(stns);
+0134 tomo_artops = tomo_ops(1);
+0135 tomo_ops34 = tomo_ops(3:4);
+0136 alt_max5577 = 110;
+0137 width = 15;
+0138 Vem0 = tomo_start_guess1(stns(1),alt_max5577,width,XfI,YfI,ZfI);
+0139 slice(Vem0,47,50,20),shading interp,
+0140 pause(3)
+0141 slice(Vem0,47,50,20),shading interp,view(0,90)
+0142 pause(3)
+0143 slice(Vem0,47,50,20),shading interp,view(90,0)
+0144 <span class="comment">%% Intensity scaling</span>
+0145 <span class="comment">% This start guess should then be scaled.</span>
+0146 <span class="comment">% Function to scale 3D intensities to give projections that are in</span>
+0147 <span class="comment">% the same intensity range as the images. Not needed here since the</span>
+0148 <span class="comment">% function is already called from within TOMO_START_GUESS, but</span>
+0149 <span class="comment">% might be usefull in the working process.</span>
+0150 <span class="comment">% [stns,Vem] = adjust_level(stns,Vem,1);</span>
+0151 
+0152 <span class="comment">%% Tomographic update:</span>
+0153 <span class="comment">% Here are the itterative tomographic steps and filtering made.</span>
+0154 [POs(1).ffc] = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>(imgsize,POs(1).optpar,3);
+0155 [POs(2).ffc] = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>(imgsize,POs(2).optpar,3);
+0156 [POs(3).ffc] = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>(imgsize,POs(3).optpar,3);
+0157 [POs(6).ffc] = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>(imgsize,POs(6).optpar,3);
+0158 
+0159 
+0160 i_z = [10 12 14]; <span class="comment">% 100 105 110</span>
+0161 i_x = [42 62];    <span class="comment">% EISCAT Skibotn</span>
+0162 i_y = [69];       <span class="comment">% EISCAT</span>
+0163 [alts,widths] = meshgrid([100,105,110,115],[10,15]);
+0164 <span class="comment">%for i2 = length(i_tb):-1:1,</span>
+0165 <span class="comment">%for i2 = 57:-1:1,</span>
+0166 <span class="comment">%for i2 = 65:-1:36,</span>
+0167 i_tb = f_idx
+0168 <span class="keyword">for</span> i2 = length(i_tb):-1:1,
+0169   
+0170   i_stns = [1,2,3,6];
+0171   <span class="keyword">for</span> i3 = 1:length(i_stns)
+0172     [d,h,o] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(dFiles{i_stns(i3)}(i_tb(i2),:),POs(i_stns(i3)));
+0173     stns(i3).img = d;
+0174     <span class="keyword">if</span> i3 == 3
+0175       stns(i3).img(227,195:197) = mean(stns(i3).img(227,[193,199])); 
+0176       stns(i3).img(228,195:197) = mean(stns(i3).img(228,[193,199])); 
+0177       stns(i3).img(229,195:197) = mean(stns(i3).img(229,[193,199])); 
+0178       stns(i3).img(230,195:197) = mean(stns(i3).img(230,[193,199])); 
+0179     <span class="keyword">end</span>
+0180   <span class="keyword">end</span>
+0181   disp([i3 i_stns(i3) o.time])
+0182   
+0183   <span class="comment">%disp([o1.filter o1.station o1.filter o2.station o2.filter o3.station o4.filter o4.station ])</span>
+0184   <span class="comment">%Vem0 = tomo_start_guess1(stns(1),alt_max5577,width,XfI,YfI,ZfI);</span>
+0185   [Vem0,stns] = tomo_start_guess_altvar1([alts(:),widths(:)],stns,XfI,YfI,ZfI,tomo_ops);
+0186   nr_laps = 1;
+0187   fS = [7 5 3];
+0188   Vem = Vem0;
+0189   <span class="comment">%[Vem,stns(1)] = tomo_steps(Vem,stns(1),tomo_artops1,nr_laps);</span>
+0190   i_f = 1;
+0191   [xf,yf] = meshgrid(1:fS(i_f),1:fS(i_f));            
+0192   fK = exp(-(xf-mean(xf(:))).^2/mean(xf(:)).^2-(yf-mean(yf(:))).^2/mean(yf(:))^2);
+0193   tomo_ops(1).filterkernel = fK;
+0194   tomo_opssirt(1).filterkernel = fK;
+0195   [Vem,stns(1:2)] = <a href="tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>(Vem,stns(1:2),tomo_opssirt,4);
+0196   <span class="comment">%[Vem,stns([1,2,4])] = tomo_steps(Vem,stns([1,2,4]),tomo_opssirt,2);</span>
+0197   <span class="comment">%[Vem,stns([1,2,4])] = tomo_altmaxIscaling(Vem,stns([1,2,4]),tomo_ops([1,2,4]),XfI,YfI,ZfI);</span>
+0198   <span class="keyword">for</span> i_f = 2:length(fS),
+0199     
+0200     [xf,yf] = meshgrid(1:fS(i_f),1:fS(i_f));            
+0201     fK = exp(-(xf-mean(xf(:))).^2/mean(xf(:)).^2-(yf-mean(yf(:))).^2/mean(yf(:))^2);
+0202     tomo_ops(1).filterkernel = fK;
+0203     [Vem,stns([1,2])] = <a href="tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>(Vem,stns([1,2]),tomo_ops([1,2]),nr_laps);
+0204   <span class="keyword">end</span>
+0205   <span class="comment">%[Vem,stns(1)] = tomo_steps(Vem,stns(1),tomo_artops1,nr_laps);</span>
+0206   Vs1(:,i2,:) = Vem(:,i_x(1),:);
+0207   Vs2(:,i2,:) = Vem(:,i_x(2),:);
+0208   Vew(:,:,i2) = Vem(i_y(1),:,:);
+0209   Vh1(:,:,i2) = Vem(:,:,i_z(1));
+0210   Vh2(:,:,i2) = Vem(:,:,i_z(2));
+0211   subplot(1,2,1)
+0212   imagesc(stns(1).img)
+0213   subplot(1,2,2)
+0214   imagesc(stns(1).proj)
+0215   print(<span class="string">'-dpng'</span>,[<span class="string">'Skibotn'</span>,sprintf(<span class="string">'%03d'</span>,i_tb(i2)),<span class="string">'.png'</span>])
+0216   save([<span class="string">'tomo-'</span>,sprintf(<span class="string">'%03d'</span>,i_tb(i2)),<span class="string">'.mat'</span>],<span class="string">'Vem'</span>)
+0217 <span class="keyword">end</span>
+0218 <span class="keyword">for</span> i2 = 1:72,
+0219   subplot(1,3,1)
+0220   pcolor(squeeze(YfI(20:end-10,12,:)),squeeze(ZfI(20:end-10,12,:)),squeeze(Vs1(20:end-10,i2,:))),shading flat
+0221   <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.003,squeeze(Vs1(30:end-10,i2,:)))
+0222   cx1(i2,:) = caxis;
+0223   axis([50 190 80 250])
+0224   subplot(1,3,2)
+0225   pcolor(XfI(20:<span class="keyword">end</span>,:,12),YfI(20:<span class="keyword">end</span>,:,12),Vh2(20:<span class="keyword">end</span>,:,i2)),shading flat
+0226   <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.003,squeeze(Vh2(30:end-10,:,i2)))
+0227   cx2(i2,:) = caxis;
+0228   axis([-75 75 75 200])
+0229   title(sprintf(<span class="string">'%02d:%02d:%02d'</span>,Tstrs{1}(i_tb(i2),4),Tstrs{1}(i_tb(i2),5),Tstrs{1}(i_tb(i2),6)),<span class="string">'fontsize'</span>,16)
+0230   hold on
+0231   plot(XfI(1,i_x(1),12)*[1 1],[50 250],<span class="string">'w'</span>)
+0232   plot([-100 100],173*[1 1],<span class="string">'w'</span>)
+0233   hold off
+0234   subplot(1,3,3)
+0235   pcolor(squeeze(XfI(12,:,:)),squeeze(ZfI(12,:,:)),squeeze(Vew(:,:,i2))),shading flat
+0236   axis([-75 75 80 250])
+0237   <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.003,squeeze(Vew(:,:,i2)))
+0238   cx3(i2,:) = caxis;
+0239   drawnow
+0240   pause(0.1)
+0241 <span class="keyword">end</span>
+0242 <span class="keyword">for</span> i2 = 1:72,
+0243   subplot(1,3,1)
+0244   pcolor(squeeze(YfI(:,12,:)),squeeze(ZfI(:,12,:)),squeeze(Vs1(:,i2,:))),shading flat
+0245   caxis(Cx1(i2,:))
+0246   axis([50 180 80 250])
+0247   subplot(1,3,2)
+0248   pcolor(XfI(20:<span class="keyword">end</span>,:,12),YfI(20:<span class="keyword">end</span>,:,12),Vh2(20:<span class="keyword">end</span>,:,i2)),shading flat
+0249   caxis(Cx2(i2,:))
+0250   axis([-75 75 50 200])
+0251   subplot(1,3,3)
+0252   pcolor(squeeze(XfI(12,:,:)),squeeze(ZfI(12,:,:)),squeeze(Vew(:,:,i2))),shading flat
+0253   axis([-75 75 80 250])
+0254   caxis(Cx3(i2,:))
+0255   drawnow
+0256   pause(0.1)
+0257 <span class="keyword">end</span>
+0258 <span class="keyword">for</span> i2 = 1:72,
+0259   subplot(1,3,1)
+0260   pcolor(squeeze(YfI(:,12,:)),squeeze(ZfI(:,12,:)),squeeze(Vs1(:,i2,:))),shading flat
+0261   caxis([0 1.7e8])
+0262   axis([50 180 80 250])
+0263   subplot(1,3,2)
+0264   pcolor(XfI(20:<span class="keyword">end</span>,:,12),YfI(20:<span class="keyword">end</span>,:,12),Vh2(20:<span class="keyword">end</span>,:,i2)),shading flat
+0265   caxis([0 2.1e8])
+0266   axis([-75 75 50 200])
+0267   subplot(1,3,3)
+0268   pcolor(squeeze(XfI(12,:,:)),squeeze(ZfI(12,:,:)),squeeze(Vew(:,:,i2))),shading flat
+0269   axis([-75 75 80 250])
+0270   caxis([0 5e8])
+0271   drawnow
+0272   pause(0.1)
+0273 <span class="keyword">end</span>
+0274 fx = [0 5e8];
+0275 fx = [0 1.5e8];
+0276 <span class="keyword">for</span> i2 = 1:72,
+0277   subplot(1,3,1)
+0278   pcolor(squeeze(YfI(20:end-10,12,:)),squeeze(ZfI(20:end-10,12,:)),squeeze(Vs1(20:end-10,i2,:))),shading flat
+0279   caxis([0 Cx(i2)])
+0280   <span class="comment">%imgs_smart_caxis(0.003,squeeze(Vs2(:,i2,:)))</span>
+0281   axis([50 180 80 250])
+0282   subplot(1,3,2)
+0283   pcolor(XfI(20:<span class="keyword">end</span>,:,12),YfI(20:<span class="keyword">end</span>,:,12),Vh2(20:<span class="keyword">end</span>,:,i2)),shading flat
+0284   caxis([0 Cx(i2)])
+0285   title(sprintf(<span class="string">'%02d:%02d:%02d'</span>,Tstrs{1}(i_tb(i2),4),Tstrs{1}(i_tb(i2),5),Tstrs{1}(i_tb(i2),6)),<span class="string">'fontsize'</span>,16)
+0286   <span class="comment">%imgs_smart_caxis(0.003,squeeze(Vh2(:,:,i2)))</span>
+0287   axis([-75 75 75 225])
+0288   hold on
+0289   plot(XfI(1,i_x(1),12)*[1 1],[50 250],<span class="string">'w'</span>)
+0290   plot([-100 100],173*[1 1],<span class="string">'w'</span>)
+0291   hold off
+0292   subplot(1,3,3)
+0293   pcolor(squeeze(XfI(12,:,:)),squeeze(ZfI(12,:,:)),squeeze(Vew(:,:,i2))),shading flat
+0294   axis([-75 75 80 250])
+0295   caxis([0 Cx(i2)])
+0296   <span class="comment">%imgs_smart_caxis(0.003,squeeze(Vew(:,:,i2)))</span>
+0297   drawnow
+0298   pause(0.1)
+0299 <span class="keyword">end</span>
+0300 <span class="keyword">for</span> i2 = 1:72,
+0301   subplot(1,3,1)
+0302   pcolor(squeeze(YfI(:,12,:)),squeeze(ZfI(:,12,:)),squeeze(Vs1(:,i2,:))),shading flat
+0303   caxis(fx)
+0304   <span class="comment">%imgs_smart_caxis(0.003,squeeze(Vs2(:,i2,:)))</span>
+0305   axis([50 180 80 250])
+0306   subplot(1,3,2)
+0307   pcolor(XfI(30:<span class="keyword">end</span>,:,12),YfI(30:<span class="keyword">end</span>,:,12),Vh2(30:<span class="keyword">end</span>,:,i2)),shading flat
+0308   caxis(fx)
+0309   title(sprintf(<span class="string">'%02d:%02d:%02d'</span>,Tstrs{1}(i_tb(i2),4),Tstrs{1}(i_tb(i2),5),Tstrs{1}(i_tb(i2),6)),<span class="string">'fontsize'</span>,16)
+0310   <span class="comment">%imgs_smart_caxis(0.003,squeeze(Vh2(:,:,i2)))</span>
+0311   axis([-75 75 50 200])
+0312   hold on
+0313   plot(XfI(1,i_x(1),12),[50 250],<span class="string">'w'</span>)
+0314   plot(173,[-100 100],<span class="string">'w'</span>)
+0315   hold off
+0316   subplot(1,3,3)
+0317   pcolor(squeeze(XfI(12,:,:)),squeeze(ZfI(12,:,:)),squeeze(Vew(:,:,i2))),shading flat
+0318   axis([-75 75 80 250])
+0319   caxis(fx)
+0320   <span class="comment">%imgs_smart_caxis(0.003,squeeze(Vew(:,:,i2)))</span>
+0321   drawnow
+0322   pause(0.1)
+0323 <span class="keyword">end</span>
+0324 
+0325 
+0326 <span class="comment">%   Copyright � 2010 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0327 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

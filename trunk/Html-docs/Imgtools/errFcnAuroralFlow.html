@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of errFcnAuroralFlow</title>
+  <meta name="keywords" content="errFcnAuroralFlow">
+  <meta name="description" content="errFcnAuroralFlow - error function for auroral motion estimate">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>errFcnAuroralFlow
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>errFcnAuroralFlow - error function for auroral motion estimate</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function varargout = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> errFcnAuroralFlow - error function for auroral motion estimate
+ 
+ This function calculates the total square error between one
+ skew-transformed intensity scaled image and anotother
+ image. Under the conditions that the images of the same slowly
+ evolving scene the transformation that minimizes the difference
+ is the motion-field. This is intended for auroral imaging with
+ time-resolution with the same time-scales as the motion of
+ auroral structures. The intensity scaling of the skew-transformed
+ image makes this method capable of handling cases where the
+ brightness of auroral structures varies with time.
+
+ Calling:
+  err = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS)
+  [I2p] = errFcnAuroralFlow(pars,varpars,par0,I1,I2,nPoints,OPS)
+  OPS = errFcnAuroralFlow
+ 
+ Input:
+ varpars - parameters for varying during optimization
+ ind4v_p - indices for varpars
+ par0    - parameters for skew-n-intensity transformation,
+           [Xp, Yp, Ip] (1 x 3*nPoints^2). The first third will be
+           put into the matrix for the x-coordinate
+           transformation, the middle third will be put into the
+           matrix for the y-coordinate transformation. (These
+           transformations will make a spatially shift, rotation
+           and skewing transformation.) The last third will be
+           made into an intensity scaling matrix - that will be
+           used to scale the image intensity. The
+           &quot;varpars,ind4v_p,par0&quot; pattern makes it possible to
+           select any subset of the parameters to minimize over,
+           this should be equalt to subspace optimization.
+ I1      - Image 1 (N x M), this image will be skew-intensity
+           transformed (the minimization will find the
+           transformation that makes the transformation of I1 as
+           close to I2 as possible.)
+ I2      - Image (N x M)
+ nPoints - number of points along each dimension of the Xp, Yp,
+           and Ip.
+ OPS     - Options structure, with fields:
+           outputType (1 - error (default), 2 - skew-intensity
+           transformed I1, 3 - Xp, Yp, Ip - the low-resolution
+           transformation and scaling matrices, 4 - X, Y, Iscale
+           the full-resolution transformation and scaling matrices.)
+ 
+ This function could very well be called in a sequence with
+ increasing number of points for the transformation matrixes -
+ that way the first minimization should find the best average
+ large-scale translationkeyboard-rotation skweing, while consequtive calls
+ with larger number of points in the transformation matrices will
+ distort I1 on smaller and smaller spatial scales.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/catstruct.html" class="code" title="function A = catstruct(varargin)">catstruct</a>	CATSTRUCT - concatenate structures</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="img_morphing.html" class="code" title="function Iout = img_morphing(Iin,morphVector,delta)">img_morphing</a>	IMG_MORPHING - Intensity and spatial morphing of image</li><li><a href="img_optflow.html" class="code" title="function varargout = img_optflow(I1,I2,OPS)">img_optflow</a>	IMG_OPTFLOW - optical-flow displacements with intensity-scaling adjustment</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function varargout = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS)</a>
+0002 <span class="comment">% errFcnAuroralFlow - error function for auroral motion estimate</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% This function calculates the total square error between one</span>
+0005 <span class="comment">% skew-transformed intensity scaled image and anotother</span>
+0006 <span class="comment">% image. Under the conditions that the images of the same slowly</span>
+0007 <span class="comment">% evolving scene the transformation that minimizes the difference</span>
+0008 <span class="comment">% is the motion-field. This is intended for auroral imaging with</span>
+0009 <span class="comment">% time-resolution with the same time-scales as the motion of</span>
+0010 <span class="comment">% auroral structures. The intensity scaling of the skew-transformed</span>
+0011 <span class="comment">% image makes this method capable of handling cases where the</span>
+0012 <span class="comment">% brightness of auroral structures varies with time.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Calling:</span>
+0015 <span class="comment">%  err = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS)</span>
+0016 <span class="comment">%  [I2p] = errFcnAuroralFlow(pars,varpars,par0,I1,I2,nPoints,OPS)</span>
+0017 <span class="comment">%  OPS = errFcnAuroralFlow</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% Input:</span>
+0020 <span class="comment">% varpars - parameters for varying during optimization</span>
+0021 <span class="comment">% ind4v_p - indices for varpars</span>
+0022 <span class="comment">% par0    - parameters for skew-n-intensity transformation,</span>
+0023 <span class="comment">%           [Xp, Yp, Ip] (1 x 3*nPoints^2). The first third will be</span>
+0024 <span class="comment">%           put into the matrix for the x-coordinate</span>
+0025 <span class="comment">%           transformation, the middle third will be put into the</span>
+0026 <span class="comment">%           matrix for the y-coordinate transformation. (These</span>
+0027 <span class="comment">%           transformations will make a spatially shift, rotation</span>
+0028 <span class="comment">%           and skewing transformation.) The last third will be</span>
+0029 <span class="comment">%           made into an intensity scaling matrix - that will be</span>
+0030 <span class="comment">%           used to scale the image intensity. The</span>
+0031 <span class="comment">%           &quot;varpars,ind4v_p,par0&quot; pattern makes it possible to</span>
+0032 <span class="comment">%           select any subset of the parameters to minimize over,</span>
+0033 <span class="comment">%           this should be equalt to subspace optimization.</span>
+0034 <span class="comment">% I1      - Image 1 (N x M), this image will be skew-intensity</span>
+0035 <span class="comment">%           transformed (the minimization will find the</span>
+0036 <span class="comment">%           transformation that makes the transformation of I1 as</span>
+0037 <span class="comment">%           close to I2 as possible.)</span>
+0038 <span class="comment">% I2      - Image (N x M)</span>
+0039 <span class="comment">% nPoints - number of points along each dimension of the Xp, Yp,</span>
+0040 <span class="comment">%           and Ip.</span>
+0041 <span class="comment">% OPS     - Options structure, with fields:</span>
+0042 <span class="comment">%           outputType (1 - error (default), 2 - skew-intensity</span>
+0043 <span class="comment">%           transformed I1, 3 - Xp, Yp, Ip - the low-resolution</span>
+0044 <span class="comment">%           transformation and scaling matrices, 4 - X, Y, Iscale</span>
+0045 <span class="comment">%           the full-resolution transformation and scaling matrices.)</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">% This function could very well be called in a sequence with</span>
+0048 <span class="comment">% increasing number of points for the transformation matrixes -</span>
+0049 <span class="comment">% that way the first minimization should find the best average</span>
+0050 <span class="comment">% large-scale translationkeyboard-rotation skweing, while consequtive calls</span>
+0051 <span class="comment">% with larger number of points in the transformation matrices will</span>
+0052 <span class="comment">% distort I1 on smaller and smaller spatial scales.</span>
+0053 
+0054 <span class="comment">% Copyright � Bjorn Gustavsson 20110306</span>
+0055 <span class="comment">% GNU copyleft 3.0 or later applies</span>
+0056 
+0057 <span class="comment">% First create the default options struct</span>
+0058 dOPS.outputType = 1;
+0059 
+0060 <span class="comment">% In case function called without input arguments, return default</span>
+0061 <span class="comment">% options struct.</span>
+0062 <span class="keyword">if</span> nargin &lt; 1
+0063   varargout{1} = dOPS;
+0064   <span class="keyword">return</span>
+0065 <span class="keyword">end</span>
+0066 <span class="comment">% If OPS in input parameters</span>
+0067 <span class="keyword">if</span> nargin &gt; 6
+0068   <span class="comment">% Cat the default and user-options structs together, with</span>
+0069   <span class="comment">% precedence for user options.</span>
+0070   dOPS = <a href="../tools/catstruct.html" class="code" title="function A = catstruct(varargin)">catstruct</a>(dOPS,OPS);
+0071 <span class="keyword">end</span>
+0072 Par = par0;
+0073 <span class="comment">% Just put the varpars into their proper positions</span>
+0074 Par(ind4v_p) = varpars;
+0075 
+0076 <span class="comment">% Coordinates in I1p (from edge to edge)</span>
+0077 xP0 = linspace(1,size(I1,2),nPoints);
+0078 yP0 = linspace(1,size(I1,1),nPoints);
+0079 <span class="comment">% In 2-D &lt;=&gt; corner to corner</span>
+0080 [xP0,yP0] = meshgrid(xP0,yP0);
+0081 
+0082 <span class="comment">% make matrices for the mapping of [xP0,yP0] into I1</span>
+0083 xP = xP0;
+0084 yP = yP0;
+0085 Ip = xP;
+0086 <span class="comment">% And assign the corresponding parameters there</span>
+0087 xP(:) = Par(1:(nPoints^2));
+0088 yP(:) = Par(nPoints^2+[1:(nPoints^2)]);
+0089 Ip(:) = Par(2*nPoints^2+[1:(nPoints^2)]);
+0090 
+0091 <span class="comment">% Interpolate these mappings to full image size:</span>
+0092 X = interp2(xP0,yP0,xP,1:size(I1,2),[1:size(I1,1)]',<span class="string">'*linear'</span>);
+0093 Y = interp2(xP0,yP0,yP,1:size(I1,2),[1:size(I1,1)]',<span class="string">'*linear'</span>);
+0094 <span class="comment">% Do the same for the intensity scaling</span>
+0095 Iscale = interp2(xP0,yP0,Ip,1:size(I1,2),[1:size(I1,1)]',<span class="string">'*spline'</span>);
+0096 
+0097 <span class="comment">% Preform the spatial image transformation and scale the intensities:</span>
+0098 I2p = Iscale.*interp2(I1,X,Y,<span class="string">'*linear'</span>);
+0099 <span class="comment">%keyboard</span>
+0100 <span class="comment">% Calculate the sum of square error for optimization:</span>
+0101 err = sum( ( I2p(isfinite(I2p(:))) - I2(isfinite(I2p(:)))).^2 ) + <span class="keyword">...</span>
+0102       sum(~isfinite(I2p(:)));
+0103 
+0104 <span class="keyword">switch</span> dOPS.outputType
+0105  <span class="keyword">case</span> 1
+0106   varargout{1} = err;
+0107  <span class="keyword">case</span> 2
+0108   I2p(~isfinite(I2p(:))) = 0;
+0109   varargout{1} = I2p;
+0110  <span class="keyword">case</span> 3
+0111   varargout{1} = xP;
+0112   varargout{2} = yP;
+0113   varargout{3} = Ip;
+0114  <span class="keyword">case</span> 4
+0115   varargout{1} = X;
+0116   varargout{2} = Y;
+0117   varargout{3} = Iscale;
+0118  <span class="keyword">otherwise</span>
+0119   varargout{1} = err;
+0120 <span class="keyword">end</span>
+0121 <span class="comment">%keyboard</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

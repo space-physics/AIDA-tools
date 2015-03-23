@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of spc_scan_for_stars</title>
+  <meta name="keywords" content="spc_scan_for_stars">
+  <meta name="description" content="SPC_SCAN_FOR_STARS - Scan images for stars in the Pulkovo">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Spectral_cal -->
+<h1>spc_scan_for_stars
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SPC_SCAN_FOR_STARS - Scan images for stars in the Pulkovo</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [IDSTARS,STARPARS,filtnr,Stime,extime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SPC_SCAN_FOR_STARS - Scan images for stars in the Pulkovo
+ spectrophotometric catalog - with known spectras.
+ FILES is a strmat of images filenames, POS is [long, lat] of the
+ observing point, OPTPAR is an array of optical parameters (see
+ CAMERA). PO is the image pre-processing options - see INIMG for
+ details. OPTS is the options related to this function: 
+  OPTS.Mag_limit - limiting faintest magnitude of stars to')
+                   search among')
+  OPTS.regsize   - Size of the region surrounding the star')
+  OPTS.bgtype    - Type of background subtraction used,')
+                   ''complicated'' or ''simple''.')
+
+ Calling
+  [IDSTARS,STARPARS,filtnr,Stime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops)
+ Input:
+  files    - string array with filenames of images to look for
+             stars in ( nImgs x N )
+  pos      - longitude-latitude of observation location [1 x 2] (degrees)
+  optpar   - camera parameter vector or optpar struct, determining
+             the camera pixel lines-of-sight
+  PO       - Image pre-processing options struct, see
+             TYPICAL_PRE_PROC_OPS for details.
+  OPTS     - Options struct, see SPC_TYPICAL_OPS for details
+  disp_ops - set to 'iter' to get the incremental progression
+             displayed, this function is stressingly
+             time-consuming since it searches for the best-fitting
+             2-D Gaussian of N stars in nImgs number of images
+             which can take &quot;some time&quot;.
+ Output:
+  IDSTARS - Array with parameters of identified stars.
+            IDSTARS(n,1) - Running index
+            IDSTARS(n,2) - Horizontal image position (pixels) of 2D Gaussian
+            IDSTARS(n,3) - Vertical image position (pixels) of 2D Gaussian
+            IDSTARS(n,4) - Max of 2D Gaussian
+            IDSTARS(n,5) - Max image intensity of star
+            IDSTARS(n,6) - Total image intensity of star
+            IDSTARS(n,7) - Total image intensity of 2D Gaussian
+            IDSTARS(n,8) - Running index
+            IDSTARS(n,9) - Star index (BSC-NR)
+            IDSTARS(n,10) - Total error
+            IDSTARS(n,11) - Magnitude 
+  STARPARS - Parameters of the 2D Gaussian, see STARDIFF for details
+  filtnr   - Filter wavelength/number/identifier of images 
+             [nImgs x 1]
+  Stime    - Time of observation, (nImgs x 3) [h, m, s]
+  extime   - Exposure times for images (nImgs x 1) (s)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>	TYPICAL_PRE_PROC_OPS - Typical ALIS-fits preprocessing options</li><li><a href="../Skymap/fix_ra_decl.html" class="code" title="function star_list = fix_ra_decl(star_list)">fix_ra_decl</a>	FIX_RA_DECL - Extract rect ascension and declination from star</li><li><a href="../Skymap/read_all_astro_catalogs.html" class="code" title="function star_list = read_all_astro_catalogs(catalog_file_nm,readme_file_nm,get_these_fields,nr_lines)">read_all_astro_catalogs</a>	READ_ALL_ASTRO_CATALOGS - generic astronomic catalog reader function</li><li><a href="../Skymap/starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>	STARPOS2 gives the azimuth, zenith and apparent zenith angles</li><li><a href="../Spectral_cal/M6/star_int_search.html" class="code" title="function [idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,plstars,OPTS)">star_int_search</a>	[idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,pls</li><li><a href="../Spectral_cal/M7/star_int_search.html" class="code" title="function [idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,plstars,OPTS)">star_int_search</a>	[idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,plstars,OPTS)</li><li><a href="../tools/progmeter.html" class="code" title="function progmeter(x, message)">progmeter</a>	PROGMETER displays the progress of completion of a task in the MATLAB</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="Spec_cal_jobb_Miracle.html" class="code" title="">Spec_cal_jobb_Miracle</a>	Spec_cal_jobb_Miracle - Example of spectral camera sensitivity calibration</li><li><a href="Spec_cal_jobb_exmplCell.html" class="code" title="">Spec_cal_jobb_exmplCell</a>	Spec_cal_jobb_exmplCell - Example of spectral camera sensitivity calibration</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [IDSTARS,STARPARS,filtnr,Stime,extime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops)</a>
+0002 <span class="comment">% SPC_SCAN_FOR_STARS - Scan images for stars in the Pulkovo</span>
+0003 <span class="comment">% spectrophotometric catalog - with known spectras.</span>
+0004 <span class="comment">% FILES is a strmat of images filenames, POS is [long, lat] of the</span>
+0005 <span class="comment">% observing point, OPTPAR is an array of optical parameters (see</span>
+0006 <span class="comment">% CAMERA). PO is the image pre-processing options - see INIMG for</span>
+0007 <span class="comment">% details. OPTS is the options related to this function:</span>
+0008 <span class="comment">%  OPTS.Mag_limit - limiting faintest magnitude of stars to')</span>
+0009 <span class="comment">%                   search among')</span>
+0010 <span class="comment">%  OPTS.regsize   - Size of the region surrounding the star')</span>
+0011 <span class="comment">%  OPTS.bgtype    - Type of background subtraction used,')</span>
+0012 <span class="comment">%                   ''complicated'' or ''simple''.')</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Calling</span>
+0015 <span class="comment">%  [IDSTARS,STARPARS,filtnr,Stime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops)</span>
+0016 <span class="comment">% Input:</span>
+0017 <span class="comment">%  files    - string array with filenames of images to look for</span>
+0018 <span class="comment">%             stars in ( nImgs x N )</span>
+0019 <span class="comment">%  pos      - longitude-latitude of observation location [1 x 2] (degrees)</span>
+0020 <span class="comment">%  optpar   - camera parameter vector or optpar struct, determining</span>
+0021 <span class="comment">%             the camera pixel lines-of-sight</span>
+0022 <span class="comment">%  PO       - Image pre-processing options struct, see</span>
+0023 <span class="comment">%             TYPICAL_PRE_PROC_OPS for details.</span>
+0024 <span class="comment">%  OPTS     - Options struct, see SPC_TYPICAL_OPS for details</span>
+0025 <span class="comment">%  disp_ops - set to 'iter' to get the incremental progression</span>
+0026 <span class="comment">%             displayed, this function is stressingly</span>
+0027 <span class="comment">%             time-consuming since it searches for the best-fitting</span>
+0028 <span class="comment">%             2-D Gaussian of N stars in nImgs number of images</span>
+0029 <span class="comment">%             which can take &quot;some time&quot;.</span>
+0030 <span class="comment">% Output:</span>
+0031 <span class="comment">%  IDSTARS - Array with parameters of identified stars.</span>
+0032 <span class="comment">%            IDSTARS(n,1) - Running index</span>
+0033 <span class="comment">%            IDSTARS(n,2) - Horizontal image position (pixels) of 2D Gaussian</span>
+0034 <span class="comment">%            IDSTARS(n,3) - Vertical image position (pixels) of 2D Gaussian</span>
+0035 <span class="comment">%            IDSTARS(n,4) - Max of 2D Gaussian</span>
+0036 <span class="comment">%            IDSTARS(n,5) - Max image intensity of star</span>
+0037 <span class="comment">%            IDSTARS(n,6) - Total image intensity of star</span>
+0038 <span class="comment">%            IDSTARS(n,7) - Total image intensity of 2D Gaussian</span>
+0039 <span class="comment">%            IDSTARS(n,8) - Running index</span>
+0040 <span class="comment">%            IDSTARS(n,9) - Star index (BSC-NR)</span>
+0041 <span class="comment">%            IDSTARS(n,10) - Total error</span>
+0042 <span class="comment">%            IDSTARS(n,11) - Magnitude</span>
+0043 <span class="comment">%  STARPARS - Parameters of the 2D Gaussian, see STARDIFF for details</span>
+0044 <span class="comment">%  filtnr   - Filter wavelength/number/identifier of images</span>
+0045 <span class="comment">%             [nImgs x 1]</span>
+0046 <span class="comment">%  Stime    - Time of observation, (nImgs x 3) [h, m, s]</span>
+0047 <span class="comment">%  extime   - Exposure times for images (nImgs x 1) (s)</span>
+0048 <span class="comment">%</span>
+0049 
+0050 <span class="comment">%   Copyright � 20030901 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0051 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0052 
+0053 <span class="keyword">global</span> stardir <span class="comment">% bx by</span>
+0054 
+0055 <span class="keyword">if</span> nargin == 0
+0056   disp(<span class="string">'OPTS should be a structure with the following optional fields: '</span>)
+0057   disp(<span class="string">'   OPTS.Mag_limit - limiting faintest magnitude of stars to'</span>)
+0058   disp(<span class="string">'                    search among'</span>)
+0059   disp(<span class="string">'   OPTS.regsize   - Size of the region surrounding the star'</span>)
+0060   disp(<span class="string">'   OPTS.bgtype    - Type of background subtraction used,'</span>)
+0061   disp(<span class="string">'                    ''compicated'' or ''simple''.'</span>)
+0062   
+0063 <span class="keyword">end</span>
+0064 
+0065 <span class="comment">% default display option</span>
+0066 <span class="keyword">if</span> nargin &lt; 6
+0067   disp_ops = <span class="string">'off'</span>;
+0068 <span class="keyword">end</span>
+0069 
+0070 stardir = fileparts(eval(<span class="string">'which(''skymap'')'</span>));
+0071 <span class="comment">%%%%%%% du maaste testa read_all_catalogs</span>
+0072 readme_file = [stardir,<span class="string">'/stars/README.spectra'</span>];
+0073 catalog_file = [stardir,<span class="string">'/stars/stars.dat'</span>];
+0074 get_these_fields = [1 4 7 8 9 10 11 12 14 16];
+0075 star_list = <a href="../Skymap/read_all_astro_catalogs.html" class="code" title="function star_list = read_all_astro_catalogs(catalog_file_nm,readme_file_nm,get_these_fields,nr_lines)">read_all_astro_catalogs</a>(catalog_file,readme_file,get_these_fields);
+0076 star_list = star_list(2:end);
+0077 star_list = <a href="../Skymap/fix_ra_decl.html" class="code" title="function star_list = fix_ra_decl(star_list)">fix_ra_decl</a>(star_list);
+0078 
+0079 <span class="keyword">if</span> nargin &gt;= 5 &amp;  isfield(OPTS,<span class="string">'Mag_limit'</span>)
+0080   
+0081   <span class="comment">%i = find([star_list(:).Vmag] &lt;= OPTS.Mag_limit);</span>
+0082   <span class="comment">%star_list = star_list(i);</span>
+0083   star_list = star_list([star_list(:).Vmag] &lt;= OPTS.Mag_limit);
+0084   
+0085 <span class="keyword">end</span>
+0086 
+0087 ra = [star_list(:).ra]';
+0088 decl = [star_list(:).decl]';
+0089 
+0090 <span class="comment">% image preprocessing options</span>
+0091 <span class="keyword">if</span> isempty(PO)
+0092   PO = <a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>;
+0093   PO.outimgsize = 256;
+0094   PO.LE = 1;
+0095   PO.medianfilter = 0;
+0096 <span class="keyword">end</span>
+0097 
+0098 IDSTARS = [];
+0099 STARPARS = [];
+0100 
+0101 disp(<span class="string">'Searching for stars'</span>)
+0102 fprintf(1,<span class="string">'\n'</span>)
+0103 drawnow
+0104 <a href="../tools/progmeter.html" class="code" title="function progmeter(x, message)">progmeter</a>(0,<span class="string">' '</span>)
+0105 
+0106 
+0107 <span class="keyword">for</span> i1 = 1:size(files(1:<span class="keyword">end</span>,:),1),
+0108   
+0109   <span class="comment">% disp([i1 i1/size(files(1:end,:),1)])</span>
+0110   [data,header,obs] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(i1,:),PO);
+0111   data = data/obs.exptime;
+0112   [stars_azze(:,1),stars_azze(:,2)] = <a href="../Skymap/starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>( ra,<span class="keyword">...</span>
+0113                                                 decl,<span class="keyword">...</span>
+0114                                                 obs.time(1:3),<span class="keyword">...</span>
+0115                                                 obs.time(4:6),<span class="keyword">...</span>
+0116                                                 obs.longlat(2),<span class="keyword">...</span><span class="comment"> % obs.pos(2)</span>
+0117                                                 obs.longlat(1));   <span class="comment">% obs.pos(1)</span>
+0118   
+0119   stars_azze(:,3) = [star_list(:).HR]';
+0120   stars_azze(:,4) = [star_list(:).Vmag]';
+0121   
+0122   Stars_azze = stars_azze(stars_azze(:,2)&lt;pi/2,:);
+0123   [idstars,stars_par] = <a href="../Spectral_cal/M6/star_int_search.html" class="code" title="function [idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,plstars,OPTS)">star_int_search</a>(data,optpar,optpar(9),Stars_azze,OPTS);
+0124   
+0125   filtnr(i1) = obs.filter;
+0126   idstars(:,1) = i1;
+0127   IDSTARS = [IDSTARS;idstars];
+0128   STARPARS = [STARPARS;stars_par];
+0129   Stime(i1,:) = obs.time(4:6);
+0130   extime(i1) = obs.exptime;
+0131   <a href="../tools/progmeter.html" class="code" title="function progmeter(x, message)">progmeter</a>(i1/size(files(1:<span class="keyword">end</span>,:),1),sprintf(<span class="string">'Found %d in image %d out of'</span>,size(idstars,1),i1,size(files(1:<span class="keyword">end</span>,:),1)));
+0132 <span class="keyword">end</span>
+0133 <a href="../tools/progmeter.html" class="code" title="function progmeter(x, message)">progmeter</a> clear
+0134 
+0135 <span class="comment">%  if strncmp(disp_ops,'iter',4)</span>
+0136 <span class="comment">%    disp([i1 i1/length(files(1:end,:))])</span>
+0137 <span class="comment">%  end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

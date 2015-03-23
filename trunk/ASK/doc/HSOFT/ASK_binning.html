@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_binning</title>
+  <meta name="keywords" content="ASK_binning">
+  <meta name="description" content="ASK_BINNING - Post-bin data">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_binning
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_BINNING - Post-bin data</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function img_out = ASK_binning(img_in,binningFactors) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_BINNING - Post-bin data
+   
+ Calling:
+   img_out = ASK_binning(img_in,binningFactors)
+ Input:
+   img_in  - Input image to be binned [Ny x Nx x Nt]
+   binningFactors - [Bx, By]
+ Output:
+   img_out - rebinned output image  [Ny/By x Nx/Bx x Nt]
+ 
+ Function to return a binned copy of the data sequence IN_IMG.
+ IN_IMG is the data sequence, for example as returned by READ_MV.
+ It can have three dimensions, in which case THIRD should be time,
+ second image x coordinate, and first image y coordinate. Alternately it
+ can be a single image, with two dimensions only.
+ binning should be a two element array, with the binning size, e.g. [2,2]
+ for 2x2 binning. The first element is the x binning, and the second is
+ the y binning.
+ e.g. IMG_OUT = ASK_binning(IMG_IN,[2,2]);
+ Note the pixel mean is returned, not the pixel total! This is so the
+ calibration remains valid.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_image_sequence.html" class="code" title="function varargout = ASK_image_sequence(indices2show,Cams,OPS)">ASK_image_sequence</a>	IMAGE_SWQUENCE - to display an ASK image sequence as movie, and</li><li><a href="ASK_keogram_overlayed.html" class="code" title="function [keo,imstack] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li><li><a href="ASK_keograms.html" class="code" title="function [keo1,keo2,keo3,time_V] = ASK_keograms(fir,las,ste,width,x0,y0,angle,bkg,dist)">ASK_keograms</a>	ASK_KEOGRAMS - Produce keograms keograms from an ASK image sequence</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function img_out = ASK_binning(img_in,binningFactors)</a>
+0002 <span class="comment">% ASK_BINNING - Post-bin data</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   img_out = ASK_binning(img_in,binningFactors)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%   img_in  - Input image to be binned [Ny x Nx x Nt]</span>
+0008 <span class="comment">%   binningFactors - [Bx, By]</span>
+0009 <span class="comment">% Output:</span>
+0010 <span class="comment">%   img_out - rebinned output image  [Ny/By x Nx/Bx x Nt]</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% Function to return a binned copy of the data sequence IN_IMG.</span>
+0013 <span class="comment">% IN_IMG is the data sequence, for example as returned by READ_MV.</span>
+0014 <span class="comment">% It can have three dimensions, in which case THIRD should be time,</span>
+0015 <span class="comment">% second image x coordinate, and first image y coordinate. Alternately it</span>
+0016 <span class="comment">% can be a single image, with two dimensions only.</span>
+0017 <span class="comment">% binning should be a two element array, with the binning size, e.g. [2,2]</span>
+0018 <span class="comment">% for 2x2 binning. The first element is the x binning, and the second is</span>
+0019 <span class="comment">% the y binning.</span>
+0020 <span class="comment">% e.g. IMG_OUT = ASK_binning(IMG_IN,[2,2]);</span>
+0021 <span class="comment">% Note the pixel mean is returned, not the pixel total! This is so the</span>
+0022 <span class="comment">% calibration remains valid.</span>
+0023 
+0024 
+0025 <span class="comment">% Modified from bin.pro</span>
+0026 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0027 <span class="comment">% GPL 3.0 or later applies</span>
+0028 
+0029 
+0030 sz_out = size(img_in); <span class="comment">% Size of input image</span>
+0031 sz_out(1:2) = sz_out(1:2)./binningFactors([2,1]); <span class="comment">% Size of output image</span>
+0032 
+0033 img_out = zeros(sz_out);
+0034 
+0035 <span class="comment">% Loop over the necessary shifts along dimension #1</span>
+0036 <span class="keyword">for</span> i1 = 0:(binningFactors(2)-1),
+0037   <span class="comment">% and over the necessary shifts along dimension #2</span>
+0038   <span class="keyword">for</span> i2 = 0:(binningFactors(1)-1),
+0039     <span class="comment">% Add the shifted pixel intensities</span>
+0040     img_out = img_out + img_in((1+i1):binningFactors(2):<span class="keyword">end</span>,<span class="keyword">...</span>
+0041                                (1+i2):binningFactors(1):<span class="keyword">end</span>,<span class="keyword">...</span>
+0042                                :);
+0043   <span class="keyword">end</span>
+0044 <span class="keyword">end</span>
+0045 
+0046 <span class="comment">% and divide by the number of pixels added</span>
+0047 img_out = img_out/prod(binningFactors);</pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

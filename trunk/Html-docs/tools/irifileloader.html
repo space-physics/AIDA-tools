@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of irifileloader</title>
+  <meta name="keywords" content="irifileloader">
+  <meta name="description" content="IRIFILELOADER - load and parse IRI data files">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>irifileloader
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>IRIFILELOADER - load and parse IRI data files</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function varargout = irifileloader(filename,ops) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> IRIFILELOADER - load and parse IRI data files
+ 
+ Calling:
+   [alt,Op,NOp,O2p,Te,Ti,Hep,Hp,Np,Clustp] = irifileloader(filename,ops)    Outargflag = 0
+   altOpNOpO2pTeTiHepHpNpClustp = irifileloader(filename,ops)   Outargflag = 1
+   AtmStruct = irifileloader(filename,ops)          Outargflag = -1 
+   ops = msisfileloader;
+ Input:
+   filename - string with full or relative path to MSIS data file
+              to be loaded.
+   ops      - Options struct (slightly optional) containing fields
+              OutargFlag, [-1, 0, 1] selecting output format
+              according to above, defaults to 0. And named field
+              for column index of the species to extract, these
+              are built as OPS.indz (1) OPS.indTe (6) OPS.indTi
+              (5) OPS.indOp (7) OPS.indNp (8) OPS.indHp (9)
+              OPS.indHep (10) OPS.indO2p (11) OPS.indNOp  = 12;
+ Outputs:
+
+ He, O, N2, O2, Ar, H and N are the number densities (per m^3) of
+ these species at the requested altitude. Mass is the total mass
+ density (kg/m^3) at this altitude. Tex is the &quot;exospheric
+ temperature&quot; and T is the temperature at the altitude.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function varargout = irifileloader(filename,ops)</a>
+0002 <span class="comment">% IRIFILELOADER - load and parse IRI data files</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   [alt,Op,NOp,O2p,Te,Ti,Hep,Hp,Np,Clustp] = irifileloader(filename,ops)    Outargflag = 0</span>
+0006 <span class="comment">%   altOpNOpO2pTeTiHepHpNpClustp = irifileloader(filename,ops)   Outargflag = 1</span>
+0007 <span class="comment">%   AtmStruct = irifileloader(filename,ops)          Outargflag = -1</span>
+0008 <span class="comment">%   ops = msisfileloader;</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%   filename - string with full or relative path to MSIS data file</span>
+0011 <span class="comment">%              to be loaded.</span>
+0012 <span class="comment">%   ops      - Options struct (slightly optional) containing fields</span>
+0013 <span class="comment">%              OutargFlag, [-1, 0, 1] selecting output format</span>
+0014 <span class="comment">%              according to above, defaults to 0. And named field</span>
+0015 <span class="comment">%              for column index of the species to extract, these</span>
+0016 <span class="comment">%              are built as OPS.indz (1) OPS.indTe (6) OPS.indTi</span>
+0017 <span class="comment">%              (5) OPS.indOp (7) OPS.indNp (8) OPS.indHp (9)</span>
+0018 <span class="comment">%              OPS.indHep (10) OPS.indO2p (11) OPS.indNOp  = 12;</span>
+0019 <span class="comment">% Outputs:</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% He, O, N2, O2, Ar, H and N are the number densities (per m^3) of</span>
+0022 <span class="comment">% these species at the requested altitude. Mass is the total mass</span>
+0023 <span class="comment">% density (kg/m^3) at this altitude. Tex is the &quot;exospheric</span>
+0024 <span class="comment">% temperature&quot; and T is the temperature at the altitude.</span>
+0025 <span class="comment">%</span>
+0026 
+0027 <span class="comment">% Copyright � Bjorn Gustavsson 20120131</span>
+0028 <span class="comment">% This is free software GNU copyleft version 3 or later applies.</span>
+0029 
+0030 <span class="comment">% Default options</span>
+0031 dOPS.OutargFlag = 0; <span class="comment">% Output format selection flag</span>
+0032 dOPS.indz    = 1;    <span class="comment">% Column index for altitudes</span>
+0033 dOPS.indTe   = 6;    <span class="comment">% Column index for electron temperature</span>
+0034 dOPS.indTi   = 5;    <span class="comment">% Column index for ion temperature</span>
+0035 dOPS.indOp   = 7;    <span class="comment">% Column index for atomic oxygen ions</span>
+0036 dOPS.indNp   = 8;    <span class="comment">% Column index for N+</span>
+0037 dOPS.indHp   = 9;    <span class="comment">% Column index for H+</span>
+0038 dOPS.indHep  = 10;   <span class="comment">% Column index for He+</span>
+0039 dOPS.indO2p  = 11;   <span class="comment">% Column index for O2+</span>
+0040 dOPS.indNOp  = 12;   <span class="comment">% Column index for NO+</span>
+0041 
+0042 <span class="comment">% If no input argument is given</span>
+0043 <span class="keyword">if</span> nargin == 0
+0044   <span class="comment">% then return the default options struct</span>
+0045   varargout{1} = dOPS;
+0046   <span class="keyword">return</span>
+0047 <span class="keyword">elseif</span> nargin &gt; 1
+0048   <span class="comment">% if there are a user supplied options struct merge that one with</span>
+0049   <span class="comment">% the default:</span>
+0050   dOPS = mergestruct(dOPS,ops);
+0051 <span class="keyword">end</span>
+0052 
+0053 <span class="keyword">try</span> <span class="comment">% to load the iri data file</span>
+0054   iri_data = load(filename);
+0055 <span class="keyword">catch</span>
+0056   <span class="comment">% If that fails just give up</span>
+0057   error(sprintf(<span class="string">'Could not load file %s'</span>,filename))
+0058 <span class="keyword">end</span>
+0059 
+0060 <span class="comment">% If outputflag is</span>
+0061 <span class="keyword">if</span> dOPS.OutargFlag &lt; 0
+0062   <span class="comment">% Then build a struct with named fields for the desired ion-species.</span>
+0063   atm.alt  = iri_data(:,dOPS.indz);
+0064   atm.Te   = iri_data(:,dOPS.indTe);
+0065   atm.Ti   = iri_data(:,dOPS.indTi);
+0066   atm.Op   = iri_data(:,dOPS.indOp);
+0067   atm.NOp  = iri_data(:,dOPS.indNOp);
+0068   atm.O2p  = iri_data(:,dOPS.indO2p);
+0069   
+0070   <span class="keyword">if</span> isfield(dOIPS,<span class="string">'indHep'</span>)
+0071     atm.Hep   = iri_data(:,dOIPS.indHep);
+0072   <span class="keyword">end</span>
+0073   <span class="keyword">if</span> isfield(dOIPS,<span class="string">'indHp'</span>)
+0074     atm.Hp    = iri_data(:,dOIPS.indHp);
+0075   <span class="keyword">end</span>
+0076   <span class="keyword">if</span> isfield(dOIPS,<span class="string">'indClustp'</span>)
+0077     atm.Clustp  = iri_data(:,dOIPS.indClustp);
+0078   <span class="keyword">end</span>
+0079   <span class="keyword">if</span> isfield(dOIPS,<span class="string">'indNp'</span>)
+0080     atm.Np    = iri_data(:,dOIPS.indNp);
+0081   <span class="keyword">end</span>
+0082   varargout{1} = atm;
+0083   
+0084 <span class="keyword">elseif</span>     dOPS.OutargFlag &gt; 0
+0085   <span class="comment">% just put everything together in one sorted array</span>
+0086   altOpNOpO2pTeTiHepHpNpClustp(:,1) = iri_data(:,dOPS.indz);
+0087   altOpNOpO2pTeTiHepHpNpClustp(:,2) = iri_data(:,dOPS.indO);
+0088   altOpNOpO2pTeTiHepHpNpClustp(:,3) = iri_data(:,dOPS.indN2);
+0089   altOpNOpO2pTeTiHepHpNpClustp(:,4) = iri_data(:,dOPS.indO2);
+0090   altOpNOpO2pTeTiHepHpNpClustp(:,5) = iri_data(:,dOPS.indMass);
+0091   altOpNOpO2pTeTiHepHpNpClustp(:,6) = iri_data(:,dOPS.indTn);
+0092   <span class="keyword">if</span> isfield(dOIPS,<span class="string">'indTex'</span>)
+0093     altOpNOpO2pTeTiHepHpNpClustp(:,7) = iri_data(:,dOIPS.indTex);
+0094   <span class="keyword">end</span>
+0095   <span class="keyword">if</span> isfield(dOIPS,<span class="string">'indHe'</span>)
+0096     altOpNOpO2pTeTiHepHpNpClustp(:,8) = iri_data(:,dOIPS.indHe);
+0097   <span class="keyword">end</span>
+0098   <span class="keyword">if</span> isfield(dOIPS,<span class="string">'indH'</span>)
+0099     altOpNOpO2pTeTiHepHpNpClustp(:,9) = iri_data(:,dOIPS.indH);
+0100   <span class="keyword">end</span>
+0101   varargout{1} = altOpNOpO2pTeTiHepHpNpClustp;
+0102   
+0103 <span class="keyword">else</span>
+0104   <span class="comment">% Transfer outputs to meaningful names</span>
+0105   alt  = iri_data(:,dOPS.indz);
+0106   Op   = iri_data(:,dOPS.indOp);
+0107   NOp  = iri_data(:,dOPS.indNOp);
+0108   O2p  = iri_data(:,dOPS.indO2p);
+0109   Te   = iri_data(:,dOPS.indTe);
+0110   Ti   = iri_data(:,dOPS.indTi);
+0111   <span class="keyword">if</span> isfield(dOIPS,<span class="string">'indNp'</span>)
+0112     Np    = iri_data(:,dOIPS.indNp);
+0113   <span class="keyword">end</span>
+0114   <span class="keyword">if</span> isfield(dOIPS,<span class="string">'indHp'</span>)
+0115     Hp    = iri_data(:,dOIPS.indHp);
+0116   <span class="keyword">end</span>
+0117   <span class="keyword">if</span> isfield(dOIPS,<span class="string">'indHep'</span>)
+0118     Hep   = iri_data(:,dOIPS.indHep);
+0119   <span class="keyword">end</span>
+0120   <span class="keyword">if</span> isfield(dOIPS,<span class="string">'indClustp'</span>)
+0121     Clustp  = iri_data(:,dOIPS.indClustp);
+0122   <span class="keyword">end</span>
+0123   varargout{1} = alt*1e3;
+0124   varargout{2} = Op;
+0125   varargout{3} = NOp;
+0126   varargout{4} = O2p;
+0127   varargout{5} = Te;
+0128   varargout{6} = Ti;
+0129   varargout{7} = Np;
+0130   varargout{8} = Hp;
+0131   varargout{9} = Hep;
+0132   varargout{5} = Ar;
+0133   
+0134 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

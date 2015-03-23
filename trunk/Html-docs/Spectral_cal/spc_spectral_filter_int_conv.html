@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of spc_spectral_filter_int_conv</title>
+  <meta name="keywords" content="spc_spectral_filter_int_conv">
+  <meta name="description" content="SPC_SPECTRAL_FILTER_INT_CONV - convert Pulkovo intensity to #/cm^2/s/fw">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Spectral_cal -->
+<h1>spc_spectral_filter_int_conv
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SPC_SPECTRAL_FILTER_INT_CONV - convert Pulkovo intensity to #/cm^2/s/fw</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [I,dI] = spc_spectral_filter_int_conv(wl,filter_tr,BSCNR,dispOPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SPC_SPECTRAL_FILTER_INT_CONV - convert Pulkovo intensity to #/cm^2/s/fw
+
+ Calling:
+  [I,dI] = spc_spectral_filter_int_conv(wl,filter_tr,BSCNR,dispOPS)
+ Input:
+  WL - wavelengths (nm), multiple regions is ok size (NxM)
+  FILTER_TR - filter transmission characteristics (NxM)
+  BSCNR - Bright star catalog index of star
+  DISPOPS - display-option-struct with field 'disp_things'
+            [ {0} | 1 ] and 'plot_things' [ {0} | 1 ]
+ Output:
+  I - stellar intensity #photons/cm^2/s/fw
+  DI - gradient in I: DI = (I(max(wl))-I(min(wl)))</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Skymap/getspec.html" class="code" title="function [wavelengths,energyfluxes] = getspec(bright_star_nr,verbosity)">getspec</a>	GETSPEC - high resolution stellar spectras around visible wavelengths.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [I,dI] = spc_spectral_filter_int_conv(wl,filter_tr,BSCNR,dispOPS)</a>
+0002 <span class="comment">% SPC_SPECTRAL_FILTER_INT_CONV - convert Pulkovo intensity to #/cm^2/s/fw</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  [I,dI] = spc_spectral_filter_int_conv(wl,filter_tr,BSCNR,dispOPS)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  WL - wavelengths (nm), multiple regions is ok size (NxM)</span>
+0008 <span class="comment">%  FILTER_TR - filter transmission characteristics (NxM)</span>
+0009 <span class="comment">%  BSCNR - Bright star catalog index of star</span>
+0010 <span class="comment">%  DISPOPS - display-option-struct with field 'disp_things'</span>
+0011 <span class="comment">%            [ {0} | 1 ] and 'plot_things' [ {0} | 1 ]</span>
+0012 <span class="comment">% Output:</span>
+0013 <span class="comment">%  I - stellar intensity #photons/cm^2/s/fw</span>
+0014 <span class="comment">%  DI - gradient in I: DI = (I(max(wl))-I(min(wl)))</span>
+0015 
+0016 <span class="comment">%   Copyright � 20030901 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0017 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0018 
+0019 
+0020 <span class="keyword">global</span> c0;        <span class="comment">% Speed of light [m/s]</span>
+0021 <span class="keyword">global</span> h;        <span class="comment">% Plank's constant [Js]</span>
+0022 <span class="keyword">global</span> kB;        <span class="comment">% Boltzmann constant [J/K]</span>
+0023 <span class="keyword">global</span> m_e;             <span class="comment">% electron rest mass</span>
+0024 <span class="keyword">global</span> q_e;             <span class="comment">% elementary charge</span>
+0025 
+0026 c0      = 2.99792458e8;                <span class="comment">% Speed of light [m/s]</span>
+0027 h       = 6.62618e-34;              <span class="comment">% Plank's constant [Js]</span>
+0028 kB      = 1.380662e-23;             <span class="comment">% Boltzmann constant [J/K]</span>
+0029 m_e     = 9.10939e-31;              <span class="comment">% electron rest mass [kg]</span>
+0030 q_e     = 1.6021773e-19;            <span class="comment">% elementary charge [C]</span>
+0031 
+0032 
+0033 Catalog2photons_s_cm2_nm = wl*1e-9*1e-4/h/c0*1e-9;
+0034 wls_filter = wl;
+0035 
+0036 disptrue = 0;
+0037 plottrue = 0;
+0038 <span class="keyword">if</span> nargin &gt;= 4 &amp; isfield(dispOPS,<span class="string">'disp_things'</span>)
+0039   
+0040   disp(wl_center)
+0041   disptrue = 1;
+0042   
+0043 <span class="keyword">end</span>
+0044 <span class="keyword">if</span> nargin &gt;= 4 &amp; isfield(dispOPS,<span class="string">'plot_things'</span>)
+0045   
+0046   plottrue = 1;
+0047   
+0048 <span class="keyword">end</span>
+0049 
+0050 
+0051 <span class="keyword">for</span> si = length(BSCNR):-1:1,
+0052   
+0053   b_s_nr = BSCNR(si);
+0054   [wls,I_e] = <a href="../Skymap/getspec.html" class="code" title="function [wavelengths,energyfluxes] = getspec(bright_star_nr,verbosity)">getspec</a>(b_s_nr);
+0055   qwei = find(gradient(wls)&lt;0);
+0056   <span class="keyword">if</span> ~isempty(qwei)
+0057     wls = wls(1:qwei);
+0058     I_e = I_e(1:qwei);
+0059   <span class="keyword">end</span>
+0060   
+0061   I_filter = interp1(wls,I_e,wls_filter);
+0062   
+0063   I(si,:) = [sum(filter_tr.*I_filter.*abs(gradient(wls_filter)).*Catalog2photons_s_cm2_nm)]';
+0064   dI(si,:) = [ ( I_filter(:,1) - I_filter(:,end) )./( wls_filter(:,1) - wls_filter(:,end) )]';
+0065   
+0066   <span class="keyword">if</span> disptrue
+0067     disp(I_filter)
+0068   <span class="keyword">end</span>
+0069   <span class="keyword">if</span> plottrue
+0070     clf
+0071     plot(wls,I_e)
+0072     hold on
+0073     title([<span class="string">'sis = '</span>,num2str(si),<span class="string">' bsc_nr = '</span>,num2str(b_s_nr)])
+0074     plot(wls_filter',I_filter',<span class="string">'o'</span>)
+0075     drawnow
+0076   <span class="keyword">end</span>
+0077   
+0078 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

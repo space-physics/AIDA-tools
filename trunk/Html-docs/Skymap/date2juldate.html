@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of date2juldate</title>
+  <meta name="keywords" content="date2juldate">
+  <meta name="description" content="DATE2JULIANDATE calculates the julian date at 0h UT">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>date2juldate
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>DATE2JULIANDATE calculates the julian date at 0h UT</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [jd] = date2juldate(date) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> DATE2JULIANDATE calculates the julian date at 0h UT
+
+ Calling:
+ [jd] = date2juldate(date)
+
+ It takes input date as an array with date(1) &lt;-&gt; the year ( 95 -&gt; 1995 )
+                                      date(2) &lt;-&gt; month
+                                      date(3) &lt;-&gt; day nr in month</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/find_optpar.html" class="code" title="function optpar = find_optpar(obs,OPS)">find_optpar</a>	FIND_OPTPAR - search the optpar data-base for best OPTPAR</li><li><a href="../Fits_tools/find_optpar2.html" class="code" title="function optpar = find_optpar2(obs)">find_optpar2</a>	FIND_OPTPAR2 - search the optpar data-base for best OPTPAR</li><li><a href="../Fits_tools/fits_header2infostruct.html" class="code" title="function info = fits_header2infostruct(header,filename2parseheader)">fits_header2infostruct</a>	FITS_HEADER2INFOSTRUCT - parse fits header, make struct of meta-data</li><li><a href="../Fits_tools/try_to_be_smart.html" class="code" title="function [obs] = try_to_be_smart(img_head,ALIS_FITS,PO)">try_to_be_smart</a>	TRY_TO_BE_SMART parses an (ALIS) fits header for observation info</li><li><a href="starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>	STARPOS2 gives the azimuth, zenith and apparent zenith angles</li><li><a href="utc2sidt.html" class="code" title="function [sidtime] = utc2sidt(date,utc)">utc2sidt</a>	UTC2SIDT calculates the sidereal time.</li><li><a href="../Starcal/saveas_acc.html" class="code" title="function saveok = saveas_acc(optpar,tvec,name,stnnr,az,ze,om)">saveas_acc</a>	SAVEAS_ACC - function to save optical parameters</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [jd] = date2juldate(date)</a>
+0002 <span class="comment">% DATE2JULIANDATE calculates the julian date at 0h UT</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% [jd] = date2juldate(date)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% It takes input date as an array with date(1) &lt;-&gt; the year ( 95 -&gt; 1995 )</span>
+0008 <span class="comment">%                                      date(2) &lt;-&gt; month</span>
+0009 <span class="comment">%                                      date(3) &lt;-&gt; day nr in month</span>
+0010 
+0011 
+0012 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0013 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0014 
+0015 <span class="keyword">if</span> ( date(1) &lt; 100 )
+0016   year = date(1) + 1900;
+0017 <span class="keyword">else</span>
+0018   year = date(1);
+0019 <span class="keyword">end</span>
+0020 month = date(2);
+0021 day = date(3);
+0022 
+0023 <span class="keyword">if</span> ( month &gt;= 3 )
+0024   f = year;
+0025 <span class="keyword">else</span>
+0026   f = year-1;
+0027 <span class="keyword">end</span>
+0028 
+0029 <span class="keyword">if</span> ( month &gt;= 3 )
+0030   g = month;
+0031 <span class="keyword">else</span>
+0032   g = month+12;
+0033 <span class="keyword">end</span>
+0034 
+0035 a = 2 - floor(f/100)+floor(f/400);
+0036 
+0037 jd = floor( 365.25*f ) + floor( 30.6001*(g+1) ) + day + a + 1720994.5;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,506 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>spec_cal_jobb_mall.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files called by spec_cal_jobb_mall.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="atm_att_est.htm">atm_att_est</A></LI> 
+<LI><A HREF ="check_scan_for_stars.htm">check_scan_for_stars</A></LI> 
+<LI><A HREF ="spc_sort_out_the_bad_ones.htm">spc_sort_out_the_bad_ones</A></LI> 
+<LI><A HREF ="plot_scitf.htm">plot_scitf</A></LI> 
+<LI><A HREF ="scan_for_stars.htm">scan_for_stars</A></LI> 
+<LI><A HREF ="spc_make_theta.htm">spc_make_theta</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>Files that are LOADED into spec_cal_jobb_mall.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="./files0310.mat">files0310.mat</A></LI> 
+<LI><A HREF ="./S010_S10_191827_0.acc">S010_S10_191827_0.acc</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of spec_cal_jobb_mall.m</FONT></FONT></P> 
+<pre> 
+global bx by 
+ 
+imgsiz = [256 256]; 
+bx = imsiz(2); 
+by = imsiz(1); 
+ 
+load files0310.mat 
+load S010_S10_191827_0.acc 
+pos = [20.36 69.35]; 
+ 
+files = files0310(15:end,:); 
+optpar = S010_S10_191827_0([7:14 6 15]); 
+ 
+ 
+%%%%%%% 
+% 
+% Start of phase 1: Finding stars in images 
+% 
+%%%%%%% 
+ 
+PO = []; 
+% Automatic search of stars from `Pulkovo Spectrophotometric 
+% Catalog' in all images 
+OPTS.Mag_limit = 5; 
+OPTS.regsize = 10; 
+OPTS.bgtype = 'complicated'; 
+ 
+[IDENTSTARS,STARPARS,filtnr,Stime] = <A HREF ="scan_for_stars.htm">scan_for_stars</A>(files,pos,optpar,PO,OPTS); 
+ 
+%% Check of the results - tedious and boooring 
+[ok] = <A HREF ="check_<A HREF ="scan_for_stars.htm">scan_for_stars</A>.htm">check_<A HREF ="scan_for_stars.htm">scan_for_stars</A></A>(files,pos,optpar,IDENTSTARS,STARPARS); 
+ 
+time_s = Stime(:,1)+Stime(:,2)/60+Stime(:,3)/3600; 
+ 
+%%%%%%% 
+% 
+% Start of phase 2: Removal of bad star-identification 
+%                   or `weed out the weaklings' 
+%%%%%%% 
+ 
+ 
+% Determine bad time intervals for each star (due to clouds) 
+[BT,sis] = spec_cal_bad_times(IDENTSTARS,time_s,filtnr,optpar); 
+% Sort out the bad time periods and star-fits which are `off 
+% course', and split IDENTSTARS into more specific matrixes. 
+[GI1,GI2,GI3,GT,GX,GY,Gfilter,BSC_nr,sindx] = <A HREF ="spc_sort_out_the_bad_ones.htm">spc_sort_out_the_bad_ones</A>(IDENTSTARS,time_s,filtnr,BT,sis); 
+ 
+ 
+% remove clearly bad outliers in intensity. 
+[gI1,gI2,gI3,gT,gX,gY,gfilter] = ... 
+    spec_cal_bad_intens(GI1(1:length(sis),:),... 
+                        GI2(1:length(sis),:),... 
+                        GI3(1:length(sis),:),... 
+                        GT(1:length(sis),:),... 
+                        GX(1:length(sis),:),... 
+                        GY(1:length(sis),:),... 
+                        Gfilter(1:length(sis),:),... 
+                        [0 1 4 5]); 
+ 
+%%%%%%% 
+% 
+% Start of phase 3: Finally Physics 
+% 
+%%%%%%% 
+ 
+% flat-field-correction matrixes 
+ffc_raw = ffs_correction_raw([bx by],optpar,optpar(9))/bx/by; 
+ffc = ffs_correction2([bx by],optpar,optpar(9)); 
+ 
+[theta_out,gZe,gffc] = <A HREF ="spc_make_theta.htm">spc_make_theta</A>(gX,gY,optpar,sis); 
+costheta = cos(theta_out); 
+% $$$ gZe = zeros(size(gX)); 
+% $$$ % ( 
+% $$$ e_n = [0 0 1]; 
+% $$$ l_0 = 1; 
+% $$$ % ) These are really unnecessary? 
+% $$$ 
+% $$$ 
+% $$$ [u,v] = meshgrid(1:bx,1:by); 
+% $$$ [fi,theta] = camera_invmodel(u,v,optpar,optpar(9)); 
+% $$$ 
+% $$$ for ii = 1:length(sis), 
+% $$$ 
+% $$$   jj = 1; 
+% $$$   while jj <= size(gX,2) & gX(ii,jj)~=0 
+% $$$     [az,ze] = inv_project_directions(gX(ii,jj),gY(ii,jj),theta,[],3,optpar,e_n,l_0); 
+% $$$     gZe(ii,jj) = ze; 
+% $$$     % AAaah saa daaligt att goera det haer haer. 
+% $$$     gffc(ii,jj) = ffc(round(gY(ii,jj)),round(gX(ii,jj))); 
+% $$$     gffc_r(ii,jj) = ffc_raw(round(gY(ii,jj)),round(gX(ii,jj))); 
+% $$$     costheta(ii,jj) = cos(theta(round(gY(ii,jj)),round(gX(ii,jj)))); 
+% $$$     jj = jj+1; 
+% $$$   end 
+% $$$ 
+% $$$ end 
+ 
+ 
+%%% 1 Set up some of the physical parameters and 
+%%%   conversion factors. 
+ 
+global c0;		% Speed of light [m/s] 
+global h;		% Plank's constant [Js] 
+global kB;		% Boltzmann constant [J/K] 
+global m_e;             % electron rest mass 
+global q_e;             % elementary charge 
+ 
+c0      = 2.99792458e8;	            % Speed of light [m/s] 
+h       = 6.62618e-34;              % Plank's constant [Js] 
+kB      = 1.380662e-23;             % Boltzmann constant [J/K] 
+m_e     = 9.10939e-31;              % electron rest mass [kg] 
+q_e     = 1.6021773e-19;            % elementary charge [C] 
+ 
+%%% ALIS filters and filterwidths 
+wls_alis = [427.8+[-2:2] 557.7+[-1.5:1.5] 630.0+[-1.5:1.5] 844.6+[-1.5:1.5]]; % nm 
+wls_nipr_spasi= [427.8+[-1:1] 557.7+[-1.5:1.5] 630.0+[-1:1]]; % nm 
+%% The spectral catalog gives intensity in W/m^2/m 
+%%% This should be a transformation to #/cm^2/filterwidth/s 
+%Catalog2photons_s_cm2_nm = wls_alis.*dwls_alis*1e-9*1e-4/h/c0*1e-9; 
+Catalog2photons_s_cm2_nm = wls_alis*1e-9*1e-4/h/c0*1e-9; 
+Catalog2photons_s_cm2_nmsp = wls_nipr_spasi*1e-9*1e-4/h/c0*1e-9; 
+% should be tested also with summation over the filter-width... 
+ 
+ 
+%BSC_NR = unique(IDENTSTARS(:,9)); 
+BSC_NR = BSC_nr; 
+ 
+disp([wls_alis([3 8 12 16]);]) 
+for si = 1:length(sis), 
+  clf 
+  if si==1 
+    disp([wls_alis([3 8 12 16]);]) 
+  end 
+  b_s_nr = BSC_NR(si); 
+  [wls,I_e] = getspec(b_s_nr); 
+  qwei = find(gradient(wls)<0); 
+  if length(qwei) 
+    wls = wls(1:qwei); 
+    I_e = I_e(1:qwei); 
+  end 
+  clf 
+  plot(wls,I_e) 
+  hold on 
+  title(['sis = ',num2str(si),' bsc_nr = ',num2str(b_s_nr)]) 
+  I_sp = interp1(wls,I_e,wls_nipr_spasi); 
+  I_e = interp1(wls,I_e,wls_alis); 
+ 
+  plot(wls_alis,I_e,'ko') 
+  I_e = I_e.*Catalog2photons_s_cm2_nm; 
+  I_sp = I_sp.*Catalog2photons_s_cm2_nmsp; 
+  dI_e(si,:) = [diff(I_e([1 5]))/diff(wls_alis([1 5])) diff(I_e([6 9]))/diff(wls_alis([6 9])) diff(I_e([10 13]))/diff(wls_alis([10 13])) diff(I_e([14 
+  I_e = [sum(I_e(1:5)) sum(I_e([6:9])) sum(I_e(10:13)) sum(I_e(14:end))]; 
+  I_sp = [sum(I_sp(1:3)) sum(I_sp([4:7])) sum(I_sp(8:10))]; 
+  xlabel('push any button') 
+  pause 
+ 
+  I_all(si,:) = I_e; 
+  I_als(si,:) = I_sp; 
+  disp([I_e]) 
+ 
+end 
+I_sis = I_all(1:length(sis),:); 
+fig1 = gcf; 
+fig2 = figure; 
+ 
+I0 = []; 
+ZE0 = []; 
+I1 = []; 
+ZE1 = []; 
+I4 = []; 
+ZE4 = []; 
+I5 = []; 
+ZE5 = []; 
+P0 = []; 
+P1 = []; 
+P4 = []; 
+P5 = []; 
+% changes from star max intensity (gI1) to total counts from star (gI2) 
+for jj = 1:size(I_sis,1), 
+%for jj = 1:14, 
+  %clf 
+  figure(fig1) 
+  clr_jj = rand([3 1]); 
+  subplot(2,2,1) 
+  i_f = find(gfilter(jj,:)==0 & gZe(jj,:)<36*pi/180);% bad!!! 
+  if isfinite(I_sis(jj,2)) 
+% $$$     I0 = [I0 (gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,2))]; 
+    I0 = [I0 (gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,2))]; 
+    ZE0 = [ZE0 gZe(jj,i_f)]; 
+  end 
+  P0(jj,:) = <A HREF ="atm_att_est.htm">atm_att_est</A>(I0,ZE0); 
+% $$$   ph = plot(1./cos(gZe(jj,i_f)),log(gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,2))','.'); 
+  ph = plot(1./cos(gZe(jj,i_f)),log(gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,2))','.'); 
+  %P0(jj,:) = <A HREF ="atm_att_est.htm">atm_att_est</A>((gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,2)),gZe(jj,i_f)); 
+  set(ph,'color',clr_jj,'markersize',10) 
+  hold on 
+  grid on 
+  subplot(2,2,2) 
+  i_f = find(gfilter(jj,:)==1 & gZe(jj,:)<36*pi/180);% bad!!! 
+% $$$   ph = plot(1./cos(gZe(jj,i_f)),log(gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,3))','.'); 
+  ph = plot(1./cos(gZe(jj,i_f)),log(gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,3))','.'); 
+  if isfinite(I_sis(jj,3)) 
+% $$$     I1 = [I1 (gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,3))]; 
+    I1 = [I1 (gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,3))]; 
+    ZE1 = [ZE1 gZe(jj,i_f)]; 
+  end 
+  P1(jj,:) = <A HREF ="atm_att_est.htm">atm_att_est</A>(I1,ZE1); 
+  %P1(jj,:) = <A HREF ="atm_att_est.htm">atm_att_est</A>((gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,3)),gZe(jj,i_f)); 
+  set(ph,'color',clr_jj,'markersize',10) 
+  grid on 
+  hold on 
+  subplot(2,2,3) 
+  i_f = find(gfilter(jj,:)==4 & gZe(jj,:)<36*pi/180);% bad!!! 
+  disp([jj size(i_f) I_sis(jj,4)]) 
+% $$$   ph = plot(1./cos(gZe(jj,i_f)),log(gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,4))','.'); 
+  ph = plot(1./cos(gZe(jj,i_f)),log(gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,4))','.'); 
+  if isfinite(I_sis(jj,4)) 
+% $$$     I4 = [I4 (gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,4))]; 
+    I4 = [I4 (gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,4))]; 
+    ZE4 = [ZE4 gZe(jj,i_f)]; 
+  end 
+  P4(jj,:) = <A HREF ="atm_att_est.htm">atm_att_est</A>(I4,ZE4); 
+  %P4(jj,:) = <A HREF ="atm_att_est.htm">atm_att_est</A>((gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,4)),gZe(jj,i_f)); 
+  set(ph,'color',clr_jj,'markersize',10) 
+  hold on 
+  grid on 
+  subplot(2,2,4) 
+  i_f = find(gfilter(jj,:)==5 & gZe(jj,:)<36*pi/180);% bad!!! 
+% $$$   ph = plot(1./cos(gZe(jj,i_f)),log(gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,1))','.'); 
+  ph = plot(1./cos(gZe(jj,i_f)),log(gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,1))','.'); 
+  if isfinite(I_sis(jj,1)) 
+% $$$     I5 = [I5 (gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,1))]; 
+    I5 = [I5 (gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,1))]; 
+    ZE5 = [ZE5 gZe(jj,i_f)]; 
+  end 
+  P5(jj,:) = <A HREF ="atm_att_est.htm">atm_att_est</A>(I5,ZE5); 
+  %P5(jj,:) = <A HREF ="atm_att_est.htm">atm_att_est</A>((gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,1)),gZe(jj,i_f)); 
+  set(ph,'color',clr_jj,'markersize',10) 
+  grid on 
+  hold on 
+  figure(fig2) 
+  ph = plot(gX(jj,:),gY(jj,:),'.'); 
+  set(ph,'color',clr_jj,'markersize',10) 
+  hold on 
+  title(num2str(jj)) 
+  %pause 
+end 
+ 
+P = <A HREF ="atm_att_est.htm">atm_att_est</A>(Intens,zenith_a); 
+ 
+for jj = 1:size(I_sis,1), 
+  clf 
+  i_f = find(gfilter(jj,:)==0 & gZe(jj,:)<36*pi/180); 
+% $$$   I0 = gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,2); 
+  I0 = gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,2); 
+  T0 = gT(jj,i_f); 
+ 
+  <A HREF ="plot_scitf.htm">plot_scitf</A>(I0,T0,'g') 
+ 
+  i_f = find(gfilter(jj,:)==1 & gZe(jj,:)<36*pi/180); 
+% $$$   I0 = gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,3); 
+  I0 = gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,3); 
+  T0 = gT(jj,i_f); 
+ 
+  <A HREF ="plot_scitf.htm">plot_scitf</A>(I0,T0,'r') 
+ 
+  i_f = find(gfilter(jj,:)==4 & gZe(jj,:)<36*pi/180); 
+% $$$   I0 = gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,4); 
+  I0 = gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,4); 
+  T0 = gT(jj,i_f); 
+ 
+  <A HREF ="plot_scitf.htm">plot_scitf</A>(I0,T0,'k') 
+ 
+  i_f = find(gfilter(jj,:)==5 & gZe(jj,:)<36*pi/180); 
+% $$$   I0 = gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,1); 
+  I0 = gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,1); 
+  T0 = gT(jj,i_f); 
+ 
+  <A HREF ="plot_scitf.htm">plot_scitf</A>(I0,T0,'b') 
+  pause 
+end 
+ 
+ 
+I0 = []; 
+I1 = []; 
+I4 = []; 
+I5 = []; 
+hist_range = 0:.01:4; 
+%hist_range = 0:.001:.5; 
+for jj = 1:size(I_sis,1), 
+  clf 
+  iii = jj; % test foer buggfix 030204 
+  i_all_f = find(gfilter(jj,:)==0|gfilter(jj,:)==1|gfilter(jj,:)==4|gfilter(jj,:)==5); 
+  if jj ~=151 
+    i_f = find(gfilter(jj,:)==0 & gZe(jj,:)<36*pi/180); 
+    %I0 = [I0 gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,2)]; 
+    %I0 = [gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,2)]; 
+    if ~isempty(i_f) 
+      I0 = [gI2(jj,i_f)/I_sis(jj,2)]; 
+      I0i = interp1(gT(jj,i_f),gI2(jj,i_f),gT(iii,i_all_f),'spline'); 
+      thetaCurr = costheta(jj,i_f); 
+    end 
+    i_f = find(gfilter(jj,:)==1 & gZe(jj,:)<36*pi/180); 
+    %I1 = [I1 gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,3)]; 
+    if ~isempty(i_f) 
+      I1 = [gI2(jj,i_f)/I_sis(jj,3)]; 
+      I1i = interp1(gT(jj,i_f),gI2(jj,i_f),gT(iii,i_all_f),'spline'); 
+      thetaCurr = costheta(jj,i_f); 
+    end 
+ 
+    i_f = find(gfilter(jj,:)==4 & gZe(jj,:)<36*pi/180); 
+    %I4 = [I4 gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,4)]; 
+    if ~isempty(i_f) 
+      I4 = [gI2(jj,i_f)/I_sis(jj,4)]; 
+      I4i = interp1(gT(jj,i_f),gI2(jj,i_f),gT(iii,i_all_f),'spline'); 
+      thetaCurr = costheta(jj,i_f); 
+    end 
+ 
+    i_f = find(gfilter(jj,:)==5 & gZe(jj,:)<36*pi/180); 
+    %I5 = [I5 gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,1)]; 
+    if ~isempty(i_f) 
+      I5 = [gI2(jj,i_f)/I_sis(jj,1)]; 
+      I5i = interp1(gT(jj,i_f),gI2(jj,i_f),gT(iii,i_all_f),'spline'); 
+      thetaCurr = costheta(jj,i_f); 
+    end 
+ 
+    [N0(jj,:),X0] = hist(I0,hist_range); 
+    [nP0(jj,:),Chi20(jj)] = hfitg(I0,length(hist_range),min(hist_range),max(hist_range)); 
+    [N1(jj,:),X1] = hist(I1,hist_range); 
+    [nP1(jj,:),Chi21(jj)] = hfitg(I1,length(hist_range),min(hist_range),max(hist_range)); 
+    [N4(jj,:),X4] = hist(I4,hist_range); 
+    [nP4(jj,:),Chi24(jj)] = hfitg(I4,length(hist_range),min(hist_range),max(hist_range)); 
+    [N5(jj,:),X5] = hist(I5,hist_range); 
+    [nP5(jj,:),Chi25(jj)] = hfitg(I5,length(hist_range),min(hist_range),max(hist_range)); 
+    thetaAvg(jj) = mean(thetaCurr); 
+    try 
+      [Nq1(jj,:),X1] = hist(I1i./I0i,2*hist_range); 
+      [Nq4(jj,:),X4] = hist(I4i./I0i,2*hist_range); 
+      [Nq5(jj,:),X5] = hist(I5i./I0i,2*hist_range); 
+    catch 
+    end 
+    stairs(X0,N0(jj,:),'g') 
+    hold on 
+    stairs(X1,N1(jj,:),'r') 
+    stairs(X4,N4(jj,:),'k') 
+    stairs(X5,N5(jj,:)','b') 
+    hold on 
+    title(num2str(jj)) 
+    pause 
+  end 
+end 
+qwe = inline('sum((par(1)*exp(-(x-par(2)).^2/par(3)^2)-y).^2)','par','x','y'); 
+ 
+p0 = fmins(qwe,p0,[],[],hist_range(1:end-2),sum(N0(:,1:end-2))); 
+p1 = fmins(qwe,[1 1 1],[],[],hist_range(1:end-2),sum(N1(:,1:end-2))); 
+p4 = fmins(qwe,[1 1 1],[],[],hist_range(1:end-2),sum(N4(:,1:end-2))); 
+p5 = fmins(qwe,[1 1 1],[],[],hist_range(1:end-2),sum(N5(:,1:end-2))); 
+ 
+I1 = []; 
+I2 = []; 
+I3 = []; 
+N1 = []; 
+N2 = []; 
+N3 = []; 
+nP1 = []; 
+nP2 = []; 
+nP3 = []; 
+exp_t = 6; 
+hist_range = [0:.01:5]/10; 
+%hist_range = 0:.001:.5; 
+for jj = 1:size(I_sis,1), 
+  clf 
+% $$$   hold on 
+  iii = jj; % test foer buggfix 030204 
+  i_all_f = find(gfilter(jj,:)==0|gfilter(jj,:)==1|gfilter(jj,:)==4|gfilter(jj,:)==5); 
+  if jj ~=151 
+    i_f = find(gfilter(jj,:)==1 ); 
+    %I0 = [I0 gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,2)]; 
+    %I0 = [gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,2)]; 
+    if ~isempty(i_f) 
+      I1 = [gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,1)]/exp_t; 
+      n1(jj) = length(i_f); 
+      thetaCurr = costheta(jj,i_f); 
+% $$$       plot(I1,'+') 
+    end 
+    i_f = find(gfilter(jj,:)==2 ); 
+    %I1 = [I1 gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,3)]; 
+    if ~isempty(i_f) 
+      I2 = [gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,2)]/exp_t; 
+      n2(jj) = length(i_f); 
+      thetaCurr = costheta(jj,i_f); 
+% $$$       plot(I2,'g+') 
+    end 
+ 
+    i_f = find(gfilter(jj,:)==3 ); 
+    %I4 = [I4 gI2(jj,i_f)./gffc(jj,i_f)/I_sis(jj,4)]; 
+    if ~isempty(i_f) 
+      I3 = [gI2(jj,i_f)./costheta(jj,i_f)/I_sis(jj,3)]/exp_t; 
+      n3(jj) = length(i_f); 
+      thetaCurr = costheta(jj,i_f); 
+% $$$       plot(I3,'r+') 
+    end 
+% $$$     hold off 
+% $$$     title('push') 
+% $$$     pause 
+    [N1(jj,:),X1] = hist(I1,hist_range); 
+    [nP1(jj,:),Chi21(jj)] = hfitg(I1,length(hist_range),min(hist_range),max(hist_range)); 
+    [N2(jj,:),X2] = hist(I2,hist_range); 
+    [nP2(jj,:),Chi22(jj)] = hfitg(I2,length(hist_range),min(hist_range),max(hist_range)); 
+    [N3(jj,:),X3] = hist(I3,hist_range); 
+    [nP3(jj,:),Chi23(jj)] = hfitg(I3,length(hist_range),min(hist_range),max(hist_range)); 
+    thetaAvg(jj) = mean(thetaCurr); 
+    try 
+      [Nq2(jj,:),X2] = hist(I2i./I1i,2*hist_range); 
+      [Nq3(jj,:),X3] = hist(I3i./I1i,2*hist_range); 
+    catch 
+    end 
+    stairs(X1,N1(jj,:),'b') 
+    hold on 
+    stairs(X2,N2(jj,:),'g') 
+    stairs(X3,N3(jj,:),'r') 
+    hold on 
+    title(num2str(jj)) 
+    pause(0) 
+  end 
+end 
+ 
+ 
+jj = 3; 
+ 
+i_f = find( gfilter(jj,:) == 1 ); 
+if ~isempty(i_f) 
+  I1 = [gI2(jj,i_f)/I_sis(jj,2)]; 
+  n1(jj) = length(i_f); 
+  X_1 = gX(jj,i_f); 
+  Y_1 = gY(jj,i_f); 
+end 
+ 
+i_f = find( gfilter(jj,:) == 2 ); 
+if ~isempty(i_f) 
+  I2 = [gI2(jj,i_f)/I_sis(jj,2)]; 
+  n2(jj) = length(i_f); 
+  X_2 = gX(jj,i_f); 
+  Y_2 = gY(jj,i_f); 
+end 
+ 
+i_f = find( gfilter(jj,:) == 3 ); 
+if ~isempty(i_f) 
+  I3 = [gI2(jj,i_f)/I_sis(jj,2)]; 
+  n3(jj) = length(i_f); 
+  X_3 = gX(jj,i_f); 
+  Y_3 = gY(jj,i_f); 
+end 
+ 
+ 
+subplot(3,1,1) 
+imagesc(hist_range(1:end-1),1,log10(filtfilt([1 1]/2,1,N_1(indxs1,1:end-1)))) 
+axis([0 .4 .5 50]) 
+title('Histograms of C sorted with increasing width','fontsize',16) 
+ylabel('427.8 nm','fontsize',16) 
+subplot(3,1,2) 
+imagesc(hist_range(1:end-1),1,log10(filtfilt([1 1]/2,1,N_2(indxs2,1:end-1)))) 
+axis([0 .4 .5 50]) 
+ylabel('557.7 nm','fontsize',16) 
+subplot(3,1,3) 
+imagesc(hist_range(1:end-1),1,log10(filtfilt([1 1]/2,1,N_3(indxs3,1:end-1)))) 
+axis([0 .4 .5 50]) 
+axis([0 .4 .5 45]) 
+ylabel('630.0 nm','fontsize',16) 
+ 
+xlabel('Sensitivity #/R','fontsize',16) 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 15:25 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

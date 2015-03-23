@@ -1,0 +1,270 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of play_video</title>
+  <meta name="keywords" content="play_video">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>play_video
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="play_video.html" class="code" title="">play_video</a>	</li><li><a href="../../tools/arrow.html" class="code" title="function [h,yy,zz] = arrow(varargin)">arrow</a>	ARROW  Draw a line with an arrowhead.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="play_video.html" class="code" title="">play_video</a>	</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 PRO <a href="play_video.html" class="code" title="">play_video</a>, num=num, start=start,stop=stop,step=step,range=range,$
+0002                 pause=pause,speed=speed,fast=fast, quiet=quiet, raw=raw,$
+0003         north=north, zenith=zenith,$
+0004         circle_tromso=circle_tromso,circle_esr=circle_esr,$
+0005         ct=ct, invert=invert, pngkalk=pngkalk,pnglora=pnglora, $
+0006         true=true,rot=rot, background=background, timestamp=timestamp, add=add
+0007 ;
+0008 ; Plays through the video sequence currently read in using read_vs.
+0009 ; Keywords (all optional):
+0010 ; num     - Set this to a number to read that video event with read_vs
+0011 ;           before starting.
+0012 ; start   - The first frame number to show. If not set then it starts at
+0013 ;           the begining.
+0014 ; stop    - The last frame number to show. If not set then it runs until
+0015 ;           the end.
+0016 ; step    - The step between frames. If not set, step is 1.
+0017 ; range   - This is a 2 element vector with the image contrast scaling
+0018 ;           values ([min,max]), as used in bytscl. Defaults are 0.9 times the
+0019 ;           min value of the first image and 1.1 times the max.
+0020 ; pause   - If this is set then the video will start paused.
+0021 ; speed   - Set this to a value to play the video at that fps. (e.g. <span class="keyword">if</span>
+0022 ;           you set speed=10 it will play at 10 frames per second).
+0023 ;           The default is the video real time.
+0024 ; fast    - If set then the speed keyword is ignored, and the video will
+0025 ;           play at the maximum speed possible.
+0026 ; quiet   - If NOT set then the frame number and time are printed.
+0027 ; raw     - If set then no flat fielding is done (this keyword is passed
+0028 ;           on to read_v).
+0029 ; north   - If set then a north pointing <a href="../../tools/arrow.html" class="code" title="function [h,yy,zz] = arrow(varargin)">arrow</a> is drawn on the video.
+0030 ; zenith  - Set this to an array of altitudes at which to calculate and
+0031 ;           plot the magnetic zenith, as found from the IGRF field model.
+0032 ;           The points are colour coded, so that the lowest altitude has
+0033 ;           the highest colour index and the highest altitude has the
+0034 ;           lowest colour index. The colour table used is 1 (blue-white).
+0035 ; ct      - Set to a number <span class="keyword">for</span> the colour table to use <span class="keyword">for</span> displaying the
+0036 ;           video. If not set the default is 0 (black-white).
+0037 ; invert  - Set this to show a negative of the image
+0038 ; pnglora - Writes the images as png files in /stp/raid2/ask/png/ on
+0039 ;           lora
+0040 ; pngkalk - Writes the images as png files in /ask/data1/png on kalk
+0041 ; circle_tromso - Set to plot the Tromso UHF beam.
+0042 ; circle_esr - Set to plot the ESR 42m beam.
+0043 ;   Note that only one of circle_tromso and circle_esr can be set.
+0044 ; true    - Display colour images. Is passed to read_v, and tv.
+0045 ; rot     - Rotates the image
+0046 ; timestamp - sets a timestamp on the image
+0047 ; background - removes a background value
+0048 ; add     - <span class="keyword">if</span> set then images are added to give a better S/N. The
+0049 ;           number of images to be added is the same as set in step
+0050 ;
+0051 ; NOTE that the maximum fps (i.e. when fast-forwarding) will be severly
+0052 ; limited by the speed of the conection to the data and the speed of your
+0053 ; X-server. Ideally this should be run on a linux computer in the same
+0054 ; building as the data!
+0055 ;
+0056 ; Video controls
+0057 ; --------------
+0058 ;
+0059 ; If you click and hold down the left mouse button then the video is
+0060 ; played in fast-forward.
+0061 ;
+0062 ; If you click and hold down the right mouse button then the video is
+0063 ; played backwards quickly. After that the video will coninue to play in
+0064 ; reverse, until you click the left mouse button.
+0065 ;
+0066 ; Clicking on the video with the middle mouse button (or both left and
+0067 ; right together) pauses or unpauses the video.
+0068 ;
+0069 ; Scrolling with the mouse wheel causes the video to move 1 frame forward
+0070 ; or backwards <span class="keyword">while</span> paused.
+0071 ;
+0072 ; If you click with the left mouse button in the left most 10 pixels of
+0073 ; the image, then you can type in a frame number to jump to.
+0074 ;
+0075 ; If you click in the right most 10 pixels then the routine ends.
+0076 ;
+0077 ; --------------
+0078 ;  
+0079 ; Dan added true keyword, 01/05/08, <span class="keyword">for</span> colour images.
+0080 ;
+0081 ; Dan modified this following Hanna's recommendations and changes
+0082 ; 19/05/2010, to have new radar beam radii.
+0083 ;
+0084 common hities
+0085 common vs
+0086 <span class="keyword">if</span> keyword_set(quiet) then quiet=1 <span class="keyword">else</span> quiet=0
+0087 <span class="keyword">if</span> KEYWORD_SET(num) then read_vs,num=num,/quiet
+0088 <span class="keyword">if</span> not(keyword_set(start)) then start=long(vnf[vsel])
+0089 <span class="keyword">if</span> not(keyword_set(stop)) then stop=long(vnl[vsel])
+0090 <span class="keyword">if</span> not(keyword_set(step)) then step=1L
+0091 <span class="keyword">if</span> keyword_set(pause) then pause=1 <span class="keyword">else</span> pause=0
+0092 <span class="keyword">if</span> not(keyword_set(range)) then begin
+0093  read_v,start,im
+0094  range=[fix(min(im)-abs(0.1*min(im))),fix(max(im)+abs(0.1*max(im)))]
+0095 endif
+0096 <span class="keyword">if</span> keyword_set(north) then north=1 <span class="keyword">else</span> north=0
+0097 <span class="keyword">if</span> keyword_set(speed) then spf=speed^(-1.0) <span class="keyword">else</span> spf=vres[vsel]
+0098 <span class="keyword">if</span> keyword_set(fast) then spf=0
+0099 <span class="keyword">if</span> not(keyword_set(ct)) then ct=0
+0100 <span class="keyword">if</span> keyword_set(invert) then invert=1 <span class="keyword">else</span> invert=0
+0101 <span class="keyword">if</span> keyword_set(circle_tromso) then begin
+0102  circle=1
+0103  get_cnv, cnv, scale
+0104  rad_r=0.3/scale
+0105  rad_az=185.02*!dtor
+0106  rad_el=77.5*!dtor
+0107 endif <span class="keyword">else</span> <span class="keyword">if</span> keyword_set(circle_esr) then begin
+0108  circle=1
+0109  get_cnv, cnv, scale
+0110  rad_r=0.45/scale
+0111  rad_az=181.0*!dtor
+0112  rad_el=81.6*!dtor
+0113 endif <span class="keyword">else</span> circle=0
+0114 <span class="keyword">if</span> circle then begin
+0115  conv_xy_ae, rad_x0,rad_y0,rad_az,rad_el,cnv,/back
+0116  rad_xx=rad_r*sin(findgen(100)/49.*!pi)+rad_x0
+0117  rad_yy=rad_r*cos(findgen(100)/49.*!pi)+rad_y0
+0118 endif
+0119 <span class="keyword">if</span> not(quiet) then begin
+0120  print, string(range[0],range[1],form=<span class="string">'(&quot;Image scaling: min = &quot;,i0,&quot;, max = &quot;,i0)'</span>)
+0121  <span class="keyword">if</span> spf gt 0.0 then print, string(spf^(-1.0),vres[vsel]/spf, form=<span class="string">'(&quot;Play speed: &quot;,f5.2,&quot;fps (&quot;,f0.1,&quot;x realtime)&quot;)'</span>)
+0122  print,string(start,form=<span class="string">'(&quot;First frame: &quot;,i0)'</span>)
+0123  print,string(stop,form=<span class="string">'(&quot;Last frame:  &quot;,i0)'</span>)
+0124 endif
+0125 <span class="keyword">if</span> keyword_set(zenith) then begin
+0126  <span class="keyword">if</span> not(quiet) then print, &quot;Calculating magnetic zenith position<span class="keyword">...</span><span class="comment">&quot;</span>
+0127  xzen=intarr(n_elements(zenith))
+0128  yzen=intarr(n_elements(zenith))
+0129  czen=intarr(n_elements(zenith))
+0130  mjs_dy,time_v(start,/full),dy
+0131  <span class="keyword">for</span> i=0,n_elements(zenith)-1 do begin
+0132   igrf_zenith,dy,vlat[vsel],vlon[vsel],0.0d,zenith[i],zaz,zel
+0133   <span class="keyword">if</span> not(quiet) then print, string(zenith[i],zaz*!radeg,zel*!radeg,form=<span class="string">'(f6.1,&quot;km: &quot;,f7.2,&quot; az, &quot;,f7.2,&quot; el&quot;)'</span>)
+0134   conv_xy_ae,x,y,zaz,zel,vcnv[vsel,*],/back
+0135   xzen[i]=x
+0136   yzen[i]=y
+0137   czen[i]=250-fix(((zenith[i]-min(zenith))/(max(zenith)-min(zenith)))*75.0)
+0138  endfor
+0139  zenith=1
+0140 endif <span class="keyword">else</span> zenith=0
+0141 !mouse.button=0
+0142 window,xsi=dimx[vsel],ysi=dimy[vsel],retain=2,/free
+0143 skip=long(vnstep[vsel])
+0144 spf*=skip ; convert spf
+0145 ; Dan changed the way <span class="string">'step'</span> keyword works - moved here 21/01/08:
+0146 skip*=long(step)
+0147 skip2=skip
+0148 i=long(start)
+0149 inx=20
+0150 <span class="keyword">if</span> not(keyword_set(rot)) then rot=0 
+0151 <span class="keyword">while</span> ((i le stop) and (i ge start)) do begin
+0152   <span class="keyword">if</span> !mouse.button eq 0 then oldtime=systime(1) <span class="keyword">else</span> oldtime=systime(1)-spf
+0153 ;  <span class="keyword">if</span> !mouse.button eq 0 then oldtime=systime(1) <span class="keyword">else</span> begin
+0154 ;   oldtime=systime(1)-spf
+0155 ;   basetime=systime(1)
+0156 ;   baseframe=i
+0157 ;  endelse
+0158   ; show the image, print the status, etc
+0159   <span class="keyword">if</span> keyword_set(true) then read_v,i,image,/true <span class="keyword">else</span> <span class="keyword">if</span> keyword_set(raw) then read_v,i,image,/raw <span class="keyword">else</span> <span class="keyword">if</span> keyword_set(add) then begin 
+0160    read_mv,i,step,data
+0161    add_multi,data,image
+0162   endif <span class="keyword">else</span> read_v,i,image
+0163   <span class="keyword">if</span> KEYWORD_SET(background) then image=image-background
+0164   image=bytscl(image,min=range[0],max=range[1])
+0165  
+0166   mjs_tt, time_v(i,/full), yr,mo,da,hr,mi,se,ms
+0167   <span class="keyword">if</span> not(quiet) then print,string(i, hr,mi,se,ms,form=<span class="string">'(&quot;Frame #:&quot;,(i6),&quot;  (&quot;,(i02),&quot;:&quot;,(i02),&quot;:&quot;,(i02),&quot;.&quot;,(i03),&quot;)&quot;)'</span>)
+0168   loadct,ct,/silent
+0169   ; plot the radar beam
+0170   <span class="keyword">if</span> circle then <span class="keyword">for</span> a=0,n_elements(rad_xx)-1 do image(rad_xx(a),rad_yy(a))=1000
+0171   <span class="keyword">if</span> invert then image=255-image
+0172   <span class="keyword">if</span> rot gt 0 then image=rotate(image,rot)
+0173   <span class="keyword">if</span> keyword_set(true) then tv, image,/true <span class="keyword">else</span> tv,image
+0174   !p.position=[0,0,1,1]
+0175   loadct,1,/silent
+0176   <span class="keyword">if</span> north then draw_north,length=0.5,/<a href="../../tools/arrow.html" class="code" title="function [h,yy,zz] = arrow(varargin)">arrow</a>,colour=255-(invert*254)
+0177   <span class="keyword">if</span> zenith then plots,xzen,yzen,psym=1,/dev,color=czen-(invert*((2*czen)-255))
+0178   <span class="keyword">if</span> keyword_set(timestamp) then begin
+0179    str=string(yr, form=<span class="string">'(i4.2)'</span>)+<span class="string">'/'</span>+string(mo, form=<span class="string">'(i2.2)'</span>)+<span class="string">'/'</span>+string(da,form=<span class="string">'(i2.2)'</span>)+<span class="string">' '</span>+string(hr, form=<span class="string">'(i2.2)'</span>)+<span class="string">':'</span>+string(mi, form=<span class="string">'(i2.2)'</span>)+<span class="string">':'</span>+string(se, form=<span class="string">'(i2.2)'</span>)+<span class="string">'.'</span>+string(ms, form=<span class="string">'(i4.2)'</span>)
+0180    xyouts,0.1,0.1,str,charsize=1.5,charthick=2,/dev
+0181   endif
+0182   ; read input and delay <span class="keyword">if</span> not running at max speed
+0183   repeat begin
+0184    <span class="keyword">if</span> pause then cursor,inx,iny,/dev <span class="keyword">else</span> cursor,inx,iny,/nowait,/dev
+0185    <span class="keyword">if</span> !mouse.button eq 2 then begin ; middle button
+0186     pause=not(pause)
+0187     cursor,inx,iny,/dev,/up
+0188     !mouse.button=0
+0189     oldtime=systime(1)
+0190 ;    basetime=systime(1)+spf
+0191 ;    baseframe=i
+0192     <span class="keyword">continue</span>
+0193    endif <span class="keyword">else</span> <span class="keyword">if</span> !mouse.button eq 1 then begin ; left button
+0194     <span class="keyword">if</span> (inx le 10) then begin
+0195      aaa=<span class="string">' '</span>
+0196      read,aaa,prompt=&quot;Enter frame number to jump to: &quot;
+0197      i=long(aaa)-skip2
+0198      !mouse.button=0
+0199     endif <span class="keyword">else</span> <span class="keyword">if</span> (inx gt dimx[vsel]-10) then i=vnf[vsel]-(skip+1) <span class="keyword">else</span> skip2=skip
+0200     <span class="keyword">break</span>
+0201    endif <span class="keyword">else</span> <span class="keyword">if</span> !mouse.button eq 4 then begin ; right button
+0202     skip2=-skip
+0203     <span class="keyword">break</span>
+0204    endif <span class="keyword">else</span> <span class="keyword">if</span> !mouse.button eq 8 then begin ; wheel up
+0205     <span class="keyword">if</span> pause then skip2=-skip
+0206    endif <span class="keyword">else</span> <span class="keyword">if</span> !mouse.button eq 16 then begin ; wheel down
+0207     <span class="keyword">if</span> pause then skip2=skip
+0208    endif
+0209   endrep until (systime(1) ge (oldtime+spf))
+0210   
+0211 ;  frameloss=fix(((systime(1)-basetime)/spf)-abs((i-baseframe)*skip))
+0212 ;  <span class="keyword">if</span> frameloss gt 0 then begin
+0213 ;   <span class="keyword">if</span> not(quiet) then print, &quot;Frame #: dropped to match desired framerate!&quot;
+0214 ;   i+=(skip2*frameloss)
+0215 ;  endif
+0216   i+=skip2
+0217   
+0218   <span class="keyword">if</span> keyword_set(pnglora) then begin
+0219     filelora=<span class="string">'/stp/raid2/ask/png/'</span>+string(i, form=<span class="string">'(i5.5)'</span>)+<span class="string">'.png'</span>
+0220     write_png, filelora, image
+0221   endif <span class="keyword">else</span> <span class="keyword">if</span> keyword_set(pngkalk) then begin
+0222     filekalk=<span class="string">'/ask/data1/png/'</span>+string(i, form=<span class="string">'(i5.5)'</span>)+<span class="string">'.png'</span>
+0223     image=tvrd()
+0224     write_png, filekalk, image
+0225   endif
+0226 endwhile
+0227 <span class="keyword">end</span>
+0228 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

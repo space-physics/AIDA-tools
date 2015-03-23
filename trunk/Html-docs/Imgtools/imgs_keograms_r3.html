@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of imgs_keograms_r3</title>
+  <meta name="keywords" content="imgs_keograms_r3">
+  <meta name="description" content="imgs_keogram_r3 - make keogram of R3's projection in the image.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>imgs_keograms_r3
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>imgs_keogram_r3 - make keogram of R3's projection in the image.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [Keo,exptimes,Tstrs,filters] = imgs_keograms_r3(files,rs,r,optpar,PO) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> imgs_keogram_r3 - make keogram of R3's projection in the image.
+   FILES should be a char-arry with filenames (readable) (full or
+   relative path) R should be an Nx3 or 3xN array with points in
+   space to project down to the image plane - and take the image
+   intensities in those points. OPTPAR should be an array with
+   OPTPAR (see STARCAL), PO should be a
+   struct with PRE_PROC_OPS, RS should be the [1x3] vector of the
+   observation position.
+ 
+ Calling:
+ [Keo,exptimes,Tstrs,filters] = imgs_keograms_r3(files,rs,r,optpar,PO)
+ 
+   See also: INIMG, STARCAL, TYPICAL_PRE_PROC_OPS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>	FFS_CORRECTION2 - flat-field variation for optical transfer</li><li><a href="../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>	PROJECT_POINT - project a point in space R down onto an image</li><li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="../Fits_tools/time_from_header.html" class="code" title="function [time,timestr] = time_from_header(header)">time_from_header</a>	TIME_FROM_HEADER parses a ALIS header for time</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Keo,exptimes,Tstrs,filters] = imgs_keograms_r3(files,rs,r,optpar,PO)</a>
+0002 <span class="comment">% imgs_keogram_r3 - make keogram of R3's projection in the image.</span>
+0003 <span class="comment">%   FILES should be a char-arry with filenames (readable) (full or</span>
+0004 <span class="comment">%   relative path) R should be an Nx3 or 3xN array with points in</span>
+0005 <span class="comment">%   space to project down to the image plane - and take the image</span>
+0006 <span class="comment">%   intensities in those points. OPTPAR should be an array with</span>
+0007 <span class="comment">%   OPTPAR (see STARCAL), PO should be a</span>
+0008 <span class="comment">%   struct with PRE_PROC_OPS, RS should be the [1x3] vector of the</span>
+0009 <span class="comment">%   observation position.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Calling:</span>
+0012 <span class="comment">% [Keo,exptimes,Tstrs,filters] = imgs_keograms_r3(files,rs,r,optpar,PO)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   See also: INIMG, STARCAL, TYPICAL_PRE_PROC_OPS</span>
+0015 
+0016 
+0017 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0018 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0019 
+0020 <span class="comment">%global bxy bx by</span>
+0021 
+0022 
+0023 ff_everystep = 0;
+0024 
+0025 <span class="keyword">if</span> nargin&gt;=4 &amp; length(optpar)&gt;8 &amp; 0
+0026   <span class="keyword">if</span> isstruct(optpar)
+0027     ff = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>(PO.outimgsize.*[1 1],optpar,optpar.mod);
+0028   <span class="keyword">else</span>
+0029     ff = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>(PO.outimgsize.*[1 1],optpar,optpar(9));
+0030   <span class="keyword">end</span>
+0031   <span class="keyword">if</span> isempty(ff)
+0032     ff_everystep = 1;
+0033   <span class="keyword">else</span>
+0034     imagesc(1./ff),title(files(1,:)),colorbar,drawnow
+0035   <span class="keyword">end</span>
+0036 <span class="keyword">else</span>
+0037   ff = 1;
+0038 <span class="keyword">end</span>
+0039 
+0040 <span class="comment">%[data1,head1,o] = inimg(files(1,:),PO);</span>
+0041 [data1] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(1,:),PO);
+0042 bxy = size(data1);
+0043 <span class="comment">%bx = bxy(2);</span>
+0044 <span class="comment">%by = bxy(1);</span>
+0045 
+0046 <span class="comment">%[u,v] = project_point(rs,optpar,r,[],[PO.outimgsize PO.outimgsize]);</span>
+0047 [u,v] = <a href="../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(rs,optpar,r,[],bxy);
+0048 
+0049 <span class="keyword">for</span> i1 = size(files,1):-1:1,
+0050   
+0051   [data1,head1,o] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(i1,:),PO);
+0052   exptimes(i1) =  o.exptime;
+0053   <span class="keyword">if</span> exptimes(i1)&lt;100
+0054     exptimes(i1) = 1000*exptimes(i1);
+0055   <span class="keyword">end</span>
+0056   <span class="keyword">if</span> isempty(o.time)
+0057     Tstrs(i1,:) = <a href="../Fits_tools/time_from_header.html" class="code" title="function [time,timestr] = time_from_header(header)">time_from_header</a>(head1);
+0058   <span class="keyword">else</span>
+0059     Tstrs(i1,:) = o.time;
+0060   <span class="keyword">end</span>
+0061   filters(i1) = o.filter;
+0062   
+0063   <span class="keyword">if</span> ff_everystep
+0064     <span class="keyword">if</span> isstruct(optpar)
+0065       ff = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>(size(data1),optpar,optpar.mod);
+0066     <span class="keyword">else</span>
+0067       ff = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>(size(data1),optpar,optpar(9));
+0068     <span class="keyword">end</span>
+0069   <span class="keyword">end</span>
+0070   data1 = 1000*data1./ff/exptimes(i1);
+0071   Keo(i1,:) = interp2(data1,u,v);
+0072   
+0073 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

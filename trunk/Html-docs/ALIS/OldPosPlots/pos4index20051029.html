@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of pos4index20051029</title>
+  <meta name="keywords" content="pos4index20051029">
+  <meta name="description" content="pos4index20051029 - ALIS fields-of-view for position: INDEX-rocket">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html ALIS --><!-- menu.html OldPosPlots -->
+<h1>pos4index20051029
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>pos4index20051029 - ALIS fields-of-view for position: INDEX-rocket</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> pos4index20051029 - ALIS fields-of-view for position: INDEX-rocket</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../ALIS/aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>	AIDA_VISIBLEVOL - Calculates the field of view from an ALIS   \  |  /</li><li><a href="../../EARTH/nscand_map.html" class="code" title="function PH = nscand_map(latlong_or_xyz,axlim)">nscand_map</a>	NSCAND_MAP - plot topographic mat over northern Scandinavia</li><li><a href="../../Fits_tools/AIDApositionize.html" class="code" title="function [stnXYZ,stnLongLat,trmtr] = AIDApositionize(stationNRs,central_stn_nr)">AIDApositionize</a>	AIDApositionize - calculate station lat-long and xyz positions</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% pos4index20051029 - ALIS fields-of-view for position: INDEX-rocket</span>
+0002 [stnXYZ,stnLongLat,trmtr] = <a href="../../Fits_tools/AIDApositionize.html" class="code" title="function [stnXYZ,stnLongLat,trmtr] = AIDApositionize(stationNRs,central_stn_nr)">AIDApositionize</a>([1:11],1);
+0003 clf
+0004 OPS = <a href="../../ALIS/aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>;
+0005 <span class="comment">%OPS.LL = 1;</span>
+0006 OPS.linewidth = 2;
+0007 OP = OPS;
+0008 OP = rmfield(OP,<span class="string">'clrs'</span>);
+0009 PH = <a href="../../EARTH/nscand_map.html" class="code" title="function PH = nscand_map(latlong_or_xyz,axlim)">nscand_map</a>;<span class="comment">%('l');</span>
+0010 hold on
+0011 OPS.clrs = {[0 0 0]};
+0012 h3 = <a href="../../ALIS/aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>(stnXYZ(3,:),311, 15,110,60,0,OP);
+0013 <span class="comment">%h4 = alis_visiblevol(4,355, 33,110,60,0,OP);</span>
+0014 h4 = <a href="../../ALIS/aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>(stnXYZ(4,:),5, 33,110,60,0,OP);
+0015 h5 = <a href="../../ALIS/aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>(stnXYZ(5,:),85,  30,110,60,0,OP);
+0016 OPS.clrs = {[.9 .6 0]};
+0017 h11 = <a href="../../ALIS/aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>(stnXYZ(11,:),0,0,0,90,0,OPS);
+0018 OPS.clrs = {[.6 0 1]};
+0019 h10 = <a href="../../ALIS/aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>(stnXYZ(10,:),180,10,110,90,0,OPS);
+0020 <span class="comment">%axis([15 26 67 71])</span>
+0021 OPS.clrs = {[0 0 0]};
+0022 h1 = <a href="../../ALIS/aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>(stnXYZ(1,:),20,  20,110,60,0,OPS);
+0023 <span class="keyword">if</span> exist(<span class="string">'longIndx'</span>,<span class="string">'var'</span>)
+0024   plot3(longIndx,latIndx,hIndx,<span class="string">'w-'</span>,<span class="string">'linewidth'</span>,2)
+0025 <span class="keyword">end</span>
+0026 <span class="keyword">if</span> exist(<span class="string">'sat_pos'</span>,<span class="string">'var'</span>)
+0027   plot3(sat_pos(:,3),sat_pos(:,2),sat_pos(:,end),<span class="string">'k.--'</span>)
+0028 <span class="keyword">end</span>
+0029 ax = axis;
+0030 <span class="keyword">if</span> length(ax) == 4
+0031   axis([ax -5 120e3])
+0032 <span class="keyword">end</span>
+0033 <span class="comment">%axis([15 26 67 71])</span>
+0034 set(gca,<span class="string">'fontsize'</span>,14)
+0035 set(gca,<span class="string">'fontsize'</span>,15)
+0036 xlabel(<span class="string">'East of Kiruna (km)'</span>)
+0037 ylabel(<span class="string">'North of Kiruna (km)'</span>)
+0038 
+0039 
+0040 
+0041 s_p = [20051029  21 28 04  65.5    7.4   2245    343.8  -35.1
+0042        20051029  23 05 55  88.7   25.2   1292     13    -35.4
+0043        20051030   0 42 46 109.5   83.7    650     40.8  -31.3
+0044        20051030   2 18 46 312.8    34    1056     65.9  -24.1];
+0045 
+0046 plot3(sin(s_p(:,5)/180*pi).*cos(s_p(:,6)/180*pi).*s_p(:,7),<span class="keyword">...</span>
+0047       cos(s_p(:,5)/180*pi).*cos(s_p(:,6)/180*pi).*s_p(:,7),<span class="keyword">...</span>
+0048       sin(s_p(:,6)/180*pi).*s_p(:,7),<span class="keyword">...</span>
+0049       <span class="string">'h'</span>)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

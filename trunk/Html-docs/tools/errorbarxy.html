@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of errorbarxy</title>
+  <meta name="keywords" content="errorbarxy">
+  <meta name="description" content="ERRORBARXY - graph y against x, with both x and y errorbars.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>errorbarxy
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ERRORBARXY - graph y against x, with both x and y errorbars.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function errorbarxy(x,y,lx,ly,ux,uy,linecol,errorcol) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ERRORBARXY - graph y against x, with both x and y errorbars. 
+ For the x and y errors it is possible to input both lower (lx and
+ ly)  and upper  (ux and uy) values for the 
+ errors at a particular point.  If the upper values are not
+ specified then the program assumes the errors  
+ are symmetrical and use the lower values.  it is also possible to
+ specify the plot line colour, marker, and  
+ linestyle using the standard 'plot' command notation in the input
+ variable 'linecol'.  Also the line colour for  
+ the errobars can be specified in the variable 'errorcol'.  It is
+ important to note that if these colour options  
+ are to be used and any of the error limit vectors are empty then
+ they should not be excluded, but presented  
+ in a [] form signifying an empty vector.
+
+James Rooney,  17 October 2003</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function errorbarxy(x,y,lx,ly,ux,uy,linecol,errorcol)</a>
+0002 <span class="comment">% ERRORBARXY - graph y against x, with both x and y errorbars.</span>
+0003 <span class="comment">% For the x and y errors it is possible to input both lower (lx and</span>
+0004 <span class="comment">% ly)  and upper  (ux and uy) values for the</span>
+0005 <span class="comment">% errors at a particular point.  If the upper values are not</span>
+0006 <span class="comment">% specified then the program assumes the errors</span>
+0007 <span class="comment">% are symmetrical and use the lower values.  it is also possible to</span>
+0008 <span class="comment">% specify the plot line colour, marker, and</span>
+0009 <span class="comment">% linestyle using the standard 'plot' command notation in the input</span>
+0010 <span class="comment">% variable 'linecol'.  Also the line colour for</span>
+0011 <span class="comment">% the errobars can be specified in the variable 'errorcol'.  It is</span>
+0012 <span class="comment">% important to note that if these colour options</span>
+0013 <span class="comment">% are to be used and any of the error limit vectors are empty then</span>
+0014 <span class="comment">% they should not be excluded, but presented</span>
+0015 <span class="comment">% in a [] form signifying an empty vector.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%James Rooney,  17 October 2003</span>
+0018 
+0019 
+0020 <span class="comment">% Plots x and y variables with x and y errorbars % usage:</span>
+0021 <span class="comment">% errorbarxy(x,y,lx,ly,ux,uy,linecol,errorcol)</span>
+0022 <span class="comment">% lx,ly are lower</span>
+0023 <span class="comment">% error bounds, must be same size as x,y</span>
+0024 <span class="comment">% ux uy are upper bounds</span>
+0025 <span class="comment">% (optional, if omitted, errorbarsxy uses lx,ly on both sides)</span>
+0026 <span class="comment">% linecol: Propertes for data, same as for the plot function</span>
+0027 <span class="comment">% errorcol: Propertes for data, same as for the plot function</span>
+0028 <span class="comment">% to use properties:</span>
+0029 <span class="comment">% usage:</span>
+0030 <span class="comment">% errorbarxy(x,y,lx,ly,[],[],linecol,errorcol) %James Rooney, 17</span>
+0031 <span class="comment">% October 2003</span>
+0032 <span class="keyword">if</span> exist(<span class="string">'linecol'</span>,<span class="string">'var'</span>)==0 | isempty(linecol)
+0033   linecol=<span class="string">'b'</span>;
+0034 <span class="keyword">end</span>
+0035 
+0036 
+0037 <span class="keyword">if</span> exist(<span class="string">'errorcol'</span>,<span class="string">'var'</span>)==0 | isempty(errorcol)
+0038   errorcol=<span class="string">'r'</span>;
+0039 <span class="keyword">end</span>
+0040 
+0041 <span class="keyword">if</span> ~ishold
+0042   sethold_off = 1;
+0043   hold on
+0044 <span class="keyword">else</span>
+0045   sethold_off = 0;
+0046 <span class="keyword">end</span>
+0047 ax = axis;
+0048 xw=(max(ax(1:2))-min(ax(1:2)))/200;
+0049 yw=(max(ax(3:4))-min(ax(3:4)))/200;
+0050 
+0051 
+0052 lye=exist(<span class="string">'ly'</span>,<span class="string">'var'</span>);
+0053 lxe=exist(<span class="string">'lx'</span>,<span class="string">'var'</span>);
+0054 uye=exist(<span class="string">'uy'</span>,<span class="string">'var'</span>);
+0055 uxe=exist(<span class="string">'ux'</span>,<span class="string">'var'</span>);
+0056 
+0057 <span class="keyword">if</span> lye+lxe+uye+uxe==0 | isempty(lx) &amp; isempty(ux) &amp; isempty(ly) &amp; isempty(uy)
+0058   <span class="keyword">return</span>
+0059 <span class="keyword">end</span>
+0060 
+0061 <span class="keyword">if</span> uye==0 | isempty(uy)
+0062   uy=ly;
+0063 <span class="keyword">end</span>
+0064 
+0065 <span class="keyword">if</span> uxe==0 | isempty(ux)
+0066   ux=lx;
+0067 <span class="keyword">end</span>
+0068 <span class="comment">%keyboard</span>
+0069 <span class="keyword">for</span> t=1:length(x)
+0070   
+0071   <span class="keyword">if</span> ~isempty(ux)
+0072     <span class="comment">%x errorbars</span>
+0073     line([x(t)-lx(t) x(t)+ux(t)],[y(t) y(t)],<span class="string">'color'</span>,errorcol)
+0074     line([x(t)-lx(t) x(t)-lx(t)],[y(t)-yw y(t)+yw],<span class="string">'color'</span>,errorcol)    
+0075     line([x(t)+ux(t) x(t)+ux(t)],[y(t)-yw y(t)+yw],<span class="string">'color'</span>,errorcol)    
+0076   <span class="keyword">end</span>
+0077   
+0078   <span class="keyword">if</span> ~isempty(uy)
+0079     <span class="comment">%y errorbars</span>
+0080     line([x(t) x(t)],[y(t)-ly(t) y(t)+uy(t)],<span class="string">'color'</span>,errorcol)
+0081     line([x(t)-xw x(t)+xw],[y(t)-ly(t) y(t)-ly(t)],<span class="string">'color'</span>,errorcol)    
+0082     line([x(t)-xw x(t)+xw],[y(t)+uy(t) y(t)+uy(t)],<span class="string">'color'</span>,errorcol) 
+0083   <span class="keyword">end</span>    
+0084 <span class="keyword">end</span>
+0085 
+0086 <span class="keyword">if</span> sethold_off
+0087   hold off
+0088 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,6 @@
+These scripts and the TO_GOPTA function produced working gopta files
+for ALIS observation control - for a previous version of gopta. The
+current gopta version have a far better and more modular set-up so now
+it should "only" be necessary to produce filter-sequence files, and
+then set the corresponding interval and exposure times.
+

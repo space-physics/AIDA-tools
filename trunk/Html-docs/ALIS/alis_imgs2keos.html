@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of alis_imgs2keos</title>
+  <meta name="keywords" content="alis_imgs2keos">
+  <meta name="description" content="ALIS_IMGS2KEOS - make overview-keograms">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>alis_imgs2keos
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ALIS_IMGS2KEOS - make overview-keograms</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [keo,wl_emi,t_obs,optps,filenames,exptimes] = alis_imgs2keos(filenames,PO) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ALIS_IMGS2KEOS - make overview-keograms
+   
+ [keo,wl_emi,t_obs,optps,filenames] = alis_imgs2keos(filenames,PO)
+ 
+ Input:
+  FILENAMES - string array of filenames.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="../Imgtools/imgs_keograms.html" class="code" title="function [varargout] = imgs_keograms(files,locnrs,line_not_columns,optp,PO)">imgs_keograms</a>	imgs_keograms - make keograms from sequence of image files.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/AVOK/alis_mk_db_keo_imgs.html" class="code" title="function ok = alis_mk_db_keo_imgs()">alis_mk_db_keo_imgs</a>	ALIS_MK_DB_KEOS - Update ALIS Keogram-database</li><li><a href="../ALIS/AVOK/alis_mk_db_keos.html" class="code" title="function ok = alis_mk_db_keos()">alis_mk_db_keos</a>	ALIS_MK_DB_KEOS - Update ALIS Keogram-database</li><li><a href="../Imgtools/mk_imgkeos_db.html" class="code" title="function ok = mk_imgkeos_db(root_data_dirs,overview_dir)">mk_imgkeos_db</a>	MK_IMGKEOS_DB - Make keogram data-base from images.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [keo,wl_emi,t_obs,optps,filenames,exptimes] = alis_imgs2keos(filenames,PO)</a>
+0002 <span class="comment">% ALIS_IMGS2KEOS - make overview-keograms</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% [keo,wl_emi,t_obs,optps,filenames] = alis_imgs2keos(filenames,PO)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  FILENAMES - string array of filenames.</span>
+0008 
+0009 <span class="comment">%  PO - struct with preprocessing options</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% See also INIMG, TYPICAL_PRE__PROC_OPS, IMGS_KEOGRAMS</span>
+0012 
+0013 
+0014 <span class="comment">%   Copyright © 20050805 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0015 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0016 
+0017 locnrs = 69;
+0018 l_n_c = 0;
+0019 
+0020 [d,h,o] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(filenames(1,:),PO);
+0021 
+0022 [keo1,exptimes,Tstrs,filters,optps] = <a href="../Imgtools/imgs_keograms.html" class="code" title="function [varargout] = imgs_keograms(files,locnrs,line_not_columns,optp,PO)">imgs_keograms</a>(filenames,locnrs,l_n_c,o.optpar,PO);
+0023 keo = keo1';
+0024 
+0025 t_obs = Tstrs(:,4) + Tstrs(:,5)/60 + Tstrs(:,6)/3600;
+0026 
+0027 [t_obs,t_sindx] = sort(t_obs);
+0028 
+0029 filenames = filenames(t_sindx,:);
+0030 exptimes = exptimes(t_sindx);
+0031 keo = keo(:,t_sindx);
+0032 filters = filters(t_sindx);
+0033 optps = optps(t_sindx,:);
+0034 
+0035 <span class="comment">%%% QD-fix of emissions from filters</span>
+0036 filters(filters==0) = 5577;
+0037 filters(filters==1) = 6300;
+0038 filters(filters==2) = 1000;
+0039 filters(filters==3) = 1000;
+0040 filters(filters==4) = 8446;
+0041 filters(filters==5) = 4278;
+0042 filters(filters&lt;1000) = 10*filters(f_fix_indx);
+0043 
+0044 
+0045 
+0046 <span class="comment">% $$$ f_fix_indx = find(filters==0);</span>
+0047 <span class="comment">% $$$ filters(f_fix_indx) = 5577;</span>
+0048 <span class="comment">% $$$ f_fix_indx = find(filters==1);</span>
+0049 <span class="comment">% $$$ filters(f_fix_indx) = 6300;</span>
+0050 <span class="comment">% $$$ f_fix_indx = find(filters==2);</span>
+0051 <span class="comment">% $$$ filters(f_fix_indx) = 1000;</span>
+0052 <span class="comment">% $$$ f_fix_indx = find(filters==3);</span>
+0053 <span class="comment">% $$$ filters(f_fix_indx) = 1000;</span>
+0054 <span class="comment">% $$$ f_fix_indx = find(filters==4);</span>
+0055 <span class="comment">% $$$ filters(f_fix_indx) = 8446;</span>
+0056 <span class="comment">% $$$ f_fix_indx = find(filters==5);</span>
+0057 <span class="comment">% $$$ filters(f_fix_indx) = 4278;</span>
+0058 <span class="comment">% $$$ f_fix_indx = find(filters&lt;1000);</span>
+0059 <span class="comment">% $$$ filters(f_fix_indx) = 10*filters(f_fix_indx);</span>
+0060 <span class="comment">% $$$</span>
+0061 
+0062 
+0063 wl_emi = filters;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

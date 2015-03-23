@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of imgs_deconv_crude</title>
+  <meta name="keywords" content="imgs_deconv_crude">
+  <meta name="description" content="imgs_deconv_crude - Deconvolution, amplitude cut-off method">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>imgs_deconv_crude
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>imgs_deconv_crude - Deconvolution, amplitude cut-off method</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function img_out = imgs_deconv_crude(img_in,psf,damp_level,edge_t_scale) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> imgs_deconv_crude - Deconvolution, amplitude cut-off method
+ The (high) frequency components of IMG_IN will not be amplified
+ if abs(fft(PSF)) &lt; DAMP_LEVEL. EDGE_T_SCALE - factor to scale the
+ edge-tapering size with
+   
+ CALLING:
+ img_out = imgs_deconv_crude(img_in,psf,damp_level)
+
+ INPUT:
+   IMG_IN - intensity image, (double)
+   PSF - point spread function to use for de-debluring
+ DAMP_LEVEL - for amplitudes below this there will be no
+              amplification.
+ EDGE_T_SCALE - scaling factor for size of edge-tapering region,
+                fairly useless?
+
+ See also: DECONVBLIND, DECONVLUCY, DECONVWNR, DECONVREG</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Tomography/tomo_3Dfiltering.html" class="code" title="function Vem = tomo_3Dfiltering(VemIn,tomo_ops)">tomo_3Dfiltering</a>	TOMO_3DFILTERING -</li><li><a href="../Tomography/tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>	TOMO_STEPS - tomographic itterative step(s).</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function img_out = imgs_deconv_crude(img_in,psf,damp_level,edge_t_scale)</a>
+0002 <span class="comment">% imgs_deconv_crude - Deconvolution, amplitude cut-off method</span>
+0003 <span class="comment">% The (high) frequency components of IMG_IN will not be amplified</span>
+0004 <span class="comment">% if abs(fft(PSF)) &lt; DAMP_LEVEL. EDGE_T_SCALE - factor to scale the</span>
+0005 <span class="comment">% edge-tapering size with</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% CALLING:</span>
+0008 <span class="comment">% img_out = imgs_deconv_crude(img_in,psf,damp_level)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% INPUT:</span>
+0011 <span class="comment">%   IMG_IN - intensity image, (double)</span>
+0012 <span class="comment">%   PSF - point spread function to use for de-debluring</span>
+0013 <span class="comment">% DAMP_LEVEL - for amplitudes below this there will be no</span>
+0014 <span class="comment">%              amplification.</span>
+0015 <span class="comment">% EDGE_T_SCALE - scaling factor for size of edge-tapering region,</span>
+0016 <span class="comment">%                fairly useless?</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% See also: DECONVBLIND, DECONVLUCY, DECONVWNR, DECONVREG</span>
+0019 
+0020 
+0021 <span class="comment">%   Copyright � 20050115 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0022 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0023 
+0024 
+0025 PSF = psf/sum(psf(:));
+0026 img_out = img_in.*(conv2(img_in./conv2(img_in,PSF,<span class="string">'same'</span>),PSF,<span class="string">'same'</span>));
+0027 img_out = img_out.*(conv2(img_in./conv2(img_out,PSF,<span class="string">'same'</span>),PSF,<span class="string">'same'</span>));
+0028 img_out(1,:) = img_in(1,:);
+0029 img_out(<span class="keyword">end</span>,:) = img_in(<span class="keyword">end</span>,:);
+0030 img_out(:,1) = img_in(:,1);
+0031 img_out(:,end) = img_in(:,end);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tlsq_svd</title>
+  <meta name="keywords" content="tlsq_svd">
+  <meta name="description" content="tlsq_svd - Truncated least square solution to linear inverse problem.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Inversion -->
+<h1>tlsq_svd
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>tlsq_svd - Truncated least square solution to linear inverse problem.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [f] = tlsq_svd(U,S,V,d,lambda_cutoff) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> tlsq_svd - Truncated least square solution to linear inverse problem.
+  
+ Calling:
+   [f] = dlsq_svd(U,S,V,d,lambda_cutoff)
+ Input:
+   U,S,V - SVD decomposition matrices, see SVD
+   d     - right hand side, data vector d = A*f
+ Optional:
+   lambda_cutoff - truncation level for singular values, the
+   solution will be built with all singular values (and
+   corresponding eigen-vectors) larger than lambda_cutoff. Default
+   is 1.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [f] = tlsq_svd(U,S,V,d,lambda_cutoff)</a>
+0002 <span class="comment">% tlsq_svd - Truncated least square solution to linear inverse problem.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   [f] = dlsq_svd(U,S,V,d,lambda_cutoff)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%   U,S,V - SVD decomposition matrices, see SVD</span>
+0008 <span class="comment">%   d     - right hand side, data vector d = A*f</span>
+0009 <span class="comment">% Optional:</span>
+0010 <span class="comment">%   lambda_cutoff - truncation level for singular values, the</span>
+0011 <span class="comment">%   solution will be built with all singular values (and</span>
+0012 <span class="comment">%   corresponding eigen-vectors) larger than lambda_cutoff. Default</span>
+0013 <span class="comment">%   is 1.</span>
+0014 
+0015 
+0016 <span class="comment">%   Copyright � 20080701 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0017 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0018 
+0019 <span class="keyword">if</span> nargin &lt; 5 | isempty(lambda_cutoff)
+0020   lambda_cutoff = 1;
+0021 <span class="keyword">end</span>
+0022 i_cut = sum(diag(S)&gt;=lambda_cutoff);
+0023 Ut_d = U(:,1:i_cut)'*d;
+0024 iS_Ut_d = S(1:i_cut,1:i_cut)\Ut_d;
+0025 
+0026 f = V(:,1:i_cut)*iS_Ut_d;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

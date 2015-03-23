@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of find_optpar2</title>
+  <meta name="keywords" content="find_optpar2">
+  <meta name="description" content="FIND_OPTPAR2 - search the optpar data-base for best OPTPAR">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>find_optpar2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>FIND_OPTPAR2 - search the optpar data-base for best OPTPAR</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function optpar = find_optpar2(obs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FIND_OPTPAR2 - search the optpar data-base for best OPTPAR
+ given the observation data in the obs struct.
+ 
+ Calling:
+ optpar = find_optpar2(obs)
+ 
+ Input:
+   OBS - observation-struct as returned from TRY_TO_BE_SMART
+ Output:
+   OPTPAR - optical parameters to use with functions in CAMERA
+
+ See also <a href="try_to_be_smart.html" class="code" title="function [obs] = try_to_be_smart(img_head,ALIS_FITS,PO)">TRY_TO_BE_SMART</a> CAMERA</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Skymap/date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>	DATE2JULIANDATE calculates the julian date at 0h UT</li><li><a href="../Starcal/fitaeta_2_alfabeta.html" class="code" title="function [alfa,beta] = fitaeta_2_alfabeta(fi,theta)">fitaeta_2_alfabeta</a>	FITAETA_2_ALFABETA - converts AZIMUTH & ZENITH rotations</li><li><a href="../tools/in_def2.html" class="code" title="function y = in_def2(question,default_value)">in_def2</a>	IN_DEF2 - input, with default value</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Tomography/tomo_inp_images.html" class="code" title="function stns = tomo_inp_images(file_list,stns,img_ops)">tomo_inp_images</a>	TOMO_INP_IMAGES - Preprocessing of images for tomography plus</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function optpar = find_optpar2(obs)</a>
+0002 <span class="comment">% FIND_OPTPAR2 - search the optpar data-base for best OPTPAR</span>
+0003 <span class="comment">% given the observation data in the obs struct.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">% optpar = find_optpar2(obs)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%   OBS - observation-struct as returned from TRY_TO_BE_SMART</span>
+0010 <span class="comment">% Output:</span>
+0011 <span class="comment">%   OPTPAR - optical parameters to use with functions in CAMERA</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% See also TRY_TO_BE_SMART CAMERA</span>
+0014 
+0015 
+0016 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0017 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0018 
+0019 
+0020 <span class="keyword">global</span> all_opt_acc_mtr
+0021 
+0022 <span class="comment">% first time search for all *.acc files.</span>
+0023 <span class="keyword">if</span> isempty(all_opt_acc_mtr)
+0024   
+0025   load Sall2.acc
+0026   all_opt_acc_mtr = Sall2;
+0027   
+0028 <span class="keyword">end</span>
+0029 
+0030 <span class="comment">% first sort out the right station.</span>
+0031 
+0032 <span class="keyword">if</span> isfield(obs,<span class="string">'optpar'</span>) &amp; ~isempty(obs.optpar)
+0033   optpar = obs.optpar;
+0034   <span class="keyword">return</span>
+0035 <span class="keyword">end</span>
+0036 po = all_opt_acc_mtr(obs.station==all_opt_acc_mtr(:,1),:);
+0037 <span class="keyword">if</span> isempty(po)
+0038   error([<span class="string">'No camera calibration files for station '</span>,<span class="keyword">...</span>
+0039      num2str(obs.station),<span class="string">' were found.'</span>])
+0040 <span class="keyword">end</span>
+0041 po = po(po(:,4) &lt; <a href="../Skymap/date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>(obs.time) &amp; <a href="../Skymap/date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>(obs.time) &lt; po(:,5),:);
+0042 <span class="keyword">if</span> isempty(po)
+0043   error([<span class="string">'No camera calibration valid at '</span>,num2str(obs.time(1)),<span class="string">'-'</span>,<span class="keyword">...</span>
+0044      num2str(obs.time(2)),<span class="string">'-'</span>,num2str(obs.time(2)),<span class="keyword">...</span>
+0045      <span class="string">' for station '</span>,num2str(obs.station),<span class="string">' were found.'</span>])
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="comment">% Calculate the nominal line-of-sight direction of the observation</span>
+0049 <span class="keyword">if</span> ~isempty(obs.az)
+0050   
+0051   e_h(1) = sin(obs.ze*pi/180)*sin(obs.az*pi/180);
+0052   e_h(2) = sin(obs.ze*pi/180)*cos(obs.az*pi/180);
+0053   e_h(3) = cos(obs.ze*pi/180);
+0054   
+0055 <span class="keyword">else</span>
+0056   
+0057   e_h(3) = cos(obs.alpha*pi/180)*cos(obs.beta*pi/180);
+0058   e_h(2) = sin(obs.beta*pi/180);
+0059   e_h(3) = sin(obs.alpha*pi/180)*cos(obs.beta*pi/180);
+0060   
+0061 <span class="keyword">end</span>
+0062 
+0063 maxval = 0;
+0064 
+0065 <span class="keyword">for</span> i = 1:size(po,1),
+0066   
+0067   e_acc(1) = sin(po(i,3)*pi/180)*sin(po(i,2)*pi/180);
+0068   e_acc(2) = sin(po(i,3)*pi/180)*cos(po(i,2)*pi/180);
+0069   e_acc(3) = cos(po(i,3)*pi/180);
+0070   <span class="keyword">if</span> (dot(e_h,e_acc)&gt;maxval)
+0071     most_paralell_indx = i;
+0072     maxval = dot(e_h,e_acc);
+0073   <span class="keyword">end</span>
+0074     
+0075 <span class="keyword">end</span>
+0076 
+0077 <span class="keyword">if</span> ( maxval &gt;= cos(.2*pi/180) )
+0078   <span class="comment">% We're within 0.2 degrees</span>
+0079   resort = [7:14 6 15];
+0080   optpar = po(most_paralell_indx,resort);
+0081   disp([<span class="string">'Station '</span>,num2str(obs.station),<span class="string">' Obs az and ze: '</span>,num2str([obs.az obs.ze])])
+0082   disp([<span class="string">'Az, Ze, Optpar '</span>,num2str(po(most_paralell_indx,[2 3 resort])) ])
+0083   
+0084 <span class="keyword">elseif</span> ( maxval &gt;= cos(.5*pi/180) )
+0085   
+0086   resort = [7:14 6 15];
+0087   optpar = po(most_paralell_indx,resort);
+0088   warning([<span class="string">'Optical missalignment &gt; 0.2 degrees for station'</span> <span class="keyword">...</span>
+0089        <span class="string">' '</span>,num2str(obd.station)])
+0090   warning(<span class="string">' '</span>)
+0091   warning([<span class="string">'Azimuth and zenith from image header: '</span>,num2str([obs.az obs.ze])])
+0092   warning([<span class="string">'Closest Azimuth and zenith found: '</span>, <span class="keyword">...</span>
+0093        num2str(po(most_paralell_indx,[2 3]))])
+0094   warning(<span class="string">' '</span>)
+0095   
+0096 <span class="keyword">else</span>
+0097   
+0098   disp([<span class="string">'Optical missalignment &gt; 0.5 degrees for station'</span> <span class="keyword">...</span>
+0099     <span class="string">' '</span>,num2str(obs.station)])
+0100   disp(<span class="string">' '</span>)
+0101   disp([<span class="string">'Azimuth and zenith from image header: '</span>,num2str([obs.az obs.ze])])
+0102   disp([<span class="string">'Closest Azimuth and zenith found: '</span>, <span class="keyword">...</span>
+0103     num2str(po(most_paralell_indx,[2 3]))])
+0104   disp(<span class="string">' '</span>)
+0105   disp(<span class="string">'Now there are the following options:'</span>)
+0106   disp(<span class="string">'1. Accept the optical parameters found.'</span>)
+0107   disp([<span class="string">'2. Calculate the rotation from the image header and use the'</span> <span class="keyword">...</span>
+0108     <span class="string">' othe optical parameters found.'</span>])
+0109   disp(<span class="string">'3. Manually give the nessecary parameters'</span>)
+0110   op_choise = <a href="../tools/in_def2.html" class="code" title="function y = in_def2(question,default_value)">in_def2</a>(<span class="string">'What action to take? '</span>,1);
+0111   <span class="keyword">switch</span> op_choise
+0112    <span class="keyword">case</span> 1,
+0113     resort = [7:14 6 15];
+0114     optpar = po(most_paralell_indx,resort);
+0115    <span class="keyword">case</span> 2,
+0116     resort = [7:14 6 15];
+0117     optpar = po(most_paralell_indx,resort);
+0118     <span class="keyword">if</span> ~isempty(obs.alpha)
+0119       
+0120       optpar(3:5) = [obs.alpha, obs.beta, 0];
+0121       
+0122     <span class="keyword">else</span>
+0123       
+0124       [alfa,beta] = <a href="../Starcal/fitaeta_2_alfabeta.html" class="code" title="function [alfa,beta] = fitaeta_2_alfabeta(fi,theta)">fitaeta_2_alfabeta</a>(obs.az,obs.ze);
+0125       optpar(3:5) = [alfa, beta, 0];
+0126       
+0127     <span class="keyword">end</span>
+0128    <span class="keyword">case</span> 3
+0129     
+0130     optpar = <a href="../tools/in_def2.html" class="code" title="function y = in_def2(question,default_value)">in_def2</a>(<span class="string">'optpar = '</span>,1:10);
+0131     
+0132    <span class="keyword">otherwise</span>
+0133     
+0134     error(<span class="string">'Gomenasai, I dont understand what you want me to do'</span>)
+0135     
+0136   <span class="keyword">end</span>
+0137   
+0138 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

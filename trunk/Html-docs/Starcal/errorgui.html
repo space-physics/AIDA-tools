@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of errorgui</title>
+  <meta name="keywords" content="errorgui">
+  <meta name="description" content="ERRORGUI - Create the figure and GUI for the errorplots">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>errorgui
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ERRORGUI - Create the figure and GUI for the errorplots</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function SkMp = errorgui(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ERRORGUI - Create the figure and GUI for the errorplots
+
+ Calling:
+ SkMp = errorgui(SkMp)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Starcal/M6/runopticsoptimization.html" class="code" title="function [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin)">runopticsoptimization</a>	RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters</li><li><a href="../Starcal/M6/trackemdown.html" class="code" title="function [SkMp,identstars,optpar] = trackemdown(SkMp)">trackemdown</a>	TRACKEMDOWN - makes an automatic starcalibration.</li><li><a href="../Starcal/M7/runopticsoptimization.html" class="code" title="function [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin)">runopticsoptimization</a>	RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters</li><li><a href="../Starcal/M7/trackemdown.html" class="code" title="function [SkMp,identstars,optpar] = trackemdown(SkMp)">trackemdown</a>	TRACKEMDOWN - makes an automatic starcalibration.</li><li><a href="stargui.html" class="code" title="">stargui</a>	STARGUI - sets up the GUI for starcal</li><li><a href="../Starcal/update/updfindstar.html" class="code" title="function [SkMp,starpar] = updfindstar(starpar,SkMp)">updfindstar</a>	UPDFINDSTAR -</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function SkMp = errorgui(SkMp)</a>
+0002 <span class="comment">% ERRORGUI - Create the figure and GUI for the errorplots</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% SkMp = errorgui(SkMp)</span>
+0006 
+0007 <span class="comment">%   Copyright �  2001 by Bjorn Gustavsson &lt;bjorn.gustavsson@irf.se&gt;</span>
+0008 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0009 
+0010 errorload = <span class="string">'[SkMp] = loaderrordata(SkMp);'</span>;
+0011 errorsave = <span class="string">'[SkMp] = saveerrordata(SkMp);'</span>;
+0012 SkMp.errorfig = figure;
+0013  
+0014 figure(SkMp.figsky)
+0015 
+0016 SkMp.uic3(6,1) = uimenu(<span class="string">'Label'</span>,<span class="string">'Errorplots'</span>);
+0017 SkMp.uic3(6,13) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span>
+0018             <span class="string">'Label'</span>,<span class="string">'Load saved error data'</span>, <span class="keyword">...</span>
+0019             <span class="string">'callback'</span>, <span class="keyword">...</span>
+0020             errorload);
+0021 SkMp.uic3(6,14) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span>
+0022             <span class="string">'Label'</span>,<span class="string">'Save error data'</span>, <span class="keyword">...</span>
+0023             <span class="string">'callback'</span>, <span class="keyword">...</span>
+0024             errorsave);
+0025 SkMp.uic3(6,2) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span>
+0026             <span class="string">'Label'</span>,<span class="string">'Error arrows'</span>, <span class="keyword">...</span>
+0027             <span class="string">'callback'</span>, <span class="keyword">...</span>
+0028             <span class="string">'starerrorplot(SkMp,1)'</span>);
+0029 SkMp.uic3(6,3) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span>
+0030             <span class="string">'Label'</span>,<span class="string">'Error scatter'</span>, <span class="keyword">...</span>
+0031             <span class="string">'callback'</span>, <span class="keyword">...</span>
+0032             <span class="string">'starerrorplot(SkMp,2)'</span>);
+0033 SkMp.uic3(6,4) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span>
+0034             <span class="string">'Label'</span>,<span class="string">'du of u'</span>, <span class="keyword">...</span>
+0035             <span class="string">'callback'</span>, <span class="keyword">...</span>
+0036             <span class="string">'starerrorplot(SkMp,3)'</span>);
+0037 SkMp.uic3(6,5) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span><span class="comment"> </span>
+0038             <span class="string">'Label'</span>,<span class="string">'dv of v'</span>, <span class="keyword">...</span>
+0039             <span class="string">'callback'</span>, <span class="keyword">...</span>
+0040             <span class="string">'starerrorplot(SkMp,4)'</span>);
+0041 SkMp.uic3(6,6) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span>
+0042             <span class="string">'Label'</span>,<span class="string">'dr of r'</span>, <span class="keyword">...</span>
+0043             <span class="string">'callback'</span>, <span class="keyword">...</span>
+0044             <span class="string">'starerrorplot(SkMp,5)'</span>);
+0045 SkMp.uic3(6,7) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span>
+0046             <span class="string">'Label'</span>,<span class="string">'dphi of phi'</span>, <span class="keyword">...</span>
+0047             <span class="string">'callback'</span>, <span class="keyword">...</span>
+0048             <span class="string">'starerrorplot(SkMp,6)'</span>);
+0049 SkMp.uic3(6,12) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span>
+0050              <span class="string">'Label'</span>,<span class="string">'dphi of r'</span>, <span class="keyword">...</span>
+0051              <span class="string">'callback'</span>, <span class="keyword">...</span>
+0052              <span class="string">'starerrorplot(SkMp,11)'</span>);
+0053 SkMp.uic3(6,8) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span>
+0054             <span class="string">'Label'</span>,<span class="string">'hist(du)'</span>, <span class="keyword">...</span>
+0055             <span class="string">'callback'</span>, <span class="keyword">...</span>
+0056             <span class="string">'starerrorplot(SkMp,7)'</span>);
+0057 SkMp.uic3(6,9) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span>
+0058             <span class="string">'Label'</span>,<span class="string">'hist(dv)'</span>, <span class="keyword">...</span>
+0059             <span class="string">'callback'</span>, <span class="keyword">...</span>
+0060             <span class="string">'starerrorplot(SkMp,8)'</span>);
+0061 SkMp.uic3(6,10) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span>
+0062              <span class="string">'Label'</span>,<span class="string">'hist(dr)'</span>, <span class="keyword">...</span>
+0063              <span class="string">'callback'</span>, <span class="keyword">...</span>
+0064              <span class="string">'starerrorplot(SkMp,9)'</span>);
+0065 SkMp.uic3(6,11) = uimenu(SkMp.uic3(6,1), <span class="keyword">...</span>
+0066              <span class="string">'Label'</span>,<span class="string">'hist(dphi)'</span>, <span class="keyword">...</span>
+0067              <span class="string">'callback'</span>, <span class="keyword">...</span>
+0068              <span class="string">'starerrorplot(SkMp,10)'</span>);
+0069 
+0070 <span class="comment">% $$$ hidegui(SkMp.uic3(6,:),'callback')</span>
+0071 set(SkMp.uic3(6,:),<span class="string">'handlevisibility'</span>,<span class="string">'callback'</span>)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

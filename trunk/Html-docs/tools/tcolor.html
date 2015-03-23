@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tcolor</title>
+  <meta name="keywords" content="tcolor">
+  <meta name="description" content="TCOLOR - truecolor version of pcolor">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>tcolor
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TCOLOR - truecolor version of pcolor</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function H=tcolor(x,y,c,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TCOLOR - truecolor version of pcolor
+ for use like pcolor but with c as a true color matrix (uses texturemap for speed)...
+
+ H=tcolor(x,y,c[,method])
+
+ valid methods are: 'corners','normal','triangles'
+
+ The normal method is texture mapping unto the plane given by x and y 
+ (which may be distorted arbitrarily)
+
+ The 'corners' method is the fastest way to draw. However it requires that
+ the area is non-distorted... E.g. that the box defined by the corners
+ defines the area.
+
+ The slowest method is 'triangles'... (sort of like pcolor). But shading
+ interp works with it.
+
+ c=imread('C:\Projects\My Pictures\peppermint_girl.jpg');
+ [x,y] = meshgrid(1:size(im,2),1:size(im,1));
+ x=x+y/10; %skew the image
+ H=tcolor(x,y,c,'corners')
+
+ Aslak Grinsted - July 2003</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../EARTH/nscand_map.html" class="code" title="function PH = nscand_map(latlong_or_xyz,axlim)">nscand_map</a>	NSCAND_MAP - plot topographic mat over northern Scandinavia</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function H=tcolor(x,y,c,varargin)</a>
+0002 <span class="comment">% TCOLOR - truecolor version of pcolor</span>
+0003 <span class="comment">% for use like pcolor but with c as a true color matrix (uses texturemap for speed)...</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% H=tcolor(x,y,c[,method])</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% valid methods are: 'corners','normal','triangles'</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% The normal method is texture mapping unto the plane given by x and y</span>
+0010 <span class="comment">% (which may be distorted arbitrarily)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% The 'corners' method is the fastest way to draw. However it requires that</span>
+0013 <span class="comment">% the area is non-distorted... E.g. that the box defined by the corners</span>
+0014 <span class="comment">% defines the area.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% The slowest method is 'triangles'... (sort of like pcolor). But shading</span>
+0017 <span class="comment">% interp works with it.</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% c=imread('C:\Projects\My Pictures\peppermint_girl.jpg');</span>
+0020 <span class="comment">% [x,y] = meshgrid(1:size(im,2),1:size(im,1));</span>
+0021 <span class="comment">% x=x+y/10; %skew the image</span>
+0022 <span class="comment">% H=tcolor(x,y,c,'corners')</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% Aslak Grinsted - July 2003</span>
+0025 
+0026 cax = newplot;
+0027 hold_state = ishold;
+0028 
+0029 lims = [min(min(x)) max(max(x)) min(min(y)) max(max(y))];
+0030 
+0031 
+0032 method=1; <span class="comment">%1=normal,2=corners,3=triangles</span>
+0033 <span class="keyword">if</span> ~isempty(varargin)
+0034   method=strmatch(lower(varargin{1}),strvcat({<span class="string">'normal'</span> <span class="string">'corners'</span> <span class="string">'triangles'</span>}));
+0035 <span class="keyword">end</span>
+0036 
+0037 triangles=0;
+0038 <span class="keyword">switch</span> method
+0039  <span class="keyword">case</span> 1
+0040  <span class="keyword">case</span> 2
+0041   <span class="keyword">if</span> length(size(x))==2
+0042     x=x([1 end],[1 end]);
+0043     y=y([1 end],[1 end]);
+0044   <span class="keyword">else</span>
+0045     x=x([1 1;end end]);
+0046     y=y([1 <span class="keyword">end</span>;1 end]);    
+0047   <span class="keyword">end</span>
+0048  <span class="keyword">case</span> 3
+0049   triangles=1;
+0050  <span class="keyword">otherwise</span>
+0051   warning(<span class="string">'TCOLOR: Unknown method?'</span>)
+0052   <span class="keyword">return</span>
+0053 <span class="keyword">end</span>
+0054     
+0055 <span class="keyword">if</span> length(size(x))==1
+0056   [x,y]=meshgrid(x,y);
+0057 <span class="keyword">end</span>
+0058 
+0059 <span class="keyword">if</span> triangles
+0060   H=patch(surf2patch(x,y,zeros(size(x)),im2double(c),<span class="string">'triangles'</span>),<span class="string">'edgecolor'</span>,<span class="string">'none'</span>,<span class="string">'facecolor'</span>,<span class="string">'flat'</span>);
+0061 <span class="keyword">else</span>
+0062   H=surface(x,y,zeros(size(x)),c,<span class="string">'EdgeColor'</span>,<span class="string">'none'</span>,<span class="string">'FaceColor'</span>,<span class="string">'texturemap'</span>);
+0063 <span class="keyword">end</span>
+0064 
+0065 
+0066 <span class="keyword">if</span> ~hold_state
+0067   set(cax,<span class="string">'View'</span>,[0 90]);
+0068   set(cax,<span class="string">'Box'</span>,<span class="string">'on'</span>);
+0069   axis(lims);
+0070 <span class="keyword">end</span>
+0071 
+0072 
+0073 <span class="keyword">if</span> (nargout==0)
+0074   clear H;
+0075 <span class="keyword">end</span>;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

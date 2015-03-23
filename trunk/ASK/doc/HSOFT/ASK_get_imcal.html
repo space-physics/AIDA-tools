@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_get_imcal</title>
+  <meta name="keywords" content="ASK_get_imcal">
+  <meta name="description" content="ASK_GET_IMCAL - routine filling the imcal common block with">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_get_imcal
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_GET_IMCAL - routine filling the imcal common block with</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function ASK_get_imcal() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_GET_IMCAL - routine filling the imcal common block with
+ the dark image and flat image, for a video event.
+ The dark and flat images are read in from the files.
+ NOTE: The name is misleading! fmd_field is actually
+ the normalised flat NOT the flat minus dark.
+ This is because absolute intensity calibration would
+ otherwise not work, if the brightness of the flat is
+ not known, e.g. when of clouds.
+
+ Calling:
+   ASK_get_imcal
+ Input:
+   None.
+ Output:
+   None
+ Results stored in a global struct: imcal</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_read_vs.html" class="code" title="function vs = ASK_read_vs(num,filename,quiet)">ASK_read_vs</a>	ASK_READ_VS -  the procedure to read the videoevent setup - the new version</li><li><a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>	ASK_V_SELECT - Set current camera index in global structure VS</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ASK_get_imcal()</a>
+0002 <span class="comment">% ASK_GET_IMCAL - routine filling the imcal common block with</span>
+0003 <span class="comment">% the dark image and flat image, for a video event.</span>
+0004 <span class="comment">% The dark and flat images are read in from the files.</span>
+0005 <span class="comment">% NOTE: The name is misleading! fmd_field is actually</span>
+0006 <span class="comment">% the normalised flat NOT the flat minus dark.</span>
+0007 <span class="comment">% This is because absolute intensity calibration would</span>
+0008 <span class="comment">% otherwise not work, if the brightness of the flat is</span>
+0009 <span class="comment">% not known, e.g. when of clouds.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Calling:</span>
+0012 <span class="comment">%   ASK_get_imcal</span>
+0013 <span class="comment">% Input:</span>
+0014 <span class="comment">%   None.</span>
+0015 <span class="comment">% Output:</span>
+0016 <span class="comment">%   None</span>
+0017 <span class="comment">% Results stored in a global struct: imcal</span>
+0018 
+0019 <span class="keyword">global</span> hities <span class="comment">% Unused</span>
+0020 <span class="keyword">global</span> vs    <span class="comment">% Holding camera meta data of the current event.</span>
+0021 <span class="keyword">global</span> imcal <span class="comment">% FOR: d_field, fmd_field</span>
+0022 
+0023 nx = vs.dimx(vs.vsel);
+0024 ny = vs.dimy(vs.vsel);
+0025 
+0026 imcal.d_field = zeros(ny,nx);
+0027 imcal.fmd_field = ones(ny,nx);
+0028 
+0029 <span class="keyword">if</span> ~strcmp(vs.vdrk{vs.vsel},<span class="string">'nodark'</span>)
+0030   
+0031   filename = fullfile(vs.videodir,<span class="string">'setup'</span>,vs.vdrk{vs.vsel});
+0032   fID = fopen(filename,<span class="string">'r'</span>);
+0033   imcal.d_field = fread(fID,[ny,nx],<span class="string">'float'</span>); 
+0034   fclose(fID);
+0035   
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="keyword">if</span> ~strcmp( vs.vflt(vs.vsel),<span class="string">'noflat'</span>)
+0039   
+0040   filename = fullfile(vs.videodir,<span class="string">'setup'</span>,vs.vflt{vs.vsel});
+0041   fID = fopen(filename,<span class="string">'r'</span>);
+0042   imcal.fmd_field = fread(fID,[nx,ny],<span class="string">'float'</span>); 
+0043   fclose(fID);
+0044   
+0045 <span class="keyword">end</span>
+0046 
+0047 imcal.fmd_field = imcal.fmd_field/mean(imcal.fmd_field(:));<span class="comment">%  -d_field</span></pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

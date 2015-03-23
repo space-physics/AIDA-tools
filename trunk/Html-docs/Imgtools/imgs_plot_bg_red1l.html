@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of imgs_plot_bg_red1l</title>
+  <meta name="keywords" content="imgs_plot_bg_red1l">
+  <meta name="description" content="imgs_plot_bg_red1l - Plot a row of  background reduced images, one colorlabel">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>imgs_plot_bg_red1l
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>imgs_plot_bg_red1l - Plot a row of  background reduced images, one colorlabel</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function out_var = imgs_plot_bg_red1l(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> imgs_plot_bg_red1l - Plot a row of  background reduced images, one colorlabel
+   
+ Calling:
+ out_var = imgs_plot_bg_red1l(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)
+ 
+   INPUT parameters: 
+   FILES - char array of image files, full or relative path, readable 
+   PO - image pre_proc_ops see TYPICAL_PRE_PROC_OPS
+   NRROWS - total number of rows in figure
+   ROWNR - rownumber to plot in
+   RN_IMGS_PER_ROW number of images to plot in the row
+   subplot(nrrows,rownr,1:nr_imgs_per) is used to locate the
+   images
+   FF - flat-field-correction-matrix, if left empty replaced with 1
+   IMG_REG   - image region to display [xmin xmax ymin ymax], if empty
+           whole image is used.
+   U1, V1 - curve to plot over image, if left empty no curve
+   CAX   - caxis to set either [cmin cmax] for each subplot or emtpy
+   OUTVARTYPE - either 'cax' (giving max and min image intensity),
+   'img' giving an RN_IMGS_PER_ROW thick stack of images or
+   'ax_hndl' giving the handles to the subplot-axes.
+   
+   Very little or no argument checking is preformed
+
+  See also: STARCAL, CAMERA, TYPICAL_PRE_PROC_OPS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>	imgs_smart_caxis - alpha-percentile setting of color-axis,</li><li><a href="../tools/colorbar_labeled.html" class="code" title="function handle=colorbar_labeled(label,lg,varargin)">colorbar_labeled</a>	COLORBAR_LABELED - colorbar with label for range linear or log</li><li><a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>	ISCHAR - return true if STR is a char-array</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function out_var = imgs_plot_bg_red1l(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)</a>
+0002 <span class="comment">% imgs_plot_bg_red1l - Plot a row of  background reduced images, one colorlabel</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% out_var = imgs_plot_bg_red1l(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   INPUT parameters:</span>
+0008 <span class="comment">%   FILES - char array of image files, full or relative path, readable</span>
+0009 <span class="comment">%   PO - image pre_proc_ops see TYPICAL_PRE_PROC_OPS</span>
+0010 <span class="comment">%   NRROWS - total number of rows in figure</span>
+0011 <span class="comment">%   ROWNR - rownumber to plot in</span>
+0012 <span class="comment">%   RN_IMGS_PER_ROW number of images to plot in the row</span>
+0013 <span class="comment">%   subplot(nrrows,rownr,1:nr_imgs_per) is used to locate the</span>
+0014 <span class="comment">%   images</span>
+0015 <span class="comment">%   FF - flat-field-correction-matrix, if left empty replaced with 1</span>
+0016 <span class="comment">%   IMG_REG   - image region to display [xmin xmax ymin ymax], if empty</span>
+0017 <span class="comment">%           whole image is used.</span>
+0018 <span class="comment">%   U1, V1 - curve to plot over image, if left empty no curve</span>
+0019 <span class="comment">%   CAX   - caxis to set either [cmin cmax] for each subplot or emtpy</span>
+0020 <span class="comment">%   OUTVARTYPE - either 'cax' (giving max and min image intensity),</span>
+0021 <span class="comment">%   'img' giving an RN_IMGS_PER_ROW thick stack of images or</span>
+0022 <span class="comment">%   'ax_hndl' giving the handles to the subplot-axes.</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%   Very little or no argument checking is preformed</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%  See also: STARCAL, CAMERA, TYPICAL_PRE_PROC_OPS</span>
+0027 
+0028 
+0029 
+0030 <span class="comment">%   Copyright � 20050109 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0031 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0032 
+0033 <span class="keyword">if</span> nargin &gt; 10 &amp; <a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(outvartype)
+0034   
+0035   outvartp = lower(outvartype);
+0036   
+0037 <span class="keyword">else</span>
+0038   
+0039   outvartp = <span class="string">'cax'</span>;
+0040   
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="keyword">if</span> isempty(ff)
+0044   ff = 1;
+0045 <span class="keyword">end</span>
+0046 <span class="comment">% Background images: first and last in files</span>
+0047 [data1,head1,o] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(1,:),PO);
+0048 exptimes =  o.exptime;
+0049 
+0050 t1 = o.time;<span class="comment">%_from_header(head1);</span>
+0051 t1 = sum(t1(4:end).*[1 1/60 1/3600]);
+0052 bg1 = data1./ff/exptimes;
+0053 
+0054 [data1,head1,o] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(<span class="keyword">end</span>,:),PO);
+0055 exptimes =  o.exptime;
+0056 t2 = o.time;<span class="comment">%_from_header(head1);</span>
+0057 
+0058 t2 = sum(t2(4:end).*[1 1/60 1/3600]);
+0059 bg2 = data1./ff/exptimes;
+0060 <span class="keyword">if</span> nr_imgs_per_row &gt; 12
+0061   t_fntsz = 10;
+0062 <span class="keyword">else</span>
+0063   t_fntsz = 12;
+0064 <span class="keyword">end</span>
+0065 
+0066 <span class="keyword">for</span> i1 = 1:nr_imgs_per_row
+0067   
+0068   [data1,head1,o] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(i1+1,:),PO);
+0069   
+0070   exptimes =  o.exptime;
+0071   time1 = o.time;<span class="comment">%_from_header(head1);</span>
+0072   tstr = sprintf(<span class="string">'%02d:%02d:%03.1f'</span>,time1(4:6));
+0073   time1 = sum(time1(4:end).*[1 1/60 1/3600]);
+0074   
+0075   <span class="keyword">if</span> (t2~=t1)
+0076     data1 = data1./ff/exptimes - ( bg1 + ( bg2 - bg1)*(time1-t1)/(t2-t1));
+0077   <span class="keyword">else</span>
+0078     data1 = data1./ff/exptimes - bg1;
+0079   <span class="keyword">end</span>
+0080   
+0081   ax_hndl(i1) = subplot(nrrows,nr_imgs_per_row,i1+(rownr-1)*nr_imgs_per_row);
+0082   <span class="keyword">if</span> ~isempty(img_reg)
+0083     imagesc(img_reg(1):img_reg(2),img_reg(3):img_reg(4),data1(img_reg(3):img_reg(4),img_reg(1):img_reg(2))),axis xy,axis(img_reg)
+0084   <span class="keyword">else</span>
+0085     imagesc(data1),axis xy
+0086   <span class="keyword">end</span>
+0087   <span class="keyword">if</span> nargin &gt; 9
+0088     <span class="keyword">if</span> min(size(cax))==1
+0089       <span class="keyword">if</span> ~isempty(img_reg)
+0090         <a href="imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(cax(min(i1,length(cax))),data1(img_reg(3):img_reg(4),img_reg(1):img_reg(2)));
+0091       <span class="keyword">else</span>
+0092         <a href="imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(cax(min(i1,length(cax))),data1(:));
+0093       <span class="keyword">end</span>
+0094     <span class="keyword">elseif</span> prod(cax)
+0095       caxis(cax(min(i1,size(cax,1)),:))
+0096     <span class="keyword">end</span>
+0097   <span class="keyword">end</span>
+0098   hold on
+0099   plot(u1,v1,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,1)
+0100   axis xy
+0101   
+0102   title(tstr,<span class="string">'fontsize'</span>,t_fntsz)
+0103   set(gca,<span class="string">'xticklabel'</span>,[],<span class="string">'yticklabel'</span>,[])
+0104   
+0105   <span class="keyword">if</span> i1 == 1,
+0106     [filepath,filename,extn] = fileparts(files(i1+1,:));
+0107     ylabel(filename)
+0108   <span class="keyword">end</span>
+0109   
+0110   <span class="keyword">if</span> strcmp(outvartp,<span class="string">'cax'</span>)
+0111     out_var(i1,:) = caxis;
+0112   <span class="keyword">elseif</span> strcmp(outvartp,<span class="string">'img'</span>)
+0113     out_var(:,:,i1) = data1;
+0114   <span class="keyword">elseif</span> strcmp(outvartp,<span class="string">'ax_hndl'</span>)
+0115     out_var = ax_hndl;
+0116   <span class="keyword">else</span>
+0117     warning(<span class="string">'Unknown output variable requested'</span>)
+0118   <span class="keyword">end</span>
+0119   
+0120 <span class="keyword">end</span>
+0121 
+0122 <a href="../tools/colorbar_labeled.html" class="code" title="function handle=colorbar_labeled(label,lg,varargin)">colorbar_labeled</a>(<span class="string">''</span>)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

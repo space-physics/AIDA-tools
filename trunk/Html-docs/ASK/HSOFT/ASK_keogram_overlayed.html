@@ -1,0 +1,445 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_keogram_overlayed</title>
+  <meta name="keywords" content="ASK_keogram_overlayed">
+  <meta name="description" content="ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_keogram_overlayed
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and
+ three keograms in one figure.
+
+ CALLING:
+   OPS = ASK_keogram_overlayed;
+   [keo,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS);
+ INPUTS:
+   fir      - first image number 
+   las      - last image number 
+   ste      - frame step 
+   shift    - shift of images with respect to each other ([0,0,0] if there is no shift), 
+   width    - width of the column that is used for creating the keogram, 
+   x0, y0   - central pixles of the keogram cut, 
+   angle    - angle of the cut, where 0 is a horizontal cut and 90
+              vertical. 
+
+   OPS      - Struct with options controlling image preprocessing,
+              and the layout of the plot. Default options are
+              returned when ASK_keogram_overlayed is called
+              without input arguments:
+ 
+ The nicest keograms are created from appr. 1000 frames.
+ 
+ FEATURES:
+ * If data is not calibrated this routine will crash!
+ * Before caling this function ASK meta-data has to be read in
+   with read_vs! 
+ * If the data is 512x512 pixels, the images will first be binned to
+   256x256 pixels
+
+
+ The nicest keograms are created from appr. 1000 frames.
+ WARNING: If data is not calibrated this routine will crash!
+ First of all the ASK meta-data has to be read in with read_vs!
+ If the data is 512x512 pixels, the images will first be binned to
+ 256x256 pixels</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_auto_range.html" class="code" title="function auto_range = ASK_auto_range(z,alpha,log_it,low,high)">ASK_auto_range</a>	ASK_AUTO_RANGE - returns an array of automatic range</li><li><a href="ASK_binning.html" class="code" title="function img_out = ASK_binning(img_in,binningFactors)">ASK_binning</a>	ASK_BINNING - Post-bin data</li><li><a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>	ASK_BYTSCL - clip-n-scale matrix into [0-MAXOUT] from min(max_IN,max(min_IN,M_in))</li><li><a href="ASK_get_ask_cal.html" class="code" title="function retval = ASK_get_ask_cal(mjs,cam)">ASK_get_ask_cal</a>	ASK_GET_ASK_CAL - get  absolute intensity calibration factors</li><li><a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>	ASK_INDX2DATEVEC - Convert a frame index into a [yyyy,mm,dd,HH,MM,SS.FFF]</li><li><a href="ASK_megablockviewer.html" class="code" title="function ASK_megablockviewer(ASKaction)">ASK_megablockviewer</a>	ASK_MEGABLOCKVIEWER - Utility callback function for zooming around</li><li><a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>	ASK_READ_V - Read ASK image #i1 from current camera in current "mega-block"</li><li><a href="ASK_time2MJS.html" class="code" title="function TT_MJS = ASK_time2MJS(date_vec)">ASK_time2MJS</a>	ASK_time2MJS - converts calendar date to modified Julian second</li><li><a href="ASK_time_axis.html" class="code" title="function [ticks,tickn,tickv,tickm] = ASK_time_axis(StartTimeMJS,dTime,less)">ASK_time_axis</a>	ASK_TIME_AXIS - formated time onto the x-labels</li><li><a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>	ASK_V_SELECT - Set current camera index in global structure VS</li><li><a href="../../Imgtools/img_rot.html" class="code" title="function img_out = img_rot(img_in,angle,x0,y0,method,extrapval)">img_rot</a>	IMG_ROT - rotate image around arbitrary point.</li><li><a href="../../tools/colorbar_labeled.html" class="code" title="function handle=colorbar_labeled(label,lg,varargin)">colorbar_labeled</a>	COLORBAR_LABELED - colorbar with label for range linear or log</li><li><a href="../../tools/imresize.html" class="code" title="function imOut = imresize(imIn,imsizOut)">imresize</a>	IMRESIZE - binning/resizing of image.</li><li><a href="../../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li><li><a href="../../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>	TIMETICK - change axis-labels to time/date format. Clever choice</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_megablockviewer.html" class="code" title="function ASK_megablockviewer(ASKaction)">ASK_megablockviewer</a>	ASK_MEGABLOCKVIEWER - Utility callback function for zooming around</li><li><a href="ASK_overviewmaker.html" class="code" title="function MegaBlocksDone = ASK_overviewmaker(MegaBlocksDone,data_dir)">ASK_overviewmaker</a>	ASK_overviewmaker - Create mega-block overlayed-keogram for overview</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)</a>
+0002 <span class="comment">% ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</span>
+0003 <span class="comment">% three keograms in one figure.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% CALLING:</span>
+0006 <span class="comment">%   OPS = ASK_keogram_overlayed;</span>
+0007 <span class="comment">%   [keo,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS);</span>
+0008 <span class="comment">% INPUTS:</span>
+0009 <span class="comment">%   fir      - first image number</span>
+0010 <span class="comment">%   las      - last image number</span>
+0011 <span class="comment">%   ste      - frame step</span>
+0012 <span class="comment">%   shift    - shift of images with respect to each other ([0,0,0] if there is no shift),</span>
+0013 <span class="comment">%   width    - width of the column that is used for creating the keogram,</span>
+0014 <span class="comment">%   x0, y0   - central pixles of the keogram cut,</span>
+0015 <span class="comment">%   angle    - angle of the cut, where 0 is a horizontal cut and 90</span>
+0016 <span class="comment">%              vertical.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   OPS      - Struct with options controlling image preprocessing,</span>
+0019 <span class="comment">%              and the layout of the plot. Default options are</span>
+0020 <span class="comment">%              returned when ASK_keogram_overlayed is called</span>
+0021 <span class="comment">%              without input arguments:</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% The nicest keograms are created from appr. 1000 frames.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% FEATURES:</span>
+0026 <span class="comment">% * If data is not calibrated this routine will crash!</span>
+0027 <span class="comment">% * Before caling this function ASK meta-data has to be read in</span>
+0028 <span class="comment">%   with read_vs!</span>
+0029 <span class="comment">% * If the data is 512x512 pixels, the images will first be binned to</span>
+0030 <span class="comment">%   256x256 pixels</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">% The nicest keograms are created from appr. 1000 frames.</span>
+0034 <span class="comment">% WARNING: If data is not calibrated this routine will crash!</span>
+0035 <span class="comment">% First of all the ASK meta-data has to be read in with read_vs!</span>
+0036 <span class="comment">% If the data is 512x512 pixels, the images will first be binned to</span>
+0037 <span class="comment">% 256x256 pixels</span>
+0038 <span class="comment">%</span>
+0039 
+0040 <span class="comment">%   name     - the name of the resulting ps-file</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% Optional arguments:</span>
+0043 <span class="comment">%   rad      - plots the radar data for the period instead of the ASK</span>
+0044 <span class="comment">%              images. Which data to read in</span>
+0045 <span class="comment">%              is hardcoded in this script.</span>
+0046 <span class="comment">%   bkg      - background to remove from [ASK1,ASK2,ASK3]</span>
+0047 <span class="comment">%   one      - Only one ASK image is plotted in the second panel</span>
+0048 <span class="comment">%              (overlay of ASK1,ASK2 and ASK3)</span>
+0049 <span class="comment">%   dist     - Puts distance on the y-axis in km (set up for ASK data)</span>
+0050 
+0051 <span class="keyword">global</span> vs
+0052 
+0053 
+0054 dOPS.loud = 0;  <span class="comment">% Set to one to possibly get current image number</span>
+0055                 <span class="comment">% and display of currently read image.</span>
+0056 dOPS.quiet = 0; <span class="comment">% Set to 1 to suppress the waitbar</span>
+0057 dOPS.filtertype = {<span class="string">'none'</span>}; <span class="comment">% Set to cell array of filters to use</span>
+0058                             <span class="comment">% when reading images: {'sigma','median'}</span>
+0059 dOPS.filterArgs = {}; <span class="comment">% Set to cell array of cell arrays with</span>
+0060                       <span class="comment">% filter arguments: {{[3,3]},{[3,5],'symmetric'}}</span>
+0061 dOPS.rad = [];  <span class="comment">% Seems unused to me.</span>
+0062 dOPS.bkg = [];  <span class="comment">% set to [1 x 3] or [3 x 1] array of background</span>
+0063                 <span class="comment">% intensities to remove from the images</span>
+0064 dOPS.oneImg = []; <span class="comment">% Set to camera number to only plot images from</span>
+0065                   <span class="comment">% that camera in the row of images, if set to</span>
+0066                   <span class="comment">% other number (4) only the RGB composite is shown</span>
+0067 dOPS.dist = [];   <span class="comment">% not yet implemented</span>
+0068 dOPS.subplot4imgs = [5,7,8]; <span class="comment">% Subplot set up for the image-row:</span>
+0069                              <span class="comment">% defaults to figure with five rows,</span>
+0070                              <span class="comment">% image-row will have 7 columns,</span>
+0071                              <span class="comment">% images will start with subplot #8 -</span>
+0072                              <span class="comment">% first subplot in second row from the</span>
+0073                              <span class="comment">% top</span>
+0074 dOPS.subplot4RGBkeo = [5,1,1];  <span class="comment">% Subplot row for RGB-composite keogram</span>
+0075 dOPS.subplot4ASK1keo = [5,1,3]; <span class="comment">% Subplot row for ASK-1 keogram</span>
+0076 dOPS.subplot4ASK2keo = [5,1,4]; <span class="comment">% Subplot row for ASK-2 keogram</span>
+0077 dOPS.subplot4ASK3keo = [5,1,5]; <span class="comment">% Subplot row for ASK-3 keogram</span>
+0078 dOPS.imrowFontsize = 12;        <span class="comment">% Fontsize for time-label of images.</span>
+0079 
+0080 <span class="comment">% If no input arguments</span>
+0081 <span class="keyword">if</span> nargin == 0
+0082   <span class="comment">% return the default options</span>
+0083   keos = dOPS;
+0084   <span class="comment">% and exit</span>
+0085   <span class="keyword">return</span>
+0086 <span class="keyword">end</span>
+0087 <span class="comment">% If there is an options structure in the inputs merge that one</span>
+0088 <span class="comment">% over the default one:</span>
+0089 <span class="keyword">if</span> nargin &gt; 8
+0090   dOPS = <a href="../../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0091 <span class="keyword">end</span>
+0092 
+0093 <span class="comment">% Set the image size to reduce to:</span>
+0094 imsiz = 128;
+0095 
+0096 <span class="comment">% Number of time-steps to read data for:</span>
+0097 nelem = (las - fir)/ste + 1;
+0098 
+0099 <span class="comment">% allocate arrays for the keograms</span>
+0100 keos{1} = zeros(256,nelem);
+0101 keos{2} = zeros(256,nelem);
+0102 keos{3} = zeros(256,nelem);
+0103 
+0104 CurrFig = gcf;
+0105 
+0106 <span class="keyword">if</span> ~dOPS.quiet
+0107   wbh = waitbar(0,<span class="string">'Making keograms, hold on...'</span>);
+0108 <span class="keyword">end</span>
+0109 
+0110 <span class="comment">% pixel coordinates of rotated cut is calculated here</span>
+0111 angle = angle*pi/180;
+0112 <span class="comment">% This is hard-coded for images with size 256x256 - after</span>
+0113 <span class="comment">% downsampling...</span>
+0114 x = [1:256]-128;  <span class="comment">% Vertical strip</span>
+0115 <span class="keyword">if</span> x0 == 128 &amp; y0 == 128
+0116   x = x/max([cos(angle),sin(angle)]); <span class="comment">% scaled to be between 1-256</span>
+0117                                       <span class="comment">% after rotation</span>
+0118 <span class="keyword">end</span>
+0119 y = -width/2:width/2;   <span class="comment">% with horizontal width</span>
+0120 [x,y] = meshgrid(x,y);  <span class="comment">% all 2-D coordinates in it</span>
+0121 X = [(x)*cos(angle)+(y)*sin(-angle)+x0]; <span class="comment">% The 2-D strip</span>
+0122 Y = [(x)*sin(angle)+(y)*cos(angle)+y0];  <span class="comment">% rotated</span>
+0123 
+0124 <span class="comment">% for iCam = 1:3,</span>
+0125 <span class="keyword">for</span> iCam = 1:3,
+0126   i1 = 1;
+0127   <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>(iCam,<span class="string">'quiet'</span>); <span class="comment">% Set current camera</span>
+0128   <span class="keyword">for</span> num = fir:ste:las
+0129     <span class="keyword">if</span> dOPS.loud
+0130       disp(num)
+0131     <span class="keyword">end</span>
+0132     <span class="comment">% Read the three current images</span>
+0133     im{iCam} = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(num+shft(iCam),[],[],[],dOPS); <span class="comment">% Read the current ASK image</span>
+0134     time_w(i1,:) = <a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>(num);                <span class="comment">% Get its time</span>
+0135     <span class="comment">% If required do post-binning to 256 x 256</span>
+0136     <span class="keyword">if</span> all([vs.dimx(vs.vsel) vs.dimy(vs.vsel)] == [512 512])
+0137       im{iCam} = <a href="ASK_binning.html" class="code" title="function img_out = ASK_binning(img_in,binningFactors)">ASK_binning</a>(im{iCam},[2,2]);
+0138     <span class="keyword">end</span>
+0139     
+0140     <span class="comment">% Rotate images and stuff the averaged intensities into the keograms:</span>
+0141     keos{iCam}(:,i1) = mean(interp2(im{iCam},X,Y,<span class="string">'cubic'</span>,0));
+0142     
+0143     <span class="keyword">if</span> dOPS.loud
+0144       <span class="comment">% Display current image</span>
+0145       im{iCam} = <a href="../../Imgtools/img_rot.html" class="code" title="function img_out = img_rot(img_in,angle,x0,y0,method,extrapval)">img_rot</a>(im{iCam},-(angle-90),x0,y0,<span class="string">'*spline'</span>,0);
+0146       imagesc(im{iCam}),axis xy,drawnow
+0147     <span class="keyword">end</span>
+0148     i1 = i1+1;
+0149     <span class="keyword">if</span> ~dOPS.quiet
+0150       waitbar((num-fir)/(las-fir)/3+1/3*(iCam-1),wbh);
+0151     <span class="keyword">end</span>
+0152     
+0153   <span class="keyword">end</span>
+0154   
+0155 <span class="keyword">end</span>
+0156 
+0157 <span class="keyword">if</span> ~dOPS.quiet
+0158   waitbar(1,wbh,<span class="string">'Wrapping, done real soon now!'</span>);
+0159 <span class="keyword">end</span>
+0160 <span class="comment">% Alpha-trimm the intensity ranges</span>
+0161 ran1 = <a href="ASK_auto_range.html" class="code" title="function auto_range = ASK_auto_range(z,alpha,log_it,low,high)">ASK_auto_range</a>(keos{1}, 0.01);
+0162 ran2 = <a href="ASK_auto_range.html" class="code" title="function auto_range = ASK_auto_range(z,alpha,log_it,low,high)">ASK_auto_range</a>(keos{2}, 0.01);
+0163 ran3 = <a href="ASK_auto_range.html" class="code" title="function auto_range = ASK_auto_range(z,alpha,log_it,low,high)">ASK_auto_range</a>(keos{3}, 0.01);
+0164 <span class="comment">% Set the lower to 0 -&gt; giving ranges between 0 and alpha-trimmed peak</span>
+0165 ran1(1) = 0.0;
+0166 ran2(1) = 0.0;
+0167 ran3(1) = 0.0;
+0168 
+0169 <span class="comment">%Using calibration values from Tromso data 2006, for 6730Å, 7319Å and 7774Å</span>
+0170 <span class="comment">%calib = [0.5, 0.36, 0.85]</span>
+0171 calib = <a href="ASK_get_ask_cal.html" class="code" title="function retval = ASK_get_ask_cal(mjs,cam)">ASK_get_ask_cal</a>(vs.vmjs(vs.vsel),[1,2,3]);
+0172 
+0173 loc = find(calib == 0);
+0174 count = length(loc);
+0175 <span class="keyword">if</span> (count &gt; 0)
+0176   disp(<span class="string">'WARNING! This routine is about to crash. Go and calibrate your data!'</span>)
+0177 <span class="keyword">end</span>
+0178 
+0179 <span class="comment">% If we have a background set shift the lower intensity from zero</span>
+0180 <span class="comment">% to these background intensities.</span>
+0181 <span class="keyword">if</span> ~isempty(dOPS.bkg)
+0182   ran1(1) = dOPS.bkg(1)/(calib(1)/vs.vres(vs.vsel));
+0183   ran2(1) = dOPS.bkg(2)/(calib(2)/vs.vres(vs.vsel));
+0184   ran3(1) = dOPS.bkg(3)/(calib(3)/vs.vres(vs.vsel));
+0185 <span class="keyword">end</span>
+0186 
+0187 <span class="comment">% Make the RGB-composite keogram, by mapping everything into [0-1]</span>
+0188 RGBoverlay(:,:,3) = max(0,min(1,(keos{1} - ran1(1))/(ran1(2)-ran1(1))));
+0189 RGBoverlay(:,:,2) = max(0,min(1,(keos{2} - ran2(1))/(ran2(2)-ran2(1))));
+0190 RGBoverlay(:,:,1) = max(0,min(1,(keos{3} - ran3(1))/(ran3(2)-ran3(1))));
+0191 
+0192 <span class="comment">%TBR mjs0 = ASK_time_v(fir, 1);</span>
+0193 <span class="comment">%TBR timeW = [1:nelem]*ste*vs.vres(vs.vsel);</span>
+0194 
+0195 timeV = time_w(:,4) + time_w(:,5)/60 + time_w(:,6)/3600;
+0196 <span class="comment">%TBR T_length = max(timeV);</span>
+0197 yaxis = [1:256];
+0198 
+0199 <span class="keyword">if</span> ~dOPS.quiet
+0200   close(wbh)
+0201 <span class="keyword">end</span>
+0202 
+0203 <span class="keyword">if</span> ~isempty(dOPS.subplot4imgs)
+0204   <span class="comment">% Create the image row:</span>
+0205   NNN = dOPS.subplot4imgs(2);
+0206   <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>(1,<span class="string">'quiet'</span>);             <span class="comment">% Set current camera to 1</span>
+0207   filtStr{1} = vs.vftr{vs.vsel};
+0208   <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>( 2, <span class="string">'quiet'</span>);           <span class="comment">% Cycl.</span>
+0209   filtStr{2} = vs.vftr{vs.vsel};
+0210   <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>( 3, <span class="string">'quiet'</span>);
+0211   filtStr{3} = vs.vftr{vs.vsel};
+0212   <span class="comment">% Was for jj = 1:NNN,</span>
+0213   <span class="keyword">for</span> jj = NNN:-1:1,
+0214     <span class="comment">%jj</span>
+0215     num = fir + (jj-0.5)*(nelem/NNN)*ste;
+0216     <span class="comment">% Read the three current images</span>
+0217     <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>(1,<span class="string">'quiet'</span>);             <span class="comment">% Set current camera to 1</span>
+0218     im1 = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(num + shft(1),[],[],[],dOPS);     <span class="comment">% Read the ASK#1 image</span>
+0219     <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>( 2, <span class="string">'quiet'</span>);           <span class="comment">% Cycl.</span>
+0220     im2 = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(num + shft(2),[],[],[],dOPS);     <span class="comment">% Cycl.</span>
+0221     <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>( 3, <span class="string">'quiet'</span>);           <span class="comment">% Cycl..</span>
+0222     im3 = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(num + shft(3),[],[],[],dOPS);     <span class="comment">% Cycl..</span>
+0223     <span class="comment">% If we want one image instead of the 4-quarter mosaic</span>
+0224     <span class="comment">% then here is where we select those frames (or combine them</span>
+0225     <span class="comment">% into an RGB)</span>
+0226     <span class="keyword">if</span> dOPS.oneImg
+0227       <span class="comment">% If needed bin the images to the right size</span>
+0228       <span class="keyword">while</span> size(im3,1) ~= imsiz*2
+0229         im3 = im3(1:2:<span class="keyword">end</span>,:)/2 + im3(2:2:<span class="keyword">end</span>,:)/2;
+0230         im3 = im3(:,1:2:end)/2 + im3(:,2:2:end)/2;
+0231         im2 = im2(1:2:<span class="keyword">end</span>,:)/2 + im2(2:2:<span class="keyword">end</span>,:)/2;
+0232         im2 = im2(:,1:2:end)/2 + im2(:,2:2:end)/2;
+0233         im1 = im1(1:2:<span class="keyword">end</span>,:)/2 + im1(2:2:<span class="keyword">end</span>,:)/2;
+0234         im1 = im1(:,1:2:end)/2 + im1(:,2:2:end)/2;
+0235       <span class="keyword">end</span>
+0236       <span class="keyword">switch</span> dOPS.oneImg
+0237        <span class="keyword">case</span> 1
+0238         RGB_img = max(0,min(1,(im1 - ran3(1))/(ran1(2)-ran1(1))));
+0239        <span class="keyword">case</span> 2
+0240         RGB_img = max(0,min(1,(im2 - ran2(1))/(ran2(2)-ran2(1))));
+0241        <span class="keyword">case</span> 3
+0242         RGB_img = max(0,min(1,(im3 - ran1(1))/(ran3(2)-ran3(1))));
+0243        <span class="keyword">otherwise</span> <span class="comment">% 4 or zero or anything really</span>
+0244         RGB_img(:,:,3) = max(0,min(1,(im1 - ran3(1))/(ran1(2)-ran1(1))));
+0245         RGB_img(:,:,2) = max(0,min(1,(im2 - ran2(1))/(ran2(2)-ran2(1))));
+0246         RGB_img(:,:,1) = max(0,min(1,(im3 - ran1(1))/(ran3(2)-ran3(1))));
+0247       <span class="keyword">end</span>
+0248     <span class="keyword">else</span>
+0249       <span class="comment">% Otherwise we make the 4-quarter mosaic</span>
+0250       <span class="keyword">while</span> size(im3,1) ~= imsiz
+0251         im3 = im3(1:2:<span class="keyword">end</span>,:)/2 + im3(2:2:<span class="keyword">end</span>,:)/2;
+0252         im3 = im3(:,1:2:end)/2 + im3(:,2:2:end)/2;
+0253         im2 = im2(1:2:<span class="keyword">end</span>,:)/2 + im2(2:2:<span class="keyword">end</span>,:)/2;
+0254         im2 = im2(:,1:2:end)/2 + im2(:,2:2:end)/2;
+0255         im1 = im1(1:2:<span class="keyword">end</span>,:)/2 + im1(2:2:<span class="keyword">end</span>,:)/2;
+0256         im1 = im1(:,1:2:end)/2 + im1(:,2:2:end)/2;
+0257       <span class="keyword">end</span>
+0258       RGB_img = zeros(imsiz*2,imsiz*2,3);
+0259       
+0260       <span class="comment">% for i = 1:3,</span>
+0261       RGB_img( 1:imsiz,          (imsiz+1):imsiz*2,1) = <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(<a href="../../tools/imresize.html" class="code" title="function imOut = imresize(imIn,imsizOut)">imresize</a>(im3,[1,1].*imsiz),ran1(1), ran1(2));
+0262       RGB_img( 1:imsiz,          1:imsiz,          2) = <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(<a href="../../tools/imresize.html" class="code" title="function imOut = imresize(imIn,imsizOut)">imresize</a>(im2,[1,1].*imsiz),ran2(1), ran2(2));
+0263       RGB_img((imsiz+1):imsiz*2, 1:imsiz,          3) = <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(<a href="../../tools/imresize.html" class="code" title="function imOut = imresize(imIn,imsizOut)">imresize</a>(im1,[1,1].*imsiz),ran3(1), ran3(2));
+0264       <span class="comment">% end</span>
+0265       
+0266       RGB_img((imsiz+1):imsiz*2,(imsiz+1):imsiz*2,3) = <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(<a href="../../tools/imresize.html" class="code" title="function imOut = imresize(imIn,imsizOut)">imresize</a>(im1,[imsiz,imsiz]), ran1(1), ran1(2));
+0267       RGB_img((imsiz+1):imsiz*2,(imsiz+1):imsiz*2,2) = <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(<a href="../../tools/imresize.html" class="code" title="function imOut = imresize(imIn,imsizOut)">imresize</a>(im2,[imsiz,imsiz]), ran2(1), ran2(2));
+0268       RGB_img((imsiz+1):imsiz*2,(imsiz+1):imsiz*2,1) = <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(<a href="../../tools/imresize.html" class="code" title="function imOut = imresize(imIn,imsizOut)">imresize</a>(im3,[imsiz,imsiz]), ran3(1), ran3(2));
+0269       
+0270     <span class="keyword">end</span>
+0271     <span class="comment">% Display the images in their row:</span>
+0272     subplot(dOPS.subplot4imgs(1),dOPS.subplot4imgs(2),dOPS.subplot4imgs(3)+jj-1)
+0273     PHs{7+jj} = imagesc(RGB_img);axis xy,set(gca,<span class="string">'xtick'</span>,[],<span class="string">'ytick'</span>,[])
+0274     Time_v = <a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>(num);
+0275     xlabel(sprintf(<span class="string">'%02d:%02d:%05.2f'</span>,Time_v(4:6)),<span class="string">'fontsize'</span>,dOPS.imrowFontsize)
+0276     <span class="keyword">if</span> nargout &gt; 1
+0277       imstack{1}(:,:,jj) = im1*calib(1)/vs.vres(vs.vsel);
+0278       imstack{2}(:,:,jj) = im2*calib(2)/vs.vres(vs.vsel);
+0279       imstack{3}(:,:,jj) = im3*calib(3)/vs.vres(vs.vsel);
+0280     <span class="keyword">end</span>
+0281   
+0282   <span class="keyword">end</span>
+0283   
+0284 <span class="keyword">end</span>
+0285 
+0286 <span class="keyword">if</span> ~isempty(dOPS.subplot4RGBkeo)
+0287   <span class="comment">% This usedto be: subplot(5,1,1)</span>
+0288   <span class="comment">% But now one has the option of sorting the subplots in almost</span>
+0289   <span class="comment">% whichever way one so desires...</span>
+0290   subplot(dOPS.subplot4RGBkeo(1),dOPS.subplot4RGBkeo(2),dOPS.subplot4RGBkeo(3))
+0291   PHs{1} = imagesc(timeV,yaxis,RGBoverlay);
+0292   axis xy
+0293   <span class="keyword">try</span> <a href="../../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>, <span class="keyword">end</span>
+0294   set(gca,<span class="string">'tickdir'</span>,<span class="string">'out'</span>,<span class="string">'xticklabel'</span>,<span class="string">''</span>)
+0295 <span class="keyword">end</span>
+0296 title(vs.vdir{vs.vsel}(1:8),<span class="string">'fontsize'</span>,15)
+0297 
+0298 colormap(gray)
+0299 
+0300 <span class="keyword">if</span> ~isempty(dOPS.subplot4ASK1keo)
+0301 
+0302   <span class="comment">%  This used to be: subplot(5,1,3)</span>
+0303   subplot(dOPS.subplot4ASK1keo(1),dOPS.subplot4ASK1keo(2),dOPS.subplot4ASK1keo(3))
+0304   PHs{3} = imagesc(timeV,yaxis,keos{1}*calib(1)/vs.vres(vs.vsel));axis xy
+0305   cblh(3) = <a href="../../tools/colorbar_labeled.html" class="code" title="function handle=colorbar_labeled(label,lg,varargin)">colorbar_labeled</a>([<span class="string">'I('</span>,filtStr{1},<span class="string">') (R)'</span>],<span class="string">'linear'</span>,<span class="string">'fontsize'</span>,12);
+0306   set(cblh(3),<span class="string">'position'</span>,get(cblh(3),<span class="string">'position'</span>)+[-0.01 0 0 0])
+0307   <span class="keyword">try</span> <a href="../../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>, <span class="keyword">end</span>
+0308   set(gca,<span class="string">'tickdir'</span>,<span class="string">'out'</span>,<span class="string">'xticklabel'</span>,<span class="string">''</span>,<span class="string">'box'</span>,<span class="string">'off'</span>)
+0309   
+0310 <span class="keyword">end</span>
+0311 <span class="keyword">if</span> ~isempty(dOPS.subplot4ASK2keo)
+0312   
+0313   <span class="comment">% This used to be: subplot(5,1,4)</span>
+0314   subplot(dOPS.subplot4ASK2keo(1),dOPS.subplot4ASK2keo(2),dOPS.subplot4ASK2keo(3))
+0315   PHs{4} = imagesc(timeV,yaxis,keos{2}*calib(2)/vs.vres(vs.vsel));axis xy
+0316   cblh(4) = <a href="../../tools/colorbar_labeled.html" class="code" title="function handle=colorbar_labeled(label,lg,varargin)">colorbar_labeled</a>([<span class="string">'I('</span>,filtStr{2},<span class="string">') (R)'</span>],<span class="string">'linear'</span>,<span class="string">'fontsize'</span>,12);
+0317   set(cblh(4),<span class="string">'position'</span>,get(cblh(4),<span class="string">'position'</span>)+[-0.01 0 0 0])
+0318   <span class="keyword">try</span> <a href="../../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>, <span class="keyword">end</span>
+0319   set(gca,<span class="string">'tickdir'</span>,<span class="string">'out'</span>,<span class="string">'xticklabel'</span>,<span class="string">''</span>)
+0320   
+0321 <span class="keyword">end</span>
+0322 
+0323 <span class="keyword">if</span> ~isempty(dOPS.subplot4ASK3keo)
+0324   
+0325   <span class="comment">% This used to be: subplot(5,1,5)</span>
+0326   subplot(dOPS.subplot4ASK3keo(1),dOPS.subplot4ASK3keo(2),dOPS.subplot4ASK3keo(3))
+0327   PHs{5} = imagesc(timeV,yaxis,keos{3}*calib(3)/vs.vres(vs.vsel));axis xy
+0328   cblh(5) = <a href="../../tools/colorbar_labeled.html" class="code" title="function handle=colorbar_labeled(label,lg,varargin)">colorbar_labeled</a>([<span class="string">'I('</span>,filtStr{3},<span class="string">') (R)'</span>],<span class="string">'linear'</span>,<span class="string">'fontsize'</span>,12);
+0329   set(cblh(5),<span class="string">'position'</span>,get(cblh(5),<span class="string">'position'</span>)+[-0.01 0 0 0])
+0330   <span class="keyword">try</span>
+0331     <a href="../../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>, 
+0332   <span class="keyword">catch</span>
+0333     t0MJS = <a href="ASK_time2MJS.html" class="code" title="function TT_MJS = ASK_time2MJS(date_vec)">ASK_time2MJS</a>(<a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>(fir));
+0334     dT = <a href="ASK_time2MJS.html" class="code" title="function TT_MJS = ASK_time2MJS(date_vec)">ASK_time2MJS</a>(<a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>(las)) - <a href="ASK_time2MJS.html" class="code" title="function TT_MJS = ASK_time2MJS(date_vec)">ASK_time2MJS</a>(<a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>(fir));
+0335     <a href="ASK_time_axis.html" class="code" title="function [ticks,tickn,tickv,tickm] = ASK_time_axis(StartTimeMJS,dTime,less)">ASK_time_axis</a>(t0MJS,dT);
+0336   <span class="keyword">end</span>
+0337   set(gca,<span class="string">'tickdir'</span>,<span class="string">'out'</span>)
+0338 
+0339 <span class="keyword">end</span>
+0340 t0MJS = <a href="ASK_time2MJS.html" class="code" title="function TT_MJS = ASK_time2MJS(date_vec)">ASK_time2MJS</a>(<a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>(fir));
+0341 dT = <a href="ASK_time2MJS.html" class="code" title="function TT_MJS = ASK_time2MJS(date_vec)">ASK_time2MJS</a>(<a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>(las)) - <a href="ASK_time2MJS.html" class="code" title="function TT_MJS = ASK_time2MJS(date_vec)">ASK_time2MJS</a>(<a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>(fir));
+0342 <a href="ASK_time_axis.html" class="code" title="function [ticks,tickn,tickv,tickm] = ASK_time_axis(StartTimeMJS,dTime,less)">ASK_time_axis</a>(t0MJS,dT);
+0343 
+0344 <span class="keyword">if</span> nargout
+0345   keos{1} = keos{1}*calib(1)/vs.vres(vs.vsel);
+0346   keos{2} = keos{2}*calib(2)/vs.vres(vs.vsel);
+0347   keos{3} = keos{3}*calib(3)/vs.vres(vs.vsel);
+0348 <span class="keyword">end</span>
+0349 
+0350 figure(CurrFig)
+0351 makeASKmenu = 1;
+0352 gcfCldr = get(gcf,<span class="string">'Children'</span>);
+0353 <span class="keyword">for</span> i1 = 1:length(gcfCldr)
+0354   <span class="keyword">if</span> strcmp(get(gcfCldr(i1),<span class="string">'type'</span>),<span class="string">'uimenu'</span>) &amp; strcmp(get(gcfCldr(i1),<span class="string">'label'</span>),<span class="string">'ASK'</span>)
+0355     makeASKmenu = 0;
+0356   <span class="keyword">end</span>
+0357 <span class="keyword">end</span>
+0358 <span class="keyword">if</span> makeASKmenu
+0359   mh = uimenu(gcf,<span class="string">'Label'</span>,<span class="string">'ASK'</span>);
+0360   eh1 = uimenu(mh,<span class="string">'Label'</span>,<span class="string">'Zoom in'</span>, <span class="string">'callback'</span>,<span class="string">'ASK_megablockviewer(1)'</span>);
+0361   eh2 = uimenu(mh,<span class="string">'Label'</span>,<span class="string">'Zoom out'</span>,<span class="string">'callback'</span>,<span class="string">'ASK_megablockviewer(2)'</span>);
+0362   eh3 = uimenu(mh,<span class="string">'Label'</span>,<span class="string">'Zoom All-out'</span>,<span class="string">'callback'</span>,<span class="string">'ASK_megablockviewer(3)'</span>);
+0363   cblStr = sprintf(<span class="string">'ASK_keo_autoprint([%d,%d,%d])'</span>,dOPS.subplot4ASK3keo);
+0364   eh4 = uimenu(mh,<span class="string">'Label'</span>,<span class="string">'Print-keos'</span>,<span class="string">'callback'</span>,cblStr);
+0365   clear <a href="ASK_megablockviewer.html" class="code" title="function ASK_megablockviewer(ASKaction)">ASK_megablockviewer</a>
+0366   <span class="comment">%eh5 = uimenu(mh,'Label','Forward', 'callback','ASK_megablockviewer(3)');</span>
+0367   <span class="comment">%eh6 = uimenu(mh,'Label','Backward','callback','ASK_megablockviewer(4)');</span>
+0368 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

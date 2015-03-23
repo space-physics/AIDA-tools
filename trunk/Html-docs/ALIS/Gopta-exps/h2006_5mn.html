@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of h2006_5mn</title>
+  <meta name="keywords" content="h2006_5mn">
+  <meta name="description" content="% to_gopta - how to">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html ALIS --><!-- menu.html Gopta-exps -->
+<h1>h2006_5mn
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>% to_gopta - how to</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% to_gopta - how to
+ The process of producing working experiment configuration files
+ for ALIS would be difficult for simple experiment - if one were
+ to use one and the same filter sequence for all stations. With
+ different filter sequences at different stations this would soon
+ turn into a typing nightmare. 
+
+ Foortunatelly there is help nearby when needed. The ALIS toolbox
+ includes a function to_gopta that rapidly produces experiment
+ files for each station - at the same time it even produces
+ documentation of the filter sequences for each station.
+ 
+ This example script used to make gopta experiment configuration
+ file for the ALIS-EISCAT-Heating campaign 200411</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>	TO_GOPTA - Produce ALIS gopta files (experiment control files)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% to_gopta - how to</span>
+0002 <span class="comment">% The process of producing working experiment configuration files</span>
+0003 <span class="comment">% for ALIS would be difficult for simple experiment - if one were</span>
+0004 <span class="comment">% to use one and the same filter sequence for all stations. With</span>
+0005 <span class="comment">% different filter sequences at different stations this would soon</span>
+0006 <span class="comment">% turn into a typing nightmare.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Foortunatelly there is help nearby when needed. The ALIS toolbox</span>
+0009 <span class="comment">% includes a function to_gopta that rapidly produces experiment</span>
+0010 <span class="comment">% files for each station - at the same time it even produces</span>
+0011 <span class="comment">% documentation of the filter sequences for each station.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% This example script used to make gopta experiment configuration</span>
+0014 <span class="comment">% file for the ALIS-EISCAT-Heating campaign 200411</span>
+0015 
+0016 <span class="comment">% Copyright Bjorn Gustavsson</span>
+0017 <span class="comment">%% Camera set-up</span>
+0018 <span class="comment">% In addition to the problem keeping the filter sequences in order</span>
+0019 <span class="comment">% and at the right place is the more serious problem with giving</span>
+0020 <span class="comment">% the cameras the right gain-tables. Therefore this table is vital</span>
+0021 <span class="comment">% to keep up to date:</span>
+0022 sn =            {<span class="string">'botn'</span> <span class="string">'kiruna'</span> <span class="string">'silki'</span> <span class="string">'tjautjas'</span> <span class="string">'abisko'</span> <span class="string">'optics lab'</span>};
+0023 mima_nr     =   [ 6      4        2         3        5         1];
+0024 GTfast =        {<span class="string">'1,0'</span>  <span class="string">'1,0'</span>    <span class="string">'1,3'</span>     <span class="string">'1,0'</span>    <span class="string">'1,3'</span>      <span class="string">'1,2'</span>};
+0025 GTlittlenoise = {<span class="string">'2,1'</span>  <span class="string">'2,1'</span>    <span class="string">'2,0'</span>     <span class="string">'2,1'</span>    <span class="string">'2,0'</span>      <span class="string">'1,2'</span>};
+0026 GTlownoise =    {<span class="string">'3,2'</span>  <span class="string">'3,2'</span>    <span class="string">'3,1'</span>     <span class="string">'3,2'</span>    <span class="string">'3,1'</span>      <span class="string">'2,3'</span>};
+0027 <span class="comment">%%</span>
+0028 <span class="comment">% |sn| is a cell-array with the station names. The first letter</span>
+0029 <span class="comment">% is used as identifier and one experiment file will be produced</span>
+0030 <span class="comment">% and put into a directory with capitalized first letter (A/, B/,</span>
+0031 <span class="comment">% ...).</span>
+0032 <span class="comment">% The GTxxx is the gain table entries for the cameras 1-6,</span>
+0033 <span class="comment">% GTlownoise is the slowest with the lowest read-out noise,</span>
+0034 <span class="comment">% typically 6-10 electrons, GTlittlenoise give a slightly larger</span>
+0035 <span class="comment">% read noise (10-12 e^-) and a faster read-out. While GTfast gives</span>
+0036 <span class="comment">% about 50 per cent faster read-out but a read noise of around</span>
+0037 <span class="comment">% 15-25 e^-. Also the camera sensitivity is decreasing for the</span>
+0038 <span class="comment">% faster read-outs.</span>
+0039 
+0040 <span class="comment">%% Start and stop times</span>
+0041 <span class="comment">% The start time should in most cases rather be seen as a</span>
+0042 <span class="comment">% syncronization time.</span>
+0043 Startstop = {<span class="string">'03:00:00'</span>    <span class="string">'03:00:00'</span>    <span class="string">'03:00:00'</span>
+0044              <span class="string">'06:30:00'</span>    <span class="string">'06:30:00'</span>    <span class="string">'06:30:00'</span>};
+0045 
+0046 <span class="comment">%% Filter sequence</span>
+0047 <span class="comment">% The real benefit of this procedure of producing experiment</span>
+0048 <span class="comment">% scripts is that it is easy to bend and permute any filter</span>
+0049 <span class="comment">% sequences. For this experiment all filter sequences are 8 items</span>
+0050 <span class="comment">% long.</span>
+0051 c_l1 =     [  9         9         9         9        9         9 ];
+0052 <span class="comment">%%</span>
+0053 <span class="comment">% And here are the individual filter sequences. One column for each</span>
+0054 <span class="comment">% station. This cell-array with filter names can of course be</span>
+0055 <span class="comment">% produced in any way, but for this relatively short one it is</span>
+0056 <span class="comment">% still doable to put it down explicitly.</span>
+0057 filter1 = {<span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'5577'</span>
+0058            <span class="string">'5577'</span>    <span class="string">'6300'</span>    <span class="string">'5577'</span>    <span class="string">'5577'</span>    <span class="string">'5577'</span>    <span class="string">'5577'</span>
+0059            <span class="string">'4278'</span>    <span class="string">'6300'</span>    <span class="string">'4278'</span>    <span class="string">'8446'</span>    <span class="string">'4278'</span>    <span class="string">'5577'</span>          
+0060            <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'5577'</span>
+0061            <span class="string">'8446'</span>    <span class="string">'6300'</span>    <span class="string">'4278'</span>    <span class="string">'8446'</span>    <span class="string">'8446'</span>    <span class="string">'5577'</span>
+0062            <span class="string">'5577'</span>    <span class="string">'6300'</span>    <span class="string">'5577'</span>    <span class="string">'4278'</span>    <span class="string">'5577'</span>    <span class="string">'5577'</span>
+0063            <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'6300'</span>    <span class="string">'5577'</span>
+0064            <span class="string">'4278'</span>    <span class="string">'6300'</span>    <span class="string">'4278'</span>    <span class="string">'4278'</span>    <span class="string">'4278'</span>    <span class="string">'5577'</span>
+0065            <span class="string">'8446'</span>    <span class="string">'6300'</span>    <span class="string">'5577'</span>    <span class="string">'5577'</span>    <span class="string">'8446'</span>    <span class="string">'5577'</span>
+0066           };
+0067 
+0068 <span class="comment">%% Exposure times</span>
+0069 <span class="comment">% Here the base exposure times are set to 1000 ms, uniformly, which</span>
+0070 <span class="comment">% might not be ideal under all circumstances, but for this</span>
+0071 <span class="comment">% experiment intended for HF-pump experiments intended for quiet</span>
+0072 <span class="comment">% ionospheric conditions this will of course give the best</span>
+0073 <span class="comment">% syncronisation. As any matlab variable these matrices might be</span>
+0074 <span class="comment">% modified at will.</span>
+0075 exptimes = [3000        3000  3000        3000        3000      3000
+0076             3000        3000  3000        3000        3000      3000
+0077             3000        3000  3000        3000        3000      3000
+0078             3000        3000  3000        3000        3000      3000
+0079             3000        3000  3000        3000        3000      3000
+0080             3000        3000  3000        3000        3000      3000
+0081             3000        3000  3000        3000        3000      3000
+0082             3000        3000  3000        3000        3000      3000
+0083             3000        3000  3000        3000        3000      3000];
+0084 <span class="comment">%% Interval times</span>
+0085 <span class="comment">% Again uniform all over - at 5 s.</span>
+0086 interv = [ 5     5     5     5    5     5
+0087            5     5     5     5    5     5
+0088            5     5     5     5    5     5
+0089            5     5     5     5    5     5
+0090            5     5     5     5    5     5
+0091            5     5     5     5    5     5
+0092            5     5     5     5    5     5
+0093            5     5     5     5    5     5
+0094            5     5     5     5    5     5];
+0095 
+0096 <span class="comment">%% Position</span>
+0097 <span class="comment">% When only one position if given that will be set asap, and then</span>
+0098 <span class="comment">% kept during the entire run.</span>
+0099 POS = {<span class="string">''</span> <span class="string">'heating'</span> <span class="string">'heating'</span> <span class="string">'heating'</span> <span class="string">'heating'</span> <span class="string">'heating'</span>};
+0100 
+0101 <span class="comment">%% Binning</span>
+0102 <span class="comment">% Here we set the camera binning factor to 4 by 4. Since camera</span>
+0103 <span class="comment">% reconfiguration takes some time, we regularly try to reduce the</span>
+0104 <span class="comment">% number of reconfigurations to keep the observational dead-time</span>
+0105 <span class="comment">% down.</span>
+0106 OPS1.binning = <span class="string">'4,4'</span>;
+0107 OPS1.observer =  <span class="string">'ALIS team 2006/7'</span>;
+0108 <span class="comment">%%</span>
+0109 <span class="comment">% Here we change all exposures to 2000ms</span>
+0110 exptimes(:) = 2000;
+0111 <span class="comment">%%</span>
+0112 <span class="comment">% In addition to the fields |binning| and |observer| the option</span>
+0113 <span class="comment">% struct keep |object|. Here we put a campaign subject relevant to</span>
+0114 <span class="comment">% the experiment file as well as a name for the filter cycle:</span>
+0115 OPS1.object =  <span class="string">'Heating-200411: filter cycle tge_4_16'</span>;
+0116 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'hKrOg2006_2p6x5mn'</span>,sn,Startstop,c_l1,filter1   ,POS,exptimes-400,interv,GTlittlenoise,OPS1);
+0117 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'hKrOg2006_3p6x6mn'</span>,sn,Startstop,c_l1,filter1   ,POS,exptimes-400+1000,interv+1,GTlittlenoise,OPS1);
+0118 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'hKrOg2006_2p8x5mn'</span>,sn,Startstop,c_l1,filter1   ,POS,exptimes-200,interv,GTlittlenoise,OPS1);
+0119 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'hKrOg2006_3p8x6mn'</span>,sn,Startstop,c_l1,filter1   ,POS,exptimes-200+1000,interv+1,GTlittlenoise,OPS1);
+0120 <span class="comment">% In addition to the experiment set-up files to_gopta will produce</span>
+0121 <span class="comment">% one .eps and one .png figure of the filter sequence with the same</span>
+0122 <span class="comment">% name as the experiment - makes it easier to check out what</span>
+0123 <span class="comment">% different experiments do at run-time.</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

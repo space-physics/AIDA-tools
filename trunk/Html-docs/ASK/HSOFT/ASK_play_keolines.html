@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_play_keolines</title>
+  <meta name="keywords" content="ASK_play_keolines">
+  <meta name="description" content="ASK_PLAY_KEOLINES -">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_play_keolines
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_PLAY_KEOLINES -</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function M = ASK_play_keolines(keos,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_PLAY_KEOLINES -</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>	ASK_BYTSCL - clip-n-scale matrix into [0-MAXOUT] from min(max_IN,max(min_IN,M_in))</li><li><a href="../../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>	imgs_smart_caxis - alpha-percentile setting of color-axis,</li><li><a href="../../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li><li><a href="../../tools/mplayer.html" class="code" title="function mplayer(varargin)">mplayer</a>	MPLAYER - movie player (avi or matlab movie)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function M = ASK_play_keolines(keos,OPS)</a>
+0002 <span class="comment">% ASK_PLAY_KEOLINES -</span>
+0003 <span class="comment">%</span>
+0004 
+0005 
+0006 
+0007 dOPS.intcut = 0.001;
+0008 dOPS.minints = [];
+0009 dOPS.instcales = [1,1,1];
+0010 <span class="keyword">if</span> nargin == 0
+0011   M = dOPS;
+0012   <span class="keyword">return</span>
+0013 <span class="keyword">end</span>
+0014 <span class="keyword">if</span> nargin &gt; 1
+0015   dOPS = <a href="../../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0016 <span class="keyword">end</span>
+0017 
+0018 Ix{1} = <a href="../../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(dOPS.intcut,keos{1});
+0019 Ix{2} = <a href="../../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(dOPS.intcut,keos{2});
+0020 Ix{3} = <a href="../../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(dOPS.intcut,keos{3});
+0021 lAXIS = [1 size(keos{1},1),<span class="keyword">...</span>
+0022          0,max([keos{1}(:)*dOPS.instcales(1);keos{2}(:)*dOPS.instcales(2);keos{3}(:)*dOPS.instcales(3)])];
+0023 
+0024 <span class="keyword">if</span> isempty(dOPS.minints)
+0025   dOPS.minints = [Ix{1}(1),Ix{2}(1),Ix{3}(1)];
+0026 <span class="keyword">end</span>
+0027 KeoRGB = cat(3,<a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(keos{1},dOPS.minints(1),Ix{1}(2),1),<span class="keyword">...</span>
+0028                <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(keos{2},dOPS.minints(2),Ix{2}(2),1),<span class="keyword">...</span>
+0029                <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(keos{3},dOPS.minints(3),Ix{3}(2),1));
+0030 
+0031 
+0032 subplot(2,1,1)
+0033 imagesc(KeoRGB)
+0034 axis xy
+0035 hold on
+0036 
+0037 <span class="keyword">for</span> i1 = 1:size(KeoRGB,2)
+0038   subplot(2,1,1)
+0039   ph = plot(i1*[1,1],[1,256],<span class="string">'g'</span>);
+0040   subplot(2,1,2)
+0041   PH(i1,:) = plot([dOPS.instcales(1)*keos{1}(:,i1),<span class="keyword">...</span>
+0042                    dOPS.instcales(2)*keos{2}(:,i1),<span class="keyword">...</span>
+0043                    dOPS.instcales(3)*keos{3}(:,i1)],<span class="string">'linewidth'</span>,3);
+0044   hold on
+0045   axis(lAXIS)
+0046   <span class="keyword">if</span> i1&gt;1
+0047     set(PH(i1-1,:),<span class="string">'linewidth'</span>,1)
+0048   <span class="keyword">end</span>
+0049   <span class="keyword">if</span> i1&gt;2
+0050     set(PH(i1-2,:),<span class="string">'linewidth'</span>,0.5)
+0051   <span class="keyword">end</span>
+0052   <span class="keyword">if</span> i1&gt;3
+0053     delete(PH(i1-3,:))
+0054   <span class="keyword">end</span>
+0055   drawnow
+0056   M(i1) = getframe(gcf);
+0057   delete(ph)
+0058 <span class="keyword">end</span>
+0059 <a href="../../tools/mplayer.html" class="code" title="function mplayer(varargin)">mplayer</a>(M)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

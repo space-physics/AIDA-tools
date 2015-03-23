@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of spec_cal_good_xy</title>
+  <meta name="keywords" content="spec_cal_good_xy">
+  <meta name="description" content="SPC_GOOD_XY - Get index to points in X,Y that are not scattered">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Spectral_cal -->
+<h1>spec_cal_good_xy
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SPC_GOOD_XY - Get index to points in X,Y that are not scattered</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function ii = spec_cal_good_xy(T,X,Y,dx,dy) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SPC_GOOD_XY - Get index to points in X,Y that are not scattered
+ [dx,dy] outside a parametrised curve (P_x,P_y) where P_X is cubic
+ least suare fitted polynomial to [T,X] cykl.
+   
+ Calling:
+ ii = spec_cal_good_xy(T,X,Y,dx,dy)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="spc_sort_out_the_bad_ones.html" class="code" title="function [GI1,GI2,GI3,GT,GX,GY,GFilter,BSC_NR,sortindx,uniqueFilters] = spc_sort_out_the_bad_ones(I_allt,all_t,all_filter,bad_times,sis,OPTS)">spc_sort_out_the_bad_ones</a>	SPC_SORT_OUT_THE_BAD_ONES  Remove stars that are "bad"</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ii = spec_cal_good_xy(T,X,Y,dx,dy)</a>
+0002 <span class="comment">% SPC_GOOD_XY - Get index to points in X,Y that are not scattered</span>
+0003 <span class="comment">% [dx,dy] outside a parametrised curve (P_x,P_y) where P_X is cubic</span>
+0004 <span class="comment">% least suare fitted polynomial to [T,X] cykl.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% ii = spec_cal_good_xy(T,X,Y,dx,dy)</span>
+0008 <span class="comment">%</span>
+0009 
+0010 
+0011 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0012 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0013 
+0014 J = find(X~=0);
+0015 
+0016 px = polyfit(T(J),X(J),3);
+0017 XP = polyval(px,T(J));
+0018 
+0019 py = polyfit(T(J),Y(J),3);
+0020 YP = polyval(py,T(J));
+0021 
+0022 ii = find(abs(X(J)-XP) &lt; dx &amp; <span class="keyword">...</span><span class="comment"> </span>
+0023       abs(Y(J)-YP) &lt; dy);
+0024 
+0025 plot(XP,YP,<span class="string">'r'</span>)
+0026 hold on
+0027 plot(X(J),Y(J),<span class="string">'g+'</span>)
+0028 plot(X(ii),Y(ii),<span class="string">'ko'</span>)
+0029 plot(X(J(ii)),Y(J(ii)),<span class="string">'bh'</span>)
+0030 axis([0 333 0 333])
+0031 drawnow
+0032 hold off</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

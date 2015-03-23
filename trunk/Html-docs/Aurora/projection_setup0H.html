@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of projection_setup0H</title>
+  <meta name="keywords" content="projection_setup0H">
+  <meta name="description" content="% 1 Optical parameters">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Aurora -->
+<h1>projection_setup0H
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% 1 Optical parameters</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% 1 Optical parameters
+ The ASK-optpar.mat file contains 3 structs with fields for the
+ azimuth and zenith angles in 256x256 matrices, together with
+ fields for the pixels in 256x256 matrices (in units: &quot;fraction of
+ image size&quot;). To do for Hanna: recalculate the ASK 1,2,3 az and
+ ze matrices, the ones here seems very shady, see below...</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/inv_project_img.html" class="code" title="function [xx,yy,zz] = inv_project_img(img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_img</a>	INV_PROJECT_IMG - maps an image IMG_IN to a plane.</li><li><a href="../Geometry/point_on_line.html" class="code" title="function  [r_out] = point_on_line(r_0,e_l,l)">point_on_line</a>	POINT_ON_LINE calculates the vector to a point R_OUT</li><li><a href="../Tomography/camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">camera_set_up_sc</a>	CAMERA_SET_UP_SC - Calculates the projection matrix from 3-D simple cubic grid</li><li><a href="../Tomography/fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>	FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</li><li><a href="../Tomography/sc_positioning.html" class="code" title="function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)">sc_positioning</a>	SC_POSITIONING - position voxels/base-functions in SC grid.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="runner4FlamingRays0.html" class="code" title="">runner4FlamingRays0</a>	% Example script: how to estimate electron energies in flaming rays</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% 1 Optical parameters</span>
+0002 <span class="comment">% The ASK-optpar.mat file contains 3 structs with fields for the</span>
+0003 <span class="comment">% azimuth and zenith angles in 256x256 matrices, together with</span>
+0004 <span class="comment">% fields for the pixels in 256x256 matrices (in units: &quot;fraction of</span>
+0005 <span class="comment">% image size&quot;). To do for Hanna: recalculate the ASK 1,2,3 az and</span>
+0006 <span class="comment">% ze matrices, the ones here seems very shady, see below...</span>
+0007 load 620120124193524r1-frame1.acc
+0008 load 620120124193524r1-frame3.acc
+0009 load 20120124193524r3-frame16.acc <span class="comment">% 20120124193524r3-frame16.acc</span>
+0010 optpASK1 = X620120124193524r1_frame1([7:14 6 end]);
+0011 <span class="comment">%           620120124193524r1-frame1.acc</span>
+0012 <span class="comment">% optpASK3 = X620120124193524r1_frame3([7:14 6 end]);</span>
+0013 optpASK3 = X20120124193524r3_frame16([7:14,6,end]);
+0014 <span class="comment">%           20120124193524r3-frame16.acc</span>
+0015 
+0016 
+0017 <span class="comment">%% 2 Geometry of the set-up</span>
+0018 <span class="comment">%% 2.1 ASK positions:</span>
+0019 r_0 = [0 0 0]; <span class="comment">% Jupp.</span>
+0020 <span class="comment">%%</span>
+0021 <span class="comment">% All calculations is done in a coordinate system where the</span>
+0022 <span class="comment">% position of the ASK instrument is in the origin.</span>
+0023 
+0024 <span class="comment">%% 4 Set-up of paraphenalia for the fast projction</span>
+0025 <span class="comment">% For the estimation of the ion drift we use the fast</span>
+0026 <span class="comment">% projection of 3-D volume emission distributions based on</span>
+0027 <span class="comment">% smooth base functions (Rydesater and Gustavsson 2001) - but here</span>
+0028 <span class="comment">% we use cos^2-shaped base functions.</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%% 4.1 Set up the geometry of the base function block</span>
+0031 ds = 1/6;  <span class="comment">% Size (full-width-at-half-max) of base function in km:</span>
+0032 sx = 68; <span class="comment">% Number of base functions in WEST-EAST direction</span>
+0033 sy = 78; <span class="comment">% Number of base functions in NORTH-SOUTH direction</span>
+0034 sz = 600;<span class="comment">% Number of base functions along the magnetic zenith direction</span>
+0035 <span class="comment">%%</span>
+0036 <span class="comment">% |ds| should preferably a little smaller and the number of</span>
+0037 <span class="comment">% elements a little bit bigger.</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%% 4.1.1 Magnetic field</span>
+0040 <span class="comment">% These might have to/should be adjusted to the accurate values at</span>
+0041 <span class="comment">% the observation site:</span>
+0042 ze_B = (90-82.28)*pi/180;   <span class="comment">% dip angle average 100&lt;-300</span>
+0043 az_B = (180+4.05)*pi/180; <span class="comment">% azimuth angle (clockwise from north)</span>
+0044 e_B = [sin(az_B)*sin(ze_B) cos(az_B)*sin(ze_B) cos(ze_B)];
+0045 <span class="comment">%% WARNING!</span>
+0046 <span class="comment">% The above values are obtained from the EISCAT we-site/or directly</span>
+0047 <span class="comment">% from http://omniweb.gsfc.nasa.gov/cgi/vitmo/vitmo_model.cgi</span>
+0048 <span class="comment">% for the time of interest. Unfortunately the nubers are calculated</span>
+0049 <span class="comment">% along the vertical - not tracing the magnetic field line!</span>
+0050 <span class="comment">% The below values are much closer to the unit vector of the</span>
+0051 <span class="comment">% magnetic &quot;field line&quot; that has the foot-point at the ESR site:</span>
+0052 e_b = [-0.013272     -0.14735        0.989];
+0053 e_B
+0054 e_b
+0055 e_B = e_b;
+0056 
+0057 <span class="comment">%% 4.1.2 Position of the lower south-west corner</span>
+0058 h0 = 200;
+0059 [xt1,yt1,zt1] = <a href="../Camera/inv_project_img.html" class="code" title="function [xx,yy,zz] = inv_project_img(img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_img</a>(ones(256,256),[0 0 0],optpASK1(9),optpASK1,[0 0 1],h0);
+0060 [xt3,yt3,zt3] = <a href="../Camera/inv_project_img.html" class="code" title="function [xx,yy,zz] = inv_project_img(img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_img</a>(ones(256,256),[0 0 0],optpASK3(9),optpASK3,[0 0 1],h0);
+0061 pcolor(xt1,yt1,-ones(256,256)),shading flat
+0062 ax = floor(axis);
+0063 r0_top = [ax([1,3]),h0];
+0064 r0 = <a href="../Geometry/point_on_line.html" class="code" title="function  [r_out] = point_on_line(r_0,e_l,l)">point_on_line</a>(r0_top,e_B,-110)+[0,2,0];
+0065 r0 = [-13.404      -11.176-1        91.21];
+0066 <span class="comment">% r0 = [-12.5          -17       90.997];</span>
+0067 <span class="comment">%% 4.1.3 Orientation of the block</span>
+0068 <span class="comment">% Unit vector along the first (x) second and third dimension of the</span>
+0069 <span class="comment">% base-function-block:</span>
+0070 e_p = e_B;
+0071 e_p(3) = 0;
+0072 <span class="comment">% e_1 should be perpendicular to eB and a vector in the meridional</span>
+0073 <span class="comment">% plane that is horisontal:</span>
+0074 e_1 = cross(e_B,e_p);
+0075 <span class="comment">% Lets make e_2 in the other direction of that initial horisontal</span>
+0076 <span class="comment">% vector, that way, if e_B was in the north-south plane e1 would be</span>
+0077 <span class="comment">% due East and e2 due north:</span>
+0078 e_2 = - e_p/norm(e_p);
+0079 e_1 = e_1/norm(e_1);
+0080 <span class="comment">% Scale e_3 so that its vertical component is 1, this makes up a</span>
+0081 <span class="comment">% skewed block of blobs with each layer shifted horisontally</span>
+0082 e_3 = e_B/e_B(3);
+0083 
+0084 dr3 = ds*e_3;
+0085 dr1 = ds*e_1;
+0086 dr2 = ds*e_2;
+0087 <span class="comment">%%</span>
+0088 <span class="comment">% Note that this makes up a block tilted to be || with magnetic</span>
+0089 <span class="comment">% zenith, and one other dimension perpendicular to the southward</span>
+0090 <span class="comment">% component and horizontal. Right?</span>
+0091 <span class="comment">%</span>
+0092 <span class="comment">% 4.2 Setting up the base function block and its location</span>
+0093 I3D0 = ones([sy sx sz]);
+0094 [r,X,Y,Z] = <a href="../Tomography/sc_positioning.html" class="code" title="function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)">sc_positioning</a>(r0,dr1,dr2,dr3,I3D0);
+0095 XfI = r0(1)+dr1(1)*(X-1)+dr2(1)*(Y-1)+dr3(1)*(Z-1);
+0096 YfI = r0(2)+dr1(2)*(X-1)+dr2(2)*(Y-1)+dr3(2)*(Z-1);
+0097 ZfI = r0(3)+dr1(3)*(X-1)+dr2(3)*(Y-1)+dr3(3)*(Z-1);
+0098 
+0099 <span class="comment">%% 4.3 Setting the number of layers</span>
+0100 <span class="comment">% nr_layers are the number of &quot;size groups&quot; we divide the 3-D block</span>
+0101 <span class="comment">% into, all blobbs within one &quot;size group&quot; will have the same sized</span>
+0102 <span class="comment">% foot-print in the images and will be projected-filtered together.</span>
+0103 nr_layers = 60;
+0104 <span class="comment">%% 4.4 Creating the station  structure</span>
+0105 <span class="comment">% Here we make the structure array holding the projection matrix,</span>
+0106 <span class="comment">% the filter kernels and size grouping of the base functions needed</span>
+0107 <span class="comment">% for the fast projection.</span>
+0108 <span class="comment">% Set up the stuff on the camera and 3D structure needed for the</span>
+0109 <span class="comment">% fast projection.</span>
+0110 optp{1} = optpASK1;
+0111 optp{2} = optpASK3;
+0112 
+0113 <span class="keyword">for</span> i1 = 1:2,
+0114   
+0115   rstn = [0 0 0];
+0116   imgsize = [256 256];
+0117   cmt = eye(3);
+0118   [stns(i1).uv,stns(i1).d,stns(i1).l_cl,stns(i1).bfk] = <a href="../Tomography/camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">camera_set_up_sc</a>(r,X,Y,Z,optp{i1},rstn,imgsize,nr_layers,cmt);
+0119   
+0120 <span class="keyword">end</span>
+0121 
+0122 <span class="comment">%% 4.5 Test that the fast projection works</span>
+0123 I3D0 = zeros(size(X));
+0124 I3D0(12,24,:) = 1.2;
+0125 I3D0(24,12,:) = 1;
+0126 I3D0(24,36,:) = 1.2;
+0127 I3D0(36,24,:) = 1.1;
+0128 I3D0(24,24,:) = 3.3;
+0129 
+0130 I3D0(12,12,:) = 1;
+0131 I3D0(12,36,:) = 1.2;
+0132 I3D0(36,12,:) = 1.1;
+0133 I3D0(36,36,:) = 1.3;
+0134 
+0135 I3D0(1,1,:) = 1.2;
+0136 I3D0(58,1,:) = 1;
+0137 I3D0(1,58,:) = 1.2;
+0138 I3D0(58,58,:) = 1.1;
+0139 
+0140 I3D0(:,:,1:4)   = .3;
+0141 I3D0(:,:,200:206) = 0.8;
+0142 I3D0(:) = 1;
+0143 I3D0(:) = 0;
+0144 I3D0(19,   17:51,    end) = 1;
+0145 I3D0(   58,17:51,    end) = 1;
+0146 I3D0(19:58,   51,    end) = 1;
+0147 I3D0(19:58,17,       end) = 1;
+0148 I3D0(19,   17:51,100    ) = 1;
+0149 I3D0(   58,17:51,100    ) = 1;
+0150 I3D0(19:58,   51,100    ) = 1;
+0151 I3D0(19:58,17,   100    ) = 1;
+0152 
+0153 I3D0(:) = 1;
+0154 
+0155 img_t{1} = <a href="../Tomography/fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(I3D0,<span class="keyword">...</span>
+0156                           stns(1).uv,stns(1).d,stns(1).l_cl,stns(1).bfk,256*[1 1],<span class="keyword">...</span>
+0157                           ones(256,256));
+0158 img_t{2} = <a href="../Tomography/fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(I3D0,<span class="keyword">...</span>
+0159                           stns(2).uv,stns(2).d,stns(2).l_cl,stns(2).bfk,256*[1 1],<span class="keyword">...</span>
+0160                           ones(256,256));
+0161 
+0162 subplot(2,2,1),imagesc(img_t{1})
+0163 subplot(2,2,2),imagesc(img_t{2})
+0164 
+0165 I3D0(:) = 0;
+0166 I3D0([1 end],1:6:<span class="keyword">end</span>,1:35:end) = 1;
+0167 I3D0(1:6:<span class="keyword">end</span>,[1 end],1:35:end) = 2;
+0168 
+0169 img_t{1} = <a href="../Tomography/fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(I3D0,<span class="keyword">...</span>
+0170                           stns(1).uv,stns(1).d,stns(1).l_cl,stns(1).bfk,256*[1 1],<span class="keyword">...</span>
+0171                           ones(256,256));
+0172 img_t{2} = <a href="../Tomography/fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(I3D0,<span class="keyword">...</span>
+0173                           stns(2).uv,stns(2).d,stns(2).l_cl,stns(2).bfk,256*[1 1],<span class="keyword">...</span>
+0174                           ones(256,256));
+0175 
+0176 
+0177 subplot(2,2,3),imagesc(img_t{1})
+0178 subplot(2,2,4),imagesc(img_t{2})
+0179 
+0180 
+0181 
+0182 <span class="comment">%% 6 Set the tomo_options - REMAINS!</span>
+0183 <span class="comment">%</span>
+0184 qb_ASK2 = [5 256-5 5 256-5];
+0185 
+0186 mod_ops.qb = [qb_ASK2];
+0187 
+0188 
+0189 fms_ops = optimset(<span class="string">'fminsearch'</span>);
+0190 fms_ops.Display = <span class="string">'iter'</span>;        
+0191 
+0192 
+0193 <span class="comment">% $$$ 20120124193457d1</span>
+0194 <span class="comment">% $$$ 20120124193457d2</span>
+0195 <span class="comment">% $$$ 20120124193457d3</span>
+0196 <span class="comment">% $$$</span>
+0197 <span class="comment">% $$$ 20120124193524r1</span>
+0198 <span class="comment">% $$$ 20120124193524r1w</span>
+0199 <span class="comment">% $$$ 20120124193524r2</span>
+0200 <span class="comment">% $$$ 20120124193524r2w</span>
+0201 <span class="comment">% $$$ 20120124193524r3</span>
+0202 <span class="comment">% $$$ 20120124193524r3w</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

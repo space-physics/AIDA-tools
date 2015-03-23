@@ -1,0 +1,1024 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sun_position</title>
+  <meta name="keywords" content="sun_position">
+  <meta name="description" content="sun = sun_position(time, location)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>sun_position
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>sun = sun_position(time, location)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function sun = sun_position(time, location) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> sun = sun_position(time, location)
+
+ This function compute the sun position (zenith and azimuth angle at the observer
+ location) as a function of the observer local time and position. 
+
+ It is an implementation of the algorithm presented by Reda et Andreas in:
+   Reda, I., Andreas, A. (2003) Solar position algorithm for solar
+   radiation application. National Renewable Energy Laboratory (NREL)
+   Technical report NREL/TP-560-34302. 
+ This document is avalaible at www.osti.gov/bridge
+
+ This algorithm is based on numerical approximation of the exact equations.
+ The authors of the original paper state that this algorithm should be
+ precise at +/- 0.0003 degrees. I have compared it to NOAA solar table
+ (http://www.srrb.noaa.gov/highlights/sunrise/azel.html) and to USNO solar
+ table (http://aa.usno.navy.mil/data/docs/AltAz.html) and found very good
+ correspondance (up to the precision of those tables), except for large
+ zenith angle, where the refraction by the atmosphere is significant 
+ (difference of about 1 degree). Note that in this code the correction 
+ for refraction in the atmosphere as been implemented for a temperature 
+ of 10C (283 kelvins) and a pressure of 1010 mbar. See the subfunction 
+ �sun_topocentric_zenith_angle_calculation� for a possible modification 
+ to explicitely model the effect of temperature and pressure as describe
+ in Reda &amp; Andreas (2003). 
+
+ Input parameters:
+   time: a structure that specify the time when the sun position is
+   calculated. 
+       time.year: year. Valid for [-2000, 6000]
+       time.month: month [1-12]
+       time.day: calendar day [1-31]
+       time.hour: local hour [0-23]
+       time.min: minute [0-59]
+       time.sec: second [0-59]
+       time.UTC: offset hour from UTC. Local time = Greenwich time + time.UTC
+   This input can also be passed using the Matlab time format ('dd-mmm-yyyy HH:MM:SS'). 
+   In that case, the time has to be specified as UTC time (time.UTC = 0)
+
+   location: a structure that specify the location of the observer
+       location.latitude: latitude (in degrees, north of equator is
+       positive)
+       location.longitude: longitude (in degrees, positive for east of
+       Greenwich)
+       location.altitude: altitude above mean sea level (in meters) 
+ 
+ Output parameters
+   sun: a structure with the calculated sun position
+       sun.zenith = zenith angle in degrees (angle from the vertical)
+       sun.azimuth = azimuth angle in degrees, eastward from the north. 
+ Only the sun zenith and azimuth angles are returned as output, but a lot
+ of other parameters are calculated that could also extracted as output of
+ this function. 
+
+ Exemple of use
+
+ location.longitude = -105.1786; 
+ location.latitude = 39.742476; 
+ location.altitude = 1830.14;
+ time.year = 2003;
+ time.month = 10;
+ time.day = 17;  
+ time.hour = 12;
+ time.min = 30;
+ time.sec = 30;
+ time.UTC = -7;
+
+ sun = sun_position(time, location);
+
+ sun = 
+ 
+      zenith: 50.1080438859849
+      azimuth: 194.341174010338
+
+ History
+   09/03/2004  Original creation by Vincent Roy (vincent.roy@drdc-rddc.gc.ca)
+   10/03/2004  Fixed a bug in julian_calculation subfunction (was
+               incorrect for year 1582 only), Vincent Roy
+   18/03/2004  Correction to the header (help display) only. No changes to
+               the code. (changed the �elevation� field in �location� structure
+               information to �altitude�), Vincent Roy
+   13/04/2004  Following a suggestion from Jody Klymak (jklymak@ucsd.edu),
+               allowed the 'time' input to be passed as a Matlab time string. 
+   22/08/2005  Following a bug report from Bruce Bowler
+               (bbowler@bigelow.org), modified the julian_calculation function. Bug
+               was 'MATLAB has allowed structure assignment  to a non-empty non-structure 
+               to overwrite the previous value.  This behavior will continue in this release, 
+               but will be an error in a  future version of MATLAB.  For advice on how to 
+               write code that  will both avoid this warning and work in future versions of 
+               MATLAB,  see R14SP2 Release Notes'. Script should now be
+               compliant with futher release of Matlab...</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Skymap/nutation.html" class="code" title="function [N] = nutation(Obsdate,utc)">nutation</a>	NUTATION calculates the nutation</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function julian = julian_calculation(t_input)</a></li><li><a href="#_sub2" class="code">function earth_heliocentric_position = earth_heliocentric_position_calculation(julian)</a></li><li><a href="#_sub3" class="code">function sun_geocentric_position = sun_geocentric_position_calculation(earth_heliocentric_position)</a></li><li><a href="#_sub4" class="code">function nutation = nutation_calculation(julian)</a></li><li><a href="#_sub5" class="code">function true_obliquity = true_obliquity_calculation(julian, nutation)</a></li><li><a href="#_sub6" class="code">function aberration_correction = abberation_correction_calculation(earth_heliocentric_position)</a></li><li><a href="#_sub7" class="code">function apparent_sun_longitude = apparent_sun_longitude_calculation(sun_geocentric_position, nutation, aberration_correction)</a></li><li><a href="#_sub8" class="code">function apparent_stime_at_greenwich = apparent_stime_at_greenwich_calculation(julian, nutation, true_obliquity)</a></li><li><a href="#_sub9" class="code">function sun_rigth_ascension = sun_rigth_ascension_calculation(apparent_sun_longitude, true_obliquity, sun_geocentric_position)</a></li><li><a href="#_sub10" class="code">function sun_geocentric_declination = sun_geocentric_declination_calculation(apparent_sun_longitude, true_obliquity, sun_geocentric_position)</a></li><li><a href="#_sub11" class="code">function observer_local_hour = observer_local_hour_calculation(apparent_stime_at_greenwich, location, sun_rigth_ascension)</a></li><li><a href="#_sub12" class="code">function topocentric_sun_position = topocentric_sun_position_calculate(earth_heliocentric_position, location, observer_local_hour, sun_rigth_ascension, sun_geocentric_declination)</a></li><li><a href="#_sub13" class="code">function topocentric_local_hour = topocentric_local_hour_calculate(observer_local_hour, topocentric_sun_position)</a></li><li><a href="#_sub14" class="code">function sun = sun_topocentric_zenith_angle_calculate(location, topocentric_sun_position, topocentric_local_hour)</a></li><li><a href="#_sub15" class="code">function var = set_to_range(var, min_interval, max_interval)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function sun = sun_position(time, location)</a>
+0002 <span class="comment">% sun = sun_position(time, location)</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% This function compute the sun position (zenith and azimuth angle at the observer</span>
+0005 <span class="comment">% location) as a function of the observer local time and position.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% It is an implementation of the algorithm presented by Reda et Andreas in:</span>
+0008 <span class="comment">%   Reda, I., Andreas, A. (2003) Solar position algorithm for solar</span>
+0009 <span class="comment">%   radiation application. National Renewable Energy Laboratory (NREL)</span>
+0010 <span class="comment">%   Technical report NREL/TP-560-34302.</span>
+0011 <span class="comment">% This document is avalaible at www.osti.gov/bridge</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% This algorithm is based on numerical approximation of the exact equations.</span>
+0014 <span class="comment">% The authors of the original paper state that this algorithm should be</span>
+0015 <span class="comment">% precise at +/- 0.0003 degrees. I have compared it to NOAA solar table</span>
+0016 <span class="comment">% (http://www.srrb.noaa.gov/highlights/sunrise/azel.html) and to USNO solar</span>
+0017 <span class="comment">% table (http://aa.usno.navy.mil/data/docs/AltAz.html) and found very good</span>
+0018 <span class="comment">% correspondance (up to the precision of those tables), except for large</span>
+0019 <span class="comment">% zenith angle, where the refraction by the atmosphere is significant</span>
+0020 <span class="comment">% (difference of about 1 degree). Note that in this code the correction</span>
+0021 <span class="comment">% for refraction in the atmosphere as been implemented for a temperature</span>
+0022 <span class="comment">% of 10C (283 kelvins) and a pressure of 1010 mbar. See the subfunction</span>
+0023 <span class="comment">% �sun_topocentric_zenith_angle_calculation� for a possible modification</span>
+0024 <span class="comment">% to explicitely model the effect of temperature and pressure as describe</span>
+0025 <span class="comment">% in Reda &amp; Andreas (2003).</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% Input parameters:</span>
+0028 <span class="comment">%   time: a structure that specify the time when the sun position is</span>
+0029 <span class="comment">%   calculated.</span>
+0030 <span class="comment">%       time.year: year. Valid for [-2000, 6000]</span>
+0031 <span class="comment">%       time.month: month [1-12]</span>
+0032 <span class="comment">%       time.day: calendar day [1-31]</span>
+0033 <span class="comment">%       time.hour: local hour [0-23]</span>
+0034 <span class="comment">%       time.min: minute [0-59]</span>
+0035 <span class="comment">%       time.sec: second [0-59]</span>
+0036 <span class="comment">%       time.UTC: offset hour from UTC. Local time = Greenwich time + time.UTC</span>
+0037 <span class="comment">%   This input can also be passed using the Matlab time format ('dd-mmm-yyyy HH:MM:SS').</span>
+0038 <span class="comment">%   In that case, the time has to be specified as UTC time (time.UTC = 0)</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%   location: a structure that specify the location of the observer</span>
+0041 <span class="comment">%       location.latitude: latitude (in degrees, north of equator is</span>
+0042 <span class="comment">%       positive)</span>
+0043 <span class="comment">%       location.longitude: longitude (in degrees, positive for east of</span>
+0044 <span class="comment">%       Greenwich)</span>
+0045 <span class="comment">%       location.altitude: altitude above mean sea level (in meters)</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">% Output parameters</span>
+0048 <span class="comment">%   sun: a structure with the calculated sun position</span>
+0049 <span class="comment">%       sun.zenith = zenith angle in degrees (angle from the vertical)</span>
+0050 <span class="comment">%       sun.azimuth = azimuth angle in degrees, eastward from the north.</span>
+0051 <span class="comment">% Only the sun zenith and azimuth angles are returned as output, but a lot</span>
+0052 <span class="comment">% of other parameters are calculated that could also extracted as output of</span>
+0053 <span class="comment">% this function.</span>
+0054 <span class="comment">%</span>
+0055 <span class="comment">% Exemple of use</span>
+0056 <span class="comment">%</span>
+0057 <span class="comment">% location.longitude = -105.1786;</span>
+0058 <span class="comment">% location.latitude = 39.742476;</span>
+0059 <span class="comment">% location.altitude = 1830.14;</span>
+0060 <span class="comment">% time.year = 2003;</span>
+0061 <span class="comment">% time.month = 10;</span>
+0062 <span class="comment">% time.day = 17;</span>
+0063 <span class="comment">% time.hour = 12;</span>
+0064 <span class="comment">% time.min = 30;</span>
+0065 <span class="comment">% time.sec = 30;</span>
+0066 <span class="comment">% time.UTC = -7;</span>
+0067 <span class="comment">%</span>
+0068 <span class="comment">% sun = sun_position(time, location);</span>
+0069 <span class="comment">%</span>
+0070 <span class="comment">% sun =</span>
+0071 <span class="comment">%</span>
+0072 <span class="comment">%      zenith: 50.1080438859849</span>
+0073 <span class="comment">%      azimuth: 194.341174010338</span>
+0074 <span class="comment">%</span>
+0075 <span class="comment">% History</span>
+0076 <span class="comment">%   09/03/2004  Original creation by Vincent Roy (vincent.roy@drdc-rddc.gc.ca)</span>
+0077 <span class="comment">%   10/03/2004  Fixed a bug in julian_calculation subfunction (was</span>
+0078 <span class="comment">%               incorrect for year 1582 only), Vincent Roy</span>
+0079 <span class="comment">%   18/03/2004  Correction to the header (help display) only. No changes to</span>
+0080 <span class="comment">%               the code. (changed the �elevation� field in �location� structure</span>
+0081 <span class="comment">%               information to �altitude�), Vincent Roy</span>
+0082 <span class="comment">%   13/04/2004  Following a suggestion from Jody Klymak (jklymak@ucsd.edu),</span>
+0083 <span class="comment">%               allowed the 'time' input to be passed as a Matlab time string.</span>
+0084 <span class="comment">%   22/08/2005  Following a bug report from Bruce Bowler</span>
+0085 <span class="comment">%               (bbowler@bigelow.org), modified the julian_calculation function. Bug</span>
+0086 <span class="comment">%               was 'MATLAB has allowed structure assignment  to a non-empty non-structure</span>
+0087 <span class="comment">%               to overwrite the previous value.  This behavior will continue in this release,</span>
+0088 <span class="comment">%               but will be an error in a  future version of MATLAB.  For advice on how to</span>
+0089 <span class="comment">%               write code that  will both avoid this warning and work in future versions of</span>
+0090 <span class="comment">%               MATLAB,  see R14SP2 Release Notes'. Script should now be</span>
+0091 <span class="comment">%               compliant with futher release of Matlab...</span>
+0092 
+0093 
+0094 <span class="comment">% 1. Calculate the Julian Day, and Century. Julian Ephemeris day, century</span>
+0095 <span class="comment">% and millenium are calculated using a mean delta_t of 33.184 seconds.</span>
+0096 julian = <a href="#_sub1" class="code" title="subfunction julian = julian_calculation(t_input)">julian_calculation</a>(time);
+0097 
+0098 <span class="comment">% 2. Calculate the Earth heliocentric longitude, latitude, and radius</span>
+0099 <span class="comment">% vector (L, B, and R)</span>
+0100 earth_heliocentric_position = <a href="#_sub2" class="code" title="subfunction earth_heliocentric_position = earth_heliocentric_position_calculation(julian)">earth_heliocentric_position_calculation</a>(julian);
+0101 
+0102 <span class="comment">% 3. Calculate the geocentric longitude and latitude</span>
+0103 sun_geocentric_position = <a href="#_sub3" class="code" title="subfunction sun_geocentric_position = sun_geocentric_position_calculation(earth_heliocentric_position)">sun_geocentric_position_calculation</a>(earth_heliocentric_position);
+0104 
+0105 <span class="comment">% 4. Calculate the nutation in longitude and obliquity (in degrees).</span>
+0106 <a href="../Skymap/nutation.html" class="code" title="function [N] = nutation(Obsdate,utc)">nutation</a> = <a href="#_sub4" class="code" title="subfunction nutation = nutation_calculation(julian)">nutation_calculation</a>(julian);
+0107 
+0108 <span class="comment">% 5. Calculate the true obliquity of the ecliptic (in degrees).</span>
+0109 true_obliquity = <a href="#_sub5" class="code" title="subfunction true_obliquity = true_obliquity_calculation(julian, nutation)">true_obliquity_calculation</a>(julian, <a href="../Skymap/nutation.html" class="code" title="function [N] = nutation(Obsdate,utc)">nutation</a>);
+0110 
+0111 <span class="comment">% 6. Calculate the aberration correction (in degrees)</span>
+0112 aberration_correction = <a href="#_sub6" class="code" title="subfunction aberration_correction = abberation_correction_calculation(earth_heliocentric_position)">abberation_correction_calculation</a>(earth_heliocentric_position);
+0113 
+0114 <span class="comment">% 7. Calculate the apparent sun longitude in degrees)</span>
+0115 apparent_sun_longitude = <a href="#_sub7" class="code" title="subfunction apparent_sun_longitude = apparent_sun_longitude_calculation(sun_geocentric_position, nutation, aberration_correction)">apparent_sun_longitude_calculation</a>(sun_geocentric_position, <a href="../Skymap/nutation.html" class="code" title="function [N] = nutation(Obsdate,utc)">nutation</a>, aberration_correction);
+0116 
+0117 <span class="comment">% 8. Calculate the apparent sideral time at Greenwich (in degrees)</span>
+0118 apparent_stime_at_greenwich = <a href="#_sub8" class="code" title="subfunction apparent_stime_at_greenwich = apparent_stime_at_greenwich_calculation(julian, nutation, true_obliquity)">apparent_stime_at_greenwich_calculation</a>(julian, <a href="../Skymap/nutation.html" class="code" title="function [N] = nutation(Obsdate,utc)">nutation</a>, true_obliquity);
+0119 
+0120 <span class="comment">% 9. Calculate the sun rigth ascension (in degrees)</span>
+0121 sun_rigth_ascension = <a href="#_sub9" class="code" title="subfunction sun_rigth_ascension = sun_rigth_ascension_calculation(apparent_sun_longitude, true_obliquity, sun_geocentric_position)">sun_rigth_ascension_calculation</a>(apparent_sun_longitude, true_obliquity, sun_geocentric_position);
+0122 
+0123 <span class="comment">% 10. Calculate the geocentric sun declination (in degrees). Positive or</span>
+0124 <span class="comment">% negative if the sun is north or south of the celestial equator.</span>
+0125 sun_geocentric_declination = <a href="#_sub10" class="code" title="subfunction sun_geocentric_declination = sun_geocentric_declination_calculation(apparent_sun_longitude, true_obliquity, sun_geocentric_position)">sun_geocentric_declination_calculation</a>(apparent_sun_longitude, true_obliquity, sun_geocentric_position);
+0126 
+0127 <span class="comment">% 11. Calculate the observer local hour angle (in degrees, westward from south).</span>
+0128 observer_local_hour = <a href="#_sub11" class="code" title="subfunction observer_local_hour = observer_local_hour_calculation(apparent_stime_at_greenwich, location, sun_rigth_ascension)">observer_local_hour_calculation</a>(apparent_stime_at_greenwich, location, sun_rigth_ascension);
+0129 
+0130 <span class="comment">% 12. Calculate the topocentric sun position (rigth ascension, declination and</span>
+0131 <span class="comment">% rigth ascension parallax in degrees)</span>
+0132 topocentric_sun_position = <a href="#_sub12" class="code" title="subfunction topocentric_sun_position = topocentric_sun_position_calculate(earth_heliocentric_position, location, observer_local_hour, sun_rigth_ascension, sun_geocentric_declination)">topocentric_sun_position_calculate</a>(earth_heliocentric_position, location, observer_local_hour, sun_rigth_ascension, sun_geocentric_declination);
+0133 
+0134 <span class="comment">% 13. Calculate the topocentric local hour angle (in degrees)</span>
+0135 topocentric_local_hour = <a href="#_sub13" class="code" title="subfunction topocentric_local_hour = topocentric_local_hour_calculate(observer_local_hour, topocentric_sun_position)">topocentric_local_hour_calculate</a>(observer_local_hour, topocentric_sun_position);
+0136 
+0137 <span class="comment">% 14. Calculate the topocentric zenith and azimuth angle (in degrees)</span>
+0138 sun = <a href="#_sub14" class="code" title="subfunction sun = sun_topocentric_zenith_angle_calculate(location, topocentric_sun_position, topocentric_local_hour)">sun_topocentric_zenith_angle_calculate</a>(location, topocentric_sun_position, topocentric_local_hour);
+0139 
+0140 
+0141 
+0142 
+0143 
+0144 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0145 <span class="comment">% Subfunction definitions %</span>
+0146 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0147 
+0148 
+0149 
+0150 
+0151 <a name="_sub1" href="#_subfunctions" class="code">function julian = julian_calculation(t_input)</a>
+0152 <span class="comment">% This function compute the julian day and julian century from the local</span>
+0153 <span class="comment">% time and timezone information. Ephemeris are calculated with a delta_t=0</span>
+0154 <span class="comment">% seconds.</span>
+0155 
+0156 <span class="comment">% If time input is a Matlab time string, extract the information from</span>
+0157 <span class="comment">% this string and create the structure as defined in the main header of</span>
+0158 <span class="comment">% this script.</span>
+0159 <span class="keyword">if</span> ~isstruct(t_input)
+0160     tt = datevec(t_input);
+0161     time.UTC=0;
+0162     time.year = tt(1);
+0163     time.month = tt(2);
+0164     time.day = tt(3);
+0165     time.hour = tt(4);
+0166     time.min = tt(5);
+0167     time.sec = tt(6);
+0168 <span class="keyword">else</span>
+0169     time = t_input;
+0170 <span class="keyword">end</span>
+0171 
+0172 <span class="keyword">if</span>(time.month == 1 | time.month == 2)
+0173     Y = time.year - 1;
+0174     M = time.month + 12;
+0175 <span class="keyword">else</span>
+0176     Y = time.year;
+0177     M = time.month; 
+0178 <span class="keyword">end</span>
+0179 ut_time = ((time.hour - time.UTC)/24) + (time.min/(60*24)) + (time.sec/(60*60*24)); <span class="comment">% time of day in UT time.</span>
+0180 D = time.day + ut_time; <span class="comment">% Day of month in decimal time, ex. 2sd day of month at 12:30:30UT, D=2.521180556</span>
+0181 
+0182 
+0183 <span class="comment">% In 1582, the gregorian calendar was adopted</span>
+0184 <span class="keyword">if</span>(time.year == 1582)
+0185     <span class="keyword">if</span>(time.month == 10)
+0186         <span class="keyword">if</span>(time.day &lt;= 4) <span class="comment">% The Julian calendar ended on October 4, 1582</span>
+0187             B = 0;    
+0188         <span class="keyword">elseif</span>(time.day &gt;= 15) <span class="comment">% The Gregorian calendar started on October 15, 1582</span>
+0189             A = floor(Y/100);
+0190             B = 2 - A + floor(A/4);    
+0191         <span class="keyword">else</span>
+0192             disp(<span class="string">'This date never existed!. Date automatically set to October 4, 1582'</span>);
+0193             time.month = 10;
+0194             time.day = 4; 
+0195             B = 0;
+0196         <span class="keyword">end</span>
+0197     <span class="keyword">elseif</span>(time.month&lt;10) <span class="comment">% Julian calendar</span>
+0198         B = 0;
+0199     <span class="keyword">else</span> <span class="comment">% Gregorian calendar</span>
+0200         A = floor(Y/100);
+0201         B = 2 - A + floor(A/4);
+0202     <span class="keyword">end</span>
+0203     
+0204 <span class="keyword">elseif</span>(time.year&lt;1582) <span class="comment">% Julian calendar</span>
+0205     B = 0;
+0206 <span class="keyword">else</span>
+0207     A = floor(Y/100); <span class="comment">% Gregorian calendar</span>
+0208     B = 2 - A + floor(A/4);
+0209 <span class="keyword">end</span>
+0210 
+0211 julian.day = floor(365.25*(Y+4716)) + floor(30.6001*(M+1)) + D + B - 1524.5;
+0212 
+0213 delta_t = 0; <span class="comment">% 33.184;</span>
+0214 julian.ephemeris_day = julian.day + (delta_t/86400);
+0215 
+0216 julian.century = (julian.day - 2451545) / 36525; 
+0217 
+0218 julian.ephemeris_century = (julian.ephemeris_day - 2451545) / 36525;
+0219 
+0220 julian.ephemeris_millenium = julian.ephemeris_century / 10; 
+0221 
+0222 
+0223 <a name="_sub2" href="#_subfunctions" class="code">function earth_heliocentric_position = earth_heliocentric_position_calculation(julian)</a>
+0224 <span class="comment">% This function compute the earth position relative to the sun, using</span>
+0225 <span class="comment">% tabulated values.</span>
+0226 
+0227 <span class="comment">% Tabulated values for the longitude calculation</span>
+0228 <span class="comment">% L terms  from the original code.</span>
+0229  L0_terms = [175347046.0 0 0  
+0230  3341656.0 4.6692568 6283.07585  
+0231  34894.0 4.6261 12566.1517  
+0232  3497.0 2.7441 5753.3849  
+0233  3418.0 2.8289 3.5231  
+0234  3136.0 3.6277 77713.7715  
+0235  2676.0 4.4181 7860.4194  
+0236  2343.0 6.1352 3930.2097  
+0237  1324.0 0.7425 11506.7698  
+0238  1273.0 2.0371 529.691  
+0239  1199.0 1.1096 1577.3435  
+0240  990 5.233 5884.927  
+0241  902 2.045 26.298
+0242  857 3.508 398.149  
+0243  780 1.179 5223.694  
+0244  753 2.533 5507.553  
+0245  505 4.583 18849.228  
+0246  492 4.205 775.523  
+0247  357 2.92 0.067  
+0248  317 5.849 11790.629  
+0249  284 1.899 796.298  
+0250  271 0.315 10977.079  
+0251  243 0.345 5486.778  
+0252  206 4.806 2544.314  
+0253  205 1.869 5573.143  
+0254  202 2.4458 6069.777  
+0255  156 0.833 213.299  
+0256  132 3.411 2942.463  
+0257  126 1.083 20.775  
+0258  115 0.645 0.98  
+0259  103 0.636 4694.003  
+0260  102 0.976 15720.839  
+0261  102 4.267 7.114  
+0262  99 6.21 2146.17  
+0263  98 0.68 155.42  
+0264  86 5.98 161000.69  
+0265  85 1.3 6275.96  
+0266  85 3.67 71430.7  
+0267  80 1.81 17260.15  
+0268  79 3.04 12036.46  
+0269  71 1.76 5088.63  
+0270  74 3.5 3154.69  
+0271  74 4.68 801.82  
+0272  70 0.83 9437.76  
+0273  62 3.98 8827.39  
+0274  61 1.82 7084.9  
+0275  57 2.78 6286.6  
+0276  56 4.39 14143.5  
+0277  56 3.47 6279.55  
+0278  52 0.19 12139.55  
+0279  52 1.33 1748.02  
+0280  51 0.28 5856.48  
+0281  49 0.49 1194.45  
+0282  41 5.37 8429.24  
+0283  41 2.4 19651.05  
+0284  39 6.17 10447.39  
+0285  37 6.04 10213.29  
+0286  37 2.57 1059.38  
+0287  36 1.71 2352.87  
+0288  36 1.78 6812.77  
+0289  33 0.59 17789.85  
+0290  30 0.44 83996.85  
+0291  30 2.74 1349.87  
+0292  25 3.16 4690.48];
+0293  
+0294 L1_terms = [628331966747.0 0 0  
+0295  206059.0 2.678235 6283.07585  
+0296  4303.0 2.6351 12566.1517  
+0297  425.0 1.59 3.523  
+0298  119.0 5.796 26.298  
+0299  109.0 2.966 1577.344  
+0300  93 2.59 18849.23  
+0301  72 1.14 529.69  
+0302  68 1.87 398.15  
+0303  67 4.41 5507.55  
+0304  59 2.89 5223.69  
+0305  56 2.17 155.42  
+0306  45 0.4 796.3  
+0307  36 0.47 775.52  
+0308  29 2.65 7.11  
+0309  21 5.34 0.98  
+0310  19 1.85 5486.78  
+0311  19 4.97 213.3  
+0312  17 2.99 6275.96  
+0313  16 0.03 2544.31  
+0314  16 1.43 2146.17  
+0315  15 1.21 10977.08
+0316  12 2.83 1748.02  
+0317  12 3.26 5088.63  
+0318  12 5.27 1194.45  
+0319  12 2.08 4694  
+0320  11 0.77 553.57  
+0321  10 1.3 3286.6  
+0322  10 4.24 1349.87  
+0323  9 2.7 242.73  
+0324  9 5.64 951.72  
+0325  8 5.3 2352.87  
+0326  6 2.65 9437.76  
+0327  6 4.67 4690.48]; 
+0328   
+0329 L2_terms = [52919.0 0 0  
+0330  8720.0 1.0721 6283.0758  
+0331  309.0 0.867 12566.152  
+0332  27 0.05 3.52  
+0333  16 5.19 26.3  
+0334  16 3.68 155.42  
+0335  10 0.76 18849.23  
+0336  9 2.06 77713.77  
+0337  7 0.83 775.52  
+0338  5 4.66 1577.34  
+0339  4 1.03 7.11  
+0340  4 3.44 5573.14  
+0341  3 5.14 796.3  
+0342  3 6.05 5507.55  
+0343  3 1.19 242.73  
+0344  3 6.12 529.69  
+0345  3 0.31 398.15  
+0346  3 2.28 553.57  
+0347  2 4.38 5223.69  
+0348  2 3.75 0.98];
+0349 
+0350 L3_terms =[289.0 5.844 6283.076  
+0351  35 0 0  
+0352  17 5.49 12566.15  
+0353  3 5.2 155.42  
+0354  1 4.72 3.52  
+0355  1 5.3 18849.23  
+0356  1 5.97 242.73]; 
+0357  
+0358 L4_terms = [114.0 3.142 0  
+0359  8 4.13 6283.08  
+0360  1 3.84 12566.15];
+0361 
+0362 L5_terms = [1 3.14 0]; 
+0363 
+0364 A0 = L0_terms(:,1);
+0365 B0 = L0_terms(:,2);
+0366 C0 = L0_terms(:,3);
+0367 
+0368 A1 = L1_terms(:,1);
+0369 B1 = L1_terms(:,2);
+0370 C1 = L1_terms(:,3);
+0371 
+0372 A2 = L2_terms(:,1);
+0373 B2 = L2_terms(:,2);
+0374 C2 = L2_terms(:,3);
+0375 
+0376 A3 = L3_terms(:,1);
+0377 B3 = L3_terms(:,2);
+0378 C3 = L3_terms(:,3);
+0379 
+0380 A4 = L4_terms(:,1);
+0381 B4 = L4_terms(:,2);
+0382 C4 = L4_terms(:,3);
+0383 
+0384 A5 = L5_terms(:,1);
+0385 B5 = L5_terms(:,2);
+0386 C5 = L5_terms(:,3);
+0387 
+0388 JME = julian.ephemeris_millenium;
+0389 
+0390 <span class="comment">% Compute the Earth Heliochentric longitude from the tabulated values.</span>
+0391 L0 = sum(A0 .* cos(B0 + (C0 * JME)));
+0392 L1 = sum(A1 .* cos(B1 + (C1 * JME)));
+0393 L2 = sum(A2 .* cos(B2 + (C2 * JME)));
+0394 L3 = sum(A3 .* cos(B3 + (C3 * JME)));
+0395 L4 = sum(A4 .* cos(B4 + (C4 * JME)));
+0396 L5 = A5 .* cos(B5 + (C5 * JME));
+0397 
+0398 
+0399 earth_heliocentric_position.longitude = (L0 + (L1 * JME) + (L2 * JME^2) + (L3 * JME^3) + (L4 * JME^4) + (L5 * JME^5)) / 1e8; 
+0400 <span class="comment">% Convert the longitude to degrees.</span>
+0401 earth_heliocentric_position.longitude = earth_heliocentric_position.longitude * 180/pi;
+0402 <span class="comment">% Limit the range to [0,360[;</span>
+0403 earth_heliocentric_position.longitude = <a href="#_sub15" class="code" title="subfunction var = set_to_range(var, min_interval, max_interval)">set_to_range</a>(earth_heliocentric_position.longitude, 0, 360);
+0404 
+0405 <span class="comment">% Tabulated values for the earth heliocentric latitude.</span>
+0406 <span class="comment">% B terms  from the original code.</span>
+0407  B0_terms = [280.0 3.199 84334.662  
+0408  102.0 5.422 5507.553  
+0409  80 3.88 5223.69  
+0410  44 3.7 2352.87  
+0411  32 4 1577.34]; 
+0412   
+0413 B1_terms = [9 3.9 5507.55  
+0414  6 1.73 5223.69]; 
+0415 
+0416 A0 = B0_terms(:,1);
+0417 B0 = B0_terms(:,2);
+0418 C0 = B0_terms(:,3);
+0419 
+0420 A1 = B1_terms(:,1);
+0421 B1 = B1_terms(:,2);
+0422 C1 = B1_terms(:,3);
+0423 
+0424 L0 = sum(A0 .* cos(B0 + (C0 * JME)));
+0425 L1 = sum(A1 .* cos(B1 + (C1 * JME)));
+0426 
+0427 earth_heliocentric_position.latitude = (L0 + (L1 * JME)) / 1e8; 
+0428 <span class="comment">% Convert the latitude to degrees.</span>
+0429 earth_heliocentric_position.latitude = earth_heliocentric_position.latitude * 180/pi;
+0430 <span class="comment">% Limit the range to [0,360];</span>
+0431 earth_heliocentric_position.latitude = <a href="#_sub15" class="code" title="subfunction var = set_to_range(var, min_interval, max_interval)">set_to_range</a>(earth_heliocentric_position.latitude, 0, 360);
+0432 
+0433 <span class="comment">% Tabulated values for radius vector.</span>
+0434 <span class="comment">% R terms from the original code</span>
+0435 R0_terms = [ 100013989.0 0 0  
+0436  1670700.0 3.0984635 6283.07585  
+0437  13956.0 3.05525 12566.1517   
+0438  3084.0 5.1985 77713.7715  
+0439  1628.0 1.1739 5753.3849  
+0440  1576.0 2.8469 7860.4194  
+0441  925.0 5.453 11506.77  
+0442  542.0 4.564 3930.21  
+0443  472.0 3.661 5884.927  
+0444  346.0 0.964 5507.553  
+0445  329.0 5.9 5223.694  
+0446  307.0 0.299 5573.143  
+0447  243.0 4.273 11790.629  
+0448  212.0 5.847 1577.344  
+0449  186.0 5.022 10977.079  
+0450  175.0 3.012 18849.228  
+0451  110.0 5.055 5486.778  
+0452  98 0.89 6069.78  
+0453  86 5.69 15720.84  
+0454  86 1.27 161000.69  
+0455  85 0.27 17260.15  
+0456  63 0.92 529.69  
+0457  57 2.01 83996.85  
+0458  56 5.24 71430.7  
+0459  49 3.25 2544.31  
+0460  47 2.58 775.52  
+0461  45 5.54 9437.76  
+0462  43 6.01 6275.96  
+0463  39 5.36 4694  
+0464  38 2.39 8827.39  
+0465  37 0.83 19651.05  
+0466  37 4.9 12139.55  
+0467  36 1.67 12036.46  
+0468  35 1.84 2942.46  
+0469  33 0.24 7084.9  
+0470  32 0.18 5088.63  
+0471  32 1.78 398.15  
+0472  28 1.21 6286.6  
+0473  28 1.9 6279.55  
+0474  26 4.59 10447.39];
+0475    
+0476 R1_terms = [ 103019.0 1.10749 6283.07585  
+0477  1721.0 1.0644 12566.1517  
+0478  702.0 3.142 0  
+0479  32 1.02 18849.23  
+0480  31 2.84 5507.55  
+0481  25 1.32 5223.69  
+0482  18 1.42 1577.34  
+0483  10 5.91 10977.08  
+0484  9 1.42 6275.96  
+0485  9 0.27 5486.78];
+0486   
+0487 R2_terms = [4359.0 5.7846 6283.0758  
+0488  124.0 5.579 12566.152  
+0489  12 3.14 0  
+0490  9 3.63 77713.77  
+0491  6 1.87 5573.14  
+0492  3 5.47 18849];
+0493  
+0494 R3_terms = [145.0 4.273 6283.076  
+0495  7 3.92 12566.15];
+0496 
+0497 R4_terms = [4 2.56 6283.08];
+0498 
+0499 
+0500 A0 = R0_terms(:,1);
+0501 B0 = R0_terms(:,2);
+0502 C0 = R0_terms(:,3);
+0503 
+0504 A1 = R1_terms(:,1);
+0505 B1 = R1_terms(:,2);
+0506 C1 = R1_terms(:,3);
+0507 
+0508 A2 = R2_terms(:,1);
+0509 B2 = R2_terms(:,2);
+0510 C2 = R2_terms(:,3);
+0511 
+0512 A3 = R3_terms(:,1);
+0513 B3 = R3_terms(:,2);
+0514 C3 = R3_terms(:,3);
+0515 
+0516 A4 = R4_terms(:,1);
+0517 B4 = R4_terms(:,2);
+0518 C4 = R4_terms(:,3);
+0519 
+0520 <span class="comment">% Compute the Earth heliocentric radius vector</span>
+0521 L0 = sum(A0 .* cos(B0 + (C0 * JME)));
+0522 L1 = sum(A1 .* cos(B1 + (C1 * JME)));
+0523 L2 = sum(A2 .* cos(B2 + (C2 * JME)));
+0524 L3 = sum(A3 .* cos(B3 + (C3 * JME)));
+0525 L4 = A4 .* cos(B4 + (C4 * JME));
+0526 
+0527 <span class="comment">% Units are in AU</span>
+0528 earth_heliocentric_position.radius = (L0 + (L1 * JME) + (L2 * JME^2) + (L3 * JME^3) + (L4 * JME^4)) / 1e8; 
+0529 
+0530 
+0531 
+0532 
+0533 
+0534 <a name="_sub3" href="#_subfunctions" class="code">function sun_geocentric_position = sun_geocentric_position_calculation(earth_heliocentric_position)</a>
+0535 <span class="comment">% This function compute the sun position relative to the earth.</span>
+0536 
+0537 sun_geocentric_position.longitude = earth_heliocentric_position.longitude + 180;
+0538 <span class="comment">% Limit the range to [0,360];</span>
+0539 sun_geocentric_position.longitude = <a href="#_sub15" class="code" title="subfunction var = set_to_range(var, min_interval, max_interval)">set_to_range</a>(sun_geocentric_position.longitude, 0, 360);
+0540 
+0541 sun_geocentric_position.latitude = -earth_heliocentric_position.latitude;
+0542 <span class="comment">% Limit the range to [0,360]</span>
+0543 sun_geocentric_position.latitude = <a href="#_sub15" class="code" title="subfunction var = set_to_range(var, min_interval, max_interval)">set_to_range</a>(sun_geocentric_position.latitude, 0, 360);
+0544 
+0545 
+0546 <a name="_sub4" href="#_subfunctions" class="code">function nutation = nutation_calculation(julian)</a>
+0547 <span class="comment">% This function compute the nutation in longtitude and in obliquity, in</span>
+0548 <span class="comment">% degrees.</span>
+0549 
+0550 <span class="comment">% All Xi are in degrees.</span>
+0551 JCE = julian.ephemeris_century;
+0552 
+0553 <span class="comment">% 1. Mean elongation of the moon from the sun</span>
+0554 p = [(1/189474) -0.0019142 445267.11148 297.85036];
+0555 <span class="comment">% X0 = polyval(p, JCE);</span>
+0556 X0 = p(1) * JCE^3 + p(2) * JCE^2 + p(3) * JCE + p(4); <span class="comment">% This is faster than polyval...</span>
+0557 
+0558 <span class="comment">% 2. Mean anomaly of the sun (earth)</span>
+0559 p = [-(1/300000) -0.0001603 35999.05034 357.52772];
+0560 <span class="comment">% X1 = polyval(p, JCE);</span>
+0561 X1 = p(1) * JCE^3 + p(2) * JCE^2 + p(3) * JCE + p(4); 
+0562 
+0563 <span class="comment">% 3. Mean anomaly of the moon</span>
+0564 p = [(1/56250) 0.0086972 477198.867398 134.96298];
+0565 <span class="comment">% X2 = polyval(p, JCE);</span>
+0566 X2 = p(1) * JCE^3 + p(2) * JCE^2 + p(3) * JCE + p(4); 
+0567 
+0568 <span class="comment">% 4. Moon argument of latitude</span>
+0569 p = [(1/327270) -0.0036825 483202.017538 93.27191];
+0570 <span class="comment">% X3 = polyval(p, JCE);</span>
+0571 X3 = p(1) * JCE^3 + p(2) * JCE^2 + p(3) * JCE + p(4); 
+0572 
+0573 <span class="comment">% 5. Longitude of the ascending node of the moon's mean orbit on the</span>
+0574 <span class="comment">% ecliptic, measured from the mean equinox of the date</span>
+0575 p = [(1/450000) 0.0020708 -1934.136261 125.04452];
+0576 <span class="comment">% X4 = polyval(p, JCE);</span>
+0577 X4 = p(1) * JCE^3 + p(2) * JCE^2 + p(3) * JCE + p(4); 
+0578 
+0579 <span class="comment">% Y tabulated terms from the original code</span>
+0580 Y_terms =  [0 0 0 0 1  
+0581  -2 0 0 2 2  
+0582  0 0 0 2 2  
+0583  0 0 0 0 2  
+0584  0 1 0 0 0  
+0585  0 0 1 0 0  
+0586  -2 1 0 2 2  
+0587  0 0 0 2 1  
+0588  0 0 1 2 2  
+0589  -2 -1 0 2 2  
+0590  -2 0 1 0 0  
+0591  -2 0 0 2 1  
+0592  0 0 -1 2 2  
+0593  2 0 0 0 0  
+0594  0 0 1 0 1  
+0595  2 0 -1 2 2  
+0596  0 0 -1 0 1  
+0597  0 0 1 2 1  
+0598  -2 0 2 0 0  
+0599  0 0 -2 2 1  
+0600  2 0 0 2 2  
+0601  0 0 2 2 2  
+0602  0 0 2 0 0  
+0603  -2 0 1 2 2  
+0604  0 0 0 2 0  
+0605  -2 0 0 2 0  
+0606  0 0 -1 2 1  
+0607  0 2 0 0 0  
+0608  2 0 -1 0 1  
+0609  -2 2 0 2 2  
+0610  0 1 0 0 1  
+0611  -2 0 1 0 1  
+0612  0 -1 0 0 1  
+0613  0 0 2 -2 0  
+0614  2 0 -1 2 1  
+0615  2 0 1 2 2  
+0616  0 1 0 2 2  
+0617  -2 1 1 0 0  
+0618  0 -1 0 2 2  
+0619  2 0 0 2 1  
+0620  2 0 1 0 0  
+0621  -2 0 2 2 2  
+0622  -2 0 1 2 1  
+0623  2 0 -2 0 1  
+0624  2 0 0 0 1  
+0625  0 -1 1 0 0  
+0626  -2 -1 0 2 1  
+0627  -2 0 0 0 1  
+0628  0 0 2 2 1  
+0629  -2 0 2 0 1  
+0630  -2 1 0 2 1  
+0631  0 0 1 -2 0  
+0632  -1 0 1 0 0  
+0633  -2 1 0 0 0  
+0634  1 0 0 0 0  
+0635  0 0 1 2 0  
+0636  0 0 -2 2 2  
+0637  -1 -1 1 0 0  
+0638  0 1 1 0 0  
+0639  0 -1 1 2 2  
+0640  2 -1 -1 2 2  
+0641  0 0 3 2 2  
+0642  2 -1 0 2 2];
+0643 
+0644 nutation_terms = [ -171996 -174.2 92025 8.9  
+0645  -13187 -1.6 5736 -3.1  
+0646  -2274 -0.2 977 -0.5  
+0647  2062 0.2 -895 0.5  
+0648  1426 -3.4 54 -0.1  
+0649  712 0.1 -7 0  
+0650  -517 1.2 224 -0.6  
+0651  -386 -0.4 200 0  
+0652  -301 0 129 -0.1  
+0653  217 -0.5 -95 0.3  
+0654  -158 0 0 0  
+0655  129 0.1 -70 0  
+0656  123 0 -53 0  
+0657  63 0 0 0  
+0658  63 0.1 -33 0  
+0659  -59 0 26 0  
+0660  -58 -0.1 32 0  
+0661  -51 0 27 0  
+0662  48 0 0 0  
+0663  46 0 -24 0  
+0664  -38 0 16 0  
+0665  -31 0 13 0  
+0666  29 0 0 0  
+0667  29 0 -12 0  
+0668  26 0 0 0  
+0669  -22 0 0 0  
+0670  21 0 -10 0  
+0671  17 -0.1 0 0  
+0672  16 0 -8 0  
+0673  -16 0.1 7 0  
+0674  -15 0 9 0  
+0675  -13 0 7 0  
+0676  -12 0 6 0  
+0677  11 0 0 0  
+0678  -10 0 5 0  
+0679  -8 0 3 0  
+0680  7 0 -3 0  
+0681  -7 0 0 0  
+0682  -7 0 3 0  
+0683  -7 0 3 0  
+0684  6 0 0 0  
+0685  6 0 -3 0  
+0686  6 0 -3 0  
+0687  -6 0 3 0  
+0688  -6 0 3 0  
+0689  5 0 0 0  
+0690  -5 0 3 0  
+0691  -5 0 3 0  
+0692  -5 0 3 0  
+0693  4 0 0 0  
+0694  4 0 0 0  
+0695  4 0 0 0  
+0696  -4 0 0 0  
+0697  -4 0 0 0  
+0698  -4 0 0 0  
+0699  3 0 0 0  
+0700  -3 0 0 0  
+0701  -3 0 0 0  
+0702  -3 0 0 0  
+0703  -3 0 0 0  
+0704  -3 0 0 0  
+0705  -3 0 0 0  
+0706  -3 0 0 0];
+0707 
+0708 <span class="comment">% Using the tabulated values, compute the delta_longitude and</span>
+0709 <span class="comment">% delta_obliquity.</span>
+0710 Xi = [X0
+0711     X1
+0712     X2
+0713     X3
+0714     X4];
+0715 
+0716 tabulated_argument = (Y_terms * Xi) * pi/180;
+0717 
+0718 delta_longitude = ((nutation_terms(:,1) + (nutation_terms(:,2) * JCE))) .* sin(tabulated_argument);
+0719 delta_obliquity = ((nutation_terms(:,3) + (nutation_terms(:,4) * JCE))) .* cos(tabulated_argument);
+0720 
+0721 <span class="comment">% Nutation in longitude</span>
+0722 nutation.longitude = sum(delta_longitude) / 36000000;
+0723 
+0724 <span class="comment">% Nutation in obliquity</span>
+0725 nutation.obliquity = sum(delta_obliquity) / 36000000;
+0726 
+0727 
+0728 
+0729 <a name="_sub5" href="#_subfunctions" class="code">function true_obliquity = true_obliquity_calculation(julian, nutation)</a>
+0730 <span class="comment">% This function compute the true obliquity of the ecliptic.</span>
+0731 
+0732 
+0733 p = [2.45 5.79 27.87 7.12 -39.05 -249.67 -51.38 1999.25 -1.55 -4680.93 84381.448];
+0734 <span class="comment">% mean_obliquity = polyval(p, julian.ephemeris_millenium/10);</span>
+0735 
+0736 U = julian.ephemeris_millenium/10;
+0737 mean_obliquity = p(1)*U^10 + p(2)*U^9 + p(3)*U^8 + p(4)*U^7 + p(5)*U^6 + p(6)*U^5 + p(7)*U^4 + p(8)*U^3 + p(9)*U^2 + p(10)*U + p(11);
+0738 
+0739 
+0740 true_obliquity = (mean_obliquity/3600) + nutation.obliquity;
+0741 
+0742 
+0743 <a name="_sub6" href="#_subfunctions" class="code">function aberration_correction = abberation_correction_calculation(earth_heliocentric_position)</a>
+0744 <span class="comment">% This function compute the aberration_correction, as a function of the</span>
+0745 <span class="comment">% earth-sun distance.</span>
+0746 
+0747 aberration_correction = -20.4898/(3600*earth_heliocentric_position.radius);
+0748 
+0749 
+0750 <a name="_sub7" href="#_subfunctions" class="code">function apparent_sun_longitude = apparent_sun_longitude_calculation(sun_geocentric_position, nutation, aberration_correction)</a>
+0751 <span class="comment">% This function compute the sun apparent longitude</span>
+0752 
+0753 apparent_sun_longitude = sun_geocentric_position.longitude + nutation.longitude + aberration_correction;
+0754 
+0755 
+0756 <a name="_sub8" href="#_subfunctions" class="code">function apparent_stime_at_greenwich = apparent_stime_at_greenwich_calculation(julian, nutation, true_obliquity)</a>
+0757 <span class="comment">% This function compute the apparent sideral time at Greenwich.</span>
+0758 
+0759 JD = julian.day;
+0760 JC = julian.century;
+0761 
+0762 <span class="comment">% Mean sideral time, in degrees</span>
+0763 mean_stime = 280.46061837 + (360.98564736629*(JD-2451545)) + (0.000387933*JC^2) - (JC^3/38710000);
+0764 
+0765 <span class="comment">% Limit the range to [0-360];</span>
+0766 mean_stime = <a href="#_sub15" class="code" title="subfunction var = set_to_range(var, min_interval, max_interval)">set_to_range</a>(mean_stime, 0, 360);
+0767 
+0768 apparent_stime_at_greenwich = mean_stime + (nutation.longitude * cos(true_obliquity * pi/180));
+0769 
+0770 
+0771 <a name="_sub9" href="#_subfunctions" class="code">function sun_rigth_ascension = sun_rigth_ascension_calculation(apparent_sun_longitude, true_obliquity, sun_geocentric_position)</a>
+0772 <span class="comment">% This function compute the sun rigth ascension.</span>
+0773 
+0774 argument_numerator = (sin(apparent_sun_longitude * pi/180) * cos(true_obliquity * pi/180)) - <span class="keyword">...</span>
+0775     (tan(sun_geocentric_position.latitude * pi/180) * sin(true_obliquity * pi/180));
+0776 argument_denominator = cos(apparent_sun_longitude * pi/180);
+0777 
+0778 sun_rigth_ascension = atan2(argument_numerator, argument_denominator) * 180/pi;
+0779 <span class="comment">% Limit the range to [0,360];</span>
+0780 sun_rigth_ascension = <a href="#_sub15" class="code" title="subfunction var = set_to_range(var, min_interval, max_interval)">set_to_range</a>(sun_rigth_ascension, 0, 360);
+0781 
+0782 
+0783 <a name="_sub10" href="#_subfunctions" class="code">function sun_geocentric_declination = sun_geocentric_declination_calculation(apparent_sun_longitude, true_obliquity, sun_geocentric_position)</a>
+0784 
+0785 argument = (sin(sun_geocentric_position.latitude * pi/180) * cos(true_obliquity * pi/180)) + <span class="keyword">...</span>
+0786     (cos(sun_geocentric_position.latitude * pi/180) * sin(true_obliquity * pi/180) * sin(apparent_sun_longitude * pi/180));
+0787 
+0788 sun_geocentric_declination = asin(argument) * 180/pi;
+0789 
+0790 <a name="_sub11" href="#_subfunctions" class="code">function observer_local_hour = observer_local_hour_calculation(apparent_stime_at_greenwich, location, sun_rigth_ascension)</a>
+0791 
+0792 observer_local_hour = apparent_stime_at_greenwich + location.longitude - sun_rigth_ascension;
+0793 <span class="comment">% Set the range to [0-360]</span>
+0794 observer_local_hour = <a href="#_sub15" class="code" title="subfunction var = set_to_range(var, min_interval, max_interval)">set_to_range</a>(observer_local_hour, 0, 360);
+0795 
+0796 
+0797 <a name="_sub12" href="#_subfunctions" class="code">function topocentric_sun_position = topocentric_sun_position_calculate(earth_heliocentric_position, location, observer_local_hour, sun_rigth_ascension, sun_geocentric_declination)</a>
+0798 <span class="comment">% This function compute the sun position (rigth ascension and declination)</span>
+0799 <span class="comment">% with respect to the observer local position at the Earth surface.</span>
+0800 
+0801 <span class="comment">% Equatorial horizontal parallax of the sun in degrees</span>
+0802 eq_horizontal_parallax = 8.794 / (3600 * earth_heliocentric_position.radius);
+0803 
+0804 <span class="comment">% Term u, used in the following calculations (in radians)</span>
+0805 u = atan(0.99664719 * tan(location.latitude * pi/180));
+0806 
+0807 <span class="comment">% Term x, used in the following calculations</span>
+0808 x = cos(u) + ((location.altitude/6378140) * cos(location.latitude * pi/180));
+0809 
+0810 <span class="comment">% Term y, used in the following calculations</span>
+0811 y = (0.99664719 * sin(u)) + ((location.altitude/6378140) * sin(location.latitude * pi/180));
+0812 
+0813 <span class="comment">% Parallax in the sun rigth ascension (in radians)</span>
+0814 nominator = -x * sin(eq_horizontal_parallax * pi/180) * sin(observer_local_hour * pi/180);
+0815 denominator = cos(sun_geocentric_declination * pi/180) - (x * sin(eq_horizontal_parallax * pi/180) * cos(observer_local_hour * pi/180));
+0816 sun_rigth_ascension_parallax = atan2(nominator, denominator);
+0817 <span class="comment">% Conversion to degrees.</span>
+0818 topocentric_sun_position.rigth_ascension_parallax = sun_rigth_ascension_parallax * 180/pi;
+0819 
+0820 <span class="comment">% Topocentric sun rigth ascension (in degrees)</span>
+0821 topocentric_sun_position.rigth_ascension = sun_rigth_ascension + (sun_rigth_ascension_parallax * 180/pi);
+0822 
+0823 <span class="comment">% Topocentric sun declination (in degrees)</span>
+0824 nominator = (sin(sun_geocentric_declination * pi/180) - (y*sin(eq_horizontal_parallax * pi/180))) * cos(sun_rigth_ascension_parallax);
+0825 denominator = cos(sun_geocentric_declination * pi/180) - (x*sin(eq_horizontal_parallax * pi/180)) * cos(observer_local_hour * pi/180);
+0826 topocentric_sun_position.declination = atan2(nominator, denominator) * 180/pi;
+0827 
+0828 
+0829 <a name="_sub13" href="#_subfunctions" class="code">function topocentric_local_hour = topocentric_local_hour_calculate(observer_local_hour, topocentric_sun_position)</a>
+0830 <span class="comment">% This function compute the topocentric local jour angle in degrees</span>
+0831 
+0832 topocentric_local_hour = observer_local_hour - topocentric_sun_position.rigth_ascension_parallax;
+0833 
+0834 
+0835 <a name="_sub14" href="#_subfunctions" class="code">function sun = sun_topocentric_zenith_angle_calculate(location, topocentric_sun_position, topocentric_local_hour)</a>
+0836 <span class="comment">% This function compute the sun zenith angle, taking into account the</span>
+0837 <span class="comment">% atmospheric refraction. A default temperature of 283K and a</span>
+0838 <span class="comment">% default pressure of 1010 mbar are used.</span>
+0839 
+0840 <span class="comment">% Topocentric elevation, without atmospheric refraction</span>
+0841 argument = (sin(location.latitude * pi/180) * sin(topocentric_sun_position.declination * pi/180)) + <span class="keyword">...</span>
+0842     (cos(location.latitude * pi/180) * cos(topocentric_sun_position.declination * pi/180) * cos(topocentric_local_hour * pi/180));
+0843 true_elevation = asin(argument) * 180/pi;
+0844 
+0845 <span class="comment">% Atmospheric refraction correction (in degrees)</span>
+0846 argument = true_elevation + (10.3/(true_elevation + 5.11));
+0847 refraction_corr = 1.02 / (60 * tan(argument * pi/180));
+0848 
+0849 <span class="comment">% For exact pressure and temperature correction, use this,</span>
+0850 <span class="comment">% with P the pressure in mbar amd T the temperature in Kelvins:</span>
+0851 <span class="comment">% refraction_corr = (P/1010) * (283/T) * 1.02 / (60 * tan(argument * pi/180));</span>
+0852 
+0853 <span class="comment">% Apparent elevation</span>
+0854 <span class="keyword">if</span>(true_elevation &gt; -5)
+0855     apparent_elevation = true_elevation + refraction_corr;
+0856 <span class="keyword">else</span>
+0857     apparent_elevation = true_elevation;
+0858 <span class="keyword">end</span>
+0859 
+0860 sun.zenith = 90 - apparent_elevation;
+0861 
+0862 <span class="comment">% Topocentric azimuth angle. The +180 conversion is to pass from astronomer</span>
+0863 <span class="comment">% notation (westward from south) to navigation notation (eastward from</span>
+0864 <span class="comment">% north);</span>
+0865 nominator = sin(topocentric_local_hour * pi/180);
+0866 denominator = (cos(topocentric_local_hour * pi/180) * sin(location.latitude * pi/180)) - <span class="keyword">...</span>
+0867     (tan(topocentric_sun_position.declination * pi/180) * cos(location.latitude * pi/180));
+0868 sun.azimuth = (atan2(nominator, denominator) * 180/pi) + 180;
+0869 <span class="comment">% Set the range to [0-360]</span>
+0870 sun.azimuth = <a href="#_sub15" class="code" title="subfunction var = set_to_range(var, min_interval, max_interval)">set_to_range</a>(sun.azimuth, 0, 360);
+0871 
+0872 
+0873 <span class="comment">% This function make sure the variable is in the specified range.</span>
+0874 <a name="_sub15" href="#_subfunctions" class="code">function var = set_to_range(var, min_interval, max_interval)</a>
+0875 
+0876 
+0877 <span class="comment">% if(var&gt;0)</span>
+0878 <span class="comment">%     var = var - max_interval * floor(var/max_interval);</span>
+0879 <span class="comment">% else</span>
+0880 <span class="comment">%     var = var - max_interval * ceil(var/max_interval);</span>
+0881 <span class="comment">% end</span>
+0882 <span class="comment">%</span>
+0883 <span class="comment">% if(var&lt;min_interval)</span>
+0884 <span class="comment">%     var = var + max_interval;</span>
+0885 <span class="comment">% end</span>
+0886 
+0887 var = var - max_interval * floor(var/max_interval);
+0888 
+0889 <span class="keyword">if</span>(var&lt;min_interval)
+0890     var = var + max_interval;
+0891 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

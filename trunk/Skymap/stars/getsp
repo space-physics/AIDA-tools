@@ -1,0 +1,78 @@
+#!/bin/csh -f
+#++++++++++++++++
+#.IDENTIFICATION getsp
+#.LANGUAGE       C_shell
+#.AUTHOR         Francois Ochsenbein <francois@astro.u-strasbg.fr>
+#.ENVIRONMENT    CDS Catalogues Service
+#.KEYWORDS       
+#.VERSION  1.0   14-Jan-1998: Creation
+#.VERSION  1.1   22-Jan-2001: 'echo' command is unusable -- use gawk
+#                       (too many variations between bash / csh / sh )
+#.PURPOSE        Find out the spectrophotometry for a HR star for
+#			Catalogue III/201 = Spectrophotometric Pulkovo Catalog
+#.COMMENTS       The program accepts the following arguments:
+#	Arg#1 (required): HR number
+#	Arg#2 (optional): contents of column "table" for the HR number
+#				from file "stars.dat"
+#----------------
+
+#### Check the number of arguments in the correct range.
+if (($#argv == 0) || ($#argv > 2)) then
+    echo "Usage: $0 HR_number [5|6|a|b]"
+    echo "       Print out the spectrophotometry for one star from file(s):"
+    echo "       table5.dat table6.dat table5a.dat table[56].dat"
+    exit 1
+endif
+
+#### Look in stars.dat, search for the table(s) with spectrophotometry
+set hr = $1 ; shift
+if ($#argv > 0) then
+    set t = $1; shift
+else
+    set  f = stars.dat
+    #fcat $f | awk '{hr=substr($0,1,4)+0; if(hr>'$hr') exit ;\
+    cat $f | awk '{hr=substr($0,1,4)+0; if(hr>'$hr') exit ;\
+         if (hr=='$hr') { t = substr($0,79,1) ; exit }} \
+         END {if(t=="") t = "*";  print t; exit}' > /tmp/g$$.hr
+    set t = `cat /tmp/g$$.hr`
+    /bin/rm -f /tmp/g$$.hr
+endif
+
+#### Transform the "table" column contents into table name(s)
+switch("$t")
+case "5":
+case "6":
+    set file = table$t.dat
+    breaksw
+case "a":
+    set file = table5a.dat
+    breaksw
+case "b":
+    set file = (table5.dat table6.dat)
+    breaksw
+default:
+    echo "****Table '$t' can't include star HR '$hr'"
+    exit 1
+endsw
+
+#### When called from vizExec, output in latex (htx)
+if ($?PATH_INFO) then
+    set tex = 1
+else
+    set tex = 0
+endif
+
+#### Print the wavelength and flux (Wavelength in col#1, flux in col#k)
+foreach f($file)
+    #fcat $f | gawk -v hr="$hr" -v f="$f" -v tex=$tex -v fg="FireBrick" '\
+    cat $f | gawk -v hr="$hr" -v f="$f" -v tex=$tex -v fg="FireBrick" '\
+     BEGIN{if (tex>0) { \
+      fmt= "\\section{Flux for star {\\fg{%s} HR %s} from file {\\tt %s}}\n";\
+      printf(fmt,fg,hr,f); print "\\begin{alltt}\n\\# nm   Flux(W/m2/m)" }\
+     else printf("# nm  Flux(W/m2/m) for star HR %s from file: %s\n",hr,f)}\
+     END{if(tex>0) print "\\end{alltt}\\hline"; else print ""}\
+     /^      /{if(k>1) exit ;\
+	 for(i=1; i<=NF; i++) { if ((k==0)&&($i=='$hr')) {k=i+1 ;next}}\
+      } { if (k>1) printf("%6s %s\n", $1, $k)}' | sed 's/ \./ 0./'
+end
+#######################################################################

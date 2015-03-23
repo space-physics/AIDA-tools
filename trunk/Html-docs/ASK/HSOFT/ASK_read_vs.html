@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_read_vs</title>
+  <meta name="keywords" content="ASK_read_vs">
+  <meta name="description" content="ASK_READ_VS -  the procedure to read the videoevent setup - the new version">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_read_vs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_READ_VS -  the procedure to read the videoevent setup - the new version</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function vs = ASK_read_vs(num,filename,quiet) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_READ_VS -  the procedure to read the videoevent setup - the new version
+   
+ Calling:
+   vs = ASK_read_vs(num,filename,quiet)
+ Input:
+   num      - index of selected event/camera
+   filename - optional char array of camera setup files. If not
+              given 'video_setup.txt' in the 'videodir' will be
+              used. 'videodir' is set in ASK_site_setup.m
+   quiet    - optional argument for supression of event summary
+              output. Either 1 or 'quiet' for supression.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>	ASK_TT_MJS - converts calendar date to modified Julian second</li><li><a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>	ASK_DAT2STR - convert a modified Julian second (mjs) to date string</li><li><a href="ASK_find_cnv.html" class="code" title="function cnv = ASK_find_cnv(mjs_time)">ASK_find_cnv</a>	ASK_FIND_CNV - get the cnv camera parameters for a specific time</li><li><a href="ASK_get_imcal.html" class="code" title="function ASK_get_imcal()">ASK_get_imcal</a>	ASK_GET_IMCAL - routine filling the imcal common block with</li><li><a href="ASK_read_cnvlut.html" class="code" title="function [cnv_t1,cnv_t2,cnv_data] = ASK_read_cnvlut(filename)">ASK_read_cnvlut</a>	ASK_READ_CNVLUT - reads the camera parameter lookup table</li><li><a href="ASK_site_setup.html" class="code" title="">ASK_site_setup</a>	at lora.phys.soton.ac.uk: videodir = '/stp/raid2/ask/data'; % Here it is OK to have!</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_bias.html" class="code" title="function delta = ASK_bias(file)">ASK_bias</a>	ASK_BIAS - returns the bias drift of of megablock, by measuring the</li><li><a href="ASK_make_askdark.html" class="code" title="function ASK_make_askdark(filename,flat)">ASK_make_askdark</a>	ASK_MAKE_ASKDARK - Script that creates darks or flats.</li><li><a href="ASK_overviewmaker.html" class="code" title="function MegaBlocksDone = ASK_overviewmaker(MegaBlocksDone,data_dir)">ASK_overviewmaker</a>	ASK_overviewmaker - Create mega-block overlayed-keogram for overview</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function vs = ASK_read_vs(num,filename,quiet)</a>
+0002 <span class="comment">% ASK_READ_VS -  the procedure to read the videoevent setup - the new version</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   vs = ASK_read_vs(num,filename,quiet)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%   num      - index of selected event/camera</span>
+0008 <span class="comment">%   filename - optional char array of camera setup files. If not</span>
+0009 <span class="comment">%              given 'video_setup.txt' in the 'videodir' will be</span>
+0010 <span class="comment">%              used. 'videodir' is set in ASK_site_setup.m</span>
+0011 <span class="comment">%   quiet    - optional argument for supression of event summary</span>
+0012 <span class="comment">%              output. Either 1 or 'quiet' for supression.</span>
+0013 
+0014 <span class="comment">% Modified from add_multi.pro</span>
+0015 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0016 <span class="comment">% GPL 3.0 or later applies</span>
+0017 
+0018 <span class="comment">%global hities % Does not seem to be used at all here?</span>
+0019 
+0020 <span class="keyword">global</span> vs <span class="comment">% WITH: vcam,vdir,vname,vmjs,vnf,vnl,vres,vftr,vlon,vlat,vcnv,dimx,dimy,vtyp,vflt,vdrk,vsel,vnstep</span>
+0021 
+0022 <a href="ASK_site_setup.html" class="code" title="">ASK_site_setup</a>
+0023 
+0024 vs.videodir = videodir;
+0025 vs.HDIR = HDIR;
+0026 
+0027 
+0028 <span class="keyword">if</span> nargin &gt; 1 &amp; ~isempty(filename)
+0029   
+0030   filenames = filename;
+0031   nev = size(filenames,1); <span class="comment">% number of events</span>
+0032   
+0033 <span class="keyword">else</span>
+0034   
+0035   [status,result] = system([<span class="string">'wc '</span>,fullfile(videodir,<span class="string">'video_setup.txt'</span>)]);
+0036   [a,COUNT,ERRMSG,NEXTINDEX] = sscanf(result,<span class="string">'%d %d %d %s'</span>);
+0037   nev = a(1);
+0038   filenames = <span class="string">''</span>;
+0039   fID = fopen(fullfile(videodir,<span class="string">'video_setup.txt'</span>),<span class="string">'r'</span>);
+0040   <span class="keyword">if</span> fID &gt; 0
+0041     <span class="keyword">while</span> ~feof(fID)
+0042       <span class="keyword">if</span> isempty(filenames)
+0043         filenames = fgetl(fID); <span class="comment">% readf, 1, filenames</span>
+0044       <span class="keyword">else</span>
+0045         filenames = str2mat(filenames,fgetl(fID)); <span class="comment">% readf, 1, filenames</span>
+0046       <span class="keyword">end</span>
+0047     <span class="keyword">end</span>
+0048     fclose(fID);
+0049   <span class="keyword">else</span>
+0050     error([<span class="string">'Could not open file: '</span>,fullfile(videodir,<span class="string">'video_setup.txt'</span>)])
+0051   <span class="keyword">end</span>
+0052   
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="keyword">if</span> nargin &lt; 3 | isempty(quiet)
+0056   quiet = 0;
+0057 <span class="keyword">else</span> 
+0058   quiet = 1;
+0059 <span class="keyword">end</span>
+0060 <span class="keyword">if</span> nargin &lt; 1 | isempty(num)
+0061   
+0062   <span class="keyword">if</span> ~quiet
+0063     disp(<span class="string">'read_setup  reads in settings for analysis of videodata'</span>)
+0064     disp(<span class="string">'            To select an event, pass its number as a '</span>)
+0065     disp(<span class="string">'            keyword: read_vs, num=1   '</span>)
+0066     disp(<span class="string">'The list of the events:'</span>)
+0067     disp(filenames)
+0068     disp(<span class="string">'Default is one (the first event)'</span>)
+0069     <span class="comment">%disp(' ADDED in JANUARY 2006')</span>
+0070     <span class="comment">%disp(' keyword filename - to specify the description filename')</span>
+0071   <span class="keyword">end</span>
+0072   vs.vsel = 1;
+0073   
+0074 <span class="keyword">else</span>
+0075   
+0076   vs.vsel = num;
+0077   quiet = 1;
+0078   
+0079 <span class="keyword">end</span>
+0080 
+0081 <span class="keyword">for</span> i1 = 1:nev,
+0082   <span class="keyword">if</span> ~quiet
+0083     disp(fullfile(videodir,<span class="string">'setup'</span>,filenames(i1,:)))
+0084   <span class="keyword">end</span>
+0085   fID = fopen(deblank(fullfile(videodir,<span class="string">'setup'</span>,filenames(i1,:))),<span class="string">'r'</span>);
+0086   str = fgetl(fID);
+0087   <span class="comment">% skipping the first line comment</span>
+0088   <span class="comment">% Get the camera name</span>
+0089   str = fgetl(fID);
+0090   vs.vcam{i1} = str;
+0091   <span class="comment">% Get the directory name</span>
+0092   str = fgetl(fID);
+0093   vs.vdir{i1} = str;
+0094   <span class="comment">% Get the file base name</span>
+0095   str = fgetl(fID);
+0096   vs.vname{i1} = str;
+0097   <span class="comment">% Get the start time of data-block</span>
+0098   YMDhmsms = fscanf(fID, <span class="string">'%f %f %f %f %f %f %f'</span>,7)';
+0099   YMDhmsms(6) = YMDhmsms(6) + YMDhmsms(7)/1000;
+0100   YMDhmsms = YMDhmsms(1:6);
+0101   mjs = <a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>(YMDhmsms);
+0102   vs.vmjs(i1) = mjs;
+0103   str = <a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>(mjs);
+0104   <span class="keyword">if</span> ~quiet
+0105     disp([num2str(i1),<span class="string">'     '</span>, filenames(i1,:),<span class="string">'      '</span>,str])
+0106   <span class="keyword">end</span>
+0107   <span class="comment">% first image number (and increment)</span>
+0108   fgets(fID);
+0109   qwe = str2num(fgets(fID));
+0110   vs.vnf(i1) = qwe(1);
+0111   vs.vnstep(i1) = 1;
+0112   <span class="keyword">if</span> length(qwe) &gt; 1
+0113     vs.vnstep(i1) = qwe(2);
+0114   <span class="keyword">end</span>
+0115   <span class="comment">% last image number</span>
+0116   nrFrames = fscanf(fID, <span class="string">'%f'</span>,1);
+0117   vs.vnl(i1) = nrFrames;
+0118   <span class="comment">% Temporal resolution</span>
+0119   dT = fscanf(fID, <span class="string">'%f\n'</span>,1);
+0120   vs.vres(i1) = dT;
+0121   <span class="comment">% Filter NAME (?!?)</span>
+0122   <span class="comment">% TODO: see if we can do with filter wavelength instead</span>
+0123   <span class="comment">% - nope, doesn't seem so: RG#NNN appears somewhere...</span>
+0124   str = fgetl(fID);
+0125   <span class="keyword">if</span> ~isempty(str2num(str))
+0126     <span class="comment">% vs.vftr{i1} = str2num(str);% fscanf(fID,'%f',1);</span>
+0127     vs.vftr{i1} = str;<span class="comment">% fscanf(fID,'%f',1);</span>
+0128   <span class="keyword">else</span>
+0129     vs.vftr{i1} = str;
+0130   <span class="keyword">end</span>
+0131   <span class="comment">% Latitude:</span>
+0132   lat = fscanf(fID, <span class="string">'%f'</span>,1);
+0133   vs.vlat(i1) = lat;
+0134   long = fscanf(fID, <span class="string">'%f'</span>,1);
+0135   vs.vlon(i1) = long;
+0136   
+0137   <span class="comment">% build/find Camera parameters</span>
+0138   str = fgetl(fID);
+0139   str = fgetl(fID);
+0140   <span class="comment">%</span>
+0141   <span class="comment">% Here there is two possibilities - either a description file, or</span>
+0142   <span class="comment">% a look-up table for conversion coefficients.</span>
+0143   <span class="comment">%</span>
+0144   [fP,fN,fExt] = fileparts(str);
+0145   <span class="keyword">if</span>  strcmp(fExt,<span class="string">'.lut'</span>)
+0146     [cnv_t1,cnv_t2,cnv_data] = <a href="ASK_read_cnvlut.html" class="code" title="function [cnv_t1,cnv_t2,cnv_data] = ASK_read_cnvlut(filename)">ASK_read_cnvlut</a>(fullfile(videodir,str));
+0147     conv = <a href="ASK_find_cnv.html" class="code" title="function cnv = ASK_find_cnv(mjs_time)">ASK_find_cnv</a>(mjs);
+0148   <span class="keyword">else</span>
+0149     fID2 = fopen(fullfile(videodir,str),<span class="string">'r'</span>);
+0150     conv = fscanf(fID2,<span class="string">'%f %f %f %f %f %f %f %f'</span>,1);
+0151     fclose(fID2);
+0152   <span class="keyword">end</span>
+0153   vs.vcnv(i1,:) = conv;
+0154   <span class="comment">% conversion coefficients are read in here...</span>
+0155   <span class="comment">% readf, 1, x, y</span>
+0156   x_y = fscanf(fID,<span class="string">'%f %f\n'</span>,2)';
+0157   vs.dimx(i1) = x_y(1);
+0158   vs.dimy(i1) = x_y(2);
+0159   str = fgetl(fID);
+0160   vs.vtyp{i1} = str;
+0161   str = fgetl(fID);
+0162   vs.vdrk{i1} = str;
+0163   str = fgetl(fID);
+0164   vs.vflt{i1} = str;
+0165   fclose(fID);
+0166 <span class="keyword">end</span>
+0167 <a href="ASK_get_imcal.html" class="code" title="function ASK_get_imcal()">ASK_get_imcal</a>;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

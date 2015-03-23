@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sbig</title>
+  <meta name="keywords" content="sbig">
+  <meta name="description" content="SBIG - reads files in SBIG image format,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>sbig
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SBIG - reads files in SBIG image format,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [hheader,data,obs,header] = sbig(fname,fixheader2fits) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SBIG - reads files in SBIG image format, 
+  the SBIG format is a fits like file format, the difference from
+  the fits format is that it has a 2048 bytes ascii format header
+  with different keywords than the fits standard.
+  
+ Calling:
+ [header,data,obs] = sbig(filename)
+ [header,data,obs] = sbig(filename,fixheader2fits)
+
+ INPUT:
+   FILENAME - file filename
+   FIXHEADER2FITS - [{1} | 0] translate or not translate the
+   keywords in the header to the fits standard keywords.
+ 
+ OUTPUT:
+   HEADER - primary sbig header, by default keys mapped to the
+            standard fits keywords.
+   DATA - first data block
+   OBS - Struct with meta-data, such as exposure time, time of
+         observation, filter...
+ 
+ Slightly adapted from readst9 by A. Senior Dept of C.S. Univ. of
+ Lancaster</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>	FITSFINDINHEADER finds string S in fitsheader H</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>	READ_IMG - reads image data and process header info.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [hheader,data,obs,header] = sbig(fname,fixheader2fits)</a>
+0002 <span class="comment">% SBIG - reads files in SBIG image format,</span>
+0003 <span class="comment">%  the SBIG format is a fits like file format, the difference from</span>
+0004 <span class="comment">%  the fits format is that it has a 2048 bytes ascii format header</span>
+0005 <span class="comment">%  with different keywords than the fits standard.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">% [header,data,obs] = sbig(filename)</span>
+0009 <span class="comment">% [header,data,obs] = sbig(filename,fixheader2fits)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% INPUT:</span>
+0012 <span class="comment">%   FILENAME - file filename</span>
+0013 <span class="comment">%   FIXHEADER2FITS - [{1} | 0] translate or not translate the</span>
+0014 <span class="comment">%   keywords in the header to the fits standard keywords.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% OUTPUT:</span>
+0017 <span class="comment">%   HEADER - primary sbig header, by default keys mapped to the</span>
+0018 <span class="comment">%            standard fits keywords.</span>
+0019 <span class="comment">%   DATA - first data block</span>
+0020 <span class="comment">%   OBS - Struct with meta-data, such as exposure time, time of</span>
+0021 <span class="comment">%         observation, filter...</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% Slightly adapted from readst9 by A. Senior Dept of C.S. Univ. of</span>
+0024 <span class="comment">% Lancaster</span>
+0025 
+0026 <span class="keyword">if</span> nargin &lt; 1
+0027   error(<span class="string">'Too few arguments: No filename'</span>)
+0028 <span class="keyword">end</span>
+0029 <span class="keyword">if</span> nargin == 1
+0030   fixheader2fits = 1;
+0031 <span class="keyword">end</span>
+0032 fname = deblank(fname);
+0033 fid = fopen(fname);
+0034 <span class="keyword">if</span> fid == -1
+0035   error(<span class="string">'Can''t open %s'</span>,fname);
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="comment">% read 2048-byte header block</span>
+0039 [header,c] = fread(fid,2048,<span class="string">'uchar=&gt;char'</span>);
+0040 <span class="keyword">if</span> c ~= 2048
+0041   error(<span class="string">'Error reading header of %s'</span>,fname);
+0042 <span class="keyword">end</span>
+0043 
+0044 <span class="comment">% parse header</span>
+0045 <span class="comment">% first separate out each line...</span>
+0046 k = 1;
+0047 <span class="comment">%TBR: hheader = header;</span>
+0048 <span class="keyword">while</span> 1
+0049   [H{k},c,err,next] = sscanf(header,<span class="string">'%[^\n\r]\n\r'</span>,1);
+0050   <span class="keyword">if</span> strcmp(H{k},<span class="string">'End'</span>)
+0051     <span class="keyword">break</span>;
+0052   <span class="keyword">end</span>
+0053   <span class="keyword">if</span>  ~isempty(err)
+0054     error(err);
+0055   <span class="keyword">end</span>
+0056   <span class="keyword">if</span> next&gt;length(header)
+0057     <span class="keyword">break</span>
+0058   <span class="keyword">end</span>
+0059   k = k+1;
+0060   header = header(next:end);
+0061 <span class="keyword">end</span>
+0062 hheader = header;
+0063 
+0064 <span class="comment">%  ... check it really is a camera image ...</span>
+0065 <span class="keyword">if</span> ~strcmp(H{1},<span class="string">'ST-9 Image'</span>)
+0066   error(<span class="string">'%s is not an uncompressed ST-9 image'</span>,fname);
+0067 <span class="keyword">end</span>
+0068 
+0069 <span class="comment">% ... and then convert each parameter line to a field in the output</span>
+0070 <span class="comment">% structure.</span>
+0071 
+0072 obs=[];
+0073 
+0074 <span class="keyword">for</span> k=2:length(H)-1
+0075   [par,c,err,next] = sscanf(H{k},<span class="string">'%s = '</span>,1);
+0076   par = lower(par);
+0077   val = H{k}(next:end);
+0078   obs = setfield(obs,par,val);
+0079 <span class="keyword">end</span>
+0080 
+0081 <span class="comment">% read image</span>
+0082 
+0083 ncols = str2num(obs.width);
+0084 nrows = str2num(obs.height);
+0085 nbits = ceil(log(str2num(obs.sat_level)+1)/log(2));
+0086 
+0087 <span class="keyword">switch</span> nbits
+0088  <span class="keyword">case</span> 16  
+0089   [data,c] = fread(fid,ncols*nrows,<span class="string">'uint16=&gt;uint16'</span>);
+0090  <span class="keyword">case</span> 8
+0091   [data,c] = fread(fid,ncols*nrows,<span class="string">'uint8=&gt;uint8'</span>);
+0092  <span class="keyword">otherwise</span>
+0093   error(<span class="string">'Can''t understand a %d-bit image'</span>,nbits);
+0094 <span class="keyword">end</span>
+0095 
+0096 <span class="keyword">if</span> c ~= ncols*nrows
+0097   error(<span class="string">'Error reading image in %s'</span>,fname);
+0098 <span class="keyword">end</span>
+0099 
+0100 <span class="comment">% image is stored in the file in row order with each row</span>
+0101 <span class="comment">% left-right.</span>
+0102 
+0103 data = reshape(double(data),ncols,nrows);
+0104 fclose(fid);
+0105 
+0106 <span class="keyword">if</span> fixheader2fits
+0107   
+0108   fid = fopen(fname);
+0109   curr_line = strtrim(fgets(fid));
+0110   byte_count = length(curr_line);
+0111   header = curr_line;
+0112   <span class="keyword">while</span> ~strcmp(curr_line(1:min(3,end)),<span class="string">'End'</span>)
+0113     curr_line = strtrim(fgets(fid));
+0114     header = str2mat(header,curr_line);
+0115     byte_count = byte_count+length(curr_line);
+0116   <span class="keyword">end</span>
+0117   
+0118   header = header(1:2:<span class="keyword">end</span>,:);
+0119   [j_h] = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(header,<span class="string">'height'</span>);
+0120   [j_w] = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(header,<span class="string">'width'</span>);
+0121   [j_d] = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(header,<span class="string">'date'</span>);
+0122   [j_t] = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(header(:,1:6),<span class="string">'time'</span>);
+0123   [j_e] = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(header(:,1:9),<span class="string">'Exposure '</span>);
+0124   [j_f] = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(header(:,1:9),<span class="string">'Filter'</span>);
+0125   [j_o] = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(header(:,1:9),<span class="string">'Observer'</span>);
+0126   [j_T] = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(header(:,1:6),<span class="string">'temperature'</span>);
+0127   date_obs = [<span class="string">'DATE-OBS= '</span>,datestr(header(j_d,length(<span class="string">'date'</span>)+3:end),29),<span class="string">'T'</span>,header(j_t,length(<span class="string">'time'</span>)+4:end)];
+0128   Header = <span class="string">'SIMPLE  =                    T'</span>;
+0129   Header = str2mat(Header,<span class="string">'BITPIX  =                   16'</span>);
+0130   Header = str2mat(Header,<span class="string">'NAXIS   =                    2'</span>);
+0131   Header = str2mat(Header,strrep(lower(header(j_h,:)),<span class="string">'height'</span>,<span class="string">'NAXIS1 '</span>));
+0132   Header = str2mat(Header,strrep(lower(header(j_w,:)),<span class="string">'width '</span>,<span class="string">'NAXIS2  '</span>));
+0133   Header = str2mat(Header,date_obs);
+0134   Header = str2mat(Header,strrep(lower(header(j_e,:)),<span class="string">'exposure '</span>,<span class="string">'EXPTIME '</span>));
+0135   Header = str2mat(Header,strrep(lower(header(j_f,:)),<span class="string">'filter'</span>,<span class="string">'FILTER '</span>));
+0136   Header = str2mat(Header,strrep(lower(header(j_T,:)),<span class="string">'temperature '</span>,<span class="string">'CCD-TEMP'</span>));
+0137   Header = str2mat(Header,strrep(header(j_o,:),<span class="string">'Observer '</span>,<span class="string">'OBSERVER'</span>));
+0138   header([j_d,j_e,j_f,j_h,j_o,j_T,j_t,j_w],:) = [];
+0139   header = str2mat(Header,header(2:<span class="keyword">end</span>,:));
+0140   fclose(fid);
+0141   
+0142 <span class="keyword">end</span>
+0143</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of err4FlamingRays</title>
+  <meta name="keywords" content="err4FlamingRays">
+  <meta name="description" content="1        2    3    4      5   6   7   8    9 0           11    12">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Aurora -->
+<h1>err4FlamingRays
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>1        2    3    4      5   6   7   8    9 0           11    12</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function res = err4FlamingRays(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">                                1        2    3    4      5   6   7   8    9 0           11    12
+ errDeParallax - error function for estimating electron spectra
+ from auroral arcs seen of magnetic zenith
+
+ Calling:
+   res = err4FlamingRays(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)
+ Input:
+  Par            - varying parameters
+  var_pars       - indices of varying parameters into the full
+                   parameter array par0
+  par0           - full parameter array. ### MORE!
+  stns           - struct describing geomertic part of image
+                   projection tailored for fastprojection, see
+                   camera_set_up_sc and fastprojection, and
+                   TOMO20080305NewBeginnings for more details.
+  ImRois         - cell array (same size as stns) with binary
+                   &quot;region of interest&quot; matrices, with 1 for the
+                   regions surrounding the auroral rays in the
+                   corresponding images of stns
+  Z3D            - 3-D matrix with altitudes of blob centres, as
+                   used for setting up the stns structs [ny,nx,nz].
+  x2D            - west-east horizontal coordinates for gound
+                   plane of 3-D block-of-blobs.
+  y2D            - south-north horizontal coordinates for gound
+                   plane of 3-D block-of-blobs.
+  Ie2H           - Cell array {nLambda x 1} with projection matrices
+                   from electron spectra to altitude variation of
+                   volume emission rate each cell element: [nZ x nE]
+                   preferably calculated on a far denser grid than
+                   Z3D and then averaged to the altitude
+                   resolution of Z3D with cos^2 weights.
+  E              - Array of energies for Ie2H{i1}(i2,:). Assumed
+                   to be keV.
+
+
+ More details:
+  * The function can calculate the volume emission rate distribution
+  from multiple rays of precipitation - in case it is difficult to
+  isolate one ray well. This is done by giving PAR0 for more than
+  one ray (n x 10 parameters/ray)
+  * The function does not include any
+  contribution from diffuse background aurora so that should be
+  done to the images beforehand.
+  * In this function it is way preferable to have a skewed
+  horizontal 3-D grid.
+  * The horisontal intensity variation of a ray is calculated
+  relative to its footprint centres.
+  * another tedious procedure will be to make the
+  region-of-interest matrices. That on the other hand I think will
+  be relatively simple with inpolygon after ginput-ing points of
+  the polygon bounding/surrounding the ray.
+  * The function should be minimised with fminsearch/fminsearchbnd
+  * To speed things up the optimal parameters for one time-step
+  can/should be used as start parameters for the next time-step.
+  * The main problem will be to make good start guesses for the
+  parameters. More on this later.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Tomography/fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>	FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="runner4FlamingRays.html" class="code" title="function Ibest = runner4FlamingRays(indices2run,Keos,IstartGuesses,Ibestest,trmtr2Dto1D,A1Z,A2Z,E,Y,Z,OPS)">runner4FlamingRays</a>	runner4FlamingRays - Estimate electron precipitation variation with E and Y</li><li><a href="runner4FlamingRays0.html" class="code" title="">runner4FlamingRays0</a>	% Example script: how to estimate electron energies in flaming rays</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function res = err4FlamingRays(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)</a>
+0002 <span class="comment">%                                1        2    3    4      5   6   7   8    9 0           11    12</span>
+0003 <span class="comment">% errDeParallax - error function for estimating electron spectra</span>
+0004 <span class="comment">% from auroral arcs seen of magnetic zenith</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%   res = err4FlamingRays(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%  Par            - varying parameters</span>
+0010 <span class="comment">%  var_pars       - indices of varying parameters into the full</span>
+0011 <span class="comment">%                   parameter array par0</span>
+0012 <span class="comment">%  par0           - full parameter array. ### MORE!</span>
+0013 <span class="comment">%  stns           - struct describing geomertic part of image</span>
+0014 <span class="comment">%                   projection tailored for fastprojection, see</span>
+0015 <span class="comment">%                   camera_set_up_sc and fastprojection, and</span>
+0016 <span class="comment">%                   TOMO20080305NewBeginnings for more details.</span>
+0017 <span class="comment">%  ImRois         - cell array (same size as stns) with binary</span>
+0018 <span class="comment">%                   &quot;region of interest&quot; matrices, with 1 for the</span>
+0019 <span class="comment">%                   regions surrounding the auroral rays in the</span>
+0020 <span class="comment">%                   corresponding images of stns</span>
+0021 <span class="comment">%  Z3D            - 3-D matrix with altitudes of blob centres, as</span>
+0022 <span class="comment">%                   used for setting up the stns structs [ny,nx,nz].</span>
+0023 <span class="comment">%  x2D            - west-east horizontal coordinates for gound</span>
+0024 <span class="comment">%                   plane of 3-D block-of-blobs.</span>
+0025 <span class="comment">%  y2D            - south-north horizontal coordinates for gound</span>
+0026 <span class="comment">%                   plane of 3-D block-of-blobs.</span>
+0027 <span class="comment">%  Ie2H           - Cell array {nLambda x 1} with projection matrices</span>
+0028 <span class="comment">%                   from electron spectra to altitude variation of</span>
+0029 <span class="comment">%                   volume emission rate each cell element: [nZ x nE]</span>
+0030 <span class="comment">%                   preferably calculated on a far denser grid than</span>
+0031 <span class="comment">%                   Z3D and then averaged to the altitude</span>
+0032 <span class="comment">%                   resolution of Z3D with cos^2 weights.</span>
+0033 <span class="comment">%  E              - Array of energies for Ie2H{i1}(i2,:). Assumed</span>
+0034 <span class="comment">%                   to be keV.</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">% More details:</span>
+0038 <span class="comment">%  * The function can calculate the volume emission rate distribution</span>
+0039 <span class="comment">%  from multiple rays of precipitation - in case it is difficult to</span>
+0040 <span class="comment">%  isolate one ray well. This is done by giving PAR0 for more than</span>
+0041 <span class="comment">%  one ray (n x 10 parameters/ray)</span>
+0042 <span class="comment">%  * The function does not include any</span>
+0043 <span class="comment">%  contribution from diffuse background aurora so that should be</span>
+0044 <span class="comment">%  done to the images beforehand.</span>
+0045 <span class="comment">%  * In this function it is way preferable to have a skewed</span>
+0046 <span class="comment">%  horizontal 3-D grid.</span>
+0047 <span class="comment">%  * The horisontal intensity variation of a ray is calculated</span>
+0048 <span class="comment">%  relative to its footprint centres.</span>
+0049 <span class="comment">%  * another tedious procedure will be to make the</span>
+0050 <span class="comment">%  region-of-interest matrices. That on the other hand I think will</span>
+0051 <span class="comment">%  be relatively simple with inpolygon after ginput-ing points of</span>
+0052 <span class="comment">%  the polygon bounding/surrounding the ray.</span>
+0053 <span class="comment">%  * The function should be minimised with fminsearch/fminsearchbnd</span>
+0054 <span class="comment">%  * To speed things up the optimal parameters for one time-step</span>
+0055 <span class="comment">%  can/should be used as start parameters for the next time-step.</span>
+0056 <span class="comment">%  * The main problem will be to make good start guesses for the</span>
+0057 <span class="comment">%  parameters. More on this later.</span>
+0058 <span class="comment">%</span>
+0059 
+0060 
+0061 <span class="comment">%   Copyright � 2012 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0062 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0063 
+0064 <span class="comment">% constraining_error = 0;</span>
+0065 
+0066 I0 = par0;          <span class="comment">% The complete parameter set, with stable</span>
+0067                     <span class="comment">% parameters as well</span>
+0068 <span class="keyword">if</span> ~isempty(Par)
+0069   I0(var_pars) = Par; <span class="comment">% Insert the variable parameters into that</span>
+0070                       <span class="comment">% array. This way we can optimize the selected</span>
+0071                       <span class="comment">% var_pars while keeping the others constant -</span>
+0072                       <span class="comment">% subspace search...</span>
+0073   I0 = reshape(I0,10,[])'; <span class="comment">% Reshape parameter array to [nArcs x 9] to</span>
+0074                           <span class="comment">% make for [I0 x0 dx gx E0 dE gE Ddx g_E2]</span>
+0075 <span class="keyword">end</span>
+0076 <span class="keyword">for</span> i2 = length(stns):-1:1,
+0077   Vem{i2} = zeros(size(Z3D));
+0078 <span class="keyword">end</span>
+0079 
+0080 <span class="keyword">for</span> i1 = 1:(size(I0,1)),
+0081   <span class="comment">%disp(I0(i1,:))</span>
+0082   <span class="comment">% Before first we extract the parameters for this arc:</span>
+0083   Imax = I0(i1,1);     <span class="comment">% Peak intensity of this arc</span>
+0084   x0   = I0(i1,2);     <span class="comment">% Horizontal center of this arc</span>
+0085   dx   = I0(i1,3);     <span class="comment">% Horizontal width of this arc</span>
+0086   y0   = I0(i1,4);     <span class="comment">% Horizontal center of this arc</span>
+0087   dy   = I0(i1,5);     <span class="comment">% Horizontal width of this arc</span>
+0088   g_x  = I0(i1,6);     <span class="comment">% Spatial shape factor of this arc -</span>
+0089                        <span class="comment">% bias towards 2, constrain between 1.5 and 3</span>
+0090   E0   = I0(i1,7);<span class="comment">%*1e3% Central energy of this arc</span>
+0091   dE   = I0(i1,8);<span class="comment">%*1e3% Width in energy of this arc</span>
+0092   g_E  = I0(i1,9);     <span class="comment">% Shape factor energy-wise of this arc</span>
+0093   g_E2 = I0(i1,10);    <span class="comment">% Exponent for power of E before the</span>
+0094                        <span class="comment">% exponential term in electron flux.</span>
+0095   
+0096   <span class="comment">% First we make the electron spectra from the current</span>
+0097   <span class="comment">% electron energy spectrum parameters for arc i1:</span>
+0098   Ie = E.^g_E2.*exp(-abs(E-E0).^g_E/dE^g_E).*E; 
+0099   <span class="keyword">if</span> out_arg_type == 2
+0100     IeOutput{i1} = Ie;
+0101   <span class="keyword">end</span>
+0102   <span class="comment">% Then we make the horizontal intensity variation of the</span>
+0103   <span class="comment">% precipitation:</span>
+0104   I_hor = Imax * exp( -abs( ((y2D - y0)./dy).^2 + <span class="keyword">...</span>
+0105                             ((x2D - x0)./dx).^2).^(g_x/2));
+0106   <span class="comment">% Then we make altitude profiles for all the emissions:</span>
+0107   <span class="keyword">for</span> i2 = length(stns):-1:1,
+0108     
+0109     I_Z{i2} = Ie2H{i2}*Ie;
+0110     <span class="comment">% The altitude-horizontal variation of the volume emission</span>
+0111     <span class="comment">% rates should just be the outer product of the two:</span>
+0112     <span class="keyword">for</span> i3 = length(I_Z{i2}):-1:1,
+0113       <span class="comment">% This should make up a horizontal slice of the volume</span>
+0114       <span class="comment">% emission rate of emission at</span>
+0115       Ivh = I_Z{i2}(i3)*I_hor;
+0116       Vem{i2}(:,:,i3) = Vem{i2}(:,:,i3) + Ivh;<span class="comment">%{i2};</span>
+0117     <span class="keyword">end</span>
+0118     <span class="comment">% keyboard</span>
+0119     
+0120   <span class="keyword">end</span>
+0121   
+0122 <span class="keyword">end</span>
+0123 
+0124 err = 0;
+0125 <span class="keyword">for</span> i1 = length(stns):-1:1,
+0126   
+0127   <span class="comment">% Extract the the cut-out along selected cut</span>
+0128   currImg{i1}  = stns(i1).img;
+0129   currProj{i1} = <a href="../Tomography/fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(Vem{i1},<span class="keyword">...</span>
+0130                                 stns(i1).uv,<span class="keyword">...</span>
+0131                                 stns(i1).d,<span class="keyword">...</span>
+0132                                 stns(i1).l_cl,<span class="keyword">...</span>
+0133                                 stns(i1).bfk,<span class="keyword">...</span>
+0134                                 [256 256],1);
+0135   currProj{i1} = conv2(currProj{i1},ones(3)/9,<span class="string">'same'</span>);
+0136   <span class="comment">% sum of square of Image difference - over the selected region of interest:</span>
+0137   err1 = sum( ( stns(i1).img(:) - currProj{i1}(:) ).^2.*(ImRois{i1}(:)==1) );
+0138   err = err + err1;
+0139   <span class="comment">% keyboard</span>
+0140 <span class="keyword">end</span>
+0141 
+0142 <span class="comment">%%% This snippet is just an old example of how to bias parameters</span>
+0143 <span class="comment">%to be close to some prefered/physically sensible range of</span>
+0144 <span class="comment">%values. Potentially adapt to needs as necessary...</span>
+0145 <span class="comment">% $$$ if ~isempty(biasAmplitudes)</span>
+0146 <span class="comment">% $$$   err = err + sum(biasAmplitudes(:).*( Par(:) - biasVals(:) ).^2);</span>
+0147 <span class="comment">% $$$   err = err + 500*sum( ( 2 - I0(:,6) ).^5 .* ( I0(:,6) &lt; 2) );</span>
+0148 <span class="comment">% $$$ end</span>
+0149 
+0150 <span class="keyword">if</span> err &lt; 0 | ~isfinite(err)
+0151   keyboard
+0152 <span class="keyword">end</span>
+0153 <span class="keyword">switch</span> out_arg_type
+0154  <span class="keyword">case</span> 1 <span class="comment">% Error</span>
+0155   res = err;
+0156  <span class="keyword">case</span> 2 <span class="comment">% Vem and projections</span>
+0157   res.par = I0;
+0158   res.err = err;
+0159   res.IeOutput = IeOutput;
+0160   res.Vem{1} = Vem{1};
+0161   res.Vem{2} = Vem{2};
+0162   res.currImg = currImg;
+0163   res.currProj = currProj;
+0164  <span class="keyword">otherwise</span>
+0165 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

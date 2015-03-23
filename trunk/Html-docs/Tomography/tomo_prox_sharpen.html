@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_prox_sharpen</title>
+  <meta name="keywords" content="tomo_prox_sharpen">
+  <meta name="description" content="TOMO_PROX_SHARPEN - Proximity sharpening filter,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_prox_sharpen
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TOMO_PROX_SHARPEN - Proximity sharpening filter,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [Vem,q] = tomo_prox_sharpen(Vem,fK) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TOMO_PROX_SHARPEN - Proximity sharpening filter,
+  along 3rd dimension
+   
+ Calling:
+   Vem = tomo_prox_sharpen(Vem,fK)
+
+ Input:
+   Vem - 3-D array of auroral intensities.
+   fK  - 2-D filter kernel for horisontal filtering.
+
+ Output:
+   Vem - proximity filtered 3-D array.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Vem,q] = tomo_prox_sharpen(Vem,fK)</a>
+0002 <span class="comment">% TOMO_PROX_SHARPEN - Proximity sharpening filter,</span>
+0003 <span class="comment">%  along 3rd dimension</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%   Vem = tomo_prox_sharpen(Vem,fK)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%   Vem - 3-D array of auroral intensities.</span>
+0010 <span class="comment">%   fK  - 2-D filter kernel for horisontal filtering.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% Output:</span>
+0013 <span class="comment">%   Vem - proximity filtered 3-D array.</span>
+0014 
+0015 
+0016 <span class="comment">%   Copyright � 2010 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0017 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0018 
+0019 fiel_align_int = sum(Vem,3);
+0020 filt_f_a_i = conv2(fiel_align_int,fK,<span class="string">'same'</span>);
+0021 <span class="keyword">for</span> k = size(Vem,3),
+0022   Vem(:,:,k) = squeeze(Vem(:,:,k)).*deconvlucy(fiel_align_int,fK,3)./fiel_align_int;
+0023 <span class="keyword">end</span>
+0024 q = fiel_align_int./filt_f_a_i;
+0025 <span class="comment">%Infindx = find(~isfinite(Vem(:)));</span>
+0026 <span class="comment">%Vem(Infindx) = 0;</span>
+0027 
+0028 Vem(~isfinite(Vem(:))) = 0;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

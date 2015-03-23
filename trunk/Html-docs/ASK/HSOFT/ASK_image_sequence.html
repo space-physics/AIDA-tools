@@ -1,0 +1,438 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_image_sequence</title>
+  <meta name="keywords" content="ASK_image_sequence">
+  <meta name="description" content="ASK_IMAGE_SEQUENCE - to display an ASK image sequence as movie, and">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_image_sequence
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_IMAGE_SEQUENCE - to display an ASK image sequence as movie, and</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function varargout = ASK_image_sequence(indices2show,Cams,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_IMAGE_SEQUENCE - to display an ASK image sequence as movie, and
+ three keograms in one figure.
+
+ CALLNG:
+   OPS       = ASK_image_sequence
+   M         = ASK_image_sequence(indices2show,Cams,OPS)
+   imgstacks = ASK_image_sequence(indices2show,Cams,OPS)
+   rgbstack  = ASK_image_sequence(indices2show,Cams,OPS)
+   [I99,ImM,Ihists] = ASK_image_sequence(indices2show,Cams,OPS)
+
+ INPUTS:
+   indices2show - either array of image sequence numbers to
+                  display, or a triplett [first, step, last] or
+                  [first, last, step] with index to the first
+                  image to load the step to take to the next and
+                  the latest frame number to show. This means that
+                  one cannot display sequences of three arbitrary
+                  images - choose either 4 arbitrary and scrap the
+                  last.
+   Cams     - and array with the ASK camera numbers to read
+              [1 x nC] where nC [1, 2, 3], if scalar only the
+              images from the corresponding camera is displayed,
+              if 2 then 2 images are diplayed side-by-side, if 3
+              then three images are displayed together with an
+              RGB-composited.
+   OPS      - options struct, with the default options returned
+              when ASK_image_sequence is called without
+              arguments. Fields: 
+              OPS.loud = 0; Suppresses some willy-nilly output.
+              OPS.caxis = {'','',''}; If empty the intensity
+                   scale is automatic for each individual frame, if set
+                   to arrays with [ nImgs x 2 ] then that will be
+                   used for each corresponding image.
+              OPS.imsize = {[],[],[]}; Set to something if output
+                   images is to be resized
+              OPS.imdisplay = 1;   set to zero top suppress
+                   displaying - useful to increase speed when only
+                   intaxes is requested
+              OPS.shift = [0,0,0]; For shifting the image
+                   sequences relative to each other in index number
+              OPS.histmaxint - maximum intensity for intensity
+                   histogram, scalar, default is 8000.
+              OPS.filterkernel = {[],[],[]}; Set either field to
+                   a filter kernel for filtering the images before
+                   diplaying them.
+              OPS.outargtype = [ {'M'} | 'imgstack' | 'rgbimgstack' | 'intaxes']
+                   For M - Movie; imgstack - stack of the images from
+                   the cameras Cams, rgbimgstack for stack of
+                   RGB-composites, or intaxes for returning intensity
+                   ranges - the 99 percentile and the min-max intensity
+                   ranges.
+              OPS.savedir - path (full or relative) to directory
+                   displayed images should be saved in. (Upon
+                   which I cannot put!) Make sure write
+                   permissions exist. If directory does not exist
+                   it will be created. Defaults to empty &lt;-&gt; no
+                   saving, set to something if saving is desired,
+                   './' for present working directory.
+              OPS.savetype - file type to save file to
+                   [{'png'}|'jpg',any other imgwrite-able-filetype]
+                   - SEE imwrite for full list.
+ Output:
+  OPS       - Default options struct, is returned if
+              ASK_image_sequence is called without inpu
+  M         - Matlab movie structure, SEE MOVIE, getframe for
+              details.
+  imgstacks - Cell array with image stacks from the ASK cameras
+              selected with Cams
+  rgbstack  - stack of RGB composite images made up of images from
+              selected cameras.
+  [I99,ImM] - Cell array with Intenisty arrays I99 is intensity
+              ranges image-by-image with 3% (Yup!) histogram
+              clipping ImM is intensity range min-Max</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_auto_range.html" class="code" title="function auto_range = ASK_auto_range(z,alpha,log_it,low,high)">ASK_auto_range</a>	ASK_AUTO_RANGE - returns an array of automatic range</li><li><a href="ASK_binning.html" class="code" title="function img_out = ASK_binning(img_in,binningFactors)">ASK_binning</a>	ASK_BINNING - Post-bin data</li><li><a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>	ASK_BYTSCL - clip-n-scale matrix into [0-MAXOUT] from min(max_IN,max(min_IN,M_in))</li><li><a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>	ASK_DAT2STR - convert a modified Julian second (mjs) to date string</li><li><a href="ASK_get_ask_cal.html" class="code" title="function retval = ASK_get_ask_cal(mjs,cam)">ASK_get_ask_cal</a>	ASK_GET_ASK_CAL - get  absolute intensity calibration factors</li><li><a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>	ASK_READ_V - Read ASK image #i1 from current camera in current "mega-block"</li><li><a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>	ASK_TIME_V - returns time since the start of the sequence</li><li><a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>	ASK_V_SELECT - Set current camera index in global structure VS</li><li><a href="../../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function varargout = ASK_image_sequence(indices2show,Cams,OPS)</a>
+0002 <span class="comment">% ASK_IMAGE_SEQUENCE - to display an ASK image sequence as movie, and</span>
+0003 <span class="comment">% three keograms in one figure.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% CALLNG:</span>
+0006 <span class="comment">%   OPS       = ASK_image_sequence</span>
+0007 <span class="comment">%   M         = ASK_image_sequence(indices2show,Cams,OPS)</span>
+0008 <span class="comment">%   imgstacks = ASK_image_sequence(indices2show,Cams,OPS)</span>
+0009 <span class="comment">%   rgbstack  = ASK_image_sequence(indices2show,Cams,OPS)</span>
+0010 <span class="comment">%   [I99,ImM,Ihists] = ASK_image_sequence(indices2show,Cams,OPS)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% INPUTS:</span>
+0013 <span class="comment">%   indices2show - either array of image sequence numbers to</span>
+0014 <span class="comment">%                  display, or a triplett [first, step, last] or</span>
+0015 <span class="comment">%                  [first, last, step] with index to the first</span>
+0016 <span class="comment">%                  image to load the step to take to the next and</span>
+0017 <span class="comment">%                  the latest frame number to show. This means that</span>
+0018 <span class="comment">%                  one cannot display sequences of three arbitrary</span>
+0019 <span class="comment">%                  images - choose either 4 arbitrary and scrap the</span>
+0020 <span class="comment">%                  last.</span>
+0021 <span class="comment">%   Cams     - and array with the ASK camera numbers to read</span>
+0022 <span class="comment">%              [1 x nC] where nC [1, 2, 3], if scalar only the</span>
+0023 <span class="comment">%              images from the corresponding camera is displayed,</span>
+0024 <span class="comment">%              if 2 then 2 images are diplayed side-by-side, if 3</span>
+0025 <span class="comment">%              then three images are displayed together with an</span>
+0026 <span class="comment">%              RGB-composited.</span>
+0027 <span class="comment">%   OPS      - options struct, with the default options returned</span>
+0028 <span class="comment">%              when ASK_image_sequence is called without</span>
+0029 <span class="comment">%              arguments. Fields:</span>
+0030 <span class="comment">%              OPS.loud = 0; Suppresses some willy-nilly output.</span>
+0031 <span class="comment">%              OPS.caxis = {'','',''}; If empty the intensity</span>
+0032 <span class="comment">%                   scale is automatic for each individual frame, if set</span>
+0033 <span class="comment">%                   to arrays with [ nImgs x 2 ] then that will be</span>
+0034 <span class="comment">%                   used for each corresponding image.</span>
+0035 <span class="comment">%              OPS.imsize = {[],[],[]}; Set to something if output</span>
+0036 <span class="comment">%                   images is to be resized</span>
+0037 <span class="comment">%              OPS.imdisplay = 1;   set to zero top suppress</span>
+0038 <span class="comment">%                   displaying - useful to increase speed when only</span>
+0039 <span class="comment">%                   intaxes is requested</span>
+0040 <span class="comment">%              OPS.shift = [0,0,0]; For shifting the image</span>
+0041 <span class="comment">%                   sequences relative to each other in index number</span>
+0042 <span class="comment">%              OPS.histmaxint - maximum intensity for intensity</span>
+0043 <span class="comment">%                   histogram, scalar, default is 8000.</span>
+0044 <span class="comment">%              OPS.filterkernel = {[],[],[]}; Set either field to</span>
+0045 <span class="comment">%                   a filter kernel for filtering the images before</span>
+0046 <span class="comment">%                   diplaying them.</span>
+0047 <span class="comment">%              OPS.outargtype = [ {'M'} | 'imgstack' | 'rgbimgstack' | 'intaxes']</span>
+0048 <span class="comment">%                   For M - Movie; imgstack - stack of the images from</span>
+0049 <span class="comment">%                   the cameras Cams, rgbimgstack for stack of</span>
+0050 <span class="comment">%                   RGB-composites, or intaxes for returning intensity</span>
+0051 <span class="comment">%                   ranges - the 99 percentile and the min-max intensity</span>
+0052 <span class="comment">%                   ranges.</span>
+0053 <span class="comment">%              OPS.savedir - path (full or relative) to directory</span>
+0054 <span class="comment">%                   displayed images should be saved in. (Upon</span>
+0055 <span class="comment">%                   which I cannot put!) Make sure write</span>
+0056 <span class="comment">%                   permissions exist. If directory does not exist</span>
+0057 <span class="comment">%                   it will be created. Defaults to empty &lt;-&gt; no</span>
+0058 <span class="comment">%                   saving, set to something if saving is desired,</span>
+0059 <span class="comment">%                   './' for present working directory.</span>
+0060 <span class="comment">%              OPS.savetype - file type to save file to</span>
+0061 <span class="comment">%                   [{'png'}|'jpg',any other imgwrite-able-filetype]</span>
+0062 <span class="comment">%                   - SEE imwrite for full list.</span>
+0063 <span class="comment">% Output:</span>
+0064 <span class="comment">%  OPS       - Default options struct, is returned if</span>
+0065 <span class="comment">%              ASK_image_sequence is called without inpu</span>
+0066 <span class="comment">%  M         - Matlab movie structure, SEE MOVIE, getframe for</span>
+0067 <span class="comment">%              details.</span>
+0068 <span class="comment">%  imgstacks - Cell array with image stacks from the ASK cameras</span>
+0069 <span class="comment">%              selected with Cams</span>
+0070 <span class="comment">%  rgbstack  - stack of RGB composite images made up of images from</span>
+0071 <span class="comment">%              selected cameras.</span>
+0072 <span class="comment">%  [I99,ImM] - Cell array with Intenisty arrays I99 is intensity</span>
+0073 <span class="comment">%              ranges image-by-image with 3% (Yup!) histogram</span>
+0074 <span class="comment">%              clipping ImM is intensity range min-Max</span>
+0075 <span class="comment">%</span>
+0076 
+0077 <span class="comment">% Copyright B Gustavsson 20101119 &lt;bjorn@irf.se&gt;</span>
+0078 <span class="comment">% This is free software, licensed under GNU GPL version 2 or later</span>
+0079 
+0080 <span class="keyword">global</span> vs
+0081 
+0082 <span class="comment">% Default options:</span>
+0083 dOPS.loud = 0;                  <span class="comment">% Just to make things less out-putty</span>
+0084 dOPS.caxis = {<span class="string">''</span>,<span class="string">''</span>,<span class="string">''</span>};        <span class="comment">% Intensity axeses, if left empty defaults to 'auto'</span>
+0085 dOPS.imsize = {[],[],[]};       <span class="comment">% Output image sizes, if empty no post-binning</span>
+0086 dOPS.imdisplay = 1;             <span class="comment">% 1 to plot images, zero to not.</span>
+0087 dOPS.shift = [0,0,0];           <span class="comment">% Index shift between concurrent images</span>
+0088 dOPS.filterkernel = {[],[],[]}; <span class="comment">% Kernel for linear image filtering</span>
+0089 dOPS.outargtype = <span class="string">'M'</span>;          <span class="comment">% or 'imgstack' or 'rgbimgstack' or 'intaxes'</span>
+0090 dOPS.savedir = <span class="string">''</span>;              <span class="comment">% Path to where to save image output</span>
+0091 dOPS.histmaxint = 8000;         <span class="comment">% maximum histogram image intensity bin</span>
+0092 dOPS.histminint =    0;         <span class="comment">% minimum histogram image intensity bin</span>
+0093 dOPS.savetype = <span class="string">'png'</span>;          <span class="comment">% image format to save into</span>
+0094 dOPS.videodir = <span class="string">''</span>;             <span class="comment">%</span>
+0095 dOPS.keodir   = <span class="string">''</span>;             <span class="comment">%</span>
+0096 <span class="comment">% If no input arguments return the default option struct</span>
+0097 <span class="keyword">if</span> nargin == 0
+0098   varargout = {dOPS};
+0099   <span class="keyword">return</span>
+0100 <span class="keyword">end</span>
+0101 <span class="comment">% If there is an options struct in the input merge the user options</span>
+0102 <span class="comment">% ontop of the defaults.</span>
+0103 <span class="keyword">if</span> nargin &gt; 2
+0104   dOPS = <a href="../../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0105 <span class="keyword">end</span>
+0106 <span class="comment">% If there is a savedir in the options by now make sure that it</span>
+0107 <span class="comment">% will exist:</span>
+0108 <span class="keyword">if</span> ~isempty(dOPS.savedir)
+0109   <span class="keyword">if</span> exist(dOPS.savedir,<span class="string">'dir'</span>) ~= 7
+0110     <span class="keyword">try</span>
+0111       mkdir(dOPS.savedir)
+0112     <span class="keyword">catch</span>
+0113       warning([<span class="string">'Could not create directory: '</span>,dOPS.savedir])
+0114       <span class="keyword">return</span>
+0115     <span class="keyword">end</span>
+0116   <span class="keyword">end</span>
+0117 <span class="keyword">end</span>
+0118 
+0119 <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>(Cams(1),<span class="string">'quiet'</span>);<span class="comment">% Select one camera here just in case</span>
+0120                               <span class="comment">% we need to build the index2show array</span>
+0121 
+0122 
+0123 <span class="comment">% This is a cunning way of letting the indices2show be either a set</span>
+0124 <span class="comment">% of image indices to display ([1,2,3,12:321, 475, 1234,17]) or a</span>
+0125 <span class="comment">% triplet making up a [i2first,i2last,iStep] or  [i2first,iStep,i2last]</span>
+0126 <span class="keyword">if</span> length(indices2show) == 3
+0127   indices2show = [indices2show(1),sort(indices2show(2:3))];
+0128   indices2show = indices2show(1):indices2show(2):indices2show(3);
+0129 <span class="keyword">elseif</span> isempty(indices2show)
+0130   indices2show = 1:vs.vnl(vs.vsel);
+0131 <span class="keyword">end</span>
+0132 nelem = length(indices2show); 
+0133 
+0134 <span class="comment">%Using calibration values from Tromso data 2006, for 6730�, 7319� and 7774�</span>
+0135 <span class="comment">% calib = [0.5, 0.36, 0.85]</span>
+0136 <span class="comment">% Read the calibration factors for the event</span>
+0137 calib = <a href="ASK_get_ask_cal.html" class="code" title="function retval = ASK_get_ask_cal(mjs,cam)">ASK_get_ask_cal</a>(vs.vmjs(vs.vsel),[1,2,3]);
+0138 
+0139 iI = 1;
+0140 <span class="keyword">for</span> i1 = length(Cams):-1:1,
+0141   Int_ranges{i1} = zeros(nelem,2);
+0142   Int_99perc{(i1)} = zeros(nelem,2);
+0143 <span class="keyword">end</span>
+0144 cmap = colormap;
+0145 
+0146 <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>(Cams(1),<span class="string">'quiet'</span>);
+0147 
+0148 Keo1h = [];
+0149 <span class="keyword">if</span> ~isempty(dOPS.keodir)
+0150   Keo1h = zeros(vs.vnl(vs.vsel),vs.dimx(vs.vsel));
+0151   Keo2h = zeros(vs.vnl(vs.vsel),vs.dimx(vs.vsel));
+0152   Keo1v = zeros(vs.vnl(vs.vsel),vs.dimy(vs.vsel));
+0153   Keo2v = zeros(vs.vnl(vs.vsel),vs.dimy(vs.vsel));
+0154 <span class="keyword">else</span>
+0155   dOPS
+0156 <span class="keyword">end</span>
+0157 
+0158 <span class="keyword">for</span> num = indices2show,
+0159   <span class="keyword">if</span> dOPS.loud
+0160     disp(num)
+0161   <span class="keyword">end</span>
+0162   <span class="comment">%cImg = 0;</span>
+0163   <span class="keyword">for</span> iCam = length(Cams):-1:1,  <span class="comment">% Read the images for current time</span>
+0164     <span class="comment">% Set the current camera</span>
+0165     <span class="keyword">if</span> length(Cams) &gt; 1
+0166       <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>(Cams(iCam),<span class="string">'quiet'</span>);
+0167     <span class="keyword">end</span>
+0168     <span class="comment">% Read the ASK#i1 image and scale to Rayleighs</span>
+0169     im{iCam} = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(num+dOPS.shift(Cams(iCam)),[],[],[],dOPS)*calib(Cams(iCam))/vs.vres(vs.vsel);
+0170     <span class="keyword">if</span> ~isempty(dOPS.filterkernel{iCam})
+0171       im{iCam} = imfilter(im{iCam},dOPS.filterkernel{iCam},<span class="string">'replicate'</span>);
+0172     <span class="keyword">end</span>
+0173     
+0174     <span class="comment">% If required do post-binning to 256 x 256</span>
+0175     <span class="keyword">if</span> ~isempty(dOPS.imsize{Cams(iCam)}) &amp; ~all(size(im{Cams(iCam)})==dOPS.imsize{Cams(iCam)})
+0176       im{iCam} = <a href="ASK_binning.html" class="code" title="function img_out = ASK_binning(img_in,binningFactors)">ASK_binning</a>(im{iCam},size(im{iCam})./dOPS.imsize{11});
+0177     <span class="keyword">end</span>
+0178     <span class="keyword">if</span> isempty(dOPS.caxis{iCam})
+0179       Int_ranges{(iCam)}(iI,:) = [min(im{(iCam)}(:)) max(im{(iCam)}(:))];
+0180       Int_99perc{(iCam)}(iI,:) = <a href="ASK_auto_range.html" class="code" title="function auto_range = ASK_auto_range(z,alpha,log_it,low,high)">ASK_auto_range</a>(im{(iCam)}, 0.01);
+0181       <span class="keyword">if</span> strcmp(dOPS.outargtype,<span class="string">'intaxes'</span>) &amp; nargout == 3
+0182         Ihists{iCam}(:,iI) = hist(im{iCam}(:),linspace(-200,16000,2048));
+0183       <span class="keyword">end</span>
+0184     <span class="keyword">else</span>
+0185       Int_99perc{(iCam)}(iI,:) = dOPS.caxis{(iCam)}(min(size(dOPS.caxis{(iCam)},1),iI),:);
+0186       <span class="keyword">if</span> strcmp(dOPS.outargtype,<span class="string">'intaxes'</span>) &amp; nargout == 3
+0187         Ihists{iCam}(:,iI) = hist(im{iCam}(:),linspace(-200,16000,2048));
+0188       <span class="keyword">end</span>
+0189     <span class="keyword">end</span>
+0190     <span class="keyword">if</span> ~isempty(Keo1h)
+0191       Keo1h(iI,:) = mean(im{iCam}(end/2+[-3:3],   :),1);
+0192       Keo2h(iI,:) = mean(im{iCam}(end/2+[-3:3]-20,:),1);
+0193       Keo1v(iI,:) = mean(im{iCam}(:,end/2+[-3:3]   ),2);
+0194       Keo2v(iI,:) = mean(im{iCam}(:,end/2+[-3:3]-20),2);
+0195     <span class="keyword">end</span>
+0196     
+0197   <span class="keyword">end</span>
+0198   
+0199   <span class="comment">% Image displaying</span>
+0200   <span class="keyword">if</span> length(Cams) == 1 <span class="comment">% one camera just display!</span>
+0201     <span class="comment">%if exist('imhist','file') == 2</span>
+0202     <span class="comment">%  [Hn,Hx] = imhist(ASK_bytscl(im{1}(:),0,dOPS.histmaxint,1),size(im{1},1));</span>
+0203     <span class="comment">%else</span>
+0204     [Hn,Hx] = histc(im{1}(:),linspace(dOPS.histminint,dOPS.histmaxint,size(im{1},1)));
+0205     <span class="comment">%end</span>
+0206     <span class="keyword">if</span> isempty(dOPS.histmaxint)
+0207       cImg = <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(im{(1)},Int_99perc{(1)}(iI,1),Int_99perc{(1)}(iI,2),1);
+0208     <span class="keyword">else</span>
+0209       <span class="comment">% [Hn,Hx] = histc(im{1}(:),linspace(dOPS.histminint,dOPS.histmaxint,size(im{1},1)));</span>
+0210       [Hn] = histc(im{1}(:),linspace(dOPS.histminint,dOPS.histmaxint,size(im{1},1)));
+0211       cImg = [<a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(im{(1)},Int_99perc{(1)}(iI,1),Int_99perc{(1)}(iI,2),1),repmat(Hn/max(Hn),1,10)];
+0212     <span class="keyword">end</span>
+0213     <span class="keyword">if</span> dOPS.imdisplay
+0214       imagesc(cImg),axis xy
+0215       <span class="comment">% Decorations:</span>
+0216       title([<span class="string">'ASK: '</span>,<a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>(<a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>(num,1),<span class="string">'yyyy-mm-dd HH:MM:SS.FFF'</span>)],<span class="string">'fontsize'</span>,16);
+0217       <span class="comment">%ASK_print_dat(ASK_time_v(num,1),'HH:MM:SS.FFF');</span>
+0218       drawnow;
+0219     <span class="keyword">end</span>
+0220   <span class="keyword">elseif</span> length(Cams) == 2
+0221     <span class="comment">%cImg =[ASK_bytscl(im{Cams(1)},Int_99perc{(1)}(iI,1),Int_99perc{(1)}(iI,2),1),ASK_bytscl(im{(2)},Int_99perc{(2)}(iI,1),Int_99perc{Cams(2)}(iI,2),1)]*size(cmap,1);</span>
+0222     cImg = [<a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(im{Cams(1)},Int_99perc{(1)}(iI,1),Int_99perc{(1)}(iI,2),1),<a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(im{(2)},Int_99perc{(2)}(iI,1),Int_99perc{(2)}(iI,2),1)]*size(cmap,1);
+0223     <span class="keyword">if</span> dOPS.imdisplay
+0224       <span class="keyword">try</span>
+0225         imshow(cImg,cmap);
+0226       <span class="keyword">catch</span>
+0227         imagesc(cImg)
+0228       <span class="keyword">end</span>
+0229       axis xy;
+0230       <span class="comment">% Decorations:</span>
+0231       title([<span class="string">'ASK: '</span>,<a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>(<a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>(num,1),<span class="string">'yyyy-mm-dd HH:MM:SS.FFF'</span>)],<span class="string">'fontsize'</span>,16);
+0232       <span class="comment">%title(['ASK: ',ASK_dat2str(ASK_time_v(num,1),'yyyy-mm-dd')],'fontsize',16);</span>
+0233       <span class="comment">%ASK_print_dat(ASK_time_v(num,1),'HH:MM:SS.FFF');</span>
+0234       drawnow;
+0235     <span class="keyword">end</span>
+0236   <span class="keyword">else</span>
+0237     <span class="comment">% Olden way, separate intensity adjustment, prone to false</span>
+0238     <span class="comment">% changes in hue:</span>
+0239     imB = <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(im{1},Int_99perc{1}(iI,1),Int_99perc{1}(iI,2),1);
+0240     imG = <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(im{2},Int_99perc{2}(iI,1),Int_99perc{2}(iI,2),1);
+0241     imR = <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(im{3},Int_99perc{3}(iI,1),Int_99perc{3}(iI,2),1);
+0242     <span class="comment">%imHSV = rgb2hsv(dOPS.Ints2gray(3)*im{3},dOPS.Ints2gray(2)*im{2},dOPS.Ints2gray(1)*im{1});</span>
+0243     <span class="comment">%imHSV(:,:,3) = ASK_bytscl(imHSV(:,:,3),Int_99perc{3}(iI,1),Int_99perc{3}(iI,2),1);</span>
+0244     <span class="comment">%[imR,imG,imB] = hsv2rgb(imHSV);</span>
+0245     cImg(:,:,1) = [[1*imR,1*imG];[1*imB,imR]];
+0246     cImg(:,:,2) = [[1*imR,1*imG];[1*imB,imG]];
+0247     cImg(:,:,3) = [[1*imR,1*imG];[1*imB,imB]];
+0248     <span class="keyword">if</span> dOPS.imdisplay
+0249       <span class="comment">%imshow(cImg);axis xy</span>
+0250       imagesc(cImg);axis xy
+0251       <span class="comment">% Decorations:</span>
+0252       title([<span class="string">'ASK: '</span>,<a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>(<a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>(num,1),<span class="string">'yyyy-mm-dd HH:MM:SS.FFF'</span>)],<span class="string">'fontsize'</span>,16);
+0253       <span class="comment">%title(['ASK: ',ASK_dat2str(ASK_time_v(num,1),'yyyy-mm-dd')],'fontsize',16);</span>
+0254       <span class="comment">%ASK_print_dat(ASK_time_v(num,1),'HH:MM:SS.FFF');</span>
+0255       drawnow;
+0256     <span class="keyword">end</span>
+0257   <span class="keyword">end</span>
+0258   <span class="keyword">if</span> ~isempty(dOPS.outargtype)
+0259     <span class="keyword">switch</span> dOPS.outargtype
+0260      <span class="keyword">case</span> <span class="string">'M'</span>
+0261       set(gca,<span class="string">'xtick'</span>,[],<span class="string">'ytick'</span>,[])
+0262       M(iI) = getframe(gcf);
+0263      <span class="keyword">case</span> <span class="string">'imgstack'</span>
+0264       <span class="comment">%disp('Here we should get images...')</span>
+0265       <span class="keyword">for</span> i2 = 1:length(Cams),
+0266         Im{i2}(:,:,iI) = im{i2};
+0267       <span class="keyword">end</span>
+0268      <span class="keyword">case</span> <span class="string">'rgbimgstack'</span> 
+0269       allRGB{iI} = cImg;
+0270      <span class="keyword">otherwise</span>
+0271       <span class="comment">% Don't know what to do so do nothing.</span>
+0272     <span class="keyword">end</span>
+0273   <span class="keyword">end</span>
+0274   <span class="keyword">if</span> ~isempty(dOPS.savedir)
+0275     <span class="comment">%disp(['writing current image to file: ',fullfile(dOPS.savedir,sprintf('%05d.%s',num,dOPS.savetype))])</span>
+0276     <span class="comment">%imwrite(get(get(gca,'children'),'CData'),fullfile(dOPS.savedir,sprintf('%05d.dOPS.savetype',num)))</span>
+0277     imwrite(flipdim(cImg,1),fullfile(dOPS.savedir,sprintf(<span class="string">'%05d.%s'</span>,num,dOPS.savetype)))
+0278   <span class="keyword">end</span>
+0279   iI = iI+1;
+0280   
+0281 <span class="keyword">end</span>
+0282 
+0283 <span class="keyword">if</span> ~isempty(Keo1h)
+0284   Keo1h = Keo1h(1:iI-1,:);
+0285   Keo2h = Keo2h(1:iI-1,:);
+0286   Keo1v = Keo1v(1:iI-1,:);
+0287   Keo2v = Keo2v(1:iI-1,:);
+0288   save(fullfile(dOPS.keodir,[dOPS.ffilename,<span class="string">'-H-00'</span>]),<span class="string">'Keo1h'</span>);
+0289   save(fullfile(dOPS.keodir,[dOPS.ffilename,<span class="string">'-H-20'</span>]),<span class="string">'Keo2h'</span>);
+0290   save(fullfile(dOPS.keodir,[dOPS.ffilename,<span class="string">'-V-00'</span>]),<span class="string">'Keo1v'</span>);
+0291   save(fullfile(dOPS.keodir,[dOPS.ffilename,<span class="string">'-V-20'</span>]),<span class="string">'Keo2v'</span>);
+0292   disp(<span class="string">'==================================================='</span>)
+0293   disp([<span class="string">'Saved files: '</span>,fullfile(dOPS.keodir,[dOPS.ffilename]),<span class="string">' just fine!'</span>])
+0294   disp(<span class="string">'==================================================='</span>)
+0295 <span class="keyword">else</span>
+0296   dOPS
+0297   whos Keo*
+0298   disp(<span class="string">'Was not saved at all...'</span>)
+0299 <span class="keyword">end</span>
+0300 
+0301 <span class="keyword">switch</span> dOPS.outargtype
+0302  <span class="keyword">case</span> <span class="string">'M'</span>
+0303   varargout{1} = M;
+0304  <span class="keyword">case</span> <span class="string">'imgstack'</span>
+0305   <span class="comment">%disp('Here we should return images...')</span>
+0306   varargout{1} = Im;
+0307  <span class="keyword">case</span> <span class="string">'rgbimgstack'</span>
+0308   varargout{1} = allRGB;
+0309  <span class="keyword">otherwise</span>
+0310   <span class="keyword">if</span> nargout &gt; 0
+0311     varargout{1} = Int_99perc;
+0312   <span class="keyword">end</span>
+0313   <span class="keyword">if</span> nargout &gt; 1
+0314     varargout{2} = Int_ranges;
+0315   <span class="keyword">end</span>
+0316   <span class="keyword">if</span> nargout &gt; 2
+0317     varargout{3} = Ihists;
+0318   <span class="keyword">end</span>
+0319 <span class="keyword">end</span>
+0320 
+0321 
+0322 <span class="keyword">if</span> isfield(dOPS,<span class="string">'stopinit'</span>)
+0323   keyboard
+0324 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

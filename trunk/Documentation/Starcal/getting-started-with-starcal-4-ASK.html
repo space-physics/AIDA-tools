@@ -1,0 +1,327 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Getting started (ASK)</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="../style.css">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+  </head>
+  <body class="section-2" bgcolor="#FFFFF0">
+    <ul id="menu">
+      <li id="nav-1"><a href="../../Documentation/index.html">AIDA-home</a>
+      </li>
+      <li id="nav-2">
+	<ul id="subnav-2">
+	  <li><a href="../BBH.pdf">Tutorial</a></li>
+	  <li><a href="../optics.html">Camera</a></li>
+	  <li><a href="../starcal.html">Starcal</a></li>
+	  <li><a href="../Skymap/index.html">Skymap</a></li>
+	</ul>
+      </li>
+      <li id="nav-3"><a href="../../Html-exmpls/index.html">Examples</a>
+      </li>
+      <li id="nav-4"><a href="../../Html-docs/index.html">Matlab-src-tree</a>
+      </li>
+    </ul>
+    <div id="contents">
+      <h1>Getting started (ASK)</h1>
+      <p>
+	AIDA-tools, and the star calibration is flexible in the sense
+	that it is possible to do geometric calibration of image data in
+	several formats (both data format and formats of the meta-data.)
+	To make the geometric calibration/star-calibration in AIDA-tools
+	play nicely with image-data the image reading function needs to
+	give sufficient "meta-data" about the image. Since the positions
+	of the stars (azimuth and zenith angles) is used to determine
+	the camera rotation and the field-of-view the meta data has to
+	provide information about the location where the imager was
+	located and the time and date of the exposure.
+      </p>
+      <p>
+	To show how to set everything up for calibration of an ASK
+	imager an anotated and illustrated example is shown here.
+      <ul>
+	<li>1. First the ASK Mega-block has to be initialized:
+      </ul>
+      <pre>
+   >> files12 = '20120124193524r1.txt';
+   >> ASK_read_vs(1,files12)
+ans = 
+    videodir: '/stp/raid2/ask/data'
+        HDIR: '/export/data/bjg1c10/ASK/'
+        vsel: 1
+        vcam: {'ASK #1'  'ASK #2'  'ASK #2'}
+        vdir: {'20120124193524r1'  '20061214231327r2'  '20061214231327r2'}
+       vname: {'images-'  'image-'  'image-'}
+        vmjs: [1.9586e+09 1.7973e+09 1.7973e+09]
+         vnf: [1 1 1]
+      vnstep: [1 1 1]
+         vnl: [19200 38400 38400]
+        vres: [0.03125 0.03125 0.03125]
+        vftr: {'6730'  '7320'  '7320'}
+        vlat: [78.153 69.58 69.58]
+        vlon: [16.029 19.22 19.22]
+        vcnv: [3x8 double]
+        dimx: [256 256 256]
+        dimy: [256 256 256]
+        vtyp: {'askv8'  'ask'  'ask'}
+        vdrk: {'nodark'  '20061214231302d2.dark'  '20061214231302d2.dark'}
+        vflt: {'noflat'  'noflat'  'noflat'}
+      </pre>
+      <p>
+	The <strong>starcal</strong> program in general takes a
+	filename (full or relative path) of the image to use for
+	calibration, and an optional structure with preprocessing
+	directives. However, ASK_read_v takes the index/number in the
+	Megablock (20120124193524r1) of the frame to read, so here
+	things has to be done slightly differently. So:
+      </p>
+      <ul>
+	<li>2. Then create the preprocessing structure:
+      </ul>
+      <pre>
+   >> PO = typical_pre_proc_ops('none')
+PO = 
+               filetype: ''
+                quadfix: 0
+            quadfixsize: 0
+          replaceborder: 0
+              badpixfix: 0
+             outimgsize: 0
+           medianfilter: 0
+            defaultccd6: 0
+        bias_correction: 0
+             bzero_sign: 0
+                  imreg: []
+                  C_cam: []
+     remove_these_stars: []
+                 optpar: []
+             size_r_t_s: 2
+       v_interf_notches: []
+                    psf: []
+                    ffc: []
+          fix_missalign: 0
+                   verb: 0
+     interference_level: Inf
+    interference_method: 'flat'
+       interference_swf: 3
+             img_histeq: 0
+              hist_crop: 0
+    try_to_be_smart_fnc: ''
+                log2obs: ''
+          read_data_fcn: ''
+            find_optpar: 0
+          StarCalResDir: '/export/data/bjg1c10/ALIS/stdnames/2002/03/10/20'
+      </pre>
+      <p>
+	(The <strong>PO</strong> structure contains a number of fields
+	controling the preprocessing of images as they are read in
+	with the <a href="../../Html-docs/Fits_tools/inimg.html">inimg.m</a>
+	function, and some fields more directly related to
+	star/geometric calibration. These are <em>optpar</em> and
+	<em>StarCalResDir</em>. The latter points to the directory
+	where the calibration results will be saved.
+      </p>
+      <p>
+	To make starcal read ASK images we need to use the flexibility
+	of starcal, by giving it instructions to use the ASK_read_v
+	function.
+      <ul>
+	<li>3.Set the <strong>read_data_fnc</strong> field of the PO
+	  struct to a function handle to a function that returns an
+	  image:
+      </ul>
+      <pre>
+   >> PO.read_data_fnc = @(filename) ASK_read_v(16,[],[],[]);
+      </pre>
+      <p>
+	Meta data needs to be handles too, so...
+      </p>
+      <ul>
+	<li>4.Set the <strong>try_to_be_smart_fnc</strong> field of the PO
+	  struct to a function handle that returns the obs-structure
+	  with the necessary fields:
+      </ul>
+      <pre>
+   >> PO.try_to_be_smart_fnc = @(filename)anything2obs(filename,16,...
+                                                       'xyz',[0,0,0],...
+                                                       'longlat',[16.029,78.153],...
+                                                       'station',12,...
+                                                       'time',[2012,1,24,19,35,24],...
+                                                       'filter',6730,...
+                                                       'dt',1/32,...
+                                                       'optpar',[vs.vcnv(vs.vsel,:),11,0]);
+
+      </pre>
+      <p>
+	In the above the fields <strong>longlat</strong>,
+	<strong>time</strong> and <strong>optpar</strong> are needed,
+	the second input argument, <strong>16</strong> is the frame
+	numer we're reading with with PO.read_data_fcn, and with the
+	<strong>dt</strong> field set to 1/32 s, the observation time
+	will be steped forward 16*1/32 s. <strong>longlat</strong> is
+	the longitude and latitude of the observation location, and
+	<strong>time</strong> is the start time of the mega-block from
+	which we calculate the exposure time of the frame. If the
+	<strong>optpar</strong> field is set starcal uses that as the
+	start guess for the camera field-of-view.
+      </p>
+      <ul>
+      </li>5. Further, starcal needs to be told to load stars from
+	  the SAO catalog, and not the Bright Star Catalog. To do so
+	  we need to set a field <strong>SAO</strong> in PO to 1:
+      </ul>
+      <pre>
+   >> PO.SAO = 1;
+      </pre>
+      <ul>
+	<li>6. Then everything should be set up for calling
+	  <a href="../../Html-docs/Starcal/starcal.html">starcal</a>
+	  takes a string argument with the name of the image to load
+	  (full or relative path), but with ASK_read_v image frames
+	  are read from the current Mega-block with its sequence
+	  number as input parameter. Here we have circumvented the
+	  need for a filename by setting PO.read_data_fcn to read
+	  frame 16 (hardcoded), but the "filenname" argument is used
+	  for creating the name of files when saving results so lets
+	  give it a descriptive name:
+      </ul>
+      <pre>
+   >> SkMp = starcal('20120124193524r1-frame16',PO);
+      </pre>
+      <p>
+	(Here it should be noted that the output variable from starcal
+	should be litteral "SkMp" for programming reasons. The starcal
+	graphical user interface needs the output to be SkMp because
+	many GUI callback functions have an input argument that should
+	be the output variable from "starcal" - and in those callback
+	calls this variable name is set to SkMp inside starcal. This
+	is a bit clunky, but it works.)
+      </p>
+      <p>
+	This brings up 3 figure windows, one with the main graphical
+	interface with the stars overlayed over the image and four
+	sliders and 3 pop-up menus for controlling the calibration:
+	<a href="../images/starcal-ASK-02.png">Image
+	  display</SPAN></strong> <a
+	  href="../images/starcal-ASK-02.png"><img ALIGN=LEFT HSPACE=30
+	    VSPACE=35 HEIGHT=280 WIDTH=280
+	    src="../images/starcal-ASK-02.png"></a>  
+	Here the sliders, menus and buttons control:
+      <ol>
+	<li> The field-of-view size
+	<li> The Rotation around the optical axis
+	<li> The azimuth angle
+	<li> The elevation/zenith angle
+	<li> The magnitude limit (of the faintest stars to plot)
+	<li> Morroring (horizontal and vertical) of the star-field
+	<li> On-Off toggle of the sliders.
+      </ol>
+    </p>
+      <p>
+	Here two things are obvious: 1, there are no stars brighter
+	than magnitude 5 inside the current assumed field-of-view, the
+	image is a bit faint. To improve the image signal-to-noise it
+	is possible to add up a number of frames and put that image in
+	place of the one read in:
+	<pre ALIGN=LEFT>
+   >> D = 0;
+   >> for i1 = 1:32;
+        img_out = ASK_read_v(i1,[],[],[],ops);
+        D = D+img_out/32;
+      end
+   >> SkMp.img = D;
+      </pre>
+      ...and then change the faintest star magnitude to 8.5. This
+      should make the figure look something like this:
+     </p>
+     <p>
+ 	<a href="../images/starcal-ASK-03.png"></SPAN></strong> <a
+	  href="../images/starcal-ASK-03.png"><img ALIGN=center HSPACE=300
+	    VSPACE=15 HEIGHT=280 WIDTH=280
+	    src="../images/starcal-ASK-03.png"></a>
+     </p>
+     <p>
+      starcal keeps the intensity range fixed, so to brighten the
+      display it might be good to lower the upper limit by either
+      setting it explicitly with <em>caxis</em> or with <a
+	href="../../Html-docs/Imgtools/imgs_smart_caxis.html">imgs_smart_caxis</a> 
+      </p>
+      <p>
+	With a decent to good initial guess of the optical parameters
+	this should be very straightforward to do the identification
+	of stars in the image and associate them with their
+	corresponding stars from the star catalog - it is just to follow
+	the steps described in <a
+	  href="../starcal.html#starcal-identification">starcal</a>.
+	After identifying a few stars the figure might look like this:
+      </p>
+     <p>
+ 	<a href="../images/starcal-ASK-04.png"></SPAN></strong> <a
+	  href="../images/starcal-ASK-04.png"><img ALIGN=center HSPACE=300
+	    VSPACE=15 HEIGHT=280 WIDTH=280
+	    src="../images/starcal-ASK-04.png"></a>
+     </p>
+      <p>
+	To get the optimally adjusted optical parameters it is just to
+	select the "Search optpar" menu item in the "Starcal" menu and
+	push the search optpar button in the figure that is
+	created. The search is done with "fminsearch" function. After
+	that has finished, and the "plot id-stars" menu item
+	is selected the fit between the overlayed stars from the
+	catalog and the stars should match up well:
+      </p>
+     <p>
+ 	<a href="../images/starcal-ASK-05.png"></SPAN></strong> <a
+	  href="../images/starcal-ASK-05.png"><img ALIGN=center HSPACE=300
+	    VSPACE=15 HEIGHT=280 WIDTH=280
+	    src="../images/starcal-ASK-05.png"></a>
+     </p> 
+      <p>
+	After this one can chose to run the "semiautoidentification"
+	to identify many more stars, or directly save the current
+	optical parameters - either to file by chosing the "save
+	optpar" menu item, or manually extract them for further
+	manipulations (writing into a cameraN.lut for example) by:
+      </p>
+      <pre>
+   >> optp = SkMp.optpar
+      </pre>
+      <p>
+	To repeat all matlab commands necessary to produce a working
+	starcal in initialized state, this is what is needed for ASK:
+      </p>
+      <pre>
+>> if 1
+     files12 = '20120124193524r1.txt';
+     ASK_read_vs(1,files12)
+     global vs
+     frameNR = 16;
+     PO = typical_pre_proc_ops('none');
+     PO.SAO = 1;
+     PO.frame = frameNR;
+     PO.read_data_fcn = @(filename)read_ASKimgs(filename,PO);
+     PO.try_to_be_smart_fnc = @(filename)anything2obs(filename,frameNR,...
+                                           'xyz',[0,0,0],...
+                                           'longlat',[16.029,78.153],...
+                                           'station',12,...
+                                           'time',[2012,1,24,19,35,24],...
+                                           'filter',6730,...
+                                           'dt',1/32,...
+                                           'optpar',[vs.vcnv(vs.vsel,:),11,0]);
+     SkMp = starcal('20120124193524r1-frame16.dat',PO);
+     D = 0;
+     for i1 = 1:32;
+       img_out = ASK_read_v(i1,[],[],[]);
+       D = D+img_out/32;
+     end
+     SkMp.img = D;
+     imgs_smart_caxis(0.001,SkMp.img) % histogram clipping of intensity range
+     updstrpl(SkMp) % This is just to provoke a redraw with the new image
+   end
+      </pre>
+   </div>
+    <address><a href="mailto:bjg1c10.gustavsson@phys.uit.no">Bjorn Gustavsson</a></address>
+    <!-- Created: Wed Feb  8 16:37:12 GMT 2012 -->
+    <!-- hhmts start -->Last modified: Mon Apr 15 00:22:19 CEST 2013 <!-- hhmts end -->
+  </body>
+</html>

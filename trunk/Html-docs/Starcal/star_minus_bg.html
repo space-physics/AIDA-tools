@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of star_minus_bg</title>
+  <meta name="keywords" content="star_minus_bg">
+  <meta name="description" content="STAR_MINUS_BG - background reduction from star">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>star_minus_bg
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STAR_MINUS_BG - background reduction from star</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function starint = star_minus_bg(in_starint) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STAR_MINUS_BG - background reduction from star
+   
+ Calling:
+ starint = star_minus_bg(in_starint)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="starint.html" class="code" title="function [starintens] = starint(fv,xmin,xmax,ymin,ymax)">starint</a>	STARINT evaluation of a 2D gaussian.</li><li><a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>	MEDFILT2 - 2 dimensional sliding median filter</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function starint = star_minus_bg(in_starint)</a>
+0002 <span class="comment">% STAR_MINUS_BG - background reduction from star</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% starint = star_minus_bg(in_starint)</span>
+0006 
+0007 
+0008 <span class="comment">%   Copyright � 2002 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0009 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0010 
+0011 xmin = 1;
+0012 xmax = size(in_starint,2);
+0013 ymin = 1;
+0014 ymax = size(in_starint,1);
+0015 
+0016 starmat = <a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(in_starint([1 1:end end],[1 1:end end]),[3 3]);
+0017 starmat = starmat(2:end-1,2:end-1);
+0018 
+0019 x = xmin:xmax;
+0020 y = ymin:ymax;
+0021 [x1,y1] = meshgrid(x,y);
+0022 
+0023 b = [starmat(1,:),starmat(<span class="keyword">end</span>,:),starmat(:,1)',starmat(:,end)',starmat(3,:),starmat(end-2,:),starmat(:,3)',starmat(:,end-2)'];
+0024 X = [x1(1,:),x1(<span class="keyword">end</span>,:),x1(:,1)',x1(:,end)',x1(3,:),x1(end-2,:),x1(:,3)',x1(:,end-2)'];
+0025 Y = [y1(1,:),y1(<span class="keyword">end</span>,:),y1(:,1)',y1(:,end)',y1(3,:),y1(end-2,:),y1(:,3)',y1(:,end-2)'];
+0026 
+0027 bakgr2 = griddata(X,Y,b,x1,y1,<span class="string">'v4'</span>)*2/3+griddata(X,Y,b,x1,y1,<span class="string">'cubic'</span>)/3;
+0028 
+0029 <a href="starint.html" class="code" title="function [starintens] = starint(fv,xmin,xmax,ymin,ymax)">starint</a> = in_starint - bakgr2;
+0030</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

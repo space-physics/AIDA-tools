@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_camera_invmodel</title>
+  <meta name="keywords" content="ASK_camera_invmodel">
+  <meta name="description" content="ASK_camera_invmodel - the inverse camera model for the ASK instrument.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>ASK_camera_invmodel
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_camera_invmodel - the inverse camera model for the ASK instrument.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [az,el] = ASK_camera_invmodel(x,y,a) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_camera_invmodel - the inverse camera model for the ASK instrument.
+  
+ Calling:
+  [x,y] = ASK_camera_invmodel(x,y,a)
+ Input:
+  x - Horizontal pixel coordinates [n x m]
+  y - Vertical  pixel coordinates [n x m]
+  a - optical parameters
+ Output:
+  az - Azimuth (radians) [n x m]
+  el - elevation (radians) [n x m]
+ 
+ Adapted by B Gustavsson on 20101104 from conv_xy_ae.pro
+ (Ivchenko, Whiter, Dahlgren)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ask_conv_cart2sphere.html" class="code" title="function [Out1,Out2] = ask_conv_cart2sphere(a,d,aref,dref,f,g,sphere2cart)">ask_conv_cart2sphere</a>	ASK_CONV_CART2SPHERE - conversion used in ASK_camera_[inv]model</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>	CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [az,el] = ASK_camera_invmodel(x,y,a)</a>
+0002 <span class="comment">% ASK_camera_invmodel - the inverse camera model for the ASK instrument.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  [x,y] = ASK_camera_invmodel(x,y,a)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  x - Horizontal pixel coordinates [n x m]</span>
+0008 <span class="comment">%  y - Vertical  pixel coordinates [n x m]</span>
+0009 <span class="comment">%  a - optical parameters</span>
+0010 <span class="comment">% Output:</span>
+0011 <span class="comment">%  az - Azimuth (radians) [n x m]</span>
+0012 <span class="comment">%  el - elevation (radians) [n x m]</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Adapted by B Gustavsson on 20101104 from conv_xy_ae.pro</span>
+0015 <span class="comment">% (Ivchenko, Whiter, Dahlgren)</span>
+0016 
+0017 
+0018 <span class="comment">%   Copyright � 2011 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0019 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0020 
+0021 <span class="comment">%</span>
+0022 <span class="comment">% Original comment:</span>
+0023 <span class="comment">%pro conv_xy_ae, x,y,az,el,a,back=back</span>
+0024 <span class="comment">%;</span>
+0025 <span class="comment">%; converts pixel coordinates to the azimuth and elevation, and back</span>
+0026 <span class="comment">%; using the conversion coefficients passed in &quot;a&quot;</span>
+0027 <span class="comment">%; even works with arrays!</span>
+0028 <span class="comment">%;</span>
+0029 <span class="comment">%; Inputs:</span>
+0030 <span class="comment">%;  x,y - Pixel coordinates</span>
+0031 <span class="comment">%;  a - cnv parameters</span>
+0032 <span class="comment">%; Outputs:</span>
+0033 <span class="comment">%;  ax, el - Azimuth and elevation, in radians.</span>
+0034 <span class="comment">%; Keywords:</span>
+0035 <span class="comment">%;  back - Switch inputs and outputs (except a)</span>
+0036 <span class="comment">%;</span>
+0037 x0 = 1e3 *a(1);
+0038 y0 = 1e3 *a(2);
+0039 a1 = 1e-3 *a(3);
+0040 a3 = 1e-10*a(4);
+0041 ay = 1e-1 *a(5);
+0042 th = a(6);
+0043 
+0044 rho = sqrt( (x-x0).^2 + (1+ay)^2.*(y-y0).^2 );
+0045 f = a1*rho + a3*rho.^3;
+0046 th_ = atan2( (1+ay)*(y-y0), x-x0);
+0047 fff = f.*cos(th+th_);
+0048 ggg = f.*sin(th+th_);
+0049 
+0050 Cartesian2spherical = 1;
+0051 [az,el] = <a href="ask_conv_cart2sphere.html" class="code" title="function [Out1,Out2] = ask_conv_cart2sphere(a,d,aref,dref,f,g,sphere2cart)">ask_conv_cart2sphere</a>([],[],a(7),a(8),fff,ggg,Cartesian2spherical);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

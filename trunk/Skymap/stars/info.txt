@@ -1,0 +1,9 @@
+# A basic set of bright stars.
+# Based on the 5th Revised edition of the Yale Bright Star Catalog, 1991, from
+# ftp://adc.gsfc.nasa.gov/pub/adc/archives/catalogs/5/5050.
+# Only those entries with a Bayer and/or Flamsteed number are retained here.
+# Format: Constellation BayerN-Flamsteed, as available. Bayer is truncated as
+#   requried to enforce a maximum total length of 13 imposed within xephem.
+# Common names were then overlayed by closest position match from hand-edited a
+# list supplied by Robert Tidd (inp@violet.berkeley.edu) and Alan Paeth
+# (awpaeth@watcgl.waterloo.edu)

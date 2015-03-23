@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_add_int_radar</title>
+  <meta name="keywords" content="ASK_add_int_radar">
+  <meta name="description" content="ASK_ADD_INT_RADAR - Image intenisity inside radar beam.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_add_int_radar
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_ADD_INT_RADAR - Image intenisity inside radar beam.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function I_of_T = ASK_add_int_radar(RadarSite,az,el,dphi,indices,Cams,optpar,r_camera) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_ADD_INT_RADAR - Image intenisity inside radar beam.
+   The calibrated ASK-image intensities inside a radar beam is
+   averaged for a sequence of images from one or more of the ASK
+   cameras.
+ 
+ Calling:
+  I_of_T = ASK_add_int_radar(RadarSite,az,el,dphi,indices,Cams,optpar,r_camera)
+ Input:
+  RadarSite - Initial of radar site [ 'T' | 'E' ] is used for
+              setting default azimuth, elevation and beam-width
+  az        - Azimuth angle of radar beam in degrees clockwise
+              from north 
+  el        - Elevation angle of radar beam in degrees
+  dphi      - radar half-beam-width degrees
+  indices   - indices of images to read-n-average. [1 x N]
+  Cams      - Array with camera numbers [1,2,3] 
+  optpar    - cell array, {1 x nCams}, with optical parameter for
+              cameras 
+  r_camera  - camera position. Might be useful for Ramfjord since
+              the Pre building is a several 100-ms away from the
+              dish.
+ Output:
+  I_of_T - time-series with average intensity inside the nominal
+           radar beam. Cell array {1 x nCams} with time-series of
+           size [1 x length(indices)] scaled to Rayleighs</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_get_ask_cal.html" class="code" title="function retval = ASK_get_ask_cal(mjs,cam)">ASK_get_ask_cal</a>	ASK_GET_ASK_CAL - get  absolute intensity calibration factors</li><li><a href="ASK_get_radar.html" class="code" title="function [u0,v0,r,u,v,dr] = ASK_get_radar(radar_site,az,el,dphi,optpar,imsiz,l,r_Camera,varargin)">ASK_get_radar</a>	ASK_GET_RADAR - plot the radar beam onto an image.</li><li><a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>	ASK_READ_V -</li><li><a href="ASK_roundmask.html" class="code" title="function RoundMask = ASK_roundmask( sx,sy, xc, yc, r )">ASK_roundmask</a>	ASK_ROUNDMASK - "circular" mask with ones in image sized [sy,sx]</li><li><a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>	ASK_V_SELECT - Set current camera index in global structure VS</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function I_of_T = ASK_add_int_radar(RadarSite,az,el,dphi,indices,Cams,optpar,r_camera)</a>
+0002 <span class="comment">% ASK_ADD_INT_RADAR - Image intenisity inside radar beam.</span>
+0003 <span class="comment">%   The calibrated ASK-image intensities inside a radar beam is</span>
+0004 <span class="comment">%   averaged for a sequence of images from one or more of the ASK</span>
+0005 <span class="comment">%   cameras.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%  I_of_T = ASK_add_int_radar(RadarSite,az,el,dphi,indices,Cams,optpar,r_camera)</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%  RadarSite - Initial of radar site [ 'T' | 'E' ] is used for</span>
+0011 <span class="comment">%              setting default azimuth, elevation and beam-width</span>
+0012 <span class="comment">%  az        - Azimuth angle of radar beam in degrees clockwise</span>
+0013 <span class="comment">%              from north</span>
+0014 <span class="comment">%  el        - Elevation angle of radar beam in degrees</span>
+0015 <span class="comment">%  dphi      - radar half-beam-width degrees</span>
+0016 <span class="comment">%  indices   - indices of images to read-n-average. [1 x N]</span>
+0017 <span class="comment">%  Cams      - Array with camera numbers [1,2,3]</span>
+0018 <span class="comment">%  optpar    - cell array, {1 x nCams}, with optical parameter for</span>
+0019 <span class="comment">%              cameras</span>
+0020 <span class="comment">%  r_camera  - camera position. Might be useful for Ramfjord since</span>
+0021 <span class="comment">%              the Pre building is a several 100-ms away from the</span>
+0022 <span class="comment">%              dish.</span>
+0023 <span class="comment">% Output:</span>
+0024 <span class="comment">%  I_of_T - time-series with average intensity inside the nominal</span>
+0025 <span class="comment">%           radar beam. Cell array {1 x nCams} with time-series of</span>
+0026 <span class="comment">%           size [1 x length(indices)] scaled to Rayleighs</span>
+0027 
+0028 
+0029 <span class="keyword">global</span> vs
+0030 <span class="keyword">global</span> asklut
+0031 
+0032 <span class="comment">% And get the intensity calibration factors for the event</span>
+0033 calib = <a href="ASK_get_ask_cal.html" class="code" title="function retval = ASK_get_ask_cal(mjs,cam)">ASK_get_ask_cal</a>(vs.vmjs(vs.vsel),Cams);
+0034 
+0035 <span class="keyword">for</span> i1 = 1:length(Cams),
+0036   
+0037   <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>(Cams(i1),<span class="string">'quiet'</span>); <span class="comment">% Set current camera to 1</span>
+0038   imsiz = [vs.dimx(vs.vsel),vs.dimy(vs.vsel)];
+0039   <span class="comment">% This got to be in there to calculate the image coordinates of the</span>
+0040   <span class="comment">% radar beam once for each camera</span>
+0041   [u0,v0,r] = <a href="ASK_get_radar.html" class="code" title="function [u0,v0,r,u,v,dr] = ASK_get_radar(radar_site,az,el,dphi,optpar,imsiz,l,r_Camera,varargin)">ASK_get_radar</a>(RadarSite,az,el,dphi,optpar{i1},imsiz,100,r_camera);
+0042   <span class="comment">% Then this has to make the Weighting mask for each camera.</span>
+0043   RoundMask = <a href="ASK_roundmask.html" class="code" title="function RoundMask = ASK_roundmask( sx,sy, xc, yc, r )">ASK_roundmask</a>( vs.dimx(vs.vsel),vs.dimy(vs.vsel), u0, v0, r );
+0044   nmask = sum(RoundMask(:));
+0045   RoundMask = logical(RoundMask);
+0046   
+0047   <span class="keyword">for</span> i2 = 1:length(indices),
+0048     im1 = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(indices(i2));   <span class="comment">% Read the ASK#1 image</span>
+0049     I_of_T{i1}(i2) = sum(im1(logical(RoundMask(:))))/nmask;
+0050   <span class="keyword">end</span>
+0051   I_of_T{i1} = I_of_T{i1}*calib(i1)/vs.vres(vs.vsel);
+0052   
+0053 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

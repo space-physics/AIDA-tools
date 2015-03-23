@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_get_dark_name</title>
+  <meta name="keywords" content="ASK_get_dark_name">
+  <meta name="description" content="ASK_GET_DARK_NAME - get the name of the dark megablock corresponding to the">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_get_dark_name
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_GET_DARK_NAME - get the name of the dark megablock corresponding to the</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [dark_name,dark_short] = ASK_get_dark_name(dpath,BeforeOrAfter) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_GET_DARK_NAME - get the name of the dark megablock corresponding to the
+ 'light' megablock.
+
+ Calling:
+   [dark_name,dark_short] = ASK_get_dark_name(dpath,BeforeOrAfter)
+ Inputs: 
+   dpath - the full path to the data megablock
+ Outputs:
+   dark_name - the full path to the dark megablock
+   dark_short - the dark megablock name (without full path)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>	ASK_TT_MJS - converts calendar date to modified Julian second</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_bias.html" class="code" title="function delta = ASK_bias(file)">ASK_bias</a>	ASK_BIAS - returns the bias drift of of megablock, by measuring the</li><li><a href="ASK_enable_datadir.html" class="code" title="function ASK_enable_datadir(datadir,smartdark,flat_tromso)">ASK_enable_datadir</a>	ASK_ENABLE_DATADIR - short routine to automatically enable</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [dark_name,dark_short] = ASK_get_dark_name(dpath,BeforeOrAfter)</a>
+0002 <span class="comment">% ASK_GET_DARK_NAME - get the name of the dark megablock corresponding to the</span>
+0003 <span class="comment">% 'light' megablock.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%   [dark_name,dark_short] = ASK_get_dark_name(dpath,BeforeOrAfter)</span>
+0007 <span class="comment">% Inputs:</span>
+0008 <span class="comment">%   dpath - the full path to the data megablock</span>
+0009 <span class="comment">% Outputs:</span>
+0010 <span class="comment">%   dark_name - the full path to the dark megablock</span>
+0011 <span class="comment">%   dark_short - the dark megablock name (without full path)</span>
+0012 <span class="comment">%</span>
+0013 
+0014 <span class="comment">% Written to mimic behaviour of get_dark_name.pro</span>
+0015 
+0016 <span class="comment">% Dan fixed a bug, so that this works even when enabling the last megablock</span>
+0017 <span class="comment">% in the data directory (it didn't work before). 23/07/2009</span>
+0018 <span class="comment">%</span>
+0019 
+0020 
+0021 slsh = filesep; <span class="comment">% General file separator, with usage of fullfile</span>
+0022                 <span class="comment">% and fileparts this should make function OS</span>
+0023                 <span class="comment">% independent....</span>
+0024 <span class="comment">% Strip trailing &quot;/&quot; if necessary.</span>
+0025 <span class="keyword">if</span> isequal(dpath(end),slsh) 
+0026   Dpath = dpath(1:end-1);
+0027 <span class="keyword">else</span>
+0028   Dpath = dpath;
+0029 <span class="keyword">end</span>
+0030 
+0031 <span class="comment">% Directory with all ASK-data is in the directory one level above &quot;dpath&quot;</span>
+0032 iSlsh = findstr(Dpath,slsh);
+0033 DataDirName = Dpath(iSlsh(end)+1:end);
+0034 DataDirPath = Dpath(1:iSlsh(end));
+0035 
+0036 <span class="comment">% Get the date-n-time of data directory</span>
+0037 DataDNyyyyDDmmHHmmSS = sscanf(DataDirName,<span class="string">'%4d%02d%02d%02d%02d%02d'</span>)';
+0038 <span class="comment">% Keep track of data type: 'd'(-ark), 'r'(-eal), r#w real-awerage</span>
+0039 type = DataDirName(15);
+0040 <span class="comment">% Camera number</span>
+0041 nums = DataDirName(16);
+0042 
+0043 <span class="comment">% modified Julian seconds of data</span>
+0044 mjsData = <a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>(DataDNyyyyDDmmHHmmSS);
+0045 
+0046 <span class="comment">% Get all darks for camera #NUMS</span>
+0047 darksDirsN = dir([DataDirPath,slsh,<span class="string">'*d'</span>,nums]);
+0048 
+0049 i1 = length(darksDirsN);
+0050 <span class="comment">% make modified Julian seconds of most recent dark</span>
+0051 darkDNyyyyDDmmHHmmSS = sscanf(darksDirsN(i1).name,<span class="string">'%4d%02d%02d%02d%02d%02d'</span>)';
+0052 mjsDark = <a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>(darkDNyyyyDDmmHHmmSS);
+0053 
+0054 <span class="comment">% Loop from more recent darks towards earlier days, stop when darks</span>
+0055 <span class="comment">% dir older - return with the darks just before data-dir.</span>
+0056 <span class="keyword">while</span> i1 &gt; 1 &amp; mjsDark &gt; mjsData
+0057   
+0058   i1 = i1-1;
+0059   darkDNyyyyDDmmHHmmSS = sscanf(darksDirsN(i1).name,<span class="string">'%4d%02d%02d%02d%02d%02d'</span>)';
+0060   mjsDark = <a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>(darkDNyyyyDDmmHHmmSS);
+0061   Dmjs(i1) = mjsDark - mjsData;
+0062   
+0063 <span class="keyword">end</span>
+0064 
+0065 <span class="keyword">if</span> nargin == 2 &amp; strcmp(BeforeOrAfter,<span class="string">'later'</span>)
+0066   i1 = min(i1+1,length(darksDirsN));
+0067 <span class="keyword">end</span>
+0068 dark_short = darksDirsN(i1).name;
+0069 dark_name = fullfile(DataDirPath,dark_short);</pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

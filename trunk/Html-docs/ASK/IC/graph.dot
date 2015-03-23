@@ -1,0 +1,21 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  askChem2em_AVplot -> soton_ionchem_emissions_parser;
+  askChem2em_CERplot -> soton_ionchem_emissions_parser;
+  askChem2em_TAVplot -> soton_ionchem_emissions_parser;
+  sotonChem2em_AVplot -> soton_ionchem_emissions_parser;
+  sotonChem2em_CERplot -> soton_ionchem_emissions_parser;
+  sotonChem2em_TAVplot -> soton_ionchem_emissions_parser;
+
+  Contents [URL="Contents.html"];
+  askChem2em_AVplot [URL="askChem2em_AVplot.html"];
+  askChem2em_CERplot [URL="askChem2em_CERplot.html"];
+  askChem2em_TAVplot [URL="askChem2em_TAVplot.html"];
+  density_plotter [URL="density_plotter.html"];
+  sotonChem2em_AVplot [URL="sotonChem2em_AVplot.html"];
+  sotonChem2em_CERplot [URL="sotonChem2em_CERplot.html"];
+  sotonChem2em_TAVplot [URL="sotonChem2em_TAVplot.html"];
+  sotonICdensity_plotter [URL="sotonICdensity_plotter.html"];
+  soton_ionchem_density_parser [URL="soton_ionchem_density_parser.html"];
+  soton_ionchem_emissions_parser [URL="soton_ionchem_emissions_parser.html"];
+}

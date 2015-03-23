@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of stdposSOUTH_2006</title>
+  <meta name="keywords" content="stdposSOUTH_2006">
+  <meta name="description" content="stdposSOUTH_2006 - ALIS fields-of-view for position: SOUTH">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html ALIS --><!-- menu.html OldPosPlots -->
+<h1>stdposSOUTH_2006
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>stdposSOUTH_2006 - ALIS fields-of-view for position: SOUTH</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> stdposSOUTH_2006 - ALIS fields-of-view for position: SOUTH</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../ALIS/ALISstdpos_visvol.html" class="code" title="function hndl = ALISstdpos_visvol(stnNRs,AZstn,ZEstn,ALTstn,FOVstn,OPS)">ALISstdpos_visvol</a>	ALISSTDPOS_VISVOL - Display ALIS f-o-v ontop of topographic map</li><li><a href="../../ALIS/aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>	AIDA_VISIBLEVOL - Calculates the field of view from an ALIS   \  |  /</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% stdposSOUTH_2006 - ALIS fields-of-view for position: SOUTH</span>
+0002 
+0003 OPS = <a href="../../ALIS/aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>;
+0004 OPS.LL = 1;
+0005 OPS = rmfield(OPS,<span class="string">'clrs'</span>);
+0006 
+0007 stnNR = [  7,   3,   4,   5, 10, 11];
+0008 AZstn = [180, 215, 260, 148,180,183];
+0009 ZEstn = [ 30,  28,   7,  31, 30, 12];
+0010 ALTstn = 100*ones(size(stnNR));
+0011 FOVstn = [60,60,60,60,90,1];
+0012 
+0013 hndl = <a href="../../ALIS/ALISstdpos_visvol.html" class="code" title="function hndl = ALISstdpos_visvol(stnNRs,AZstn,ZEstn,ALTstn,FOVstn,OPS)">ALISstdpos_visvol</a>(stnNR,AZstn,ZEstn,ALTstn,FOVstn,OPS);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

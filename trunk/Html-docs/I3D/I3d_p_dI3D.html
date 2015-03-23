@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of I3d_p_dI3D</title>
+  <meta name="keywords" content="I3d_p_dI3D">
+  <meta name="description" content="I3d_p_dI3D - Integration of continuity equation with sources">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html I3D -->
+<h1>I3d_p_dI3D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>I3d_p_dI3D - Integration of continuity equation with sources</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> I3d_p_dI3D - Integration of continuity equation with sources
+ loss-rates drifts and diffusion, a pseudo-analytical scheme is
+ used. 
+ 
+ Calling: 
+  [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)
+ Input:
+  I0_r0_dr - array of prameters:
+  I0_r0_dr(1:11:end-4) - I0, peak values of Gaussians (respectively)
+  I0_r0_dr(2:11:end-4) - x0, center points in x direction
+  I0_r0_dr(3:11:end-4) - y0, center points in y direction
+  I0_r0_dr(4:11:end-4) - z0, center points in z direction
+  I0_r0_dr(5:11:end-4) - sx, width in x direction
+  I0_r0_dr(6:11:end-4) - sy, width in y direction
+  I0_r0_dr(7:11:end-4) - sz, width in z direction below z0
+  I0_r0_dr(8:11:end-4) - sz, width in z direction above z0
+  I0_r0_dr(9:11:end-4) - gamma, exponent of Gaussian exp(-d^gamma) vertical
+  I0_r0_dr(10:11:end-4) - fi, rotation of horisontal elipsoid.
+  I0_r0_dr(11:11:end-4) - gammaxy exponent of Gaussian exp(-d^gammaxy) horisontal
+  I0_r0_dr(end-3) - wind in x-direction
+  I0_r0_dr(end-2) - wind in y-direction
+  I0_r0_dr(end-1) - wind in z-direction
+  I0_r0_dr(end)   - Diffusion parameter
+  X - x-coordinate of 3-D grid [NxMxn]
+  Y - y-coordinate of 3-D grid [NxMxn]
+  Z - z-coordinate of 3-D grid [NxMxn]
+  t_in - time step to integrate over, dt = t_in(end)-t_in(end-1)
+  tau - lifetime of the species created, same sized as X, Y, Z, V_em
+  I3d  - input concentration of speices at t_in(end-1),[NxMxn]
+  dI3d - production during t_in(end-1):t_in(end), [NxMxn]</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="V_em_3d.html" class="code" title="function [V_em] = V_em_3d(I0_R0_DR,X,Y,Z,tau3D,T)">V_em_3d</a>	V_em_3d calculate volume emission rates by C-EQ integration with interpolated-parameters</li><li><a href="V_em_ex_alt.html" class="code" title="function [em_a,ex_a,ex_b,em_b] = V_em_ex_alt(I0_R0_DR,X,Y,Z,tau3D,T,fn)">V_em_ex_alt</a>	V_em_ex_alt, altitude, time variation of emission and excitation,</li><li><a href="V_em_ex_alt2.html" class="code" title="function [em_h,ex_h] = V_em_ex_alt2(I0_R0_DR,X,Y,Z,tau3D,T,fn)">V_em_ex_alt2</a>	V_em_ex_alt2 - time variation of altitude distribution of emission and excitation</li><li><a href="V_em_ex_alt_mag.html" class="code" title="function [em_a,ex_a] = V_em_ex_alt_mag(I0_R0_DR,X,Y,Z,tau3D,T)">V_em_ex_alt_mag</a>	V_em_ex_alt_mag - altitude distribution of emission and</li><li><a href="V_em_save_intrp.html" class="code" title="function ok = V_em_save_intrp(I0_R0_DR,X,Y,Z,tau3D,T)">V_em_save_intrp</a>	V_em_save_intrp - save volume distribution emission and</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)</a>
+0002 <span class="comment">% I3d_p_dI3D - Integration of continuity equation with sources</span>
+0003 <span class="comment">% loss-rates drifts and diffusion, a pseudo-analytical scheme is</span>
+0004 <span class="comment">% used.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%  [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%  I0_r0_dr - array of prameters:</span>
+0010 <span class="comment">%  I0_r0_dr(1:11:end-4) - I0, peak values of Gaussians (respectively)</span>
+0011 <span class="comment">%  I0_r0_dr(2:11:end-4) - x0, center points in x direction</span>
+0012 <span class="comment">%  I0_r0_dr(3:11:end-4) - y0, center points in y direction</span>
+0013 <span class="comment">%  I0_r0_dr(4:11:end-4) - z0, center points in z direction</span>
+0014 <span class="comment">%  I0_r0_dr(5:11:end-4) - sx, width in x direction</span>
+0015 <span class="comment">%  I0_r0_dr(6:11:end-4) - sy, width in y direction</span>
+0016 <span class="comment">%  I0_r0_dr(7:11:end-4) - sz, width in z direction below z0</span>
+0017 <span class="comment">%  I0_r0_dr(8:11:end-4) - sz, width in z direction above z0</span>
+0018 <span class="comment">%  I0_r0_dr(9:11:end-4) - gamma, exponent of Gaussian exp(-d^gamma) vertical</span>
+0019 <span class="comment">%  I0_r0_dr(10:11:end-4) - fi, rotation of horisontal elipsoid.</span>
+0020 <span class="comment">%  I0_r0_dr(11:11:end-4) - gammaxy exponent of Gaussian exp(-d^gammaxy) horisontal</span>
+0021 <span class="comment">%  I0_r0_dr(end-3) - wind in x-direction</span>
+0022 <span class="comment">%  I0_r0_dr(end-2) - wind in y-direction</span>
+0023 <span class="comment">%  I0_r0_dr(end-1) - wind in z-direction</span>
+0024 <span class="comment">%  I0_r0_dr(end)   - Diffusion parameter</span>
+0025 <span class="comment">%  X - x-coordinate of 3-D grid [NxMxn]</span>
+0026 <span class="comment">%  Y - y-coordinate of 3-D grid [NxMxn]</span>
+0027 <span class="comment">%  Z - z-coordinate of 3-D grid [NxMxn]</span>
+0028 <span class="comment">%  t_in - time step to integrate over, dt = t_in(end)-t_in(end-1)</span>
+0029 <span class="comment">%  tau - lifetime of the species created, same sized as X, Y, Z, V_em</span>
+0030 <span class="comment">%  I3d  - input concentration of speices at t_in(end-1),[NxMxn]</span>
+0031 <span class="comment">%  dI3d - production during t_in(end-1):t_in(end), [NxMxn]</span>
+0032 
+0033 
+0034 
+0035 <span class="comment">%   Copyright � 2002 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0036 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0037 
+0038 vx =   I0_r0_dr(end-3);
+0039 vy =   I0_r0_dr(end-2);
+0040 vz =   I0_r0_dr(end-1);
+0041 Diff = I0_r0_dr(end).^2;
+0042 
+0043 t = t_in; <span class="comment">% fixa!</span>
+0044 
+0045 dx = vx*(t(end)-t(end-1));
+0046 dy = vy*(t(end)-t(end-1));
+0047 dz = vz*(t(end)-t(end-1));
+0048 
+0049 
+0050 <span class="comment">% accounting for drift:</span>
+0051 V_em = interp3(X,Y,Z,permute(I3d,[2 1 3]),<span class="keyword">...</span>
+0052                X-dx,Y-dy,Z-dz);
+0053 V_em = permute(V_em,[2 1 3]);
+0054 <span class="comment">%i1 = find(~isfinite(V_em(:)));</span>
+0055 <span class="comment">%V_em(i1) = 0;</span>
+0056 V_em(~isfinite(V_em(:))) = 0;
+0057 
+0058 V_tot = sum(V_em(:)); <span class="comment">% total emission should be conserved durin</span>
+0059                       <span class="comment">% diffusion</span>
+0060 
+0061 <span class="comment">% acconting for diffusion</span>
+0062 [x,y,z] = meshgrid([-3:3],[-3:3],[-3:3]);
+0063 Ixyz_diff = ( 1/(pi*Diff(end)*(t(end)-t(end-1)))^1.5 <span class="keyword">...</span>
+0064           *exp(-( (x).^2 + (y).^2 + (z).^2 ) <span class="keyword">...</span>
+0065            /(Diff(end)*(t(end)-t(end-1)))) );
+0066 
+0067 V_em = convn(V_em,Ixyz_diff/sum(Ixyz_diff(:)),<span class="string">'same'</span>);
+0068 <span class="comment">%i1 = find(~isfinite(V_em(:)));</span>
+0069 <span class="comment">%V_em(i1) = 0;</span>
+0070 V_em(~isfinite(V_em(:))) = 0;
+0071 V_t_d = sum(V_em(:));
+0072 
+0073 <span class="keyword">if</span> ( V_t_d &gt; 0 )
+0074   
+0075   V_em = V_em*V_tot/V_t_d; <span class="comment">% Conserving total emission</span>
+0076   
+0077 <span class="keyword">end</span>
+0078 
+0079 <span class="comment">% accounting for decay with appropriate lifetime.</span>
+0080 It = exp(-(t(end)-t(end-1))./tau);
+0081 V_em = It.*V_em;
+0082 
+0083 V_em = V_em+dI3d;
+0084 <span class="keyword">if</span> any(V_em(:)&lt;0)
+0085   keyboard
+0086 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of automat2</title>
+  <meta name="keywords" content="automat2">
+  <meta name="description" content="AUTOMAT2 - total square of deviation between image and catalog position stars">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>automat2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>AUTOMAT2 - total square of deviation between image and catalog position stars</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [diff] = automat2(optpar,starteauw,mode,optpar2,lock_par,imsiz) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> AUTOMAT2 - total square of deviation between image and catalog position stars
+ Input OPTPAR is the optical parameters, STARTEAUW is a matrix that
+ gives the identified stars, MODE is scalar that specifies which
+ give the optical transfer function. LOCK_PAR is a vector with
+ length equal to the length of OPTPAR with 1 for constraining OPTPAR to
+ the value in OPTPAR2
+ 
+ Calling:
+ [diff] = automat2(optpar,starteauw,mode,optpar2,lock_par)
+ 
+ See also: <a href="automat4.html" class="code" title="function [diff] = automat4(sp,starteauw,optmod,sp2,lock_par, imsiz)">AUTOMAT4</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>	CAMERA_BASE - determine the coordinate system of the camera</li><li><a href="../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>	CAMERA_MODEL - determine the image coordinates of light from [az,ze]</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Starcal/M7/runopticsoptimization.html" class="code" title="function [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin)">runopticsoptimization</a>	RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [diff] = automat2(optpar,starteauw,mode,optpar2,lock_par,imsiz)</a>
+0002 <span class="comment">% AUTOMAT2 - total square of deviation between image and catalog position stars</span>
+0003 <span class="comment">% Input OPTPAR is the optical parameters, STARTEAUW is a matrix that</span>
+0004 <span class="comment">% gives the identified stars, MODE is scalar that specifies which</span>
+0005 <span class="comment">% give the optical transfer function. LOCK_PAR is a vector with</span>
+0006 <span class="comment">% length equal to the length of OPTPAR with 1 for constraining OPTPAR to</span>
+0007 <span class="comment">% the value in OPTPAR2</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Calling:</span>
+0010 <span class="comment">% [diff] = automat2(optpar,starteauw,mode,optpar2,lock_par)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% See also: AUTOMAT4</span>
+0013 
+0014 <span class="comment">%   Copyright �  1997 by Bjorn Gustavsson &lt;bjorn.gustavsson@irf.se&gt;</span>
+0015 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0016 
+0017 <span class="comment">%time = 1;</span>
+0018 
+0019 alpha0 = optpar(3);
+0020 beta0 = optpar(4);
+0021 gamma0 = optpar(5);
+0022 <span class="keyword">if</span> length(optpar) &gt; 9
+0023   [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(alpha0,beta0,gamma0,optpar(10));
+0024 <span class="keyword">else</span>
+0025   [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(alpha0,beta0,gamma0);
+0026 <span class="keyword">end</span>
+0027 <span class="comment">% $$$ az0 = optpar(3);</span>
+0028 <span class="comment">% $$$ el0 = optpar(4);</span>
+0029 <span class="comment">% $$$ roll0 = optpar(5);</span>
+0030 qwe = optpar(8);
+0031 
+0032 <span class="comment">% $$$ [e1,e2,e3] = camera_base(az0,el0,roll0);</span>
+0033 
+0034 Nrstj = size(starteauw,1);
+0035 tdiff = 0;
+0036 
+0037 <span class="keyword">for</span> i = 1:Nrstj,
+0038   
+0039   az = starteauw(i,1);
+0040   el = starteauw(i,2);
+0041   
+0042   [u,w] = <a href="../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>(az,el,e1,e2,e3,optpar,mode,imsiz);
+0043   tdiff = tdiff + (u-(starteauw(i,3)))^2+(w-(starteauw(i,4)))^2;
+0044   
+0045 <span class="keyword">end</span>
+0046 
+0047 <span class="keyword">if</span> ( mode ~= 3 )
+0048   
+0049   diff = tdiff^.5 + ( qwe - 1 )^2;
+0050   
+0051 <span class="keyword">else</span>
+0052   
+0053   diff = tdiff^.5;
+0054   
+0055 <span class="keyword">end</span>
+0056 
+0057 fix = 1e6*abs(optpar-optpar2).^1.25.*lock_par;
+0058 diff = diff + fix*fix';</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

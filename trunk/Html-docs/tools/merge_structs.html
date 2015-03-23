@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of merge_structs</title>
+  <meta name="keywords" content="merge_structs">
+  <meta name="description" content="MERGE_STRUCTS - Merge all fields of S2 into S1.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>merge_structs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>MERGE_STRUCTS - Merge all fields of S2 into S1.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function S_out = merge_structs(S1,S2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MERGE_STRUCTS - Merge all fields of S2 into S1.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/ALIS_auto_overview.html" class="code" title="function dOPS = ALIS_auto_overview(ops4AAO)">ALIS_auto_overview</a>	ALIS_AUTO_OVERVIEW - automated fits data to png image conversion</li><li><a href="../ALIS/ALIS_image_sequence.html" class="code" title="function varargout = ALIS_image_sequence(files,PO,OPS)">ALIS_image_sequence</a>	ALIS_IMAGE_SEQUENCE - to display an ALIS image sequence as movie</li><li><a href="../ALIS/ALISstdpos_visvol.html" class="code" title="function hndl = ALISstdpos_visvol(stnNRs,AZstn,ZEstn,ALTstn,FOVstn,OPS)">ALISstdpos_visvol</a>	ALISSTDPOS_VISVOL - Display ALIS f-o-v ontop of topographic map</li><li><a href="../ALIS/ssi_fe_from_4278n6300.html" class="code" title="function [feE,Cmtr,x_b100,Imax6300] = ssi_fe_from_4278n6300(theta,I4278,I6300,OPS)">ssi_fe_from_4278n6300</a>	SSI_FE_FROM_4278N6300 - Single Station Inversion Fe(E) from 4278 and 6300</li><li><a href="../ASK/HSOFT/ASK_add_int_radar.html" class="code" title="function I_of_T = ASK_add_int_radar(RadarSite,az,el,dphi,indices,Cams,optpar,r_camera,OPS)">ASK_add_int_radar</a>	ASK_ADD_INT_RADAR - Image intenisity inside radar beam.</li><li><a href="../ASK/HSOFT/ASK_fanograms.html" class="code" title="function [Keos,time_V,u,v] = ASK_fanograms(Indices2do,Cams,shifts,e_fan,width,OPS)">ASK_fanograms</a>	ASK_FANOGRAMS - Produce keograms of a fan-beam-cut from an ASK image sequence</li><li><a href="../ASK/HSOFT/ASK_image_play.html" class="code" title="function M = ASK_image_play(imgs1,imgs2,imgs3,OPS)">ASK_image_play</a>	ASK_IMAGE_PLAY - Convert image-stacks to matlab movie</li><li><a href="../ASK/HSOFT/ASK_image_sequence.html" class="code" title="function varargout = ASK_image_sequence(indices2show,Cams,OPS)">ASK_image_sequence</a>	ASK_IMAGE_SEQUENCE - to display an ASK image sequence as movie, and</li><li><a href="../ASK/HSOFT/ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li><li><a href="../ASK/HSOFT/ASK_keograms.html" class="code" title="function [keo1,keo2,keo3,time_V] = ASK_keograms(fir,las,ste,width,x0,y0,angle,bkg,dist,OPS)">ASK_keograms</a>	ASK_KEOGRAMS - Produce keograms keograms from an ASK image sequence</li><li><a href="../ASK/HSOFT/ASK_play_keolines.html" class="code" title="function M = ASK_play_keolines(keos,OPS)">ASK_play_keolines</a>	ASK_PLAY_KEOLINES -</li><li><a href="../ASK/HSOFT/ASK_play_keolines2.html" class="code" title="function [M,Xs] = ASK_play_keolines2(Keos,time_V,OPS)">ASK_play_keolines2</a>	ASK_PLAY_KEOLINES -</li><li><a href="../ASK/HSOFT/ASK_print_dat.html" class="code" title="function th = ASK_print_dat(time_mjs,FormatNoOrString,OPS)">ASK_print_dat</a>	ASK_PRINT_DAT - prints the date corresponding to a modified</li><li><a href="../ASK/HSOFT/ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>	ASK_READ_V - Read ASK image #i1 from current camera in current "mega-block"</li><li><a href="../ASK/HSOFT/ASK_slice2trmtr.html" class="code" title="function [trmtrs,eMfan,Vem,X,Y,Z,U,V] = ASK_slice2trmtr(phi_slice,Ops)">ASK_slice2trmtr</a>	ASK_SLICE2TRMTR - projection matrix from blobs in slice || B to ASK-image</li><li><a href="../Aurora/runner4FlamingRays.html" class="code" title="function Ibest = runner4FlamingRays(indices2run,Keos,IstartGuesses,Ibestest,trmtr2Dto1D,A1Z,A2Z,E,Y,Z,OPS)">runner4FlamingRays</a>	runner4FlamingRays - Estimate electron precipitation variation with E and Y</li><li><a href="../EARTH/gtopo2maps.html" class="code" title="function varargout = gtopo2maps(gtopo_file,gtopo_hdr,ops)">gtopo2maps</a>	GTOPO2MAPS - Parse gtopo digital elevation models</li><li><a href="../Geometry/getFieldLines.html" class="code" title="function [lon,lat,alt,xB,yB,zB] = getFieldLines(time_vec,LongLat0,fieldlinelength,OPS)">getFieldLines</a>	getFieldLines - magnetic field lines from the IGRF.</li><li><a href="../Imgtools/img_optflow.html" class="code" title="function varargout = img_optflow(I1,I2,OPS)">img_optflow</a>	IMG_OPTFLOW - optical-flow displacements with intensity-scaling adjustment</li><li><a href="../Imgtools/img_splinefilter.html" class="code" title="function [varargout] = img_splinefilter(img_in,OPS)">img_splinefilter</a>	IMG_SPLINEFILTER - spline fitting filter optimum statistical filter</li><li><a href="../Imgtools/img_svdfilter.html" class="code" title="function [varargout] = img_svdfilter(img_in,OPS)">img_svdfilter</a>	IMG_SVDFILTER - SVD fitting filter optimum statistical filter</li><li><a href="../Tomography/tomo_arcpeakfinderinslice.html" class="code" title="function [I_cuts,iPeaks] = tomo_arcpeakfinderinslice(stns,U,V,OPS)">tomo_arcpeakfinderinslice</a>	tomo_arcpeakfinderinslice - Finds peaks of emission along [U,V]</li><li><a href="../Tomography/tomo_cal.html" class="code" title="function [CalFactors,stns,calimgs] = tomo_cal(stns,XfI,YfI,ZfI,OPS)">tomo_cal</a>	tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</li><li><a href="../Tomography/tomo_cal0.html" class="code" title="function [CalFactors,stns,calimgs] = tomo_cal0(stns,XfI,YfI,ZfI,OPS)">tomo_cal0</a>	tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</li><li><a href="../Tomography/tomo_err4sliceGACT.html" class="code" title="function res = tomo_err4sliceGACT(Par,var_pars,par0,M2Dto1D,Ie2H,E,ImgCuts,X2D,Y2D,Z2D,biasAmplitudes,biasVals,out_arg_type,z_max,OPS)">tomo_err4sliceGACT</a>	tomo_err4sliceGACT - error function for estimating electron spectra</li><li><a href="../Tomography/tomo_start_guessGACT.html" class="code" title="function [Vem,I2D] = tomo_start_guessGACT(stns,Energy,Ie2H,Xslice,Yslice,Zslice,M2Dto1D,U,V,I_cuts,iPeaks,X3D,Y3D,Z3D,ops)">tomo_start_guessGACT</a>	tomo_start_guessGACT - makes 3-D distribution of volume emission rates</li><li><a href="ImageViewer.html" class="code" title="">ImageViewer</a>	</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function S_out = merge_structs(S1,S2)</a>
+0002 <span class="comment">% MERGE_STRUCTS - Merge all fields of S2 into S1.</span>
+0003 <span class="comment">%</span>
+0004 
+0005 
+0006 S_out = S1;
+0007 
+0008 fields2 = fieldnames(S2);
+0009 <span class="keyword">for</span> curr_field = [fields2(:)'],
+0010   
+0011   S_out = setfield(S_out,curr_field{:},getfield(S2,curr_field{:}));
+0012   
+0013 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

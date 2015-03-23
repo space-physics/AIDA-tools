@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of camera_base</title>
+  <meta name="keywords" content="camera_base">
+  <meta name="description" content="CAMERA_BASE - determine the coordinate system of the camera">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>camera_base
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>CAMERA_BASE - determine the coordinate system of the camera</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [e1,e2,e3] = camera_base(alfa,beta,fi,order) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">  CAMERA_BASE - determine the coordinate system of the camera 
+  ( e3 as the optical axes ). ALFA, BETA, FI are rotation angles
+  in degrees, (TAIT-BRYANT?).
+
+ Calling:
+ [e1,e2,e3] = camera_base(alfa,beta,fi)
+ 
+ Input:
+  alfa  - rotation angle around e_2, degrees
+  beta  - rotation angle around e_1, degrees
+  gamma - rotation angle around e_3, degrees
+ 
+ See also <a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">CAMERA_ROT</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>	CAMERA_ROT - determines the coordinate system of the camera</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="camera_mim_test.html" class="code" title="">camera_mim_test</a>	£££ Obsolete, perhaps, untested for such a long time it is</li><li><a href="project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>	PROJECT_DIRECTIONS - calculates the image positions [UA,WA] from (AZ,ZE)</li><li><a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>	PROJECT_POINT - project a point in space R down onto an image</li><li><a href="../Skymap/starplot.html" class="code" title="function [pstarsout] = starplot(pstars,SkMp)">starplot</a>	STARPLOT plots the skymap.</li><li><a href="../Spectral_cal/M6/star_int_search.html" class="code" title="function [idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,plstars,OPTS)">star_int_search</a>	[idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,pls</li><li><a href="../Spectral_cal/M7/star_int_search.html" class="code" title="function [idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,plstars,OPTS)">star_int_search</a>	[idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,plstars,OPTS)</li><li><a href="../Spectral_cal/star_int_model.html" class="code" title="function [varargout] = star_int_model(img_in,optpar,optmode,plstars,starpar,OPTS,BSTRNR)">star_int_model</a>	STAR_INT_MODEL - Model and plot of star</li><li><a href="../Spectral_cal/star_int_search_as.html" class="code" title="function [idstarsok,stars_par] = star_int_search_as(img_in,optpar,optmode,plstars,OPTS)">star_int_search_as</a>	STAR_INT_SEARCH identifies points in image with stars, make a parametrisation</li><li><a href="../Starcal/M6/autoidentify.html" class="code" title="function [idstarsok,stars_par] = autoidentify(SkMp)">autoidentify</a>	AUTOIDENTIFY - automatically identify all the stars of PLSTARS</li><li><a href="../Starcal/M6/runopticsoptimization.html" class="code" title="function [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin)">runopticsoptimization</a>	RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters</li><li><a href="../Starcal/M7/autoidentify.html" class="code" title="function [idstarsok,stars_par] = autoidentify(SkMp)">autoidentify</a>	AUTOIDENTIFY - automatically identify all the stars of PLSTARS</li><li><a href="../Starcal/M7/runopticsoptimization.html" class="code" title="function [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin)">runopticsoptimization</a>	RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters</li><li><a href="../Starcal/automat2.html" class="code" title="function [diff] = automat2(optpar,starteauw,mode,optpar2,lock_par,imsiz)">automat2</a>	AUTOMAT2 - total square of deviation between image and catalog position stars</li><li><a href="../Starcal/automat4.html" class="code" title="function [diff] = automat4(sp,starteauw,optmod,sp2,lock_par, imsiz)">automat4</a>	AUTOMAT4 - give sum tanh(dr)^2 between the image and catalog position of star</li><li><a href="../Starcal/findneareststarxy.html" class="code" title="function [staz,stze,stind,stmagn] = findneareststarxy(x0,y0,SkMp)">findneareststarxy</a>	FINDNEARESTSTARXY - find the star among PSTARS closest to X0, Y0</li><li><a href="../Starcal/make_r_o_theta.html" class="code" title="function [r,theta] = make_r_o_theta(az,ze,u,v,optpar,imgsize)">make_r_o_theta</a>	Function that determines the image coordinates of light from a</li><li><a href="../Starcal/remove_neareststarxy.html" class="code" title="function [staz,stze,stind,stmagn] = remove_neareststarxy(x0,y0,SkMp)">remove_neareststarxy</a>	remove_neareststarxy - remove the star among PSTARS closest to X0, Y0</li><li><a href="../Starcal/starplot2.html" class="code" title="function [pstarsout] = starplot2(pstars,SkMp)">starplot2</a>	STARPLOT2 plots the skymap.</li><li><a href="../Starcal/starsinimg.html" class="code" title="function [pstarsout,uk,wk] = starsinimg(pstars,optpar,optmod, imsiz)">starsinimg</a>	STARSINIMG is a function that plot the stars over the image.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [e1,e2,e3] = camera_base(alfa,beta,fi,order)</a>
+0002 <span class="comment">%  CAMERA_BASE - determine the coordinate system of the camera</span>
+0003 <span class="comment">%  ( e3 as the optical axes ). ALFA, BETA, FI are rotation angles</span>
+0004 <span class="comment">%  in degrees, (TAIT-BRYANT?).</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% [e1,e2,e3] = camera_base(alfa,beta,fi)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%  alfa  - rotation angle around e_2, degrees</span>
+0011 <span class="comment">%  beta  - rotation angle around e_1, degrees</span>
+0012 <span class="comment">%  gamma - rotation angle around e_3, degrees</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% See also CAMERA_ROT</span>
+0015 
+0016 
+0017 <span class="comment">%   Copyright � 20010330 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0018 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0019 
+0020 <span class="keyword">if</span> nargin &gt; 3
+0021   [rmat] = <a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>(alfa,beta,fi,order);
+0022 <span class="keyword">else</span>
+0023   [rmat] = <a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>(alfa,beta,fi);
+0024 <span class="keyword">end</span>
+0025 
+0026 e1 = [1;0;0];
+0027 e2 = [0;1;0];
+0028 e3 = [0;0;1];
+0029 
+0030 e1 = rmat*e1;
+0031 e2 = rmat*e2;
+0032 e3 = rmat*e3;
+0033</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

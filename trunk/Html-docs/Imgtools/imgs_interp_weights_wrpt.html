@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of imgs_interp_weights_wrpt</title>
+  <meta name="keywords" content="imgs_interp_weights_wrpt">
+  <meta name="description" content="IMGS_INTERP_WEIGHTS_WRPT - linear interpolation weights at T0">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>imgs_interp_weights_wrpt
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>IMGS_INTERP_WEIGHTS_WRPT - linear interpolation weights at T0</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [weights,indxes] = imgs_interp_weights_wrpt(times,t0) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> IMGS_INTERP_WEIGHTS_WRPT - linear interpolation weights at T0
+ relative to TIMES. 
+ 
+ Calling: [weights,indxes] = imgs_interp_weights_wrpt(times,t0)
+ 
+ Input:
+  times - time of of known data [nx1] or [1xn], should be sorted.
+  t0    - time for which to get linear interpolation weights [scalar]. 
+ 
+ Output:
+  weights - interpolation weight
+  indxes - index to the nearest smaller and larger elements in times</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [weights,indxes] = imgs_interp_weights_wrpt(times,t0)</a>
+0002 <span class="comment">% IMGS_INTERP_WEIGHTS_WRPT - linear interpolation weights at T0</span>
+0003 <span class="comment">% relative to TIMES.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling: [weights,indxes] = imgs_interp_weights_wrpt(times,t0)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%  times - time of of known data [nx1] or [1xn], should be sorted.</span>
+0009 <span class="comment">%  t0    - time for which to get linear interpolation weights [scalar].</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Output:</span>
+0012 <span class="comment">%  weights - interpolation weight</span>
+0013 <span class="comment">%  indxes - index to the nearest smaller and larger elements in times</span>
+0014 
+0015 
+0016 
+0017 <span class="comment">%   Copyright � 2005 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0018 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0019 
+0020 [min_dT,indx_thisT] = min(abs(times-t0)); <span class="comment">% 1 The time closest to t0</span>
+0021 
+0022 dt = (t0-times(indx_thisT));<span class="comment">% 2 The time to t0</span>
+0023 indx_nnT = indx_thisT+sign(dt);                 <span class="comment">% 3 index to point on the &quot;other side of t0&quot;</span>
+0024 dt = dt/diff(times(sort([indx_thisT indx_nnT])));
+0025 
+0026 
+0027 weights = [1-abs(dt) abs(dt)];
+0028 indxes = [indx_thisT indx_nnT];</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

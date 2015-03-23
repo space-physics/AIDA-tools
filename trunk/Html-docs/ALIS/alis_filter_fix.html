@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of alis_filter_fix</title>
+  <meta name="keywords" content="alis_filter_fix">
+  <meta name="description" content="ALIS_FILTER_FIX - convert ALIS filter to emission wavelength (A)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>alis_filter_fix
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ALIS_FILTER_FIX - convert ALIS filter to emission wavelength (A)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [emi] = alis_filter_fix(filter) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ALIS_FILTER_FIX - convert ALIS filter to emission wavelength (A)
+ 
+ Calling:
+   [emi] = alis_filter_fix(filter)
+ 
+ Input:
+   FILTER - alis filter index, hopefully accepts the different
+   formats 
+ 
+ Output:
+ CLRS - scaling factors between the different chanels</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/AVOK/alis_overviewmovie.html" class="code" title="function OK = alis_overviewmovie(moviename,Filenames,POs,mOpts)">alis_overviewmovie</a>	ALIS_OVERVIEWMOVIE - Makes movies of images in files</li><li><a href="../Tomography/tomo_inp_images.html" class="code" title="function stns = tomo_inp_images(file_list,stns,img_ops)">tomo_inp_images</a>	TOMO_INP_IMAGES - Preprocessing of images for tomography plus</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [emi] = alis_filter_fix(filter)</a>
+0002 <span class="comment">% ALIS_FILTER_FIX - convert ALIS filter to emission wavelength (A)</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   [emi] = alis_filter_fix(filter)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%   FILTER - alis filter index, hopefully accepts the different</span>
+0009 <span class="comment">%   formats</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Output:</span>
+0012 <span class="comment">% CLRS - scaling factors between the different chanels</span>
+0013 
+0014 
+0015 <span class="comment">%   Copyright � 20050112 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0016 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0017 
+0018 <span class="keyword">if</span> isempty(filter)
+0019   emi = -1;
+0020   <span class="keyword">return</span>
+0021 <span class="keyword">end</span>
+0022 <span class="comment">%        A-em A-fc nm-e  fnr</span>
+0023 green = [5577 5590 557.7  0];
+0024 red =   [6300 6310 630.0  1];
+0025 ir =    [8446 8450 844.6  4];
+0026 blue =  [4278 4290 427.8  5];
+0027 
+0028 f_diff(1) = min(abs(filter-green))/(filter+2*eps);
+0029 f_diff(2) = min(abs(filter-red))/(filter+2*eps);
+0030 f_diff(3) = min(abs(filter-ir))/(filter+2*eps);
+0031 f_diff(4) = min(abs(filter-blue))/(filter+2*eps);
+0032 
+0033 [f_d_min,best_filter] = min(f_diff);
+0034 
+0035 emi = 0;
+0036 
+0037 <span class="keyword">if</span> min(f_diff) &lt; 0.1
+0038   
+0039   <span class="keyword">switch</span> best_filter
+0040    <span class="keyword">case</span> 1 <span class="comment">% green line</span>
+0041     emi = 5577;
+0042    <span class="keyword">case</span> 2
+0043     emi = 6300;
+0044    <span class="keyword">case</span> 3
+0045     emi = 8446;
+0046    <span class="keyword">case</span> 4
+0047     emi = 4278;
+0048    <span class="keyword">otherwise</span>
+0049     
+0050     <span class="comment">% All f_diff &gt; .1 not really close to any well known filter</span>
+0051     <span class="comment">% do no coloring and return gray image.</span>
+0052     
+0053   <span class="keyword">end</span>
+0054   
+0055 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

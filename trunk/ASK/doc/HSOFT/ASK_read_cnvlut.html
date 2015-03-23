@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_read_cnvlut</title>
+  <meta name="keywords" content="ASK_read_cnvlut">
+  <meta name="description" content="ASK_READ_CNVLUT - reads the camera parameter lookup table">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_read_cnvlut
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_READ_CNVLUT - reads the camera parameter lookup table</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [cnv_t1,cnv_t2,cnv_data] = ASK_read_cnvlut(filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_READ_CNVLUT - reads the camera parameter lookup table
+
+ Calling:
+   [cnv_t1,cnv_t2,cnv_data] = ASK_read_cnvlut(filename)
+ Input:
+  filename - name of cnv-file, typically something like
+             /stp/raid2/ask/data/setup/camera[123].lut
+  Output:
+   cnv_t1   - Start time of camera parameters (MJS)
+   cnv_t2   - Stop time of camera parameters (MJS)
+   cnv_data - Camera parameters</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>	ASK_TT_MJS - converts calendar date to modified Julian second</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_read_vs.html" class="code" title="function vs = ASK_read_vs(num,filename,quiet)">ASK_read_vs</a>	ASK_READ_VS -  the procedure to read the videoevent setup - the new version</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [cnv_t1,cnv_t2,cnv_data] = ASK_read_cnvlut(filename)</a>
+0002 <span class="comment">% ASK_READ_CNVLUT - reads the camera parameter lookup table</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   [cnv_t1,cnv_t2,cnv_data] = ASK_read_cnvlut(filename)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  filename - name of cnv-file, typically something like</span>
+0008 <span class="comment">%             /stp/raid2/ask/data/setup/camera[123].lut</span>
+0009 <span class="comment">%  Output:</span>
+0010 <span class="comment">%   cnv_t1   - Start time of camera parameters (MJS)</span>
+0011 <span class="comment">%   cnv_t2   - Stop time of camera parameters (MJS)</span>
+0012 <span class="comment">%   cnv_data - Camera parameters</span>
+0013 
+0014 <span class="comment">% Written to mimic read_cnvlut.pro</span>
+0015 <span class="comment">% Copyright Bjorn Gustavsson 20110207</span>
+0016 <span class="comment">% GNU Copyleft 3.0 or later applies.</span>
+0017 
+0018 <span class="comment">% Must be DECLARATION OF:</span>
+0019 <span class="comment">% common cnvlut, cnv_t1, cnv_t2, cnv_data</span>
+0020 
+0021 <span class="keyword">global</span> cnvlut <span class="comment">% FOR: cnv_t1 cnv_t2 cnv_data</span>
+0022 
+0023 
+0024 fid = fopen(filename,<span class="string">'r'</span>);
+0025 <span class="keyword">if</span> fid == -1
+0026   error([<span class="string">'could not open file: '</span>,filename])
+0027 <span class="keyword">end</span>
+0028 
+0029 <span class="comment">% Date format is: day/month/year hh:mm:ss</span>
+0030 formatStr = <span class="string">'%f/%f/%f %f:%f:%f %f/%f/%f %f:%f:%f %f %f %f %f %f %f %f %f'</span>;
+0031 CNV = textscan(fid,formatStr,<span class="string">'CommentStyle'</span>,<span class="string">'#'</span>);
+0032 <span class="comment">% So here we resort them into yyyy, mm, dd, HH...</span>
+0033 cnv_t1 = [CNV{3},CNV{2},CNV{1},CNV{4},CNV{5},CNV{6}];
+0034 cnv_t2 = [CNV{9},CNV{8},CNV{7},CNV{10},CNV{11},CNV{12}];
+0035 
+0036 cnv_data = [CNV{13},CNV{14},CNV{15},CNV{16},CNV{17},CNV{18},CNV{19},CNV{20}];
+0037 
+0038 cnv_t1 = <a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>(cnv_t1);<span class="comment">%(:,[3,2,1,4,5,6]));</span>
+0039 cnv_t2 = <a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>(cnv_t2);<span class="comment">%(:,[3,2,1,4,5,6]));</span>
+0040 
+0041 fclose(fid);
+0042 
+0043 cnvlut.cnv_t1 = cnv_t1;
+0044 cnvlut.cnv_t2 = cnv_t2;
+0045 cnvlut.cnv_data = cnv_data;</pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

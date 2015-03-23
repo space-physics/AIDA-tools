@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ssi_fe_from_4278n6300</title>
+  <meta name="keywords" content="ssi_fe_from_4278n6300">
+  <meta name="description" content="SSI_FE_FROM_4278N6300 - Single Station Inversion Fe(E) from 4278 and 6300">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>ssi_fe_from_4278n6300
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SSI_FE_FROM_4278N6300 - Single Station Inversion Fe(E) from 4278 and 6300</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [feE,Cmtr,x_b100,Imax6300] = ssi_fe_from_4278n6300(theta,I4278,I6300,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SSI_FE_FROM_4278N6300 - Single Station Inversion Fe(E) from 4278 and 6300
+   data. The function uses slices in images in 4278 and 6300 A
+   accompanied with the corresponding zenith angles to estimate
+   the electron energy distribution of precipitating auroral
+   electrons. The method assumes that the auroral electrons
+   precipitate in a few discrete regions comparatively narrow in
+   width. Coupled with the fact that the 6300 emission peaks at/in a
+   comparatively narrow altitude range between 190 and 210 km this
+   assumption makes it possible to determine the range to the
+   regions with signifficant precipitation. Then it is a linear
+   inverse problem to estimate the electron energy distribution
+   from the estimated altitude distribution of the 4278 A
+   emission. 
+ 
+ Calling:
+ [feE,Cmtr,x_b100,Imax6300] = ssi_fe_from_4278n6300(theta,I4278,I6300,OPS)
+ 
+ Input:
+   THETA - zenith angle in radians.
+   I4278 - image intensity in projection of plane || magnetic field  4278 A emission from N_2^+
+   I6300 - image intensity in projection of plane || magnetic field  6300 A emission from O(1D)
+           The image intensities should be in Rayleighs
+   OPS   - struct with options, default structure is returned as
+   single output when the function is called with no input
+   arguments is specified.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Inversion/cos2_trmtr2d.html" class="code" title="function [trmtr,fi_out] = cos2_trmtr2d(r0,phi,X,Z,dl)">cos2_trmtr2d</a>	COS2_TRMTR - transfer matrix from X,Z onto fan beam R,PHI</li><li><a href="../Inversion/dlsq_svd.html" class="code" title="function [ra] = dlsq_svd(U,S,V,d)">dlsq_svd</a>	DLSQ_SVD damped least square solution to inverse problem using SVD matrices</li><li><a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [feE,Cmtr,x_b100,Imax6300] = ssi_fe_from_4278n6300(theta,I4278,I6300,OPS)</a>
+0002 <span class="comment">% SSI_FE_FROM_4278N6300 - Single Station Inversion Fe(E) from 4278 and 6300</span>
+0003 <span class="comment">%   data. The function uses slices in images in 4278 and 6300 A</span>
+0004 <span class="comment">%   accompanied with the corresponding zenith angles to estimate</span>
+0005 <span class="comment">%   the electron energy distribution of precipitating auroral</span>
+0006 <span class="comment">%   electrons. The method assumes that the auroral electrons</span>
+0007 <span class="comment">%   precipitate in a few discrete regions comparatively narrow in</span>
+0008 <span class="comment">%   width. Coupled with the fact that the 6300 emission peaks at/in a</span>
+0009 <span class="comment">%   comparatively narrow altitude range between 190 and 210 km this</span>
+0010 <span class="comment">%   assumption makes it possible to determine the range to the</span>
+0011 <span class="comment">%   regions with signifficant precipitation. Then it is a linear</span>
+0012 <span class="comment">%   inverse problem to estimate the electron energy distribution</span>
+0013 <span class="comment">%   from the estimated altitude distribution of the 4278 A</span>
+0014 <span class="comment">%   emission.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Calling:</span>
+0017 <span class="comment">% [feE,Cmtr,x_b100,Imax6300] = ssi_fe_from_4278n6300(theta,I4278,I6300,OPS)</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% Input:</span>
+0020 <span class="comment">%   THETA - zenith angle in radians.</span>
+0021 <span class="comment">%   I4278 - image intensity in projection of plane || magnetic field  4278 A emission from N_2^+</span>
+0022 <span class="comment">%   I6300 - image intensity in projection of plane || magnetic field  6300 A emission from O(1D)</span>
+0023 <span class="comment">%           The image intensities should be in Rayleighs</span>
+0024 <span class="comment">%   OPS   - struct with options, default structure is returned as</span>
+0025 <span class="comment">%   single output when the function is called with no input</span>
+0026 <span class="comment">%   arguments is specified.</span>
+0027 
+0028 <span class="comment">% Copyright B. Gustavsson 20050805</span>
+0029 
+0030 <span class="comment">%   Copyright © 20050805 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0031 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0032 
+0033 feE.date = [45 0];          <span class="comment">% Date (day of year) Time (day-seconds) of</span>
+0034                             <span class="comment">% observation</span>
+0035 feE.latlong = [67 20];      <span class="comment">% Latitude, longitude</span>
+0036 feE.fluxes = [];            <span class="comment">% Fluxes for MSIS</span>
+0037 feE.e_m = [-sin(13/180*pi) cos(13/180*pi)];
+0038 feE.fi_m = atan2(feE.e_m(1),feE.e_m(2));
+0039 feE.width_weights = [1 .5]; <span class="comment">% Single sided weight array, will be</span>
+0040                             <span class="comment">% zero-phase symetrically expanded</span>
+0041                             <span class="comment">%[w0 w1] -&gt; [w1 w0 w1]</span>
+0042 feE.cut_off_fraction = 0.4; <span class="comment">% truncated damped lsq SVD-truncation fraction.</span>
+0043 feE.damp_par = 1e-3;        <span class="comment">% damped lsq SVD damp parameter instead</span>
+0044                             <span class="comment">% of inv(S) use inv(S+damp_par)</span>
+0045 feE.h_max = 190;            <span class="comment">% assumed max of 6300 emission</span>
+0046 <span class="keyword">if</span> nargin == 0
+0047   <span class="comment">% If no input arguments an one output, give the default options</span>
+0048   <span class="keyword">return</span> 
+0049 <span class="keyword">elseif</span> nargin&lt;4 | isempty(OPS)
+0050   <span class="comment">% If no options just take all the default ones</span>
+0051   OPS = feE;
+0052 <span class="keyword">else</span>
+0053   <span class="comment">% Otherwise asume there are some meaningfull ones, but merge the</span>
+0054   <span class="comment">% default in case not enough options is given.</span>
+0055   OPS = <a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(feE,OPS);
+0056 <span class="keyword">end</span>
+0057 clear feE
+0058 
+0059 <span class="comment">%Make up spatial and energy grids</span>
+0060 z_max4278 = 300;
+0061 z_min4278 = 85;
+0062 dz = 4;
+0063 <span class="comment">% 2-D Grid for 4278 emission</span>
+0064 z = z_min4278:dz:z_max4278;
+0065 <span class="comment">% And for 6300</span>
+0066 zr = z_min4278:dz:z_max4278+50;
+0067 xmax = 200 * ( cos(min(theta)) - sin(OPS.fi_m));
+0068 xmin = 200 * ( cos(max(theta)) - sin(OPS.fi_m));
+0069 
+0070 
+0071 x = xmin:dz:xmax;
+0072 Xr = xmin:dz:xmax;
+0073 [X,Z] = meshgrid(x,z);
+0074 [Xr,Zr] = meshgrid(Xr,zr);
+0075 x = -175:4:160;
+0076 Xr = -175:4:160;
+0077 [X,Z] = meshgrid(x,z);
+0078 [Xr,Zr] = meshgrid(Xr,zr);
+0079 <span class="comment">% make them field aligned</span>
+0080 Xr = Xr + Zr*sin( -13/180*pi );
+0081 X = X + Z*sin( -13/180*pi );
+0082 <span class="comment">% filterfunction from 1km grid to smooth base functions</span>
+0083 hfk = sin([0:8]*pi/8).^2;
+0084 
+0085 <span class="comment">% Energy grid</span>
+0086 E0 = logspace(-1,log10(150),100);
+0087 
+0088 <span class="comment">% Create a model atmosphere</span>
+0089 <span class="comment">% Used for calculating transfer matrix from f_e(E) to 4278A N_2^+ emission</span>
+0090 
+0091 <span class="comment">%%% BAKAyarrro! height in cm electron energies in eV, densities in cm^-3</span>
+0092 [atm_msis_cgs] = msis([z_min4278:z_max4278]*1000,[31+14 18*3600+40*60],[67.5 20],[],1);
+0093 
+0094 
+0095 raa = atm_msis_cgs(:,8);
+0096 nO  = atm_msis_cgs(:,2);
+0097 nN2 = atm_msis_cgs(:,3);
+0098 nO2 = atm_msis_cgs(:,4);
+0099 <span class="comment">% The actual transfer matrix. Based on M. Rees energy deposition</span>
+0100 <span class="comment">% calculations</span>
+0101 [Mtr_fe2I4278] = M_fe2I4278([85:300]*1000*100,E0*1000,raa,nN2,nO,nO2);
+0102 <span class="comment">% Resample to my base functions</span>
+0103 V4278 = conv2(Mtr_fe2I4278,hfk,<span class="string">'same'</span>);
+0104 V4278 = interp1(z_min4278:z_max4278,V4278,Z(:,1));
+0105 
+0106 
+0107 
+0108 <span class="comment">%%% Make a 2-D to 1-D camera.</span>
+0109 <span class="comment">% Single station position</span>
+0110 r1 = [-50 0];
+0111 
+0112 <span class="comment">% Transfer matrix from 2-D volume emission down to 1-D image plane</span>
+0113 [trmtr1,fi_out] = <a href="../Inversion/cos2_trmtr2d.html" class="code" title="function [trmtr,fi_out] = cos2_trmtr2d(r0,phi,X,Z,dl)">cos2_trmtr2d</a>(r1,theta,X,Z,4);    <span class="comment">% 4278</span>
+0114 [trmtr1r,fi_out] = <a href="../Inversion/cos2_trmtr2d.html" class="code" title="function [trmtr,fi_out] = cos2_trmtr2d(r0,phi,X,Z,dl)">cos2_trmtr2d</a>(r1,theta,Xr,Zr,4); <span class="comment">% 6300</span>
+0115 
+0116 <span class="comment">% Locate local maximas in 6300</span>
+0117 [Imax6300,i_max6300] = find_loc_minmax(filtfilt([.5 1 1 1 .5]/4,1,I6300),1);
+0118 i_max6300(Imax6300&lt;1e-2*max(Imax6300)) = [];
+0119 Imax6300(Imax6300&lt;1e-2*max(Imax6300)) = [];
+0120 
+0121 e_max6300 = [cos(theta(i_max6300))' sin(theta(i_max6300))'];
+0122 l_200     = OPS.h_max./e_max6300(:,2);
+0123 
+0124 x_b200 = r1(1) + l_200'.*cos(theta(i_max6300));
+0125 x_b100 = x_b200+(100-OPS.h_max)*sin(OPS.fi_m);
+0126 
+0127 z_b = z_min4278:4:z_max4278;
+0128 
+0129 [X_B,Z_B] = meshgrid(sort(x_b100),z_b);
+0130 
+0131 <span class="comment">% Transfer matrixes from the altitude distributions in the arcs</span>
+0132 <span class="comment">% down to the image plane</span>
+0133 [RM1] =     <a href="../Inversion/cos2_trmtr2d.html" class="code" title="function [trmtr,fi_out] = cos2_trmtr2d(r0,phi,X,Z,dl)">cos2_trmtr2d</a>(r1,theta,X_B,Z_B,4);
+0134 
+0135 <span class="keyword">for</span> i = 2:length(OPS.width_weights),
+0136   
+0137   RM1 = RM1 + OPS.width_weights(i) * <a href="../Inversion/cos2_trmtr2d.html" class="code" title="function [trmtr,fi_out] = cos2_trmtr2d(r0,phi,X,Z,dl)">cos2_trmtr2d</a>(r1,theta,X_B+dz*i,Z_B,dz);
+0138   RM1 = RM1 + OPS.width_weights(i) * <a href="../Inversion/cos2_trmtr2d.html" class="code" title="function [trmtr,fi_out] = cos2_trmtr2d(r0,phi,X,Z,dl)">cos2_trmtr2d</a>(r1,theta,X_B-dz*i,Z_B,dz);
+0139   
+0140 <span class="keyword">end</span>
+0141 <span class="keyword">for</span> i = length(x_b100):-1:1,
+0142   
+0143   blk_D4278{i} = V4278';
+0144   
+0145 <span class="keyword">end</span>
+0146 
+0147 <span class="comment">%%%keyboard</span>
+0148 
+0149 <span class="comment">% Transfer matrix from the electron fluxes in the separate arcs</span>
+0150 <span class="comment">% down to the image plane</span>
+0151 Cmtr  = RM1*blkdiag(blk_D4278{:})';
+0152 
+0153 [U,S,V] = svd(Cmtr);
+0154 
+0155 cut_indx = round(min(OPS.cut_off_fraction*size(S,2),min(size(S))));
+0156 damp_par = OPS.damp_par;
+0157 feE = <a href="../Inversion/dlsq_svd.html" class="code" title="function [ra] = dlsq_svd(U,S,V,d)">dlsq_svd</a>(U(:,1:cut_indx),S(1:cut_indx,1:cut_indx)+damp_par*eye(cut_indx),V(:,1:cut_indx),I4278);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

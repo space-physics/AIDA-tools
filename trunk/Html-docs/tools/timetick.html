@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of timetick</title>
+  <meta name="keywords" content="timetick">
+  <meta name="description" content="TIMETICK - change axis-labels to time/date format. Clever choice">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>timetick
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TIMETICK - change axis-labels to time/date format. Clever choice</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function timetick(x) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TIMETICK - change axis-labels to time/date format. Clever choice
+ of format used from axis-lims
+
+ Ingemar H�gstr�</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/AVOK/alis_img_overview_keos.html" class="code" title="function avok = alis_img_overview_keos(date)">alis_img_overview_keos</a>	ALIS_VIEW_OVERVIEW_KEOS - view ALIS overview keograms</li><li><a href="../ALIS/AVOK/alis_view_overview_keos.html" class="code" title="function avok = alis_view_overview_keos(date)">alis_view_overview_keos</a>	ALIS_VIEW_OVERVIEW_KEOS - view ALIS overview keograms</li><li><a href="../ALIS/AVOK/alis_zoom_or_auto_overview.html" class="code" title="function AvOk = alis_zoom_or_auto_overview(AvOk,t_y)">alis_zoom_or_auto_overview</a>	ALIS_ZOOM_OR_AUTO_OVERVIEW - GUI-fcn for ALIS keogram overviewing</li><li><a href="../ASK/HSOFT/ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li><li><a href="../ASK/HSOFT/ASK_plot_line.html" class="code" title="function ph = ASK_plot_line(mjs,time,data,mjsStart,time2end,titleStr,varargin)">ASK_plot_line</a>	ASK_PLOT_LINE - make a line plot with time axis</li><li><a href="../Spectral_cal/spc_cal_bad_intens.html" class="code" title="function [gI1,gI2,gI3,gT,gX,gY,gFilter] = spc_cal_bad_intens(inI1,inI2,inI3,inT,inX,inY,inFilter,checkfilters,OPTS)">spc_cal_bad_intens</a>	SPC_CAL_BAD_INTENS - Select intensity limits for each star, and</li><li><a href="../Spectral_cal/spc_cal_bad_times.html" class="code" title="function [BadTimes,sis] = spc_cal_bad_times(IDSTARS,time_s,filtnr,optpar,OPTS)">spc_cal_bad_times</a>	SPC_CAL_BAD_TIMES - Screen out bad time periods for each star</li><li><a href="../Spectral_cal/spc_chk_if_bad_times.html" class="code" title="function [BT,sis] = spc_chk_if_bad_times(IDSTARS,time_s,filtnr,optpar,OPTS)">spc_chk_if_bad_times</a>	SPC_CHK_IF_BAD_TIMES - Screen out bad time periods for each star</li><li><a href="../Spectral_cal/spc_sens_distr.html" class="code" title="function [ph] = spc_sens_distr(I_img,img_times,I_star,filter_in,filter2wl_order,plot_stars,pl_clrs)">spc_sens_distr</a>	SPC_SENS_DISTR - scatter plot camera sensitivity estimates.</li><li><a href="../Tomography/tomo20061212ariel3.html" class="code" title="">tomo20061212ariel3</a>	TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</li><li><a href="../Tomography/tomo20080305FinalIR_082011.html" class="code" title="">tomo20080305FinalIR_082011</a>	TOMO20080305FinalIR_082011 - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="../Tomography/tomo20080305NewBeginnings.html" class="code" title="">tomo20080305NewBeginnings</a>	TOMO20080305NewBeginnings - script for tomographing ALIS 20080305 event, 18:40 UT</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function timetick(x)</a>
+0002 <span class="comment">% TIMETICK - change axis-labels to time/date format. Clever choice</span>
+0003 <span class="comment">% of format used from axis-lims</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Ingemar H�gstr�</span>
+0006 
+0007 
+0008 <span class="keyword">if</span> nargin==0
+0009  x=<span class="string">'x'</span>;
+0010 <span class="keyword">elseif</span> strcmp(x,<span class="string">'off'</span>)
+0011  set(gca,<span class="string">'xtickmode'</span>,<span class="string">'auto'</span>,<span class="string">'xticklabelmode'</span>,<span class="string">'auto'</span>)
+0012  <span class="keyword">return</span>
+0013 <span class="keyword">end</span>
+0014 tick=[x <span class="string">'tick'</span>]; xt=get(gca,tick); dx=xt(2)-xt(1); nxt=length(xt);
+0015 xl=get(gca,[x <span class="string">'lim'</span>]);
+0016 
+0017 axsiz = get(gca,<span class="string">'position'</span>);
+0018 <span class="keyword">if</span> strcmp(x,<span class="string">'x'</span>)
+0019   goodmax_nticks = max(round(11/.775*axsiz(3)),2);
+0020 <span class="keyword">elseif</span> strcmp(x,<span class="string">'y'</span>)
+0021   goodmax_nticks = 11;
+0022 <span class="keyword">end</span>  
+0023 
+0024 <span class="keyword">if</span> xl(2)-xl(1)&gt;5
+0025  dx=24; xt=[];
+0026  <span class="keyword">while</span> length(xt)&lt;goodmax_nticks <span class="comment">%%%11</span>
+0027   xt=ceil(xl(1)/dx)*dx:dx:xl(2);
+0028   <span class="keyword">if</span> dx==24, dx=12;
+0029   <span class="keyword">elseif</span> dx==12, dx=8;
+0030   <span class="keyword">elseif</span> dx==8, dx=6;
+0031   <span class="keyword">elseif</span> dx==6, dx=4;
+0032   <span class="keyword">elseif</span> dx==4, dx=3;
+0033   <span class="keyword">elseif</span> dx==3, dx=2;
+0034   <span class="keyword">elseif</span> dx==2, dx=1;
+0035   <span class="keyword">else</span>
+0036     <span class="keyword">break</span>
+0037   <span class="keyword">end</span>
+0038  <span class="keyword">end</span>
+0039 <span class="keyword">else</span>
+0040  dx=1/60; xt=ceil(xl(1)/dx)*dx:dx:xl(2);
+0041  <span class="keyword">while</span> length(xt)&gt;goodmax_nticks  <span class="comment">%%%11</span>
+0042   <span class="keyword">if</span> dx==1/60, dx=1/30;
+0043   <span class="keyword">elseif</span> dx==1/30, dx=1/12;
+0044   <span class="keyword">elseif</span> dx==1/12, dx=1/6;
+0045   <span class="keyword">elseif</span> dx==1/6, dx=.25;
+0046   <span class="keyword">elseif</span> dx==.25, dx=1/3;
+0047   <span class="keyword">elseif</span> dx==1/3, dx=.5;
+0048   <span class="keyword">elseif</span> dx==.5, dx=1;
+0049   <span class="keyword">else</span>
+0050     <span class="keyword">break</span>
+0051   <span class="keyword">end</span>
+0052   xt=ceil(xl(1)/dx)*dx:dx:xl(2);
+0053  <span class="keyword">end</span>
+0054 <span class="keyword">end</span>
+0055 
+0056 set(gca,tick,xt,[tick <span class="string">'mode'</span>],<span class="string">'man'</span>)
+0057 h=fix(xt-floor(xt/24)*24+.000001);
+0058 <span class="keyword">for</span> k=1:length(xt)
+0059  <span class="keyword">if</span> dx&lt;1
+0060   xtk=xt(k)+.000001;
+0061   m=round((xtk-floor(xtk))*60);
+0062   nt(k,:)=sprintf(<span class="string">'%02.0f%02.0f'</span>,h(k),m);
+0063  <span class="keyword">else</span>
+0064   nt(k,:)=sprintf(<span class="string">'%02.0f'</span>,h(k));
+0065  <span class="keyword">end</span>
+0066 <span class="keyword">end</span>
+0067 set(gca,[tick <span class="string">'label'</span>],nt,[tick <span class="string">'labelmode'</span>],<span class="string">'man'</span>)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

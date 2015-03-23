@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of lancs_pre_proc_ops</title>
+  <meta name="keywords" content="lancs_pre_proc_ops">
+  <meta name="description" content="LANCS_PRE_PROC_OPS - Typical ALIS-fits preprocessing options">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>lancs_pre_proc_ops
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>LANCS_PRE_PROC_OPS - Typical ALIS-fits preprocessing options</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function PO = lancs_pre_proc_ops(pp_type) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> LANCS_PRE_PROC_OPS - Typical ALIS-fits preprocessing options
+ struct 
+
+ Calling:
+   PO = typical_pre_proc_ops(pp_type)
+ 
+ Input:
+   PP_TYPE - string [{'alis'}|'none'|'standard'|'sbig'|'afrl-raw']</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/File2obs/lancs_apogee_fits.html" class="code" title="function [obs] = lancs_apogee_fits(img_head)">lancs_apogee_fits</a>	LANCS_APOGEE_FITS parses an fits header for observation info</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function PO = lancs_pre_proc_ops(pp_type)</a>
+0002 <span class="comment">% LANCS_PRE_PROC_OPS - Typical ALIS-fits preprocessing options</span>
+0003 <span class="comment">% struct</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%   PO = typical_pre_proc_ops(pp_type)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%   PP_TYPE - string [{'alis'}|'none'|'standard'|'sbig'|'afrl-raw']</span>
+0010 
+0011 
+0012 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0013 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0014 
+0015 PO.filetype = <span class="string">'fits'</span>;  <span class="comment">% Image format of files to</span>
+0016                        <span class="comment">% read. [{'fits'}|'sbig'|'afrl-raw']. If</span>
+0017                        <span class="comment">% other format function will look for a</span>
+0018                        <span class="comment">% field PO.read_data_fcn, if that is a</span>
+0019                        <span class="comment">% function handle, it will be used to read</span>
+0020                        <span class="comment">% the file. If there is no such field the</span>
+0021                        <span class="comment">% fallback is to attempt to read</span>
+0022                        <span class="comment">% the file with imread, if that also fails</span>
+0023                        <span class="comment">% the last effort is made with loading the</span>
+0024                        <span class="comment">% file with matlab 'load'.</span>
+0025 
+0026 PO.quadfix = 0;        <span class="comment">% number of overscan strips</span>
+0027 PO.quadfixsize = 0;    <span class="comment">% size of overscanstrip 0 =&gt; cunning guess</span>
+0028 PO.replaceborder = 1;  <span class="comment">% replace image border or not</span>
+0029 PO.badpixfix = 1;      <span class="comment">% correct bad pixels</span>
+0030 PO.outimgsize = 0;     <span class="comment">% post-binning/resampling image to size; 0 =&gt; no rescaling</span>
+0031 PO.medianfilter = 3;   <span class="comment">% array of filtersizes cascading filtering (</span>
+0032                        <span class="comment">% medianfilter &gt; 0, wienerfilter &lt; 0 ),</span>
+0033                        <span class="comment">% example PO.medianfilter = [3 -5] -&gt;</span>
+0034                        <span class="comment">% wiener2(medfilt2(I,[3 3]),[5 5])</span>
+0035 
+0036 PO.defaultccd6 = 1;    <span class="comment">% default handling of ccdcam 6</span>
+0037 PO.bias_correction = 1;
+0038 PO.bzero_sign = 1;    <span class="comment">% Default is to subtract BZERO, set to 1 if</span>
+0039                        <span class="comment">% you want to add BZERO.</span>
+0040 
+0041 PO.imreg = []; <span class="comment">% cut to region of interest [xmin,xmax,ymin,ymax]</span>
+0042 
+0043 PO.C_cam = []; <span class="comment">% pixel sensitivity, either scalar or size of image</span>
+0044 
+0045 PO.remove_these_stars = []; <span class="comment">% remove stars (cmp bad pixels)</span>
+0046                             <span class="comment">% - requires OPTPAR as well')</span>
+0047 PO.optpar = [];
+0048 PO.size_r_t_s = 2;  <span class="comment">% size (pixels) of removed stars')</span>
+0049 
+0050 PO.v_interf_notches = []; <span class="comment">% notch frequencies for removal of</span>
+0051                           <span class="comment">% vertical interference pattern</span>
+0052 PO.psf  = []; <span class="comment">% psf to deconvolve with (preferably not done here</span>
+0053               <span class="comment">% for ALIS)</span>
+0054 PO.ffc = [];  <span class="comment">% do flatfield correction automatically, requires OPTPAR</span>
+0055 
+0056 PO.fix_missalign = 0; <span class="comment">% Query the user for improvment of</span>
+0057                       <span class="comment">% auto-loaded optical parameters when they</span>
+0058                       <span class="comment">% are offline. Set to zero or fix the problem</span>
+0059                       <span class="comment">% when running analysis that loads many</span>
+0060                       <span class="comment">% images</span>
+0061 PO.verb = 0;          <span class="comment">% Verbosity, [ -2 | -1 | {0} | 1 | 2 ] larger</span>
+0062                       <span class="comment">% more warnings</span>
+0063                       <span class="comment">% 'q','q1','quiet','q2', more talkative: 'v'</span>
+0064 
+0065 PO.interference_level = inf;    <span class="comment">% Cut-off intensity level for</span>
+0066                                 <span class="comment">% automatic high frequency</span>
+0067                                 <span class="comment">% interference removal. Typical</span>
+0068                                 <span class="comment">% Values range from 2-4. Lower</span>
+0069                                 <span class="comment">% values removes more</span>
+0070                                 <span class="comment">% frequencies. Inf - no filtering.</span>
+0071 PO.interference_method = <span class="string">'flat'</span>;<span class="comment">% Wheighting method. [{'flat'}| 'interp','weighed']</span>
+0072 PO.interference_swf = 3;        <span class="comment">% Size of wiener-filter for fourier</span>
+0073                                 <span class="comment">% transform. To increase its size makes little to very</span>
+0074                                 <span class="comment">% little difference.</span>
+0075 PO.img_histeq = 0;
+0076 PO.hist_crop = 0;
+0077 
+0078 PO.try_to_be_smart_fnc = <span class="string">''</span>;
+0079 PO.log2obs = <span class="string">''</span>;
+0080 PO.read_data_fcn = <span class="string">''</span>;
+0081 
+0082 PO.find_optpar = 0;   <span class="comment">% Automatic searching of optical parameters.</span>
+0083 
+0084 PO.log2obs = @<a href="../Fits_tools/File2obs/lancs_apogee_fits.html" class="code" title="function [obs] = lancs_apogee_fits(img_head)">lancs_apogee_fits</a>;
+0085 
+0086 
+0087 <span class="keyword">if</span> nargin == 0
+0088   <span class="keyword">return</span>
+0089 <span class="keyword">end</span>
+0090 
+0091 tp = lower(pp_type);
+0092 
+0093 <span class="keyword">switch</span> tp
+0094  <span class="keyword">case</span> <span class="string">'alis'</span>
+0095   PO.read_data_fcn = <span class="string">'fits'</span>;
+0096   PO.quadfix = 2;        <span class="comment">% number of overscan strips</span>
+0097   <span class="keyword">return</span>
+0098  <span class="keyword">case</span> <span class="string">'none'</span>
+0099   PO.find_optpar = 0;
+0100   PO.quadfix = 0;        <span class="comment">% number of overscan strips</span>
+0101   PO.replaceborder = 0;  <span class="comment">% replace image border or not</span>
+0102   PO.badpixfix = 0;      <span class="comment">% correct bad pixels</span>
+0103   PO.outimgsize = 0;     <span class="comment">% post-binning/resampling image to size; 0 =&gt; no rescaling</span>
+0104   PO.medianfilter = 0;   <span class="comment">% array of filtersizes cascading filtering (</span>
+0105   PO.defaultccd6 = 0;    <span class="comment">% default handling of ccdcam 6</span>
+0106   PO.bias_correction = 0;
+0107   PO.fix_missalign = 0; <span class="comment">% Query the user for improvment of</span>
+0108   PO.verb = 0;          <span class="comment">% Verbosity, [ -2 | -1 | {0} | 1 | 2 ] larger</span>
+0109   PO.interference_level = inf;    <span class="comment">% Cut-off intensity level for</span>
+0110  <span class="keyword">case</span> <span class="string">'standard'</span>
+0111   PO.find_optpar = 0;
+0112   PO.quadfix = 0;        <span class="comment">% number of overscan strips</span>
+0113   PO.replaceborder = 1;  <span class="comment">% replace image border or not</span>
+0114   PO.badpixfix = 1;      <span class="comment">% correct bad pixels</span>
+0115   PO.outimgsize = 0;     <span class="comment">% post-binning/resampling image to size; 0 =&gt; no rescaling</span>
+0116   PO.medianfilter = 3;   <span class="comment">% array of filtersizes cascading filtering (</span>
+0117   PO.defaultccd6 = 0;    <span class="comment">% default handling of ccdcam 6</span>
+0118   PO.bias_correction = 0;
+0119   PO.fix_missalign = 0; <span class="comment">% Query the user for improvment of</span>
+0120   PO.verb = 0;          <span class="comment">% Verbosity, [ -2 | -1 | {0} | 1 | 2 ] larger</span>
+0121   PO.interference_level = inf;    <span class="comment">% Cut-off intensity level for</span>
+0122  <span class="keyword">case</span> <span class="string">'sbig'</span>
+0123   PO.filetype = <span class="string">'sbig'</span>;
+0124  <span class="keyword">case</span> <span class="string">'arfl-raw'</span>
+0125   PO.filetype = <span class="string">'arfl-raw'</span>;
+0126  <span class="keyword">otherwise</span>
+0127 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

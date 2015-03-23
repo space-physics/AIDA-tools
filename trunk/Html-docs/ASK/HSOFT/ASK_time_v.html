@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_time_v</title>
+  <meta name="keywords" content="ASK_time_v">
+  <meta name="description" content="ASK_TIME_V - returns time since the start of the sequence">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_time_v
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_TIME_V - returns time since the start of the sequence</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function t = ASK_time_v(i1,fullMJS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_TIME_V - returns time since the start of the sequence
+
+  keyword full forces the time to be mjs, rather than seconds from the start
+
+ Calling:
+   t = ASK_time_v(i1,fullMJS)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_image_sequence.html" class="code" title="function varargout = ASK_image_sequence(indices2show,Cams,OPS)">ASK_image_sequence</a>	ASK_IMAGE_SEQUENCE - to display an ASK image sequence as movie, and</li><li><a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>	ASK_INDX2DATEVEC - Convert a frame index into a [yyyy,mm,dd,HH,MM,SS.FFF]</li><li><a href="ASK_line_int.html" class="code" title="function [line_I,timeOut,mjsT0] = ASK_line_int(Nstart,Num4itter,x0,y0,r,step)">ASK_line_int</a>	ASK_LINE_INT - make intensity line plots from an image sequence.</li><li><a href="ASK_time2indx.html" class="code" title="function i1 = ASK_time2indx(timevec)">ASK_time2indx</a>	ASK_TIME2INDX - returns the imasge index for a time-vector</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function t = ASK_time_v(i1,fullMJS)</a>
+0002 <span class="comment">% ASK_TIME_V - returns time since the start of the sequence</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%  keyword full forces the time to be mjs, rather than seconds from the start</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%   t = ASK_time_v(i1,fullMJS)</span>
+0008 
+0009 <span class="comment">% Modified from add_multi.pro</span>
+0010 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0011 <span class="comment">% GPL 3.0 or later applies</span>
+0012 <span class="keyword">global</span> vs
+0013 
+0014 t = vs.vres(vs.vsel) *( i1 - vs.vnf(vs.vsel) );
+0015 <span class="keyword">if</span> nargin == 2 &amp;&amp; fullMJS
+0016   t = vs.vmjs(vs.vsel)+1.0*t;
+0017 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

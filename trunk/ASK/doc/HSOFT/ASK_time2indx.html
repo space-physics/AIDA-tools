@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_time2indx</title>
+  <meta name="keywords" content="ASK_time2indx">
+  <meta name="description" content="ASK_TIME2INDX - returns the imasge index for a time-vector">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_time2indx
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_TIME2INDX - returns the imasge index for a time-vector</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function i1 = ASK_time2indx(timevec) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_TIME2INDX - returns the imasge index for a time-vector
+
+ Calling:
+   indx = ASK_time2indx([yyyy, mm, dd, hh, mm, ss])</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>	DAT2STR - convert a modified Julian second (mjs) to date string</li><li><a href="ASK_time2MJS.html" class="code" title="function TT_MJS = ASK_time2MJS(date_vec)">ASK_time2MJS</a>	ASK_time2MJS - converts calendar date to modified Julian second</li><li><a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>	ASK_TIME_V - returns time since the start of the sequence</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function i1 = ASK_time2indx(timevec)</a>
+0002 <span class="comment">% ASK_TIME2INDX - returns the imasge index for a time-vector</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   indx = ASK_time2indx([yyyy, mm, dd, hh, mm, ss])</span>
+0006 
+0007 <span class="keyword">global</span> vs
+0008 
+0009 
+0010 TT_MJS = <a href="ASK_time2MJS.html" class="code" title="function TT_MJS = ASK_time2MJS(date_vec)">ASK_time2MJS</a>(timevec);
+0011 Tstart = <a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>(1,1);
+0012 Tend = <a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>(vs.vnl(vs.vsel),1);
+0013 
+0014 <span class="keyword">if</span> Tstart &lt;= TT_MJS &amp; TT_MJS &lt;= Tend
+0015   
+0016   i1 = 1;
+0017   <span class="keyword">while</span> i1 &lt;= vs.vnl(vs.vsel) &amp; <a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>(i1+1,1) &lt; TT_MJS
+0018     i1 = i1 + 1;
+0019   <span class="keyword">end</span>
+0020   
+0021 <span class="keyword">else</span>
+0022   i1 = [];
+0023   disp([<span class="string">'Warning. time: '</span>,datestr(timevec,<span class="string">'yyyy/mm/dd HH:MM:SS.FFF'</span>),<span class="string">' is not found between: '</span>,<a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>(<a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>(1,1)),<span class="string">' and: '</span>,<a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>(<a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>(vs.vnl(vs.vsel),1))])
+0024 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

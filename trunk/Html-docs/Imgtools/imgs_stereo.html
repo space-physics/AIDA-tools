@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of imgs_stereo</title>
+  <meta name="keywords" content="imgs_stereo">
+  <meta name="description" content="imgs_stereo - Triangulate from 2 series of images">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>imgs_stereo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>imgs_stereo - Triangulate from 2 series of images</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [X,Y,Z,U1,V1,U2,V2,minL] = imgs_stereo(file1,PO1,optp1,r1,file2,PO2,optp2,r2,corr1,corr2,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> imgs_stereo - Triangulate from 2 series of images
+   
+ Calling:
+ [X,Y,Z,U1,V1,U2,V2,minL] = imgs_stereo(file1,PO1,optp1,r1,file2,PO2,optp2,r2,corr1,corr2,OPS)
+ 
+   INPUT parameters: 
+   FILES1 - char array of image files, full or relative path, readable 
+   PO1    - image pre_proc_ops for images in FILES1, see TYPICAL_PRE_PROC_OPS
+   OPTP1  - should be an array with optical parameters for images in FILES1 see CAMERA,
+   R1     - location of camera 1 (1x3) or (3x1)
+   FILES2 - char array of image files,
+   PO2    - image pre_proc_ops for images in FILES2,
+   OPTP2  - should be an array with optical parameters for images in FILES2 see CAMERA,
+   R2     - location of camera 2, (station 2, second observation point) (1x3) or (3x1)
+   CORR1  - correction matrix for rotations in camera 1
+   (difference in coordinate system between R1 and R2)
+   CORR2  - correction matrix for rotations in camera 2
+   (difference in coordinate system between R1 and R2, curvature
+   of earth or whatever)
+  
+   OUTPUT parameters: 
+   X    - &quot;East&quot; distance of points identified (Cell array)
+   Y    - &quot;North&quot; distance of points identified (Cell array)
+   Z    - &quot;Altitude&quot; of points identified (Cell array)
+   U1   - cell array of horisontal coordinate of identified points in images1
+   V1   - cell array of vertical coordinate of identified points in images1
+   U2   - cell array of horisontal coordinate of identified points in images2
+   V2   - cell array of vertical coordinate of identified points in images2
+          size U1 = [size(file1,1) 1], size(U1{i}) varying
+   MINL - Minimum distance between lines-of-sight of identified
+          points 
+   OPS - Options structure, currently OPS.chectmp, if 1 extra plot
+         for control of the triangulation result
+   
+   Very little or no argument checking is preformed
+
+ See also: TRIANGULATE</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/triangulate.html" class="code" title="function [xtr,ytr,ztr,tu1,tv1,tu2,tv2,minl] = triangulate(img1,r1,img2,r2,cm1,cm2,PO,Opts)">triangulate</a>	TRIANGULATE - stereoscopic triangulation from a pair of images</li><li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [X,Y,Z,U1,V1,U2,V2,minL] = imgs_stereo(file1,PO1,optp1,r1,file2,PO2,optp2,r2,corr1,corr2,OPS)</a>
+0002 <span class="comment">% imgs_stereo - Triangulate from 2 series of images</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% [X,Y,Z,U1,V1,U2,V2,minL] = imgs_stereo(file1,PO1,optp1,r1,file2,PO2,optp2,r2,corr1,corr2,OPS)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   INPUT parameters:</span>
+0008 <span class="comment">%   FILES1 - char array of image files, full or relative path, readable</span>
+0009 <span class="comment">%   PO1    - image pre_proc_ops for images in FILES1, see TYPICAL_PRE_PROC_OPS</span>
+0010 <span class="comment">%   OPTP1  - should be an array with optical parameters for images in FILES1 see CAMERA,</span>
+0011 <span class="comment">%   R1     - location of camera 1 (1x3) or (3x1)</span>
+0012 <span class="comment">%   FILES2 - char array of image files,</span>
+0013 <span class="comment">%   PO2    - image pre_proc_ops for images in FILES2,</span>
+0014 <span class="comment">%   OPTP2  - should be an array with optical parameters for images in FILES2 see CAMERA,</span>
+0015 <span class="comment">%   R2     - location of camera 2, (station 2, second observation point) (1x3) or (3x1)</span>
+0016 <span class="comment">%   CORR1  - correction matrix for rotations in camera 1</span>
+0017 <span class="comment">%   (difference in coordinate system between R1 and R2)</span>
+0018 <span class="comment">%   CORR2  - correction matrix for rotations in camera 2</span>
+0019 <span class="comment">%   (difference in coordinate system between R1 and R2, curvature</span>
+0020 <span class="comment">%   of earth or whatever)</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%   OUTPUT parameters:</span>
+0023 <span class="comment">%   X    - &quot;East&quot; distance of points identified (Cell array)</span>
+0024 <span class="comment">%   Y    - &quot;North&quot; distance of points identified (Cell array)</span>
+0025 <span class="comment">%   Z    - &quot;Altitude&quot; of points identified (Cell array)</span>
+0026 <span class="comment">%   U1   - cell array of horisontal coordinate of identified points in images1</span>
+0027 <span class="comment">%   V1   - cell array of vertical coordinate of identified points in images1</span>
+0028 <span class="comment">%   U2   - cell array of horisontal coordinate of identified points in images2</span>
+0029 <span class="comment">%   V2   - cell array of vertical coordinate of identified points in images2</span>
+0030 <span class="comment">%          size U1 = [size(file1,1) 1], size(U1{i}) varying</span>
+0031 <span class="comment">%   MINL - Minimum distance between lines-of-sight of identified</span>
+0032 <span class="comment">%          points</span>
+0033 <span class="comment">%   OPS - Options structure, currently OPS.chectmp, if 1 extra plot</span>
+0034 <span class="comment">%         for control of the triangulation result</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%   Very little or no argument checking is preformed</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">% See also: TRIANGULATE</span>
+0039 
+0040 
+0041 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0042 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0043 
+0044 
+0045 <span class="comment">%global bxy bx by</span>
+0046 
+0047 
+0048 <span class="keyword">if</span> nargin == 0
+0049   <span class="comment">% if no input return OPS as first outarg</span>
+0050   X.checktmp = 0;
+0051   X.epipolar_lines = 1;
+0052   X.epipolar_range = [80,20,500];
+0053   X.SubplotsNotFigs = 1;
+0054   <span class="keyword">return</span>
+0055 <span class="keyword">end</span>
+0056 
+0057 <span class="keyword">if</span> all(size(corr1)) ~= 3
+0058   corr1 = eye(3);
+0059 <span class="keyword">end</span>
+0060 <span class="keyword">if</span> all(size(corr2)) ~= 3
+0061   corr2 = eye(3);
+0062 <span class="keyword">end</span>
+0063 
+0064 <span class="keyword">for</span> i = 1:size(file1,1),
+0065   
+0066   <span class="comment">%[img1,h1,o1] = inimg(file1(i,:),PO1);</span>
+0067   <span class="comment">%[img2,h2,o2] = inimg(file2(i,:),PO2);</span>
+0068   [img1] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(file1(i,:),PO1);
+0069   [img2] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(file2(i,:),PO2);
+0070   
+0071   <span class="comment">%% ATTEMPTED: fix the calling of TRIANGULATE to conform with:</span>
+0072   PO1.optpar = optp1;
+0073   PO2.optpar = optp2;
+0074   [xtr,ytr,ztr,u1,v1,u2,v2,minl] = <a href="../Camera/triangulate.html" class="code" title="function [xtr,ytr,ztr,tu1,tv1,tu2,tv2,minl] = triangulate(img1,r1,img2,r2,cm1,cm2,PO,Opts)">triangulate</a>(img1,r1,<span class="keyword">...</span>
+0075                                                img2,r2,<span class="keyword">...</span>
+0076                                                corr1,corr2,[PO1,PO2],OPS);
+0077   <span class="comment">% Maybe it is that simple...</span>
+0078   <span class="comment">% ...but lets keep the old version for now</span>
+0079   <span class="comment">%[xtr,ytr,ztr,u1,v1,u2,v2,minl] = triangulate(img1,r1,optp1,...</span>
+0080   <span class="comment">%                                             img2,r2,optp2,...</span>
+0081   <span class="comment">%                                             OPS.checktmp,corr1,corr2);</span>
+0082   X{i} = xtr;
+0083   Y{i} = ytr;
+0084   Z{i} = ztr;
+0085   U1{i} = u1;
+0086   V1{i} = v1;
+0087   U2{i} = u2;
+0088   V2{i} = v2;
+0089   minL{i} = minl;
+0090   
+0091 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of imgs_smart_caxis</title>
+  <meta name="keywords" content="imgs_smart_caxis">
+  <meta name="description" content="imgs_smart_caxis - alpha-percentile setting of color-axis,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>imgs_smart_caxis
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>imgs_smart_caxis - alpha-percentile setting of color-axis,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function cax = imgs_smart_caxis(alpha,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> imgs_smart_caxis - alpha-percentile setting of color-axis,
+   sets clims to [alpha,1-alpha] points of the cumulative
+   intensity distribution. Either called with intensity image
+   IMGS_SMART_CAXIS(ALPHA,I); or with a histogram
+   IMGS_SMART_CAXIS(ALPHA,B,X)
+ 
+ Calling:
+ cax = imgs_smart_caxis(alpha,I)
+ cax = imgs_smart_caxis(alpha,B,X)
+
+ INPUT: 
+   ALPHA - percentile cut-off
+ either
+   I - intensity image.
+ or
+   B,X - histogram specification as output from HIST
+ 
+ OUTPUT
+   CAX - adjusted intensity limits.
+
+ See also HIST</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/AVOK/alis_overview_keos4web.html" class="code" title="function avok = alis_overview_keos4web(date,t_lims,Keo,T_obs,Wl_emi,Stns)">alis_overview_keos4web</a>	ALIS_OVERVIEW_KEOS4WEB - image ALIS overview keograms</li><li><a href="../ALIS/AVOK/alis_overviewmovie.html" class="code" title="function OK = alis_overviewmovie(moviename,Filenames,POs,mOpts)">alis_overviewmovie</a>	ALIS_OVERVIEWMOVIE - Makes movies of images in files</li><li><a href="../ALIS/AVOK/avok_makin_movies.html" class="code" title="function AvOk = avok_makin_movies(AvOk)">avok_makin_movies</a>	AVOK_MAKIN_MOVIES - Makes movies of images from a night</li><li><a href="../ALIS/alis_imgs_movie_r.html" class="code" title="function [M,Tstrs,caxout,exptimes,wl] = alis_imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,rgbFilters)">alis_imgs_movie_r</a>	ALIS_IMGS_MOVIE_R - produce a matlab movie M from a series of image files.</li><li><a href="../ASK/HSOFT/ASK_play_keolines.html" class="code" title="function M = ASK_play_keolines(keos,OPS)">ASK_play_keolines</a>	ASK_PLAY_KEOLINES -</li><li><a href="../ASK/HSOFT/ASK_play_keolines2.html" class="code" title="function [M,Xs] = ASK_play_keolines2(Keos,time_V,OPS)">ASK_play_keolines2</a>	ASK_PLAY_KEOLINES -</li><li><a href="../Aurora/runner4FlamingRays.html" class="code" title="function Ibest = runner4FlamingRays(indices2run,Keos,IstartGuesses,Ibestest,trmtr2Dto1D,A1Z,A2Z,E,Y,Z,OPS)">runner4FlamingRays</a>	runner4FlamingRays - Estimate electron precipitation variation with E and Y</li><li><a href="../Aurora/runner4FlamingRays0.html" class="code" title="">runner4FlamingRays0</a>	% Example script: how to estimate electron energies in flaming rays</li><li><a href="../Fits_tools/interference_rem_man.html" class="code" title="function img_out = interference_rem_man(img_in,type,method,nr_readout_regs)">interference_rem_man</a>	INTERFERENCE_REM_MAN - manual interference identification (and reduction)</li><li><a href="img_splinefilter.html" class="code" title="function [varargout] = img_splinefilter(img_in,OPS)">img_splinefilter</a>	IMG_SPLINEFILTER - spline fitting filter optimum statistical filter</li><li><a href="img_svdfilter.html" class="code" title="function [varargout] = img_svdfilter(img_in,OPS)">img_svdfilter</a>	IMG_SVDFILTER - SVD fitting filter optimum statistical filter</li><li><a href="imgs_movie_r.html" class="code" title="function [M,Tstrs,caxout,exptimes,wl] = imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,movie_ops,avi_ops)">imgs_movie_r</a>	imgs_movie_r - produce a matlab movie M from a series of image files.</li><li><a href="imgs_plot.html" class="code" title="function out_var = imgs_plot(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot</a>	imgs_plot - Plot a row of images</li><li><a href="imgs_plot_bg_red.html" class="code" title="function out_var = imgs_plot_bg_red(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot_bg_red</a>	imgs_plot_bg_red - Plot a row of images with background reduction</li><li><a href="imgs_plot_bg_red1l.html" class="code" title="function out_var = imgs_plot_bg_red1l(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot_bg_red1l</a>	imgs_plot_bg_red1l - Plot a row of  background reduced images, one colorlabel</li><li><a href="imgs_plot_bg_red_clall.html" class="code" title="function out_var = imgs_plot_bg_red_clall(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot_bg_red_clall</a>	imgs_plot_bg_red - Plot a row of background reduced images with colorbars</li><li><a href="../Starcal/M6/runopticsoptimization.html" class="code" title="function [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin)">runopticsoptimization</a>	RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters</li><li><a href="../Starcal/M7/runopticsoptimization.html" class="code" title="function [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin)">runopticsoptimization</a>	RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters</li><li><a href="../Tomography/make_tomo_ops.html" class="code" title="function tomo_ops = make_tomo_ops(stns)">make_tomo_ops</a>	MAKE_TOMO_OPS - User interface to set some parameters for the</li><li><a href="../Tomography/tomo20061212ariel3.html" class="code" title="">tomo20061212ariel3</a>	TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</li><li><a href="../Tomography/tomo20080305FinalIR_082011.html" class="code" title="">tomo20080305FinalIR_082011</a>	TOMO20080305FinalIR_082011 - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="../Tomography/tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>	TOMO_STEPS - tomographic itterative step(s).</li><li><a href="../tools/ImageViewer.html" class="code" title="">ImageViewer</a>	</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function cax = imgs_smart_caxis(alpha,varargin)</a>
+0002 <span class="comment">% imgs_smart_caxis - alpha-percentile setting of color-axis,</span>
+0003 <span class="comment">%   sets clims to [alpha,1-alpha] points of the cumulative</span>
+0004 <span class="comment">%   intensity distribution. Either called with intensity image</span>
+0005 <span class="comment">%   IMGS_SMART_CAXIS(ALPHA,I); or with a histogram</span>
+0006 <span class="comment">%   IMGS_SMART_CAXIS(ALPHA,B,X)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">% cax = imgs_smart_caxis(alpha,I)</span>
+0010 <span class="comment">% cax = imgs_smart_caxis(alpha,B,X)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% INPUT:</span>
+0013 <span class="comment">%   ALPHA - percentile cut-off</span>
+0014 <span class="comment">% either</span>
+0015 <span class="comment">%   I - intensity image.</span>
+0016 <span class="comment">% or</span>
+0017 <span class="comment">%   B,X - histogram specification as output from HIST</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% OUTPUT</span>
+0020 <span class="comment">%   CAX - adjusted intensity limits.</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% See also HIST</span>
+0023 
+0024 
+0025 <span class="comment">%   Copyright � 20050209 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0026 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0027 
+0028 <span class="keyword">if</span> alpha &gt;= .5; <span class="comment">% otherwise...</span>
+0029   
+0030   alpha = alpha/100;
+0031   
+0032 <span class="keyword">end</span>
+0033 
+0034 <span class="keyword">if</span> nargin == 2
+0035   
+0036   I = varargin{1};
+0037   [b,x] = hist(I(:),unique(I(:)));
+0038   
+0039 <span class="keyword">else</span>
+0040   
+0041   b = varargin{1};
+0042   x = varargin{2};
+0043   
+0044 <span class="keyword">end</span>
+0045 
+0046 ch = cumsum(b)/sum(b);
+0047 <span class="comment">% $$$ if length(alpha) == 1</span>
+0048 i_cut = find(alpha(1) &lt; ch &amp; ch &lt; 1-alpha(end));
+0049 <span class="comment">% $$$ else</span>
+0050 <span class="comment">% $$$   i_cut = find(alpha(1) &lt; ch &amp; ch &lt; 1-alpha(2));</span>
+0051 <span class="comment">% $$$ end</span>
+0052 
+0053 caxis(x(i_cut([1 end])));
+0054 
+0055 <span class="keyword">if</span> nargout == 1
+0056   cax = caxis;
+0057 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

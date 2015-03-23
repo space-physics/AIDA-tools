@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of latlongh_2_r</title>
+  <meta name="keywords" content="latlongh_2_r">
+  <meta name="description" content="LATLONGH_2_R transforms the point ( LONG, LAT, H ) to (X,Y,Z)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html EARTH -->
+<h1>latlongh_2_r
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>LATLONGH_2_R transforms the point ( LONG, LAT, H ) to (X,Y,Z)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [r_out] = latlongh_2_r(lat,long,h) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> LATLONGH_2_R transforms the point ( LONG, LAT, H ) to (X,Y,Z)
+ in an earth centred horizontal system (GEO). 
+    
+ CALLING:
+ [r_out] = r0_latlongh(lat,long,h)
+ 
+ INPUT: 
+    LAT0 latitude, in degrees
+    LONG0 longiture, in degrees
+    ALT0 altitude, in km
+
+ See also <a href="r_2_llh.html" class="code" title="function [long,lat,h] = r_2_llh(r)">R_2_LLH</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>	x = xx( phi, lambda , alt )</li><li><a href="yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>	y = yy( phi, lambda, alt)</li><li><a href="zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>	z = zz( phi, lambda, alt )</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="xyz_2_llh.html" class="code" title="function [long,lat,h] = xyz_2_llh(lat0,long0,h0,r)">xyz_2_llh</a>	XYZ_2_LLH transforms X,Y,Z in an lat0,long0 centred horizontal system</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [r_out] = latlongh_2_r(lat,long,h)</a>
+0002 <span class="comment">% LATLONGH_2_R transforms the point ( LONG, LAT, H ) to (X,Y,Z)</span>
+0003 <span class="comment">% in an earth centred horizontal system (GEO).</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% CALLING:</span>
+0006 <span class="comment">% [r_out] = r0_latlongh(lat,long,h)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% INPUT:</span>
+0009 <span class="comment">%    LAT0 latitude, in degrees</span>
+0010 <span class="comment">%    LONG0 longiture, in degrees</span>
+0011 <span class="comment">%    ALT0 altitude, in km</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% See also R_2_LLH</span>
+0014 
+0015 
+0016 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0017 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0018 
+0019 r_out(1) = <a href="xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(lat*pi/180,long*pi/180,h);
+0020 r_out(2) = <a href="yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(lat*pi/180,long*pi/180,h);
+0021 r_out(3) = <a href="zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>(lat*pi/180,long*pi/180,h);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

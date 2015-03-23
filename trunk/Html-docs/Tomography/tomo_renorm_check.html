@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_renorm_check</title>
+  <meta name="keywords" content="tomo_renorm_check">
+  <meta name="description" content="TOMO_RENORM_CHECK - check calibration factor for fastprojection of 3D b-o-b">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_renorm_check
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TOMO_RENORM_CHECK - check calibration factor for fastprojection of 3D b-o-b</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function OK = tomo_renorm_check(stns,X,tomo_ops) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TOMO_RENORM_CHECK - check calibration factor for fastprojection of 3D b-o-b
+
+ Calling:
+  OK = tomo_renorm_check(stns,X,tomo_ops)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>	FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</li><li><a href="fix_subplots_tomo.html" class="code" title="function SP = fix_subplots_tomo(nrimages)">fix_subplots_tomo</a>	FIX_SUBPLOTS_TOMO - determine useful subplot orientation</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function OK = tomo_renorm_check(stns,X,tomo_ops)</a>
+0002 <span class="comment">% TOMO_RENORM_CHECK - check calibration factor for fastprojection of 3D b-o-b</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  OK = tomo_renorm_check(stns,X,tomo_ops)</span>
+0006 
+0007 
+0008 <span class="comment">%   Copyright � 2005 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0009 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0010 
+0011 OK = zeros(length(stns),5);
+0012 
+0013 <span class="keyword">for</span> i1 = length(stns):-1:1,
+0014   img_test{i1} = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(ones(size(X)),<span class="keyword">...</span>
+0015                                 stns(i1).uv,<span class="keyword">...</span>
+0016                                 stns(i1).d, <span class="keyword">...</span>
+0017                                 stns(i1).l_cl,<span class="keyword">...</span>
+0018                                 stns(i1).bfk,<span class="keyword">...</span>
+0019                                 size(stns(i1).d)); 
+0020   OK(i1,1) = 1;
+0021 <span class="keyword">end</span>
+0022 
+0023 SP = <a href="fix_subplots_tomo.html" class="code" title="function SP = fix_subplots_tomo(nrimages)">fix_subplots_tomo</a>(length(stns));
+0024 
+0025 <span class="keyword">for</span> i1 = 1:length(stns),
+0026   
+0027   subplot(SP(1),SP(2),i1)
+0028   imagesc(stns(i1).img)
+0029   hold on
+0030   contour(<span class="string">'v6'</span>,img_test{i1},9,<span class="string">'k'</span>)
+0031   <span class="keyword">if</span> ~all(isnan(tomo_ops(i1).renorm))
+0032     plot(tomo_ops(i1).renorm([1 2 2 1 1]),tomo_ops(i1).renorm([3 3 4 4 3]),<span class="string">'w'</span>)
+0033     OK(i1,2:5) = tomo_ops(i1).renorm;
+0034   <span class="keyword">end</span>
+0035   
+0036 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

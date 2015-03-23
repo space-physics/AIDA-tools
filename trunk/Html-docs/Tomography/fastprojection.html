@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fastprojection</title>
+  <meta name="keywords" content="fastprojection">
+  <meta name="description" content="FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>fastprojection
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.
+ VEM is the 3D array that contins the volume emission
+ distribution, UV is the projection matrix that projects the
+ position of an element down to the image coordinates, D is the
+ (distance dependent) scaling factor, L_CL is a cell-array holding
+ indexes for 3D base functions in the corresponding
+ size-class. BFK is the base-function-fotprint. SENS_MATR is an
+ optional matrix for the pixel sensitivity.
+ 
+ Calling:
+ img_out = fast_projection(Vem,uv,d,l_cl,bfk,sens_mtr)
+
+ Based on the algorithm of Peter Rydes�er</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Aurora/err4FlamingRays.html" class="code" title="function res = err4FlamingRays(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)">err4FlamingRays</a>	1        2    3    4      5   6   7   8    9 0           11    12</li><li><a href="../Aurora/err4FlamingRaysC.html" class="code" title="function res = err4FlamingRaysC(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)">err4FlamingRaysC</a>	err4FlamingRaysC - error function for estimating electron spectra</li><li><a href="../Aurora/projection_setup0H.html" class="code" title="">projection_setup0H</a>	% 1 Optical parameters</li><li><a href="adjust_level.html" class="code" title="function [stns,Vem] = adjust_level(stns,Vem,doit_eh)">adjust_level</a>	ADJUST_LEVEL - Scale 3D intensities to give projections that have</li><li><a href="hh_tomo1234_New01.html" class="code" title="">hh_tomo1234_New01</a>	HH_TOMO1234_NEW01 - script for tomographing 2007 HIPAS-observations</li><li><a href="tomo20061212ariel3.html" class="code" title="">tomo20061212ariel3</a>	TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</li><li><a href="tomo20080305FinalIR_082011.html" class="code" title="">tomo20080305FinalIR_082011</a>	TOMO20080305FinalIR_082011 - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="tomo20080305NewBeginnings.html" class="code" title="">tomo20080305NewBeginnings</a>	TOMO20080305NewBeginnings - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="tomo_CalSensMat.html" class="code" title="function [CalMtr,stn] = tomo_CalSensMat(stn,Vem,X3D,Y3D,Z3D)">tomo_CalSensMat</a>	tomo_CalSensMat - calibration factors for FASTPROJECTION</li><li><a href="tomo_EXMPL970216.html" class="code" title="">tomo_EXMPL970216</a>	% TOMO_EXMPL970216 - Template/example script for auroral tomography,</li><li><a href="tomo_altmaxIscaling.html" class="code" title="function [Vem,stns] = tomo_altmaxIscaling(Vem,stns,tomo_ops,X3,Y3,Z3)">tomo_altmaxIscaling</a>	TOMO_ALTMAXISCALING - tomographic itterative step(s).</li><li><a href="tomo_cal.html" class="code" title="function [CalFactors,stns,calimgs] = tomo_cal(stns,XfI,YfI,ZfI,OPS)">tomo_cal</a>	tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</li><li><a href="tomo_cal0.html" class="code" title="function [CalFactors,stns,calimgs] = tomo_cal0(stns,XfI,YfI,ZfI,OPS)">tomo_cal0</a>	tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</li><li><a href="tomo_renorm_check.html" class="code" title="function OK = tomo_renorm_check(stns,X,tomo_ops)">tomo_renorm_check</a>	TOMO_RENORM_CHECK - check calibration factor for fastprojection of 3D b-o-b</li><li><a href="tomo_skeleton.html" class="code" title="">tomo_skeleton</a>	% TOMO_SKELETON - Template/example script for auroral tomography,</li><li><a href="tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>	TOMO_STEPS - tomographic itterative step(s).</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)</a>
+0002 <span class="comment">% FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</span>
+0003 <span class="comment">% VEM is the 3D array that contins the volume emission</span>
+0004 <span class="comment">% distribution, UV is the projection matrix that projects the</span>
+0005 <span class="comment">% position of an element down to the image coordinates, D is the</span>
+0006 <span class="comment">% (distance dependent) scaling factor, L_CL is a cell-array holding</span>
+0007 <span class="comment">% indexes for 3D base functions in the corresponding</span>
+0008 <span class="comment">% size-class. BFK is the base-function-fotprint. SENS_MATR is an</span>
+0009 <span class="comment">% optional matrix for the pixel sensitivity.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Calling:</span>
+0012 <span class="comment">% img_out = fast_projection(Vem,uv,d,l_cl,bfk,sens_mtr)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Based on the algorithm of Peter Rydes�er</span>
+0015 
+0016 
+0017 <span class="comment">%   Copyright � 2001 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0018 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0019 
+0020 error(nargchk(6,7,nargin));
+0021 
+0022 img_out = zeros(imgsize);
+0023 dimg = img_out;
+0024 
+0025 <span class="keyword">for</span> i1 = 1:length(l_cl),
+0026   
+0027   <span class="keyword">if</span> min(size(l_cl{i1}))
+0028     
+0029     dimg(:) = uv(:,l_cl{i1})*(Vem(l_cl{i1})./d(l_cl{i1}).^2)';
+0030     <span class="comment">% 1./(d/ds^3/2)^2 == 1./(d^2/ds^(3/2*2)) == 1./(d^2/ds^(3)) == ds^3/d^2</span>
+0031     <span class="keyword">if</span> issparse(dimg)
+0032       dimg = full(dimg);
+0033     <span class="keyword">end</span>
+0034     dimg = conv2(dimg,bfk{i1},<span class="string">'same'</span>);
+0035     dimg = conv2(dimg,bfk{i1}',<span class="string">'same'</span>);
+0036     img_out = img_out + dimg;
+0037     
+0038   <span class="keyword">end</span>
+0039   
+0040 <span class="keyword">end</span>
+0041 
+0042 <span class="keyword">if</span> ( nargin == 7 )
+0043   
+0044   img_out = img_out.*sens_mtr;
+0045   
+0046 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

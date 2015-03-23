@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_draw_north</title>
+  <meta name="keywords" content="ASK_draw_north">
+  <meta name="description" content="ASK_DRAW_NORTH -  Draws the north direction on an image, from the centre.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_draw_north
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_DRAW_NORTH -  Draws the north direction on an image, from the centre.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function ph = ASK_draw_north(optpar,imsiz,ArrowLength,Colour,ArrowWidth,Start_uv,EastOrNorthOrUp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_DRAW_NORTH -  Draws the north direction on an image, from the centre.
+   
+ Callling:
+   ph = ASK_draw_north(optpar,imsiz,ArrowLength,Colour,ArrowWidth,Start_uv,EastInstead)
+ Input:
+  optpar      - Optical parameter vector/struct, See documentation
+                for AIDA-tools for details.
+  imsiz       - image size [sy, sx] (pixels)
+  ArrowLength - arrow length, in fractions of a full image size (default: 0.45)
+  Colour      - Colour of arrow, either an RGB triplet [0.9 0, 0.4]
+                of a matlab colour identifying char (any of 'krgbcmyw')
+  ArrowWidth  - line-width of arrow (default: 0.5)
+  Start_uv    - Displacement from image center, in fraction of
+                image size, should be 2-element array with values
+                between -0.5 and 0.5
+  EastOrNorthOrUp - if 1 then an arrow in the east direction will be
+                    plotted if 2 then an arrow in the north
+                    direction and if 3 then an arrow in the vertical
+                    direction will be plotted. Default is north if
+                    no EastOrNorthOrUp is given.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ph = ASK_draw_north(optpar,imsiz,ArrowLength,Colour,ArrowWidth,Start_uv,EastOrNorthOrUp)</a>
+0002 <span class="comment">% ASK_DRAW_NORTH -  Draws the north direction on an image, from the centre.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Callling:</span>
+0005 <span class="comment">%   ph = ASK_draw_north(optpar,imsiz,ArrowLength,Colour,ArrowWidth,Start_uv,EastInstead)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  optpar      - Optical parameter vector/struct, See documentation</span>
+0008 <span class="comment">%                for AIDA-tools for details.</span>
+0009 <span class="comment">%  imsiz       - image size [sy, sx] (pixels)</span>
+0010 <span class="comment">%  ArrowLength - arrow length, in fractions of a full image size (default: 0.45)</span>
+0011 <span class="comment">%  Colour      - Colour of arrow, either an RGB triplet [0.9 0, 0.4]</span>
+0012 <span class="comment">%                of a matlab colour identifying char (any of 'krgbcmyw')</span>
+0013 <span class="comment">%  ArrowWidth  - line-width of arrow (default: 0.5)</span>
+0014 <span class="comment">%  Start_uv    - Displacement from image center, in fraction of</span>
+0015 <span class="comment">%                image size, should be 2-element array with values</span>
+0016 <span class="comment">%                between -0.5 and 0.5</span>
+0017 <span class="comment">%  EastOrNorthOrUp - if 1 then an arrow in the east direction will be</span>
+0018 <span class="comment">%                    plotted if 2 then an arrow in the north</span>
+0019 <span class="comment">%                    direction and if 3 then an arrow in the vertical</span>
+0020 <span class="comment">%                    direction will be plotted. Default is north if</span>
+0021 <span class="comment">%                    no EastOrNorthOrUp is given.</span>
+0022 
+0023 <span class="comment">% Done to losely mimic draw_north.pro</span>
+0024 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0025 <span class="comment">% GPL 3.0 or later applies</span>
+0026 
+0027 
+0028 <span class="comment">% common vs</span>
+0029 
+0030 <span class="keyword">if</span> nargin &lt; 3 | isempty(ArrowLength)
+0031   ArrowLength = 0.25*mean(imsiz); <span class="comment">% fraction of image side length</span>
+0032 <span class="keyword">end</span>
+0033 <span class="keyword">if</span> nargin &lt; 4 | isempty(Colour)
+0034   Colour = <span class="string">'w'</span>; <span class="comment">% white as default colour.</span>
+0035 <span class="keyword">end</span>
+0036 <span class="keyword">if</span> nargin &lt; 5 | isempty(ArrowWidth)
+0037   ArrowWidth = 0.5; <span class="comment">% default width of arrow</span>
+0038 <span class="keyword">end</span>
+0039 <span class="keyword">if</span> nargin &lt; 6 | isempty(Start_uv)
+0040   Start_uv = [0,0]+imsiz/2; <span class="comment">% ofsett from centre.</span>
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="comment">% Get the optical transfer function identifier</span>
+0044 <span class="keyword">if</span> isstruct(optpar)
+0045   optmod = optpar.mod;
+0046 <span class="keyword">else</span>
+0047   optmod = optpar(9);
+0048 <span class="keyword">end</span>
+0049 
+0050 <span class="comment">% Starting point of arrow</span>
+0051 uC = Start_uv(1);
+0052 vC = Start_uv(2);
+0053 
+0054 <span class="comment">%% % Arbitrary point on line-of-sight in direction of [uC,vC] pixels field-of-view</span>
+0055 <span class="comment">%% [xC,yC,zC] = inv_project_points(uC,vC,ones(imsiz),[0,0,0],optmod,optpar,[0 0 1],500);</span>
+0056 <span class="comment">%% rC = [xC,yC,zC];</span>
+0057 <span class="comment">%% There is something dodgy about that above. Cant figure out why.</span>
+0058 <span class="comment">% This below is exactly what it does:</span>
+0059 [fi,taeta] = camera_invmodel(uC,vC,optpar,optmod,imsiz);
+0060 epix = [sin(taeta).*sin(fi); sin(taeta).*cos(fi); cos(taeta)];
+0061 <span class="comment">% Rotate/Transform them with the rotation matrix:</span>
+0062 <span class="comment">%epix = epix';</span>
+0063 
+0064 rC = epix*500;
+0065 <span class="comment">% take a point displaced in desired direction</span>
+0066 <span class="keyword">if</span>  nargin &gt; 6 &amp;&amp; EastOrNorthOrUp == 1
+0067   rA = rC+[3;0;0];<span class="comment">%[xC+3,yC,zC];</span>
+0068 <span class="keyword">elseif</span> nargin &gt; 6 &amp;&amp; EastOrNorthOrUp == 3
+0069   rA = rC+[0;0;30];<span class="comment">%[xC,yC+3,zC];</span>
+0070 <span class="keyword">else</span>
+0071   rA = rC+[0;3;0];<span class="comment">%[xC,yC+3,zC];</span>
+0072 <span class="keyword">end</span>
+0073 <span class="comment">% Calculate the pixel coordinate of that point.</span>
+0074 [uA,vA] = project_point([0,0,0],optpar,[rA],eye(3),imsiz);
+0075 <span class="comment">% Subtract and normalize to unit vector.</span>
+0076 eA = [uA,vA] - [uC,vC];
+0077 eA = eA/norm(eA);
+0078 
+0079 HoldIsOn = ishold;
+0080 hold on
+0081 
+0082 <span class="comment">% Draw the arrow</span>
+0083 ph = arrow([uC,vC],[uC,vC]+ArrowLength*eA,<span class="keyword">...</span>
+0084            <span class="string">'facecolor'</span>,Colour,<span class="string">'Edgecolor'</span>,Colour,<span class="string">'width'</span>,ArrowWidth);
+0085 
+0086 <span class="keyword">if</span> ~HoldIsOn
+0087   hold off
+0088 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

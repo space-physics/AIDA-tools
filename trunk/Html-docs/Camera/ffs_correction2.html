@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ffs_correction2</title>
+  <meta name="keywords" content="ffs_correction2">
+  <meta name="description" content="FFS_CORRECTION2 - flat-field variation for optical transfer">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>ffs_correction2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>FFS_CORRECTION2 - flat-field variation for optical transfer</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [ff] = ffs_correction2(imgsize,optpar,optmod) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FFS_CORRECTION2 - flat-field variation for optical transfer
+ function OPTMOD with optical parameters OPTPAR. Calculated for
+ images with size IMGSIZE.
+ 
+ Calling:
+ [ff] = ffs_correction2(imgsize,optpar,optmod)
+ 
+ Input:
+  imgsize - size of image (pixels)
+  optpar - parameters for optical model focal widths, camera
+           rotation angles, image coordinates (relative units) for
+           projection point of optical axis, shape factor.
+  optmod - identifier for optical transfer function [-2,-1,1,2,3,4,5]
+ 
+ Output:
+  FF - flat-field correction matrix, scaled to max==1
+ 
+ See also <a href="ffs_correction_raw.html" class="code" title="function [ff] = ffs_correction_raw(imgsize,optpar,optmod)">FFS_CORRECTION_RAW</a> <a href="camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">CAMERA_MODEL</a>, <a href="determine_fov.html" class="code" title="function fov = determine_fov(imgsiz,optpar,optmod)">DETERMINE_FOV</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>	CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA</li><li><a href="dohmega.html" class="code" title="function [dohm] = dohmega( a1,a2,a3,a4,a5 )">dohmega</a>	DOHMEGA - calculate the solid angle spanned by a pixel.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/alis_imgs_movie_r.html" class="code" title="function [M,Tstrs,caxout,exptimes,wl] = alis_imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,rgbFilters)">alis_imgs_movie_r</a>	ALIS_IMGS_MOVIE_R - produce a matlab movie M from a series of image files.</li><li><a href="../ALIS/alis_imgs_movie_rgb.html" class="code" title="function [M] = alis_imgs_movie_rgb(files,reg,cax,opptp,PREPROC_OPS,rgbFilters)">alis_imgs_movie_rgb</a>	ALIS_IMGS_MOVIE_RGB - produce a matlab movie M from a series of image files.</li><li><a href="../Fits_tools/pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>	PRE_PROC_IMG - systematic image correction and preprocessing of</li><li><a href="../Imgtools/imgs_keograms.html" class="code" title="function [varargout] = imgs_keograms(files,locnrs,line_not_columns,optp,PO)">imgs_keograms</a>	imgs_keograms - make keograms from sequence of image files.</li><li><a href="../Imgtools/imgs_keograms_r3.html" class="code" title="function [Keo,exptimes,Tstrs,filters] = imgs_keograms_r3(files,rs,r,optpar,PO)">imgs_keograms_r3</a>	imgs_keogram_r3 - make keogram of R3's projection in the image.</li><li><a href="../Imgtools/imgs_movie_r.html" class="code" title="function [M,Tstrs,caxout,exptimes,wl] = imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,movie_ops,avi_ops)">imgs_movie_r</a>	imgs_movie_r - produce a matlab movie M from a series of image files.</li><li><a href="../Imgtools/imgs_rgb_keograms_r3.html" class="code" title="function [Keo,exptimes,Tstrs,filters] = imgs_rgb_keograms_r3(files,rs,r,optpar,PO)">imgs_rgb_keograms_r3</a>	imgs_keogram_r3 - make keogram of R3's projection in the image.</li><li><a href="../Spectral_cal/Spec_cal_jobb_Miracle.html" class="code" title="">Spec_cal_jobb_Miracle</a>	Spec_cal_jobb_Miracle - Example of spectral camera sensitivity calibration</li><li><a href="../Spectral_cal/Spec_cal_jobb_exmplCell.html" class="code" title="">Spec_cal_jobb_exmplCell</a>	Spec_cal_jobb_exmplCell - Example of spectral camera sensitivity calibration</li><li><a href="../Spectral_cal/pixel2pixel.html" class="code" title="function [C,sigma2C] = pixel2pixel(files,m_size,PO)">pixel2pixel</a>	PIXEL2PIXEL - p-2-p variation in photo responce non uniformity</li><li><a href="../Spectral_cal/spc_make_theta.html" class="code" title="function [theta_out,ze_out,ff_out,costheta] = spc_make_theta(gX,gY,optpar,sis,sz_img)">spc_make_theta</a>	SPC_MAKE_THETA - Calculate the angle from the optical axis,</li><li><a href="../Tomography/hh_tomo1234_New01.html" class="code" title="">hh_tomo1234_New01</a>	HH_TOMO1234_NEW01 - script for tomographing 2007 HIPAS-observations</li><li><a href="../Tomography/tomo20061212ariel3.html" class="code" title="">tomo20061212ariel3</a>	TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</li><li><a href="../Tomography/tomo20080305FinalIR_082011.html" class="code" title="">tomo20080305FinalIR_082011</a>	TOMO20080305FinalIR_082011 - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="../Tomography/tomo20080305NewBeginnings.html" class="code" title="">tomo20080305NewBeginnings</a>	TOMO20080305NewBeginnings - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="../Tomography/tomo_inp_images.html" class="code" title="function stns = tomo_inp_images(file_list,stns,img_ops)">tomo_inp_images</a>	TOMO_INP_IMAGES - Preprocessing of images for tomography plus</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ff] = ffs_correction2(imgsize,optpar,optmod)</a>
+0002 <span class="comment">% FFS_CORRECTION2 - flat-field variation for optical transfer</span>
+0003 <span class="comment">% function OPTMOD with optical parameters OPTPAR. Calculated for</span>
+0004 <span class="comment">% images with size IMGSIZE.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% [ff] = ffs_correction2(imgsize,optpar,optmod)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%  imgsize - size of image (pixels)</span>
+0011 <span class="comment">%  optpar - parameters for optical model focal widths, camera</span>
+0012 <span class="comment">%           rotation angles, image coordinates (relative units) for</span>
+0013 <span class="comment">%           projection point of optical axis, shape factor.</span>
+0014 <span class="comment">%  optmod - identifier for optical transfer function [-2,-1,1,2,3,4,5]</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Output:</span>
+0017 <span class="comment">%  FF - flat-field correction matrix, scaled to max==1</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% See also FFS_CORRECTION_RAW CAMERA_MODEL, DETERMINE_FOV</span>
+0020 
+0021 
+0022 <span class="comment">%   Copyright � 1997 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0023 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0024 
+0025 
+0026 bxy = imgsize;
+0027 bx = bxy(2);
+0028 by = bxy(1);
+0029 
+0030 <span class="comment">% £££ dmax = 0;</span>
+0031 
+0032 v = 1:by;
+0033 u = 1:bx;
+0034 [u,v] = meshgrid(u,v);
+0035 
+0036 <span class="keyword">if</span> optmod &lt; 0
+0037   
+0038   u = u/bx;
+0039   v =  v/by;
+0040   u_i = linspace(0,1,50);
+0041   v_i = linspace(0,1,50);
+0042   sinzecosaz = interp2(u_i,v_i,optpar.sinzecosaz,u,v);
+0043   sinzesinaz = interp2(u_i,v_i,optpar.sinzesinaz,u,v);
+0044   <span class="comment">% The solid angle spanned by a pixel field-of-view is the area of</span>
+0045   <span class="comment">% the projection of that surface onto the x-y plane divided by</span>
+0046   <span class="comment">% the cosine of the angle to the z-axis. The area of the x-y</span>
+0047   <span class="comment">% projection we can get by using the gradient of the horisontal</span>
+0048   <span class="comment">% projections of the l-o-s vectors. (And dear old Pythagoras)</span>
+0049   [dssdx,dssdy] = gradient(sinzesinaz);
+0050   [dscdx,dscdy] = gradient(sinzecosaz);
+0051   dohmega_Aeff = ((dssdx.^2+dssdy.^2).*(dscdx.^2+dscdy.^2)).^.5;
+0052   <span class="comment">% Since we _realy_ want the solid angle _multiplied_ with the</span>
+0053   <span class="comment">% cosine of the angle to the z-axis - we can take the area of the</span>
+0054   <span class="comment">% projection to the x-y plane and run!</span>
+0055   ff = ones(imgsize);
+0056   ff(:) = dohmega_Aeff/max(dohmega_Aeff(:));
+0057   
+0058 <span class="keyword">else</span>
+0059   
+0060   [fi,taeta] = <a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>(u(:),v(:),optpar,optmod,imgsize);
+0061   dohmega_Aeff = <a href="dohmega.html" class="code" title="function [dohm] = dohmega( a1,a2,a3,a4,a5 )">dohmega</a>(taeta,optpar,optmod,optpar(8)).*cos(taeta);
+0062   ff = ones(imgsize);
+0063   [min_theta,i_min_theta] = min(abs(taeta(:)));
+0064   ff(:) = dohmega_Aeff/dohmega_Aeff(i_min_theta);
+0065   
+0066 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

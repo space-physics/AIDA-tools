@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of spc_sens_pdf</title>
+  <meta name="keywords" content="spc_sens_pdf">
+  <meta name="description" content="SPC_SENS_PDF - Estimate PDF of the sensitivity, from">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Spectral_cal -->
+<h1>spc_sens_pdf
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SPC_SENS_PDF - Estimate PDF of the sensitivity, from</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function N = spc_sens_pdf(I_img,I_star,filter_in,filter2wl_order,hist_range) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SPC_SENS_PDF - Estimate PDF of the sensitivity, from
+ star-in-image-intensity I_IMG and star-enrgy-flux-from-catalog
+ I_star, FILTER_IN should contain the
+ filter identity as given from QWE, and hist_range should be the
+ range over which to calculate the histogram.
+ 
+ See also HIST, <a href="spc_sort_out_the_bad_ones.html" class="code" title="function [GI1,GI2,GI3,GT,GX,GY,GFilter,BSC_NR,sortindx,uniqueFilters] = spc_sort_out_the_bad_ones(I_allt,all_t,all_filter,bad_times,sis,OPTS)">SPC_SORT_OUT_THE_BAD_ONES</a>,  SPEC_CAL_BAD_INTENS
+
+ Calling:
+  N1 = spc_sens_hist(I_img,I_star,filter_in,hist_range)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="Spec_cal_jobb_exmplCell.html" class="code" title="">Spec_cal_jobb_exmplCell</a>	Spec_cal_jobb_exmplCell - Example of spectral camera sensitivity calibration</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function N = spc_sens_pdf(I_img,I_star,filter_in,filter2wl_order,hist_range)</a>
+0002 <span class="comment">% SPC_SENS_PDF - Estimate PDF of the sensitivity, from</span>
+0003 <span class="comment">% star-in-image-intensity I_IMG and star-enrgy-flux-from-catalog</span>
+0004 <span class="comment">% I_star, FILTER_IN should contain the</span>
+0005 <span class="comment">% filter identity as given from QWE, and hist_range should be the</span>
+0006 <span class="comment">% range over which to calculate the histogram.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% See also HIST, SPC_SORT_OUT_THE_BAD_ONES,  SPEC_CAL_BAD_INTENS</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Calling:</span>
+0011 <span class="comment">%  N1 = spc_sens_hist(I_img,I_star,filter_in,hist_range)</span>
+0012 <span class="comment">%</span>
+0013 
+0014 
+0015 <span class="comment">%   Copyright � 2008 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0016 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0017 
+0018 
+0019 
+0020 filters = filter2wl_order;
+0021 
+0022 <span class="comment">% disp([jj])</span>
+0023 <span class="keyword">for</span> ii = 1:length(filters),
+0024   
+0025   N1 = [];
+0026 
+0027   disp([ii filters(ii)])
+0028   <span class="keyword">for</span> jj = 1:size(I_star,1),
+0029     
+0030     <span class="comment">%TBR?: I1 = [];</span>
+0031     <span class="keyword">if</span> ~isempty(I_img{jj,ii})
+0032       <span class="comment">%disp([ii I_star(jj,ii)])</span>
+0033       <span class="comment">%I1 = [I_img{jj,ii}/I_star(jj,ii)];</span>
+0034       
+0035       I1 = I_img{jj,ii}/I_star(jj,ii);
+0036       <span class="keyword">if</span> numel(I1) &gt; 1
+0037         [N1(jj,:)] = ksdensity(I1,hist_range);
+0038       <span class="keyword">end</span>
+0039       
+0040     <span class="keyword">end</span>
+0041     
+0042   <span class="keyword">end</span>
+0043   
+0044   N{ii} = N1;
+0045   
+0046 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

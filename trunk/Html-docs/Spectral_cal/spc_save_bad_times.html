@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of spc_save_bad_times</title>
+  <meta name="keywords" content="spc_save_bad_times">
+  <meta name="description" content="SPC_SAVE_BAD_TIMES - saves bad times for spectral calibration">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Spectral_cal -->
+<h1>spc_save_bad_times
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SPC_SAVE_BAD_TIMES - saves bad times for spectral calibration</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function err = spc_save_bad_times(sis, BT, filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SPC_SAVE_BAD_TIMES - saves bad times for spectral calibration</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/backup1000filesversions.html" class="code" title="function [status, message] = backup1000filesversions(filename)">backup1000filesversions</a>	BACKUP1000FILESVERSIONS - Backup files to prevent overwriting them</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="Spec_cal_jobb_Miracle.html" class="code" title="">Spec_cal_jobb_Miracle</a>	Spec_cal_jobb_Miracle - Example of spectral camera sensitivity calibration</li><li><a href="Spec_cal_jobb_exmplCell.html" class="code" title="">Spec_cal_jobb_exmplCell</a>	Spec_cal_jobb_exmplCell - Example of spectral camera sensitivity calibration</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function err = spc_save_bad_times(sis, BT, filename)</a>
+0002 <span class="comment">% SPC_SAVE_BAD_TIMES - saves bad times for spectral calibration</span>
+0003 <span class="comment">%</span>
+0004 
+0005 <span class="comment">% Copyright M V</span>
+0006 
+0007 <span class="comment">% path = '.data/spc/';</span>
+0008 path = <span class="string">'./'</span>;
+0009 sis_saved = sis;
+0010 BT_saved = BT;
+0011 
+0012 err = 0;
+0013 status = -12;
+0014 message = <span class="string">''</span>;
+0015 
+0016 
+0017 sprintf(<span class="string">'\nWriting data to file %s...\n'</span>, fullfile(path,filename) )
+0018 <span class="keyword">try</span>
+0019   <span class="keyword">if</span> exist(fullfile(path,filename),<span class="string">'file'</span>)
+0020     [status, message] = <a href="../tools/backup1000filesversions.html" class="code" title="function [status, message] = backup1000filesversions(filename)">backup1000filesversions</a>(fullfile(path,filename));
+0021     <span class="comment">% sprintf('\nBacking up the old file as...')</span>
+0022     <span class="comment">%counter = '001';</span>
+0023     <span class="comment">%while exist([path filename, '.', counter])</span>
+0024     <span class="comment">%  counter = num2str(sprintf('%03d', str2num(counter)+1));</span>
+0025     <span class="comment">%end</span>
+0026     <span class="comment">%sprintf('%s', [path filename, '.', counter]);</span>
+0027     <span class="comment">%[status, message] = movefile([path filename], [filename, '.', counter]);</span>
+0028   <span class="keyword">end</span>
+0029   save(fullfile(path,filename), <span class="string">'sis_saved'</span>, <span class="string">'BT_saved'</span>);
+0030   sprintf(<span class="string">'\nOK.\n'</span>)
+0031 <span class="keyword">catch</span>
+0032   sprintf(<span class="string">'\nWriting %s failed:\n%d:%s\n'</span>, fullfile(path,filename), status, message)
+0033   err = 1;
+0034 <span class="keyword">end</span>
+0035 
+0036</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

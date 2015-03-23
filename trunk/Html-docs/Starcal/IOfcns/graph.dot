@@ -1,0 +1,8 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+
+  inimage [URL="inimage.html"];
+  inputall [URL="inputall.html"];
+  inputimg [URL="inputimg.html"];
+  isimreadable [URL="isimreadable.html"];
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sc_positioning</title>
+  <meta name="keywords" content="sc_positioning">
+  <meta name="description" content="SC_POSITIONING - position voxels/base-functions in SC grid.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>sc_positioning
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SC_POSITIONING - position voxels/base-functions in SC grid.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SC_POSITIONING - position voxels/base-functions in SC grid. 
+ R0 - lower left corner   
+ DR1,DR2,DR3 - Base vectors along the sides of the voxel block.
+ VEM - The 3-D block of voxels
+ 
+ Calling:
+ function r = sc_positioning(r0,dr1,dr2,dr3,Vem)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ASK/HSOFT/ASK_slice2trmtr.html" class="code" title="function [trmtrs,eMfan,Vem,X,Y,Z,U,V] = ASK_slice2trmtr(phi_slice,Ops)">ASK_slice2trmtr</a>	ASK_SLICE2TRMTR - projection matrix from blobs in slice || B to ASK-image</li><li><a href="../Aurora/projection_setup0H.html" class="code" title="">projection_setup0H</a>	% 1 Optical parameters</li><li><a href="hh_tomo1234_New01.html" class="code" title="">hh_tomo1234_New01</a>	HH_TOMO1234_NEW01 - script for tomographing 2007 HIPAS-observations</li><li><a href="tomo20061212ariel3.html" class="code" title="">tomo20061212ariel3</a>	TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</li><li><a href="tomo20080305FinalIR_082011.html" class="code" title="">tomo20080305FinalIR_082011</a>	TOMO20080305FinalIR_082011 - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="tomo20080305NewBeginnings.html" class="code" title="">tomo20080305NewBeginnings</a>	TOMO20080305NewBeginnings - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="tomo_EXMPL970216.html" class="code" title="">tomo_EXMPL970216</a>	% TOMO_EXMPL970216 - Template/example script for auroral tomography,</li><li><a href="tomo_set_blockofblobs.html" class="code" title="function [Vem,r,XfI,YfI,ZfI] = tomo_set_blockofblobs(r0,dr1,dr2,dr3,sizes_yxz)">tomo_set_blockofblobs</a>	TOMO_SET_BLOCKOFBLOBS - setup function  for b-o-b geometry parameters</li><li><a href="tomo_setup4reduced2D.html" class="code" title="function [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS)">tomo_setup4reduced2D</a>	tomo_setup4reduced2D - Set up coordinates and projection matrices</li><li><a href="tomo_skeleton.html" class="code" title="">tomo_skeleton</a>	% TOMO_SKELETON - Template/example script for auroral tomography,</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)</a>
+0002 <span class="comment">% SC_POSITIONING - position voxels/base-functions in SC grid.</span>
+0003 <span class="comment">% R0 - lower left corner</span>
+0004 <span class="comment">% DR1,DR2,DR3 - Base vectors along the sides of the voxel block.</span>
+0005 <span class="comment">% VEM - The 3-D block of voxels</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">% function r = sc_positioning(r0,dr1,dr2,dr3,Vem)</span>
+0009 <span class="comment">%</span>
+0010 
+0011 
+0012 <span class="comment">%   Copyright � 20010305 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0013 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0014 
+0015 sx = size(Vem,2);
+0016 sy = size(Vem,1);
+0017 sz = size(Vem,3);
+0018 
+0019 [xi,yi,zi] = meshgrid(1:sx,1:sy,1:sz);
+0020 
+0021 r = dr1'*(xi(:)'-1)+dr2'*(yi(:)-1)'+dr3'*(zi(:)'-1);
+0022 
+0023 r(1,:) = r(1,:)+r0(1);
+0024 r(2,:) = r(2,:)+r0(2);
+0025 r(3,:) = r(3,:)+r0(3);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

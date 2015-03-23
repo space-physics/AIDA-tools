@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of checkisok</title>
+  <meta name="keywords" content="checkisok">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>checkisok
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [SkMp] = checkisok(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> 
+ &quot;Private&quot; function, not much use for a user to call this function
+ 
+ CHECKISOK - Callback from checkok. Takes care of loading
+ of the star catalog and set up the relevant coordinates.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="infov2.html" class="code" title="function [infovstars,SkMp] = infov2(possiblestars,az0,ze0,rot0,fov,SkMp)">infov2</a>	INFOV2 finds stars inside a specified field of view</li><li><a href="loadstars2.html" class="code" title="function [possiblestars,catalog] = loadstars2(pos0,date,time0)">loadstars2</a>	LOADSTARS2 load stars from the: Bright Star Catalogue, 5th Revised</li><li><a href="plottablestars2.html" class="code" title="function [plstars] = plottablestars2(infovstars,magn)">plottablestars2</a>	PLOTTABLESTARS2 - Selects stars in INFOVSTARS brighter than MAGN</li><li><a href="read_SAO.html" class="code" title="function [possiblestars,star_list] = read_SAO(pos0,date,time0)">read_SAO</a>	READ_SAO loads stars from the SAO Star Catalogue, (SAO Star</li><li><a href="read_bsc.html" class="code" title="function [star_list] = read_bsc(catalog,star_pos)">read_bsc</a>	READ_BSC reads Bright Star Catalog, makes STAR_LIST of information</li><li><a href="updstrpl.html" class="code" title="function [SkMp] = updstrpl(SkMp)">updstrpl</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="skymap.html" class="code" title="function [SkMp] = skymap(pos,time,SkMp)">skymap</a>	SKYMAP An easy to astronomical starchart.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [SkMp] = checkisok(SkMp)</a>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% &quot;Private&quot; function, not much use for a user to call this function</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% CHECKISOK - Callback from checkok. Takes care of loading</span>
+0006 <span class="comment">% of the star catalog and set up the relevant coordinates.</span>
+0007 <span class="comment">%</span>
+0008 
+0009 <span class="comment">%   Copyright � 20010402 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0010 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0011 
+0012 
+0013 <span class="comment">% global stardir</span>
+0014 
+0015 <span class="keyword">if</span> ( ishandle(SkMp.ui815) )
+0016 
+0017   pos0(1) = str2num(get(SkMp.ui815,<span class="string">'String'</span>));
+0018   pos0(2) = str2num(get(SkMp.ui816,<span class="string">'String'</span>));
+0019   
+0020   tid0(1) = str2num(get(SkMp.ui86,<span class="string">'String'</span>));
+0021   tid0(2) = str2num(get(SkMp.ui87,<span class="string">'String'</span>));
+0022   tid0(3) = str2num(get(SkMp.ui88,<span class="string">'String'</span>));
+0023   tid0(4) = str2num(get(SkMp.ui89,<span class="string">'String'</span>));
+0024   tid0(5) = str2num(get(SkMp.ui817,<span class="string">'String'</span>));
+0025   tid0(6) = str2num(get(SkMp.ui818,<span class="string">'String'</span>));
+0026   
+0027   SkMp.pos0 = pos0;
+0028   SkMp.tid0 = tid0;
+0029   
+0030   set(SkMp.ui812,<span class="string">'string'</span>,<span class="string">'loading stars'</span>);
+0031   set(SkMp.figchok,<span class="string">'pointer'</span>,<span class="string">'watch'</span>)
+0032   pause(.1)
+0033   
+0034 <span class="keyword">end</span>
+0035 
+0036 <span class="comment">%Gotcha! exist does not work on fields only on variables, functions, paths...</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%if ( ~ exist( 'SkMp.oldfov' ) )</span>
+0039 <span class="keyword">if</span> (~isfield(SkMp,<span class="string">'oldfov'</span>))
+0040   fov = pi/4;
+0041 <span class="keyword">else</span>
+0042   fov = SkMp.oldfov;
+0043 <span class="keyword">end</span>
+0044 <span class="comment">%if ( ~ exist( 'SkMp.oldmagn' ) )</span>
+0045 <span class="keyword">if</span>(~isfield(SkMp,<span class="string">'oldmagn'</span>))
+0046   magn = 0;
+0047 <span class="keyword">else</span>
+0048   magn = SkMp.oldmagn;
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">%if ( ~ exist( 'SkMp.oldaz0' ) )</span>
+0052 <span class="keyword">if</span>(~isfield(SkMp,<span class="string">'oldaz0'</span>))
+0053   az0 = 0;
+0054 <span class="keyword">else</span>
+0055   az0 = SkMp.oldaz0;
+0056 <span class="keyword">end</span>
+0057 
+0058 <span class="comment">%if ( ~ exist( 'SkMp.oldze0' ) )</span>
+0059 <span class="keyword">if</span>(~isfield(SkMp,<span class="string">'oldze0'</span>))
+0060   ze0 = 0;
+0061 <span class="keyword">else</span>
+0062   ze0 = SkMp.oldze0;
+0063 <span class="keyword">end</span>
+0064 
+0065 <span class="comment">%if ( ~ exist( 'SkMp.oldrot0' ) )</span>
+0066 <span class="keyword">if</span>(~isfield(SkMp,<span class="string">'oldrot0'</span>))
+0067   rot0 = 0;
+0068 <span class="keyword">else</span>
+0069   rot0 = SkMp.oldrot0;
+0070 <span class="keyword">end</span>
+0071 
+0072 
+0073 <span class="keyword">if</span> isfield(SkMp,<span class="string">'SAO'</span>) &amp; SkMp.SAO
+0074   [possiblestars,star_list] = <a href="read_SAO.html" class="code" title="function [possiblestars,star_list] = read_SAO(pos0,date,time0)">read_SAO</a>(SkMp.pos0,SkMp.tid0(1:3),SkMp.tid0(4:6));
+0075   SkMp.star_list = star_list;
+0076 <span class="keyword">else</span>  
+0077   [possiblestars,catalog] = <a href="loadstars2.html" class="code" title="function [possiblestars,catalog] = loadstars2(pos0,date,time0)">loadstars2</a>(SkMp.pos0,SkMp.tid0(1:3),SkMp.tid0(4:6));
+0078   
+0079   <span class="keyword">if</span> nargin &gt; 1
+0080     
+0081     <span class="comment">%for i1 = 1:length(possiblestars),</span>
+0082     <span class="keyword">for</span> i1 = length(possiblestars):-1:1,
+0083       
+0084       star_list(possiblestars(i1,3)).Azimuth = possiblestars(i1,1)*180/pi;
+0085       star_list(possiblestars(i1,3)).Zenith = possiblestars(i1,2)*180/pi;
+0086       star_list(possiblestars(i1,3)).App_Zenith = possiblestars(i1,end)*180/pi;
+0087       
+0088     <span class="keyword">end</span>
+0089     
+0090   <span class="keyword">else</span>
+0091     
+0092     SkMp.star_list = <a href="read_bsc.html" class="code" title="function [star_list] = read_bsc(catalog,star_pos)">read_bsc</a>(catalog,possiblestars);
+0093     
+0094   <span class="keyword">end</span>
+0095 <span class="keyword">end</span>
+0096 fov
+0097 [infovstars,SkMp] = <a href="infov2.html" class="code" title="function [infovstars,SkMp] = infov2(possiblestars,az0,ze0,rot0,fov,SkMp)">infov2</a>(possiblestars,-az0,-ze0,rot0,fov,SkMp);
+0098 plottstars = <a href="plottablestars2.html" class="code" title="function [plstars] = plottablestars2(infovstars,magn)">plottablestars2</a>(infovstars,magn);
+0099 
+0100 <span class="keyword">if</span> ishandle(SkMp.figchok)
+0101   close(SkMp.figchok)
+0102 <span class="keyword">end</span>
+0103 
+0104 SkMp.possiblestars = possiblestars;
+0105 SkMp.infovstars = infovstars;
+0106 SkMp.plottstars = plottstars;
+0107 
+0108 figure(SkMp.figsky);
+0109 [SkMp] = <a href="updstrpl.html" class="code" title="function [SkMp] = updstrpl(SkMp)">updstrpl</a>(SkMp);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

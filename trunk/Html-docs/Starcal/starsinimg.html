@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of starsinimg</title>
+  <meta name="keywords" content="starsinimg">
+  <meta name="description" content="STARSINIMG is a function that plot the stars over the image.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>starsinimg
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STARSINIMG is a function that plot the stars over the image.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [pstarsout,uk,wk] = starsinimg(pstars,optpar,optmod, imsiz) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STARSINIMG is a function that plot the stars over the image.
+ Used in the starcalibration program.
+ 
+ Calling:
+ [pstarsout,uk,wk] = starsinimg(pstars,optpar,optmod)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>	CAMERA_BASE - determine the coordinate system of the camera</li><li><a href="../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>	CAMERA_MODEL - determine the image coordinates of light from [az,ze]</li><li><a href="../Starcal/IOfcns/inimage.html" class="code" title="function [true] = inimage(x,y,bx,by)">inimage</a>	INIMAGE  tests if a point (X,Y) is within the image,</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Starcal/M6/trackemdown.html" class="code" title="function [SkMp,identstars,optpar] = trackemdown(SkMp)">trackemdown</a>	TRACKEMDOWN - makes an automatic starcalibration.</li><li><a href="../Starcal/M7/trackemdown.html" class="code" title="function [SkMp,identstars,optpar] = trackemdown(SkMp)">trackemdown</a>	TRACKEMDOWN - makes an automatic starcalibration.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [pstarsout,uk,wk] = starsinimg(pstars,optpar,optmod, imsiz)</a>
+0002 <span class="comment">% STARSINIMG is a function that plot the stars over the image.</span>
+0003 <span class="comment">% Used in the starcalibration program.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">% [pstarsout,uk,wk] = starsinimg(pstars,optpar,optmod)</span>
+0007 
+0008 <span class="comment">%   Copyright © 2011 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0009 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0010 
+0011 
+0012 <span class="keyword">global</span> bx by
+0013 
+0014 <span class="keyword">if</span> optmod &lt; 0
+0015   
+0016   [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(optpar.rot(1),optpar.rot(2),optpar.rot(3));
+0017   
+0018 <span class="keyword">else</span>
+0019   
+0020   alpha0 = optpar(3);
+0021   beta0 = optpar(4);
+0022   gamma0 = optpar(5);
+0023   <span class="keyword">if</span> length(optpar) &gt; 9
+0024     [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(alpha0,beta0,gamma0,optpar(10));
+0025   <span class="keyword">else</span>
+0026     [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(alpha0,beta0,gamma0);
+0027   <span class="keyword">end</span>
+0028 <span class="comment">% $$$   az0 = optpar(3);</span>
+0029 <span class="comment">% $$$   el0 = optpar(4);</span>
+0030 <span class="comment">% $$$   roll = optpar(5);</span>
+0031 <span class="comment">% $$$</span>
+0032 <span class="comment">% $$$   [e1,e2,e3] = camera_base(az0,el0,roll);</span>
+0033   
+0034 <span class="keyword">end</span>
+0035 Nrstj = size(pstars);
+0036 
+0037 <span class="comment">% tdiff = 0;</span>
+0038 
+0039 indx = 1;
+0040 
+0041 <span class="keyword">for</span> i1 = 1:Nrstj(1),
+0042   
+0043   az = pstars(i1,1);
+0044   ze = pstars(i1,2);
+0045   [u,w] = <a href="../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>(az,ze,e1,e2,e3,optpar,optmod, imsiz);
+0046   <span class="keyword">if</span> ( <a href="../Starcal/IOfcns/inimage.html" class="code" title="function [true] = inimage(x,y,bx,by)">inimage</a>(u,w,bx,by))
+0047     
+0048     uk(indx) = u;
+0049     wk(indx) = w;
+0050     pstarsout(indx,:) = pstars(i1,:);
+0051     indx = indx + 1;
+0052     
+0053   <span class="keyword">end</span>
+0054   
+0055 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

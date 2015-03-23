@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>The earth is spinning</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+  </head>
+
+  <body class="section-2" bgcolor="#FFFFF0">
+    <ul id="menu">
+      <li id="nav-1"><a href="../Documentation/index.html">AIDA-home</a>
+      </li>
+      <li id="nav-2"><a href="intros.html">Image analysis (introductions)</a>
+	<ul id="subnav-2">
+	  <li><a href="BBH.pdf">Tutorial</a></li>
+	  <li><a href="optics.html">Camera</a></li>
+	  <li><a href="starcal.html">Starcal</a></li>
+	  <li><a href="Skymap/index.html">Skymap</a></li>
+	</ul>
+      </li>
+      <li id="nav-3"><a href="../Html-exmpls/index.html">Examples</a>
+      </li>
+      <li id="nav-4"><a href="../Html-docs/index.html">Matlab-src-tree</a>
+      </li>
+    </ul>
+    <div id="contents">
+      <h1>Earth model</h1>
+      <p>
+	The earth model that is the basis for the geographical and astronomical
+	transformations in this program package is the WGS-84 model.
+	This model is also used by the GPS-navigation system.
+      </p>
+      <p>
+	The relations between a point in the earth centered coordinate
+	system and the latitude-longitude-altitude system is given by:
+      </p>
+      <p>
+	<math>N = (a+h)/(1-e<sup>2</sup>*sin<sup>2</sup>(lat))<sup>0.5</sup></math><BR>
+      </p>
+      <p>
+	<math>x = N(h,lat)*cos(lat)*sin(long)</math><BR>
+      </p>
+      <p>
+	<math>y = N(h,lat)*(1-e<sup>2</sup>)*sin(lat)</math><BR>
+      </p>
+      <p>
+	<math>z = N(h,lat)*cos(lat)*cos(long)</math><BR>
+      </p>
+      <p>
+	Where h is the altitude above the sea level, long is the longitude positive eastward
+	and lat is the astronomic latitude. For the values of a, the equatorial earth radius
+	and e the eccentricity of the earth the following values are used:
+      </p>
+      a = 6378137 (km)<br>
+      e = 0.08181922 <br>
+      <center><img src="images/earth03.jpg" ALT="Globe with coordinate
+	defs"><br clear>
+      figure 1</center>
+      <p>
+	The interface functions to the earth model are:
+      </p>
+      <ul>
+	<li><strong>[long,lat,h] = r_2_llh(r)</strong><br>
+	  <A HREF="../Html-docs/EARTH/r_2_llh.html">r_2_llh.m</a> transforms the point R in an earth centered
+	  horizontal system to ( LONG, LAT, H ), see figure 1 above.
+	</li>
+	<li><strong>[r_out] = latlongh_2_r(lat,long,h)</strong><br>
+	  <A HREF="../Html-docs/EARTH/latlongh_2_r.html">latlongh_2_r.m</a> transforms the point ( LONG, LAT, H )
+	  to R in an earth centered horizontal system, see figure 1 above.
+	</li>
+	<li><strong>[e1,e2,e3] = e_local(lat0,long0,alt0)</strong><br>
+	  <A HREF="../Html-docs/EARTH/e_local.html">e_local.m</a> Computes the local Cartesian coordinate
+	  system <math>e<sub>x</sub></math> || east , 
+	  <math>e<sub>y</sub></math> || north, 
+	  <math>e<sub>z</sub></math> || zenith in in (lat0,long0), see figure 2 .
+	  <center><img src="images/earth01.jpg" ALT="Globe with 2
+	    coordinate systems"><br clear> 
+	  figure 2</center>
+	  
+	</li>
+	<li><strong>(</strong><em>This function is temporarily lot -
+	    might be obsolete and remove. Search party have
+	    started. looking</em><br><strong>[long,lat,xp,yp] =
+	    bestaemlonlat(long0,lat0,az,el,h0,t0,hhh)</strong><br>
+	  <a NAME="bestll"</a><A HREF="../Html-docs/EARTH/bestaemlonlat2.html">bestaemlonlat.m</a> 
+	  calculation of latitude and longitude for a ray in
+	  direction ( AZ, EL ) from position ( LAT0, LONG0 ) reaching the
+	  altitude HHH ( km ). The problem is solved with a simple iterative method
+	  with an initial guess based on a flat earth model giving an initial length
+	  to the point then the length of the ray is scaled by the ratio of a/(a+b)
+	  until the altitude is within 5 m, see figure 3 below. Note that LAT0 and
+	  LONG0 should be given in degrees and AZ and EL in radians.<strong>)</strong>
+	</li>
+	<li><strong>[x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt)</strong><br>
+	  <A HREF="../Html-docs/EARTH/makenlcpos.html">makenlcpos.m</a> Computes the positions of a 
+	  point (lat, long, alt) in a local Cartesian coordinate
+	  system <math>e<sub>x</sub></math> || east , 
+	  <math>e<sub>y</sub></math> || north, 
+	  <math>e<sub>z</sub></math> || zenith with origin in (lat0,long0).
+	</li>
+      </ul>
+      <center><img src="images/earth04.jpg" ALT="Curved earth limb"><br clear>
+      figure 3</center>
+    <hr>
+    <a href="EARTH/index.htm">The source code of the earth model is nicely documented</a>
+      <hr>
+      <address><a href="mailto:bjorn@irf.se">Bj&ouml;rn Gustavsson</a></address>
+<!-- Created: Wed Oct  8 13:22:17 MET DST 1997 -->
+<!-- hhmts start -->Last modified: Mon Apr 15 00:21:01 CEST 2013 <!-- hhmts end -->
+  </body>
+</html>

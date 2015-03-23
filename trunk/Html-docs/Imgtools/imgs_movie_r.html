@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of imgs_movie_r</title>
+  <meta name="keywords" content="imgs_movie_r">
+  <meta name="description" content="imgs_movie_r - produce a matlab movie M from a series of image files.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>imgs_movie_r
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>imgs_movie_r - produce a matlab movie M from a series of image files.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [M,Tstrs,caxout,exptimes,wl] = imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,movie_ops,avi_ops) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> imgs_movie_r - produce a matlab movie M from a series of image files.
+   Additional output is TSTRS - observation times of the images - as
+   best it can, CAXOUT result from caxis for each image, EXPTIMES -
+   exposuretimes for the images.
+   
+ Calling:
+ [M,Tstrs,caxout,exptimes] = imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,movie_ops,avi_ops)
+ 
+   INPUT parameters: 
+   FILES - char array of image files, full or relative path, readable 
+   REG   - image region to display [xmin xmax ymin ymax], if empty
+           whole image is used.
+   CAX   - caxis to set either [cmin cmax] or 'auto'
+   OPPTP - optpar, see STARCAL, CAMERA
+   PREPOC_OPS - image pre_proc_ops see TYPICAL_PRE_PROC_OPS
+   MOVIE_OPS - options controlling the movie, currently only
+               checks movie_ops.gcfa see if current figure or
+               current axis should be stored, default is gcf.
+   avi_ops - cell array to send to avifile controlling the avi
+             output. See avifile for details.
+ 
+   Very little or no argument checking is preformed
+
+  See also: STARCAL, CAMERA, TYPICAL_PRE_PROC_OPS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>	FFS_CORRECTION2 - flat-field variation for optical transfer</li><li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>	imgs_smart_caxis - alpha-percentile setting of color-axis,</li><li><a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>	ISCHAR - return true if STR is a char-array</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/AVOK/avok_makin_movies.html" class="code" title="function AvOk = avok_makin_movies(AvOk)">avok_makin_movies</a>	AVOK_MAKIN_MOVIES - Makes movies of images from a night</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [M,Tstrs,caxout,exptimes,wl] = imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,movie_ops,avi_ops)</a>
+0002 <span class="comment">% imgs_movie_r - produce a matlab movie M from a series of image files.</span>
+0003 <span class="comment">%   Additional output is TSTRS - observation times of the images - as</span>
+0004 <span class="comment">%   best it can, CAXOUT result from caxis for each image, EXPTIMES -</span>
+0005 <span class="comment">%   exposuretimes for the images.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">% [M,Tstrs,caxout,exptimes] = imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,movie_ops,avi_ops)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   INPUT parameters:</span>
+0011 <span class="comment">%   FILES - char array of image files, full or relative path, readable</span>
+0012 <span class="comment">%   REG   - image region to display [xmin xmax ymin ymax], if empty</span>
+0013 <span class="comment">%           whole image is used.</span>
+0014 <span class="comment">%   CAX   - caxis to set either [cmin cmax] or 'auto'</span>
+0015 <span class="comment">%   OPPTP - optpar, see STARCAL, CAMERA</span>
+0016 <span class="comment">%   PREPOC_OPS - image pre_proc_ops see TYPICAL_PRE_PROC_OPS</span>
+0017 <span class="comment">%   MOVIE_OPS - options controlling the movie, currently only</span>
+0018 <span class="comment">%               checks movie_ops.gcfa see if current figure or</span>
+0019 <span class="comment">%               current axis should be stored, default is gcf.</span>
+0020 <span class="comment">%   avi_ops - cell array to send to avifile controlling the avi</span>
+0021 <span class="comment">%             output. See avifile for details.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   Very little or no argument checking is preformed</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%  See also: STARCAL, CAMERA, TYPICAL_PRE_PROC_OPS</span>
+0026 
+0027 
+0028 <span class="comment">%   Copyright � 20050109 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0029 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0030 
+0031 <span class="keyword">try</span>
+0032   get_fig = movie_ops.gcfa;
+0033 <span class="keyword">catch</span> 
+0034   get_fig = 1;
+0035 <span class="keyword">end</span>
+0036 <span class="keyword">if</span> nargin &lt; 7
+0037   avi_ops = {};
+0038 <span class="keyword">end</span>
+0039 <span class="keyword">if</span> isequal(get(gcf,<span class="string">'visible'</span>),<span class="string">'on'</span>)
+0040   
+0041   <span class="keyword">if</span> get_fig
+0042     M = moviein(size(files,1),gcf);
+0043   <span class="keyword">else</span>
+0044     M = moviein(size(files,1),gca);
+0045   <span class="keyword">end</span>
+0046   startindx = size(files,1);
+0047   stopindx = 1;
+0048   stepdir = -1;
+0049   
+0050 <span class="keyword">else</span>
+0051   
+0052   tmpname = [<span class="string">'/tmp/alis_mov'</span>,num2str(rand(1),<span class="string">'%8f'</span>),<span class="string">'.avi'</span>];
+0053   <span class="keyword">if</span> ~isempty(avi_ops)
+0054     M = avifile(tmpname,avi_ops);
+0055   <span class="keyword">else</span>
+0056     M = avifile(tmpname);
+0057   <span class="keyword">end</span>
+0058   startindx = 1;
+0059   stopindx = size(files,1);
+0060   stepdir = 1;
+0061   
+0062 <span class="keyword">end</span>
+0063 
+0064 Tstrs = <span class="string">''</span>;
+0065 <span class="keyword">if</span> nargin &gt;= 4 &amp; length(opptp) &gt; 8
+0066   ff = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>([PREPROC_OPS.outimgsize].*[1 1],opptp,opptp(9));
+0067 <span class="keyword">else</span>
+0068   ff = 1;
+0069 <span class="keyword">end</span>
+0070 
+0071 
+0072 <span class="keyword">for</span> i = startindx:stepdir:stopindx,
+0073   
+0074   <span class="keyword">if</span> <a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(files)
+0075     [data1,head1,obs1] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(i,:),PREPROC_OPS);
+0076   <span class="keyword">else</span>
+0077     [data1,head1,obs1] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(i).name,PREPROC_OPS);
+0078   <span class="keyword">end</span>
+0079   deltah = mean(data1(end/2,:)-data1(end/2+1,:));
+0080   data1(1:end/2,:) = data1(1:end/2,:) - deltah/2;
+0081   data1((1+end/2):<span class="keyword">end</span>,:) = data1((end/2+1):<span class="keyword">end</span>,:) + deltah/2;
+0082   
+0083   deltav = mean( data1(:,end/2) - data1(:,end/2+1));
+0084   data1(:,1:end/2) = data1(:,1:end/2) - deltav/2;
+0085   data1(:,(1+end/2):end) = data1(:,(end/2+1):end) + deltav/2;
+0086   
+0087   titlestr = sprintf(<span class="string">'%.4d-%.2d-%.2dT%.2d:%.2d:%.2d'</span>,obs1.time);
+0088   Tstrs = str2mat(Tstrs,titlestr);
+0089   
+0090   efact = 1;
+0091   <span class="keyword">if</span> obs1.exptime&lt;100
+0092     efact = 1000;
+0093   <span class="keyword">end</span>
+0094   exptimes(i) =  obs1.exptime*efact;
+0095   <span class="keyword">if</span> ~isempty(obs1.filter)
+0096     wl(i) = obs1.filter;
+0097   <span class="keyword">else</span>
+0098     wl(i) = [nan];
+0099   <span class="keyword">end</span>    
+0100   data1 = 1000*data1./ff/exptimes(i);
+0101   <span class="keyword">if</span> ~isempty(reg)
+0102     imagesc(reg(1):reg(2),reg(3):reg(4),data1(reg(3):reg(4),reg(1):reg(2))),axis xy,axis(reg)
+0103     data1 = data1(reg(3):reg(4),reg(1):reg(2));
+0104   <span class="keyword">else</span>
+0105     imagesc(data1),axis xy
+0106   <span class="keyword">end</span>
+0107   caxout(i,:) = caxis;
+0108   
+0109   tstrs = sprintf(<span class="string">'%.2d:%.2d:%.2d'</span>,obs1.time(4:6));
+0110   <span class="keyword">if</span> length(cax)==1
+0111     <a href="imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(cax,data1);
+0112     caxout(i,:) = caxis;
+0113     title(tstrs,<span class="string">'fontsize'</span>,18)
+0114   <span class="keyword">else</span>
+0115     caxis(cax),title(tstrs,<span class="string">'fontsize'</span>,18)
+0116   <span class="keyword">end</span>
+0117   drawnow
+0118   <span class="keyword">if</span> isequal(get(gcf,<span class="string">'visible'</span>),<span class="string">'on'</span>)
+0119     
+0120   <span class="keyword">if</span> get_fig
+0121     M(:,i) = getframe(gcf);
+0122   <span class="keyword">else</span>
+0123     M(:,i) = getframe(gca);
+0124   <span class="keyword">end</span>
+0125     
+0126   <span class="keyword">else</span>
+0127     
+0128   <span class="keyword">if</span> get_fig
+0129     M = addframe(M,gcf);
+0130   <span class="keyword">else</span>
+0131     M = addframe(M,gca);
+0132   <span class="keyword">end</span>
+0133     
+0134   <span class="keyword">end</span>
+0135   
+0136 <span class="keyword">end</span>
+0137 
+0138 <span class="keyword">if</span> isequal(get(gcf,<span class="string">'visible'</span>),<span class="string">'off'</span>)
+0139   
+0140   M = close(M);
+0141   whos M
+0142   M = aviread(tmpname);
+0143   whos M
+0144   unix([<span class="string">'ls -l '</span>,tmpname,<span class="string">';rm '</span>,tmpname]);
+0145   
+0146 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

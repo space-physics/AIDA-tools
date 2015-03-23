@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>You're looking great!</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+  </head>
+  
+  <body class="section-2">
+    <ul id="menu">
+      <li id="nav-1"><a href="../Documentation/index.html">AIDA-home</a>
+      </li>
+      <li id="nav-2"><a href="intros.html">Image analysis (introductions)</a>
+	<ul id="subnav-2">
+	  <li><a href="BBH.pdf">Tutorial</a></li>
+	  <li><a href="optics.html">Camera</a></li>
+	  <li><a href="starcal.html">Starcal</a></li>
+	  <li><a href="Skymap/index.html">Skymap</a></li>
+	  <li><a href="getting-started.html">Getting started</a></li>
+	</ul>
+      </li>
+      <li id="nav-3"><a href="../Html-exmpls/index.html">Examples</a>
+      </li>
+      <li id="nav-4"><a href="../Html-docs/index.html">Matlab-src-tree</a>
+      </li>
+    </ul>
+    <div id="contents">
+      <h1>Camera characteristics</h1>
+      <p>
+	There are a set of optical transfer functions supported (and
+	their inverses). Below follows a short description of them that
+	should make it possible to extend the functions <A
+	  HREF="../Html-docs/Camera/camera_model.html">camera_model.m</a> 
+	and <A HREF="../Html-docs/Camera/camera_invmodel.html">camera_invmodel.m</a> if the appropriate model
+	is missing. The optical transfer functions determine where in
+	the image light coming from a direction ( phi, theta ) will
+	project. The inverse of the transfer functions determine the
+	direction of the field of view of a pixel ( u, v ).<br> 
+	<img src="images/zenithmap03.jpg" ALT="Camera with its
+	  coordinate system"><br>  
+	Here it should be noted that the coordinate system in the above
+	figure is the camera fixed system and follows the rotations of
+	the camera.
+      </p>
+      <h3>1 Pinhole camera model</h3>
+      Where:<br>
+      <math>u = f<sub>u</sub> * tan( theta ) * sin( phi ) + u<sub>0</sub></math><br>
+      <math>v = f<sub>v</sub> * tan( theta ) * cos( phi ) + v<sub>0</sub></math><br>
+      <img src="images/optics01.jpg" ALT="pin-hole camera model">
+      <h3>2 Fish-eye camera model</h3>
+      Where:<br>
+      <math>u = f<sub>u</sub> * sin( alfa*theta ) * sin( phi ) + u<sub>0</sub></math><br>
+      <math>v = f<sub>v</sub> * sin( alfa*theta ) * cos( phi ) + v<sub>0</sub></math>
+      <h3>3 ALIS camera model</h3><br>
+      Where:<br>
+      <math>u = 
+	f<sub>u</sub> * (1-C) * tan( theta ) * sin( phi ) + 
+	f<sub>u</sub> * C * theta + u<sub>0</sub></math>
+      <br>
+      <math>v = 
+	f<sub>v</sub> * (1-C) * tan( theta ) * cos( phi ) + 
+	f<sub>v</sub> * C * theta + v<sub>0</sub></math>
+      <h3>4 Pinhole camera with half spherical backside</h3>
+      Where:<br>
+      <math>u = 
+	f<sub>u</sub> * theta + u<sub>0</sub></math>
+      <br>
+      <math>v = 
+	f<sub>v</sub> * theta + v<sub>0</sub></math>
+      <center><img src="images/optics02.jpg" ALT="Half spherical pin-hole camera model"></center>
+      <h3>Modified pin-hole camera model</h3>
+      Where:<br>
+      <math>u = f<sub>u</sub> * tan( alfa*theta ) * sin( phi ) + u<sub>0</sub></math><br>
+      <math>v = f<sub>v</sub> * tan( alfa*theta ) * cos( phi ) + v<sub>0</sub></math><br>
+      <p>
+	<A NAME="optpar">The</a> optical parameters are transfered
+	between different functions as an array built up like this:<br>
+	<math>( f<sub>u</sub>, f<sub>v</sub>, rot1, rot2, rot3,
+	  u<sub>0</sub>, v<sub>0</sub> C, optmod, 0 )</math>.<br>
+	Where the use of <math>( f<sub>u</sub>, f<sub>v</sub>,
+	  u<sub>0</sub>, <sub>0</sub> C)  </math> is obvious from the
+	above equations and optmod is an integer ( 1, 2, 3, 4 or 5) that
+	selects the optical model to use. The parameters rot1, rot2 and
+	rot3 are three angles of <A HREF="rotations.html">rotation</a>
+	(in degrees) to apply. <math>( f<sub>u</sub>, f<sub>v</sub>,
+	  u<sub>0</sub>,	v<sub>0</sub> are in relative units - that is
+	  they apply to image units in fractions of the corresponding
+	  image size.
+      </p>
+      
+    </div>
+    <address><a href="mailto:bjorn@irf.se">Bj&ouml;rn Gustavsson</a></address>
+    <!-- Created: Mon Oct 27 09:19:37 MET 1997 -->
+    <!-- hhmts start -->Last modified: Mon Apr 15 00:20:47 CEST 2013 <!-- hhmts end -->
+  </body>
+</html>

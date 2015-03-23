@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of r_2_llh</title>
+  <meta name="keywords" content="r_2_llh">
+  <meta name="description" content="R_2LLH transforms R in an earth centred horizontal system (GEO)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html EARTH -->
+<h1>r_2_llh
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>R_2LLH transforms R in an earth centred horizontal system (GEO)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [long,lat,h] = r_2_llh(r) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> R_2LLH transforms R in an earth centred horizontal system (GEO)
+ to ( LONG, LAT, H ).
+    
+ Calling:
+ [long,lat,h] = r_2_llh(r)
+ 
+ Input R - [Nx3] array with positions in a permuted earth centered
+ system, with e_z  poiting at (0 E,0 N), e_x pointing at (90 E, 0 N) 
+ See also <a href="latlongh_2_r.html" class="code" title="function [r_out] = latlongh_2_r(lat,long,h)">LATLONGH_2_R</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ecef2geo.html" class="code" title="function [latitude, longitude, altitude] = ecef2geo(posvececef,degreeflag)">ecef2geo</a>	-------------------------------------------------------------------------------</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="trace_line_to_EARTHsurf.html" class="code" title="function [lat0,long0,alt0] = trace_line_to_EARTHsurf(x0,y0,z0,dx,dy,dz)">trace_line_to_EARTHsurf</a>	TRACE_LINE_TO_EARTHSURF - from point [x0,y0,z0] in direction [dx,dy,dz]</li><li><a href="xyz_2_llh.html" class="code" title="function [long,lat,h] = xyz_2_llh(lat0,long0,h0,r)">xyz_2_llh</a>	XYZ_2_LLH transforms X,Y,Z in an lat0,long0 centred horizontal system</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [long,lat,h] = r_2_llh(r)</a>
+0002 <span class="comment">% R_2LLH transforms R in an earth centred horizontal system (GEO)</span>
+0003 <span class="comment">% to ( LONG, LAT, H ).</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">% [long,lat,h] = r_2_llh(r)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Input R - [Nx3] array with positions in a permuted earth centered</span>
+0009 <span class="comment">% system, with e_z  poiting at (0 E,0 N), e_x pointing at (90 E, 0 N)</span>
+0010 <span class="comment">% See also LATLONGH_2_R</span>
+0011 
+0012 
+0013 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0014 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0015 
+0016 
+0017 <span class="keyword">try</span> 
+0018   disp(size(r))
+0019   <span class="keyword">if</span> min(size(r))~=1
+0020     disp(<span class="string">'a'</span>)
+0021     [lat, long, h] = <a href="ecef2geo.html" class="code" title="function [latitude, longitude, altitude] = ecef2geo(posvececef,degreeflag)">ecef2geo</a>(r(:,[3 1 2])*1000);
+0022     disp(<span class="string">'a'</span>)
+0023   <span class="keyword">else</span>
+0024     disp(<span class="string">'b'</span>)
+0025     [lat, long, h] = <a href="ecef2geo.html" class="code" title="function [latitude, longitude, altitude] = ecef2geo(posvececef,degreeflag)">ecef2geo</a>(r([3 1 2])*1000);
+0026     disp(<span class="string">'b'</span>)
+0027   <span class="keyword">end</span>
+0028 <span class="keyword">catch</span>
+0029   r_earth = 6378.137;
+0030   f = 1/298.257;
+0031   e = (2*f-f*f)^.5;
+0032   
+0033   <span class="keyword">if</span> min(size(r)==1)
+0034     
+0035     long = atan2(r(1),r(3));
+0036     lat = atan(r(2)./((r(1)^2+r(3)^2)^.5/(1-e^2)));
+0037     h = ( r(1)^2 + r(2)^2/(1-e^2)^2 + r(3)^2 )^.5 - r_earth;
+0038     
+0039   <span class="keyword">else</span>
+0040     
+0041     long = atan2(r(:,1),r(:,3));
+0042     lat = atan(r(:,2)./((r(:,1).^2+r(:,3).^2).^.5/(1-e^2)));
+0043     h = ( r(:,1).^2 + r(:,2).^2/(1-e^2).^2 + r(:,3).^2 ).^.5 - r_earth;
+0044     
+0045   <span class="keyword">end</span>
+0046   warning(<span class="string">'Using low precision Teoid'</span>)
+0047   dbstack
+0048 <span class="keyword">end</span>
+0049 
+0050</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

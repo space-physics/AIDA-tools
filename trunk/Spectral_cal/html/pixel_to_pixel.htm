@@ -1,0 +1,329 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>pixel_to_pixel.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>Files that are LOADED into pixel_to_pixel.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="./ome/bjorn/matlab/Skymap/stars/Ybs.bjg">ome/bjorn/matlab/Skymap/stars/Ybs.bjg</A></LI> 
+<LI><A HREF =".//DATA/work/Heating/Silki_heating_nostrp.opt">/DATA/work/Heating/Silki_heating_nostrp.opt</A></LI> 
+<LI><A HREF =".//DATA/work/Heating/Nikka_heating_nostrip.opt">/DATA/work/Heating/Nikka_heating_nostrip.opt</A></LI> 
+<LI><A HREF =".//DATA/work/Heating/Abisko_heating_nostrips.opt">/DATA/work/Heating/Abisko_heating_nostrips.opt</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of pixel_to_pixel.m</FONT></FONT></P> 
+<pre> 
+[q,w] = my_unix('ls -1 --color=never /DATA/ALIS/19990216/s03/*.raf'); 
+files = w(1:end-1,:); 
+ 
+load /home/bjorn/matlab/Skymap/stars/Ybs.bjg 
+load /DATA/work/Heating/Silki_heating_nostrp.opt 
+is = find(Ybs(:,end-1)<5); 
+po = typical_pre_proc_ops; 
+po.badpixfix = 0; 
+po.medianfilter = 0; 
+po.BE = 1; 
+po.remove_these_stars = [Ybs(is,1)+Ybs(is,2)/60+Ybs(is,3)/3600 Ybs(is,4)+Ybs(is,5)/60+Ybs(is,6)/3600]; 
+po.optpar = [Silki_heating_nostrp 3 0]; 
+ff = ffs_correction2([128 128],po.optpar,3); 
+ 
+m_C = zeros(size(ff)); 
+m_C5 = m_C; 
+m_C9 = m_C; 
+m_C27 = m_C; 
+ni = 0; 
+for i = 20:length(files), 
+  [d,h,o] = inimg(files(i,:),po); 
+  d = d./ff; 
+  m_C = m_C + d./medfilt2(d,[3 3]); 
+  ni = ni+1; 
+end 
+for i = 20:length(files), 
+  [d,h,o] = inimg(files(i,:),po); 
+  d = d./ff; 
+  m_C5 = m_C5 + d./medfilt2(d,[5 5]); 
+end 
+for i = 20:length(files), 
+  [d,h,o] = inimg(files(i,:),po); 
+  d = ni*d./ff./m_C; 
+  m_C9 = m_C9 + d./medfilt2(d,[9 9]); 
+end 
+for i = 20:length(files), 
+  [d,h,o] = inimg(files(i,:),po); 
+  d = ni^2*d./ff./m_C./m_C9; 
+  m_C27 = m_C27 + d./medfilt2(d,[27 27]); 
+end 
+ 
+V_C = zeros(size(d)); 
+V_C9 = zeros(size(d)); 
+V_C27 = zeros(size(d)); 
+for i = 20:length(files), 
+ 
+  [d,h,o] = inimg(files(i,:),po); 
+  d = d./ff; 
+  V_C = V_C + 1/(ni-1)*(m_C/ni-d./medfilt2(d,[3 3])).^2; 
+  d = ni*d./m_C; 
+  V_C9 = V_C27 + 1/(ni-1)*(m_C9/ni-d./medfilt2(d,[9 9])).^2; 
+  d = ni*d./m_C9; 
+  V_C27 = V_C27 + 1/(ni-1)*(m_C27/ni-d./medfilt2(d,[27 27])).^2; 
+ 
+end 
+% $$$ hC = zeros([size(d) 21]); 
+% $$$ hist_lims = [0 .8:.02:1.2 inf]; 
+% $$$ for i = 20:length(files), 
+% $$$   [d,h,o] = inimg(files(i,:),po); 
+% $$$   for j = 1:21, 
+% $$$     [I,J] = find(hist_lims(j)         <   d./medfilt2(d,[3 3]) & ... 
+% $$$                  d./medfilt2(d,[3 3]) <= hist_lims(j+1) ); 
+% $$$     hC(:,:,j) = hC(:,:,j) + sparse(I,J,1,size(d,1),size(d,2)); 
+% $$$   end 
+% $$$ end 
+ 
+% $$$ m_C11 = zeros(size(d)); 
+% $$$ for i = 20:length(files), 
+% $$$   [d,h,o] = inimg(files(i,:),po); 
+% $$$   m_C11 = m_C11 + d./medfilt2(d,[11 11]); 
+% $$$ end 
+ 
+ 
+[q,w] = my_unix('ls -1 --color=never /DATA/ALIS/19990216/s06/*.raf'); 
+files06 = w(1:end-1,:); 
+ 
+load /DATA/work/Heating/Nikka_heating_nostrip.opt 
+is = find(Ybs(:,end-1)<5); 
+po06 = typical_pre_proc_ops; 
+po06.badpixfix = 0; 
+po06.medianfilter = 0; 
+po06.BE = 1; 
+po06.remove_these_stars = [Ybs(is,1)+Ybs(is,2)/60+Ybs(is,3)/3600 Ybs(is,4)+Ybs(is,5)/60+Ybs(is,6)/3600]; 
+po06.optpar = [Nikka_heating_nostrip 3 0]; 
+ 
+ff6 = ffs_correction2(size(d),po06.optpar,3); 
+ 
+m_C6 = zeros(size(d)); 
+ni6 = 0; 
+for i = 3:length(files06)-2, 
+  [d,h,o] = inimg(files06(i,:),po06); 
+  d = d./ff6; 
+  m_C6 = m_C6 + d./medfilt2(d,[3 3]); 
+  ni6 = ni6+1; 
+end 
+m_C6_5 = zeros(size(d)); 
+for i = 3:length(files06)-2, 
+  [d,h,o] = inimg(files06(i,:),po06); 
+  d = d./ff6; 
+  m_C6_5 = m_C6_5 + d./medfilt2(d,[5 5]); 
+end 
+m_C6b = zeros(size(d)); 
+for i = 3:length(files06)-2, 
+  [d,h,o] = inimg(files06(i,:),po06); 
+  d = d./ff6./m_C6*ni6; 
+  m_C6b = m_C6b + d./medfilt2(d,[3 3]); 
+end 
+V_C6 = zeros(size(d)); 
+for i = 3:length(files06)-2, 
+  [d,h,o] = inimg(files06(i,:),po06); 
+  V_C6 = V_C6 + 1/(ni6-1)*(m_C6/ni6-d./medfilt2(d,[3 3])).^2; 
+end 
+ 
+ 
+%---------------- 
+[q,w] = my_unix('ls -1 --color=never /DATA/ALIS/19990216/s05/*.raf'); 
+files05 = w(1:end-1,:); 
+load /DATA/work/Heating/Abisko_heating_nostrips.opt 
+ 
+is = find(Ybs(:,end-1)<5); 
+po05 = typical_pre_proc_ops; 
+po05.badpixfix = 0; 
+po05.medianfilter = 0; 
+po05.BE = 1; 
+po05.remove_these_stars = [Ybs(is,1)+Ybs(is,2)/60+Ybs(is,3)/3600 Ybs(is,4)+Ybs(is,5)/60+Ybs(is,6)/3600]; 
+po05.optpar = [Abisko_heating_nostrips 3 0]; 
+ 
+ff5 = ffs_correction2(size(d),po05.optpar,3); 
+ 
+m_C5 = zeros(size(d)); 
+ni5 = 0; 
+for i = 3:length(files05)-2, 
+  [d,h,o] = inimg(files05(i,:),po05); 
+  d = d./ff5; 
+  m_C5 = m_C5 + d./medfilt2(d,[3 3]); 
+  ni5 = ni5+1; 
+end 
+m_C5b = zeros(size(d)); 
+for i = 3:length(files05)-2, 
+  [d,h,o] = inimg(files05(i,:),po05); 
+  d = d./ff5./m_C5*ni5; 
+  m_C5b = m_C5b + d./medfilt2(d,[3 3]); 
+end 
+V_C5 = zeros(size(d)); 
+for i = 3:length(files05)-2, 
+  [d,h,o] = inimg(files05(i,:),po05); 
+  V_C5 = V_C5 + 1/(ni5-1)*(m_C5/ni5-d./medfilt2(d,[3 3])).^2; 
+end 
+[d5,h,o] = inimg(files05(i,:),po05); 
+o.time 
+[d6,h,o] = inimg(files06(i,:),po06); 
+o.time 
+[d1,h,o] = inimg(files(i,:),po); 
+o.time 
+f1 = gcf; 
+figure(f1) 
+ 
+mysubplot(3,3,1) 
+imagesc(d1) 
+mysubplot(3,3,4) 
+imagesc(d5) 
+mysubplot(3,3,7) 
+imagesc(d6) 
+ 
+d5 = d5./m_C5*ni5; 
+d1 = d1./m_C*ni; 
+d6 = d6./m_C6*ni6; 
+ 
+mysubplot(3,3,2) 
+imagesc(d1) 
+mysubplot(3,3,5) 
+imagesc(d5) 
+mysubplot(3,3,8) 
+imagesc(d6) 
+ 
+d5 = d5./m_C5b*ni5; 
+d1 = d1./m_Cb*ni; 
+d6 = d6./m_C6b*ni6; 
+ 
+mysubplot(3,3,3) 
+imagesc(d1) 
+mysubplot(3,3,6) 
+imagesc(d5) 
+mysubplot(3,3,9) 
+imagesc(d6) 
+ 
+ 
+i = 132; 
+[d6,h,o] = inimg(files06(i,:),po06); 
+ 
+mysubplot(1,3,1) 
+imagesc(d6./ff6) 
+caxis([4000 11000]) 
+mysubplot(1,3,2) 
+imagesc(1./m_C6*ni6) 
+caxis([0.95 1.05]) 
+mysubplot(1,3,3) 
+imagesc(d6./ff6./m_C6*ni6) 
+caxis([4000 11000]) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+% for NIPR SP-ASI 
+ 
+% $$$ PO = 
+% $$$                quadfix: 0 
+% $$$            quadfixsize: 0 
+% $$$          replaceborder: 0 
+% $$$              badpixfix: 0 
+% $$$             outimgsize: 0 
+% $$$           medianfilter: 0 
+% $$$            defaultccd6: 1 
+% $$$        bias_correction: 0 
+% $$$                  imreg: [90.262 422.22 101.11 428.83] 
+% $$$                     is: [1361x1 double] 
+% $$$     remove_these_stars: [169x2 double] 
+% $$$                 optpar: [-1.1103 -1.1263 -0.41773 0.12883 -0.96068 0.0074296 0.010988 0.47082 2] 
+ 
+m_Cb = zeros(size(ff)); 
+m_Cg = zeros(size(ff)); 
+m_Cr = zeros(size(ff)); 
+m_Cb2 = zeros(size(ff)); 
+m_Cb_1 = zeros(size(ff)); 
+m_Cb_2 = zeros(size(ff)); 
+m_Cg2 = zeros(size(ff)); 
+m_Cr2 = zeros(size(ff)); 
+ 
+nib = 0; 
+nig = 0; 
+nir = 0; 
+ 
+b_files = files(filtnr==1,:); 
+g_files = files(filtnr==2,:); 
+r_files = files(filtnr==3,:); 
+% first blue 
+if 1 
+  for i = 1:length(b_files), 
+    [d,h,o] = inimg(b_files(i,:),PO); 
+    d = d./ff; 
+    m_Cb = m_Cb + d./medfilt2(d,[3 3]); 
+    m_Cb2 = m_Cb2 + (d./medfilt2(d,[3 3])).^.5; 
+    nib = nib+1; 
+  end 
+  for i = 1:166, 
+    [d,h,o] = inimg(b_files(i,:),PO); 
+    d = d./ff; 
+    m_Cb_1 = m_Cb_1 + d./medfilt2(d,[3 3]); 
+  end 
+  for i = 1:166, 
+    [d,h,o] = inimg(b_files(i+166,:),PO); 
+    d = d./ff; 
+    m_Cb_2 = m_Cb_2 + d./medfilt2(d,[3 3]); 
+  end 
+  m_Cb = m_Cb/nib; 
+  m_Cb2 = (m_Cb2/nib).^2; 
+  % then green 
+  for i = 1:length(g_files), 
+    [d,h,o] = inimg(g_files(i,:),PO); 
+    d = d./ff; 
+    m_Cg = m_Cg + d./medfilt2(d,[3 3]); 
+    m_Cg2 = m_Cg2 + (d./medfilt2(d,[3 3])).^.5; 
+    nig = nig+1; 
+  end 
+  m_Cg = m_Cg/nig; 
+  m_Cg2 = (m_Cg2/nig).^2; 
+  % finally red 
+  for i = 1:length(r_files), 
+    [d,h,o] = inimg(r_files(i,:),PO); 
+    d = d./ff; 
+    m_Cr = m_Cr + d./medfilt2(d,[3 3]); 
+    m_Cr2 = m_Cr2 + (d./medfilt2(d,[3 3])).^.5; 
+    nir = nir+1; 
+  end 
+  m_Cr = m_Cr/nir; 
+  m_Cr2 = (m_Cr2/nir).^2; 
+ 
+ 
+  V_Cb = zeros(size(d)); 
+  V_Cg = zeros(size(d)); 
+  V_Cr = zeros(size(d)); 
+  for i = 1:length(b_files)-2, 
+ 
+    [d,h,o] = inimg(b_files(i,:),PO); 
+    d = d./ff; 
+    V_Cb = V_Cb + 1/(nib-1) * (m_Cb - d./medfilt2(d,[3 3])).^2; 
+ 
+    [d,h,o] = inimg(g_files(i,:),PO); 
+    d = d./ff; 
+    V_Cg = V_Cg + 1/(nig-1) * (m_Cg - d./medfilt2(d,[3 3])).^2; 
+ 
+    [d,h,o] = inimg(r_files(i,:),PO); 
+    d = d./ff; 
+    V_Cr = V_Cr + 1/(nir-1) * (m_Cr - d./medfilt2(d,[3 3])).^2; 
+ 
+  end 
+ 
+end 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 15:25 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

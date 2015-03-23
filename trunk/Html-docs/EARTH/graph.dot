@@ -1,0 +1,56 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  gtopo2maps -> makenlcpos;
+  latlongh_2_r -> xx;
+  latlongh_2_r -> yy;
+  latlongh_2_r -> zz;
+  latlongh_2_xyz -> maketransfmtr;
+  latlongh_2_xyz -> xx;
+  latlongh_2_xyz -> yy;
+  latlongh_2_xyz -> zz;
+  llh_to_local_coord -> e_local;
+  llh_to_local_coord -> xx;
+  llh_to_local_coord -> yy;
+  llh_to_local_coord -> zz;
+  makenlcpos -> llh_to_local_coord;
+  maketransfmtr -> e_local;
+  r_2_llh -> ecef2geo;
+  trace_line_to_EARTHsurf -> ecef2geo;
+  trace_line_to_EARTHsurf -> r_2_llh;
+  xx -> NN;
+  xyz_2_llh -> e_local;
+  xyz_2_llh -> latlongh_2_r;
+  xyz_2_llh -> r_2_llh;
+  yy -> NN;
+  zz -> NN;
+
+  Contents [URL="Contents.html"];
+  NN [URL="NN.html"];
+  dNdlambda [URL="dNdlambda.html"];
+  dNdphi [URL="dNdphi.html"];
+  dxdlambda [URL="dxdlambda.html"];
+  dxdphi [URL="dxdphi.html"];
+  dydlambda [URL="dydlambda.html"];
+  dydphi [URL="dydphi.html"];
+  dzdlambda [URL="dzdlambda.html"];
+  dzdphi [URL="dzdphi.html"];
+  e_local [URL="e_local.html"];
+  ecef2geo [URL="ecef2geo.html"];
+  geo2mag [URL="geo2mag.html"];
+  geo2mag95 [URL="geo2mag95.html"];
+  gtopo2maps [URL="gtopo2maps.html"];
+  latlongh_2_r [URL="latlongh_2_r.html"];
+  latlongh_2_xyz [URL="latlongh_2_xyz.html"];
+  llh_to_local_coord [URL="llh_to_local_coord.html"];
+  mag2geo [URL="mag2geo.html"];
+  mag2geo95 [URL="mag2geo95.html"];
+  makenlcpos [URL="makenlcpos.html"];
+  maketransfmtr [URL="maketransfmtr.html"];
+  nscand_map [URL="nscand_map.html"];
+  r_2_llh [URL="r_2_llh.html"];
+  trace_line_to_EARTHsurf [URL="trace_line_to_EARTHsurf.html"];
+  xx [URL="xx.html"];
+  xyz_2_llh [URL="xyz_2_llh.html"];
+  yy [URL="yy.html"];
+  zz [URL="zz.html"];
+}

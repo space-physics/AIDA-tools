@@ -1,0 +1,22 @@
+
+./Examples/html/ADA_1_loadnpreproc_p.html:      <meta name="m-file" content="ADA_1_loadnpreproc_p"><style>
+./Examples/html/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_01.png"> <h2>...and for files in BE byte order: fits2<a name="4"></a></h2><pre class="codeinput">[h,d] = fits2(filename);
+./Examples/html/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_02.png"> <h2>Standard ALIS data reading<a name="5"></a></h2>
+./Examples/html/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_03.png"> <h2>Bad-border<a name="8"></a></h2>
+./Examples/html/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_04.png"> <h2>"Bad-pixels"<a name="9"></a></h2>
+./Examples/html/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_05.png"> <h2>Pre-processing<a name="10"></a></h2>
+./Examples/html/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_06.png"> <h2>Adjusting the image borders<a name="12"></a></h2><pre class="codeinput">d = replace_border(d);
+./Examples/html/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_07.png"> <h2>Correcting bad pixels<a name="13"></a></h2>
+./Examples/html/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_08.png"> <h2>All in one go.<a name="14"></a></h2><pre class="codeinput">[d,h,o] = inimg(filename,PO);
+./Examples/html/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_09.png"> <p class="footer"><br>
+./Examples/html/index.html:     <li><a name="alis"></a><a href="ADA_1_loadnpreproc_p.html">ALIS data pre-processing</a>:
+./Html-exmpls/ADA_1_loadnpreproc_p.html:      <meta name="m-file" content="ADA_1_loadnpreproc_p"><style>
+./Html-exmpls/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_01.png"> <h2>...and for files in BE byte order: fits2<a name="4"></a></h2><pre class="codeinput">[h,d] = fits2(filename);
+./Html-exmpls/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_02.png"> <h2>Standard ALIS data reading<a name="5"></a></h2>
+./Html-exmpls/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_03.png"> <h2>Bad-border<a name="8"></a></h2>
+./Html-exmpls/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_04.png"> <h2>"Bad-pixels"<a name="9"></a></h2>
+./Html-exmpls/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_05.png"> <h2>Pre-processing<a name="10"></a></h2>
+./Html-exmpls/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_06.png"> <h2>Adjusting the image borders<a name="12"></a></h2><pre class="codeinput">d = replace_border(d);
+./Html-exmpls/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_07.png"> <h2>Correcting bad pixels<a name="13"></a></h2>
+./Html-exmpls/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_08.png"> <h2>All in one go.<a name="14"></a></h2><pre class="codeinput">[d,h,o] = inimg(filename,PO);
+./Html-exmpls/ADA_1_loadnpreproc_p.html:</pre><img vspace="5" hspace="5" src="ADA_1_loadnpreproc_p_09.png"> <p class="footer"><br>

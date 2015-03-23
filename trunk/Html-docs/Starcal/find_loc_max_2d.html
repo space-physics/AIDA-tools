@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of find_loc_max_2d</title>
+  <meta name="keywords" content="find_loc_max_2d">
+  <meta name="description" content="FIND_LOC_MAX_2D find a set of local maximas i a matrix">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>find_loc_max_2d
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>FIND_LOC_MAX_2D find a set of local maximas i a matrix</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [lmaxi,lmaxj,lmaxI] = find_loc_max_2d(in_matrix) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FIND_LOC_MAX_2D find a set of local maximas i a matrix
+  
+ Calling:
+  [x_out,y_out,sl_min] = find_loc_max_2d(in_matrix)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/blackman.html" class="code" title="function w = blackman(varargin)">blackman</a>	BLACKMAN - blackman window (of length L)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="find_the_stars.html" class="code" title="function [out_i,out_j,out_I] = find_the_stars(img_in)">find_the_stars</a>	FIND_THE_STARS - finds stars in images.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [lmaxi,lmaxj,lmaxI] = find_loc_max_2d(in_matrix)</a>
+0002 <span class="comment">% FIND_LOC_MAX_2D find a set of local maximas i a matrix</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  [x_out,y_out,sl_min] = find_loc_max_2d(in_matrix)</span>
+0006 
+0007 
+0008 <span class="comment">%   Copyright  �  1997 by Bjorn Gustavsson &lt;bjorn.gustavsson@irf.se&gt;</span>
+0009 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0010 
+0011 <span class="comment">% Reduce noice</span>
+0012 bx = size(in_matrix,2);
+0013 by = size(in_matrix,1);
+0014 
+0015 fi = fftshift(fft2(in_matrix));
+0016 blx = <a href="../tools/blackman.html" class="code" title="function w = blackman(varargin)">blackman</a>(bx);
+0017 bly = <a href="../tools/blackman.html" class="code" title="function w = blackman(varargin)">blackman</a>(by);
+0018 
+0019 bl2d = blx*bly';
+0020 fi = fi.*bl2d'.^2;
+0021 s_matr = real(ifft2(fftshift(fi)));
+0022 <span class="comment">%lmaxindx = 1;</span>
+0023 
+0024 <span class="keyword">for</span> ii = 2:by-1,
+0025   
+0026   slice = s_matr(ii,:);
+0027   x = 1:max(size(slice));
+0028   ix = x;
+0029   lsl = slice;
+0030   
+0031   dsl = diff(lsl);
+0032   d2sl = diff(dsl);
+0033   d2sl = [d2sl 1];
+0034   
+0035   dsl01 = [dsl dsl(max(size(dsl)))];
+0036   dsl10 = [dsl(1) dsl];
+0037   
+0038   [qw,idsz] = find( ( dsl01&gt;0&amp;dsl10&lt;0 ) | ( dsl01&lt;0&amp;dsl10&gt;0 ));
+0039 
+0040   lx_lextr = ix(idsz);
+0041   sl_lextr = lsl(idsz);
+0042   d2sl_lextr = d2sl(idsz);
+0043   
+0044   minind = find(d2sl_lextr&lt;0);
+0045   
+0046   <span class="keyword">if</span> ( ~exist(<span class="string">'sl_minx'</span>,<span class="string">'var'</span>) )
+0047     
+0048     sl_minx = sl_lextr(minind);
+0049     x_outx = lx_lextr(minind);
+0050     y_outx = ii*ones(size(lx_lextr(minind)));
+0051     
+0052   <span class="keyword">else</span>
+0053     
+0054     sl_minx = [sl_minx sl_lextr(minind)];
+0055     x_outx = [x_outx lx_lextr(minind)];
+0056     y_outx = [y_outx ii*ones(size(lx_lextr(minind)))];
+0057     
+0058   <span class="keyword">end</span>
+0059   
+0060 <span class="keyword">end</span>
+0061 
+0062 lii = 1;
+0063 <span class="keyword">for</span> i = 1:max(size(sl_minx)),
+0064   
+0065   <span class="keyword">if</span> ( sl_minx(i) &gt; s_matr(y_outx(i)-1,x_outx(i)-1) ) 
+0066     
+0067     <span class="keyword">if</span> ( sl_minx(i) &gt; s_matr(y_outx(i)-1,x_outx(i)) )
+0068       
+0069       <span class="keyword">if</span> ( sl_minx(i) &gt; s_matr(y_outx(i)-1,x_outx(i)+1) )
+0070     
+0071     <span class="keyword">if</span> ( sl_minx(i) &gt; s_matr(y_outx(i)+1,x_outx(i)-1) )
+0072       
+0073       <span class="keyword">if</span> ( sl_minx(i) &gt; s_matr(y_outx(i)+1,x_outx(i) ) )
+0074         
+0075         <span class="keyword">if</span> ( sl_minx(i) &gt; s_matr(y_outx(i)+1,x_outx(i)+1) )
+0076           
+0077           lmaxI(lii) = sl_minx(i);
+0078           lmaxi(lii) = x_outx(i);
+0079           lmaxj(lii) = y_outx(i);
+0080           lii = lii+1;
+0081           
+0082         <span class="keyword">end</span>
+0083         
+0084       <span class="keyword">end</span>
+0085       
+0086     <span class="keyword">end</span>
+0087     
+0088       <span class="keyword">end</span>
+0089       
+0090     <span class="keyword">end</span>
+0091     
+0092   <span class="keyword">end</span>
+0093   
+0094 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

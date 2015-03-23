@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fits_frames</title>
+  <meta name="keywords" content="fits_frames">
+  <meta name="description" content="FITS_FRAMES - reads fits data frames from fits file">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>fits_frames
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>FITS_FRAMES - reads fits data frames from fits file</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [data_frames] = fits_frames(fid,info,out_frames) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FITS_FRAMES - reads fits data frames from fits file
+
+ Calling:
+  [data_frames] = fits_frames(fid,info,out_frames)
+
+ Input:
+  FID - file pointer/file handle/file identifier as returned from
+        FOPEN 
+  INFO - fits info struct as returned from FITS_HEADER
+  OUT_FRAMES - array [1 x n] with indexes of frames to be read out
+               first frame is frame #1.
+ Output:
+  DATA_FRAMES - array [n2 x n1 x n3] with data/image frames.
+  
+ Comment: Only tested for fits files with 1 single header and
+          NAXIS either 2 or 3.
+
+ See also: FOPEN, <a href="fits_header.html" class="code" title="function [header] = fits_header(fid,filename)">FITS_HEADER</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>	READ_IMG - reads image data and process header info.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [data_frames] = fits_frames(fid,info,out_frames)</a>
+0002 <span class="comment">% FITS_FRAMES - reads fits data frames from fits file</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  [data_frames] = fits_frames(fid,info,out_frames)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%  FID - file pointer/file handle/file identifier as returned from</span>
+0009 <span class="comment">%        FOPEN</span>
+0010 <span class="comment">%  INFO - fits info struct as returned from FITS_HEADER</span>
+0011 <span class="comment">%  OUT_FRAMES - array [1 x n] with indexes of frames to be read out</span>
+0012 <span class="comment">%               first frame is frame #1.</span>
+0013 <span class="comment">% Output:</span>
+0014 <span class="comment">%  DATA_FRAMES - array [n2 x n1 x n3] with data/image frames.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Comment: Only tested for fits files with 1 single header and</span>
+0017 <span class="comment">%          NAXIS either 2 or 3.</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% See also: FOPEN, FITS_HEADER</span>
+0020 
+0021 <span class="comment">%   Copyright � 20100705 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0022 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0023 
+0024 f_position = ftell(fid);
+0025 
+0026 <span class="comment">% The info struct should have a field nx where the dimensions of</span>
+0027 <span class="comment">% the image-fields/images-field should be:</span>
+0028 sx = info.nx(1);
+0029 sy = info.nx(2);
+0030 <span class="comment">% Allocate size for the output-array:</span>
+0031 data_frames = zeros([sy,sx,length(out_frames)]);
+0032 
+0033 <span class="keyword">if</span> ( nargout &gt; 0 )
+0034   
+0035   <span class="keyword">for</span> i1 = length(out_frames):-1:1,
+0036     
+0037     <span class="comment">%disp([i1 f_position, abs(info.bitpix/8),(out_frames(i1)-1),sx,sy,f_position+abs(info.bitpix/8)*(out_frames(i1)-1)*sx*sy])</span>
+0038     <span class="comment">% if the current frame is within the number of frames ofthe</span>
+0039     <span class="comment">% fits-file this should work...</span>
+0040     FullFrameExist = fseek(fid,f_position+abs(info.bitpix/8)*(out_frames(i1))*sx*sy,<span class="string">'bof'</span>);
+0041     <span class="keyword">if</span> FullFrameExist == 0
+0042       <span class="comment">% ...then this should put the FID at the beginning of that</span>
+0043       <span class="comment">% image field:</span>
+0044       status = fseek(fid,f_position+abs(info.bitpix/8)*(out_frames(i1)-1)*sx*sy,<span class="string">'bof'</span>);
+0045       <span class="comment">% So we can read the corresponding image-frame data:</span>
+0046       <span class="keyword">switch</span> info.bitpix
+0047        <span class="keyword">case</span> 8
+0048         data=fread(fid,[sx,sy],<span class="string">'char'</span>);
+0049        <span class="keyword">case</span> 16
+0050         data=fread(fid,[sx,sy],<span class="string">'int16'</span>);
+0051        <span class="keyword">case</span> 32
+0052         data=fread(fid,[sx,sy],<span class="string">'int16'</span>);
+0053        <span class="keyword">case</span> -32
+0054         data=fread(fid,[sx,sy],<span class="string">'float32'</span>);
+0055        <span class="keyword">case</span> -64
+0056         data=fread(fid,[sx,sy],<span class="string">'float64'</span>);
+0057        <span class="keyword">otherwise</span>
+0058         warning([<span class="string">'unknown data format: bitpix = '</span>,num2str(info.bitpix)]);
+0059       <span class="keyword">end</span>
+0060       data_frames(:,:,i1) = data';
+0061       fseek(fid,f_position,<span class="string">'bof'</span>);
+0062     <span class="keyword">else</span>
+0063       disp([<span class="string">'Frame: '</span>,sprintf(<span class="string">'%d'</span>,out_frames(i1)),<span class="string">' does not exist!'</span>])
+0064     <span class="keyword">end</span>
+0065   <span class="keyword">end</span>
+0066   
+0067 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

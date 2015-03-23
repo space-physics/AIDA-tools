@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ALISstdpos_visvol</title>
+  <meta name="keywords" content="ALISstdpos_visvol">
+  <meta name="description" content="ALISSTDPOS_VISVOL - Display ALIS f-o-v ontop of topographic map">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>ALISstdpos_visvol
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ALISSTDPOS_VISVOL - Display ALIS f-o-v ontop of topographic map</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function hndl = ALISstdpos_visvol(stnNRs,AZstn,ZEstn,ALTstn,FOVstn,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ALISSTDPOS_VISVOL - Display ALIS f-o-v ontop of topographic map 
+   ALISSTDPOS_VISVOL shows the fields-of-view of the ALIS stations
+   ontop of a topographic map (Either in longitude-latitude or
+   horizontal projection (at Kiruna))
+
+ Calling:
+   hndl = ALISstdpos_visvol(stnNRs,AZstn,ZEstn,ALTstn,FOVstn,OPS)
+ Input:
+   stnNRs - Station number of the ALIS stations to plot [1-7,10,11]
+            [nS x 1] or [1 x nS]
+   AZstn  - Azimuth angles same sized as stnNRs (degrees)
+   ZEstn  - Zenith angles same sized as stnNRs (degrees)
+   ALTstn - Altitudes  same sized as stnNRs (km)
+   FOVstn - Field-of-view angle same sized as stnNRs (degrees)
+   OPS    - Options struct as returned from AIDA_VISIBLEVOL
+ Output:
+   hndl - handles to the lines of the fields-of-view
+ 
+ See also: <a href="aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">AIDA_VISIBLEVOL</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>	AIDA_VISIBLEVOL - Calculates the field of view from an ALIS   \  |  /</li><li><a href="../EARTH/nscand_map.html" class="code" title="function PH = nscand_map(latlong_or_xyz,axlim)">nscand_map</a>	NSCAND_MAP - plot topographic mat over northern Scandinavia</li><li><a href="../Fits_tools/AIDApositionize.html" class="code" title="function [stnXYZ,stnLongLat,trmtr] = AIDApositionize(stationNRs,central_stn_nr)">AIDApositionize</a>	AIDApositionize - calculate station lat-long and xyz positions</li><li><a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ALIS_pre_pos_vv_plot.html" class="code" title="function hndl = ALIS_pre_pos_vv_plot(configNR)">ALIS_pre_pos_vv_plot</a>	ALIS_pre_pos_vv_plot - plot the visible volume of ALIS</li><li><a href="../ALIS/OldPosPlots/stdposCORE_200506.html" class="code" title="">stdposCORE_200506</a>	stdposCORE_200506 - ALIS fields-of-view for position: CORE</li><li><a href="../ALIS/OldPosPlots/stdposEISCAT_200506.html" class="code" title="">stdposEISCAT_200506</a>	stdposEISCAT_200506 - ALIS fields-of-view for position: EISCAT</li><li><a href="../ALIS/OldPosPlots/stdposEW_2006.html" class="code" title="">stdposEW_2006</a>	stdposEW_2006 - ALIS fields-of-view for position: EW</li><li><a href="../ALIS/OldPosPlots/stdposNORTH_200506.html" class="code" title="">stdposNORTH_200506</a>	stdposNORTH_2006 - ALIS fields-of-view for position: NORTH</li><li><a href="../ALIS/OldPosPlots/stdposSOUTH_2006.html" class="code" title="">stdposSOUTH_2006</a>	stdposSOUTH_2006 - ALIS fields-of-view for position: SOUTH</li><li><a href="../ALIS/OldPosPlots/stdposSURV_2006.html" class="code" title="">stdposSURV_2006</a>	stdposSURV_2006 - ALIS fields-of-view for position: SURV</li><li><a href="stdposEISCAT2_200506.html" class="code" title="">stdposEISCAT2_200506</a>	stdposEISCAT2_200506 - ALIS fields-of-view for position: EISCAT2</li><li><a href="stdposMZ_2006.html" class="code" title="">stdposMZ_2006</a>	stdposMZ_2006 - ALIS fields-of-view for position: MZ</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function hndl = ALISstdpos_visvol(stnNRs,AZstn,ZEstn,ALTstn,FOVstn,OPS)</a>
+0002 <span class="comment">% ALISSTDPOS_VISVOL - Display ALIS f-o-v ontop of topographic map</span>
+0003 <span class="comment">%   ALISSTDPOS_VISVOL shows the fields-of-view of the ALIS stations</span>
+0004 <span class="comment">%   ontop of a topographic map (Either in longitude-latitude or</span>
+0005 <span class="comment">%   horizontal projection (at Kiruna))</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%   hndl = ALISstdpos_visvol(stnNRs,AZstn,ZEstn,ALTstn,FOVstn,OPS)</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%   stnNRs - Station number of the ALIS stations to plot [1-7,10,11]</span>
+0011 <span class="comment">%            [nS x 1] or [1 x nS]</span>
+0012 <span class="comment">%   AZstn  - Azimuth angles same sized as stnNRs (degrees)</span>
+0013 <span class="comment">%   ZEstn  - Zenith angles same sized as stnNRs (degrees)</span>
+0014 <span class="comment">%   ALTstn - Altitudes  same sized as stnNRs (km)</span>
+0015 <span class="comment">%   FOVstn - Field-of-view angle same sized as stnNRs (degrees)</span>
+0016 <span class="comment">%   OPS    - Options struct as returned from AIDA_VISIBLEVOL</span>
+0017 <span class="comment">% Output:</span>
+0018 <span class="comment">%   hndl - handles to the lines of the fields-of-view</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% See also: AIDA_VISIBLEVOL</span>
+0021 
+0022 
+0023 <span class="comment">%   Copyright © 20110505 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0024 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0025 
+0026 
+0027 <span class="comment">% [stnXYZ,stnLongLat,trmtr] = AIDApositionize([1:11],1);</span>
+0028 [stnXYZ,stnLongLat] = <a href="../Fits_tools/AIDApositionize.html" class="code" title="function [stnXYZ,stnLongLat,trmtr] = AIDApositionize(stationNRs,central_stn_nr)">AIDApositionize</a>(1:11,1);
+0029 
+0030 dOPS = <a href="aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>;
+0031 dOPS.linewidth = 2;
+0032 dOPS.axlim = [];
+0033 dOPS.LL = 0;
+0034 dOPS.clrs = {<span class="string">'r'</span>,<span class="string">'g'</span>,<span class="string">'c'</span>,<span class="string">'m'</span>,[0.2, 0.2, 0.2],<span class="string">'y'</span>};
+0035 <span class="keyword">if</span> nargin == 0
+0036   hndl = dOPS;
+0037   <span class="keyword">return</span>
+0038 <span class="keyword">end</span>
+0039 <span class="keyword">if</span> nargin &gt; 5
+0040   dOPS = <a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0041 <span class="keyword">end</span>
+0042 
+0043 hold on
+0044 
+0045 <span class="keyword">if</span> isfield(dOPS,<span class="string">'LL'</span>) &amp; dOPS.LL == 1
+0046   <span class="comment">% In Latitude and Longitude...</span>
+0047   hndl = <a href="aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>(stnLongLat(stnNRs,[2,1]),AZstn, ZEstn,ALTstn,FOVstn,0,dOPS);
+0048   PH = <a href="../EARTH/nscand_map.html" class="code" title="function PH = nscand_map(latlong_or_xyz,axlim)">nscand_map</a>(<span class="string">'l'</span>,dOPS.axlim);
+0049   xlabel(<span class="string">'East'</span>,<span class="string">'fontsize'</span>,15)
+0050   ylabel(<span class="string">'North'</span>,<span class="string">'fontsize'</span>,15)
+0051 <span class="keyword">else</span>
+0052   <span class="comment">% In cartesian coordinates...</span>
+0053   hndl = <a href="aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>(stnXYZ(stnNRs,:),AZstn, ZEstn,ALTstn,FOVstn,0,dOPS);
+0054   PH = <a href="../EARTH/nscand_map.html" class="code" title="function PH = nscand_map(latlong_or_xyz,axlim)">nscand_map</a>(<span class="string">'c'</span>,dOPS.axlim);
+0055   xlabel(<span class="string">'East of Kiruna (km)'</span>,<span class="string">'fontsize'</span>,15)
+0056   ylabel(<span class="string">'North of Kiruna (km)'</span>,<span class="string">'fontsize'</span>,15)
+0057 <span class="keyword">end</span>  
+0058 set(gca,<span class="string">'fontsize'</span>,15)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

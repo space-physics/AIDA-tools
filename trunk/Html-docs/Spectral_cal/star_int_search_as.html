@@ -1,0 +1,277 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of star_int_search_as</title>
+  <meta name="keywords" content="star_int_search_as">
+  <meta name="description" content="STAR_INT_SEARCH identifies points in image with stars, make a parametrisation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Spectral_cal -->
+<h1>star_int_search_as
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STAR_INT_SEARCH identifies points in image with stars, make a parametrisation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [idstarsok,stars_par] = star_int_search_as(img_in,optpar,optmode,plstars,OPTS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STAR_INT_SEARCH identifies points in image with stars, make a parametrisation
+
+ Calling:
+  [idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,plstars,OPTS)
+ Input:
+  img_in  - Image in which to search for star.
+  optpar  - Optical parameters the describe the camera characteristics.
+  optmode - Optical transfer function.
+  plstars - Bright Star CAtalog stars that are above the horison
+  OPTS    - SPC_TYPICAL_OPS struct see that function
+ Output:
+  idstarsok - Array wuth parameters of identified stars found in IMG_IN:
+            idstarsok(n,1) - Running index
+            idstarsok(n,2) - Horizontal image position (pixels) of 2D Gaussian
+            idstarsok(n,3) - Vertical image position (pixels) of 2D Gaussian
+            idstarsok(n,4) - Max of 2D Gaussian
+            idstarsok(n,5) - Max image intensity of star
+            idstarsok(n,6) - Total image intensity of star
+            idstarsok(n,7) - Total image intensity of 2D Gaussian
+            idstarsok(n,8) - Running index
+            idstarsok(n,9) - Star index (BSC-NR)
+            idstarsok(n,10) - Total error
+            idstarsok(n,11) - Magnitude 
+  STARS_PAR - Parameters of the 2D Gaussian, see STARDIFF for details</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>	CAMERA_BASE - determine the coordinate system of the camera</li><li><a href="../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>	CAMERA_MODEL - determine the image coordinates of light from [az,ze]</li><li><a href="../Starcal/stardiff3.html" class="code" title="function [diff] = stardiff3(fv,xmin,xmax,ymin,ymax,starmat,x0,y0,d_x0y0)">stardiff3</a>	STARDIFF3 - total error of starfield fit.</li><li><a href="../Starcal/stardiff_as.html" class="code" title="function [diff] = stardiff_as(fv,x,y,starmat,x0,y0,xy_err,i_err)">stardiff_as</a>	STARDIFF_AS - total error of starfield fit.</li><li><a href="../Starcal/starint3.html" class="code" title="function [starintens] = starint3(fv,xmin,xmax,ymin,ymax)">starint3</a>	STARINT3 evaluation of a 2D gaussian.</li><li><a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>	MEDFILT2 - 2 dimensional sliding median filter</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [idstarsok,stars_par] = star_int_search_as(img_in,optpar,optmode,plstars,OPTS)</a>
+0002 <span class="comment">% STAR_INT_SEARCH identifies points in image with stars, make a parametrisation</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  [idstarsok,stars_par] = star_int_search(img_in,optpar,optmode,plstars,OPTS)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  img_in  - Image in which to search for star.</span>
+0008 <span class="comment">%  optpar  - Optical parameters the describe the camera characteristics.</span>
+0009 <span class="comment">%  optmode - Optical transfer function.</span>
+0010 <span class="comment">%  plstars - Bright Star CAtalog stars that are above the horison</span>
+0011 <span class="comment">%  OPTS    - SPC_TYPICAL_OPS struct see that function</span>
+0012 <span class="comment">% Output:</span>
+0013 <span class="comment">%  idstarsok - Array wuth parameters of identified stars found in IMG_IN:</span>
+0014 <span class="comment">%            idstarsok(n,1) - Running index</span>
+0015 <span class="comment">%            idstarsok(n,2) - Horizontal image position (pixels) of 2D Gaussian</span>
+0016 <span class="comment">%            idstarsok(n,3) - Vertical image position (pixels) of 2D Gaussian</span>
+0017 <span class="comment">%            idstarsok(n,4) - Max of 2D Gaussian</span>
+0018 <span class="comment">%            idstarsok(n,5) - Max image intensity of star</span>
+0019 <span class="comment">%            idstarsok(n,6) - Total image intensity of star</span>
+0020 <span class="comment">%            idstarsok(n,7) - Total image intensity of 2D Gaussian</span>
+0021 <span class="comment">%            idstarsok(n,8) - Running index</span>
+0022 <span class="comment">%            idstarsok(n,9) - Star index (BSC-NR)</span>
+0023 <span class="comment">%            idstarsok(n,10) - Total error</span>
+0024 <span class="comment">%            idstarsok(n,11) - Magnitude</span>
+0025 <span class="comment">%  STARS_PAR - Parameters of the 2D Gaussian, see STARDIFF for details</span>
+0026 
+0027 
+0028 <span class="comment">%   Copyright � 1997 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0029 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0030 
+0031 
+0032 <span class="comment">% global bx by</span>
+0033 
+0034 mode = optmode;
+0035 
+0036 dl = 10;
+0037 <span class="keyword">if</span> ~isempty(OPTS) &amp; isfield(OPTS,<span class="string">'regsize'</span>)
+0038   dl = OPTS.regsize;
+0039 <span class="keyword">end</span>
+0040 
+0041 ua = [];
+0042 va = [];
+0043 more off
+0044 bxy = size(img_in);
+0045 bx = bxy(2);
+0046 by = bxy(1);
+0047 
+0048 imax = max(size(plstars));
+0049 idnr = 0;
+0050 
+0051 <span class="comment">% Determine the coordinate system for the camera.</span>
+0052 alpha0 = optpar(3);
+0053 beta0 = optpar(4);
+0054 gamma0 = optpar(5);
+0055 
+0056 [Vmag,Ivmag] = sort(plstars(:,4));
+0057 <span class="keyword">if</span> length(optpar) &gt; 9
+0058   [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(alpha0,beta0,gamma0,optpar(10));
+0059 <span class="keyword">else</span>
+0060   [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(alpha0,beta0,gamma0);
+0061 <span class="keyword">end</span>
+0062 
+0063 <span class="comment">% AS: 2007-06-26: Optimisation routine options</span>
+0064 <span class="keyword">if</span> isfield(OPTS,<span class="string">'use_optim_opts'</span>) &amp;&amp; OPTS.use_optim_opts
+0065   optopt=optimset(<span class="string">'tolx'</span>,0.1,<span class="string">'tolfun'</span>,1);
+0066 <span class="keyword">else</span>
+0067   optopt=optimset(<span class="string">'fminsearch'</span>);
+0068 <span class="keyword">end</span>
+0069 
+0070 <span class="comment">%for i = 1:imax,</span>
+0071 <span class="keyword">for</span> j = 1:length(Ivmag),
+0072   i = Ivmag(j);
+0073   
+0074   clear sortids1 order x1 indx1
+0075   <span class="comment">%Determine the projected position of the star on the image</span>
+0076   az = plstars(i,1);
+0077   ze = plstars(i,2);
+0078   
+0079   [x0,y0] = <a href="../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>(az,ze,e1,e2,e3,optpar,mode,bxy);
+0080   
+0081   <span class="keyword">if</span> ( ( 1 &lt; x0 &amp; x0 &lt; bx ) &amp; ( 1 &lt; y0 &amp; y0 &lt; by ) )
+0082     
+0083     <span class="comment">% Determine the part of the image confining the star.</span>
+0084     xmin = floor(min(max(x0-dl/2,1),bx-dl));
+0085     xmax = floor(max(min(x0+dl/2,bx),(dl+1)));
+0086     ymin = floor(min(max(y0-dl/2,1),by-dl));
+0087     ymax = floor(max(min(y0+dl/2,by),(dl+1)));
+0088     
+0089     <span class="comment">% Find the star in the region of interest.</span>
+0090     
+0091     starmat = img_in(ymin:ymax,xmin:xmax);
+0092     starmat = <a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(starmat([1 1:end end],[1 1:end end]),[3 3]);
+0093     starmat = starmat(2:end-1,2:end-1);
+0094     x = xmin:xmax;
+0095     y = ymin:ymax;
+0096     [x1,y1] = meshgrid(x,y);
+0097 
+0098     <span class="keyword">if</span> ~isempty(OPTS) &amp; isfield(OPTS,<span class="string">'bgtype'</span>) &amp; strcmp(OPTS.bgtype,<span class="string">'complicated'</span>)
+0099       
+0100       b = [starmat(1,:),starmat(<span class="keyword">end</span>,:),<span class="keyword">...</span>
+0101            starmat(:,1)',starmat(:,end),<span class="keyword">...</span>
+0102            starmat(3,:),starmat(end-2,:),<span class="keyword">...</span>
+0103            starmat(:,3)',starmat(:,end-2)'];
+0104       X = [x1(1,:),x1(<span class="keyword">end</span>,:),x1(:,1)',x1(:,end)',x1(3,:),x1(end-2,:),x1(:,3)',x1(:,end-2)'];
+0105       Y = [y1(1,:),y1(<span class="keyword">end</span>,:),y1(:,1)',y1(:,end)',y1(3,:),y1(end-2,:),y1(:,3)',y1(:,end-2)'];
+0106       bakgr2 = griddata(X,Y,b,x1,y1,<span class="string">'v4'</span>)*2/3+griddata(X,Y,b,x1,y1,<span class="string">'cubic'</span>)/3;
+0107       
+0108     <span class="keyword">else</span>
+0109       
+0110       b = [starmat(1,:),starmat(<span class="keyword">end</span>,:),starmat(:,1)',starmat(:,end)'];
+0111       X = [x1(1,:),x1(<span class="keyword">end</span>,:),x1(:,1)',x1(:,end)'];
+0112       Y = [y1(1,:),y1(<span class="keyword">end</span>,:),y1(:,1)',y1(:,end)'];
+0113       bakgr2 = griddata(X,Y,b,x1,y1,<span class="string">'cubic'</span>);
+0114       
+0115     <span class="keyword">end</span>
+0116     
+0117     starmat = img_in(ymin:ymax,xmin:xmax);
+0118     
+0119     [max_I,indxmax] = max(starmat(:)-bakgr2(:));
+0120     td_max = img_in(y1(indxmax),x1(indxmax))-bakgr2(y1(indxmax)-min(y1(:))+1,x1(indxmax)-min(x1(:))+1);
+0121     
+0122     startvec = [x1(indxmax),y1(indxmax),td_max,1^2,0,1^2];
+0123     
+0124     <span class="comment">% AS: 2007-06-25</span>
+0125     <span class="keyword">if</span> isfield(OPTS,<span class="string">'use_stardiff_as'</span>) &amp; OPTS.use_stardiff_as
+0126 
+0127       <span class="comment">% background subtraction</span>
+0128       starmat2=starmat-bakgr2;
+0129       bg3 = mean([starmat2(1,:) starmat2(<span class="keyword">end</span>,:) starmat2(:,end).'  <span class="keyword">...</span>
+0130                   starmat2(:,1).']);
+0131       starmat2=starmat2-bg3;
+0132       
+0133       <span class="comment">% scale intensities</span>
+0134       i_scl=max(starmat2(:));
+0135       startvec(3)=startvec(3)/i_scl;
+0136       
+0137       <span class="comment">% educated guess at uncertainty in intensity</span>
+0138       i_err=median(abs(starmat2(:)));
+0139       i_err=i_err/i_scl;
+0140 
+0141       optopt=optimset(<span class="string">'tolx'</span>,0.01,<span class="string">'tolfun'</span>,0.01);
+0142 
+0143 
+0144       
+0145       [starpar,fval,xflg,qout] = fminsearch(@(fv) <a href="../Starcal/stardiff_as.html" class="code" title="function [diff] = stardiff_as(fv,x,y,starmat,x0,y0,xy_err,i_err)">stardiff_as</a>(fv,x1,y1, <span class="keyword">...</span>
+0146                                            starmat2/i_scl, <span class="keyword">...</span>
+0147                                              x1(indxmax), y1(indxmax), <span class="keyword">...</span>
+0148                                              2,i_err), startvec,optopt);
+0149 
+0150       <span class="comment">% un-scale intensity again</span>
+0151       starpar(3)=starpar(3)*i_scl;
+0152       
+0153       fprintf(<span class="string">'%d/%d: i_scl=%.1f, i_err=%.1f, fiterr=%.2f, fcount=%d\n'</span>, <span class="keyword">...</span>
+0154               j,length(Ivmag),i_scl,i_err*i_scl,fval,qout.funcCount);
+0155       starpar
+0156       
+0157     <span class="keyword">else</span>
+0158       <span class="comment">% AS 2007-06-26: modified to use options structure</span>
+0159       starpar = fminsearch(@(fv) <a href="../Starcal/stardiff3.html" class="code" title="function [diff] = stardiff3(fv,xmin,xmax,ymin,ymax,starmat,x0,y0,d_x0y0)">stardiff3</a>(fv,xmin,xmax,ymin,ymax,starmat-bakgr2,x1(indxmax),y1(indxmax)),startvec,optopt);<span class="comment">%[0,5e-2,0,0,0,0,0,0,0,0,0,0,0,3000],[],xmin,xmax,ymin,ymax,starmat-bakgr2,x1(indxmax),y1(indxmax));</span>
+0160 
+0161     <span class="keyword">end</span>
+0162     
+0163     fynd = <a href="../Starcal/starint3.html" class="code" title="function [starintens] = starint3(fv,xmin,xmax,ymin,ymax)">starint3</a>(starpar,xmin,xmax,ymin,ymax);
+0164     
+0165     <span class="keyword">if</span> isfield(OPTS,<span class="string">'plotintermediates'</span>)
+0166       
+0167       subplot(2,2,1),imagesc(xmin:xmax,ymin:ymax,starmat),axis xy,colorbar
+0168       subplot(2,2,2),imagesc(xmin:xmax,ymin:ymax,starmat-bakgr2),axis xy,colorbar
+0169       subplot(2,2,3),imagesc(xmin:xmax,ymin:ymax,fynd),axis xy,colorbar
+0170       hold on
+0171       plot(x1(indxmax),y1(indxmax),<span class="string">'wp'</span>)
+0172       plot(x0,y0,<span class="string">'kh'</span>)
+0173       plot(starpar(1),starpar(2),<span class="string">'w.'</span>,<span class="string">'markersize'</span>,15)
+0174       hold off
+0175       subplot(2,2,4),imagesc(xmin:xmax,ymin:ymax,starmat-bakgr2-fynd),axis xy,colorbar
+0176       
+0177       pause
+0178       
+0179     <span class="keyword">end</span>
+0180     
+0181     star_intm = (starmat-bakgr2).*(fynd&gt;.07*(max(max(fynd))));
+0182     
+0183     <span class="keyword">if</span> ( xmin &lt; starpar(1) &amp; starpar(1) &lt; xmax &amp; ymin &lt; starpar(2) &amp; starpar(2) &lt; ymax )
+0184       
+0185       star_intt = sum(sum(star_intm));
+0186       star_max = max(max(star_intm));
+0187       idnr = idnr + 1;
+0188       identstars(idnr,1) = i;
+0189       identstars(idnr,2) = starpar(1);     <span class="comment">%starpos in image(x)</span>
+0190       identstars(idnr,3) = starpar(2);     <span class="comment">%starpos in image(y)</span>
+0191       identstars(idnr,4) = starpar(3);  <span class="comment">% max of 2D-Gauss</span>
+0192       identstars(idnr,5) = star_max;     <span class="comment">%max count from star</span>
+0193       identstars(idnr,6) = star_intt;     <span class="comment">%total counts from star</span>
+0194       identstars(idnr,7) = sum(fynd(:));<span class="comment">%total counts from star-fit</span>
+0195       identstars(idnr,8) = i;
+0196       identstars(idnr,9) = plstars(i,3); <span class="comment">%star index</span>
+0197       identstars(idnr,10) = sum((fynd(:)-starmat(:)-bakgr2(:)).^2); <span class="comment">%total error</span>
+0198       identstars(idnr,11) = Vmag(i);
+0199       
+0200       stars_par(idnr,:) = starpar;
+0201       <span class="comment">% And remove the image intensity from this star to avoid</span>
+0202       <span class="comment">% getting close stars picking up its intensity</span>
+0203       img_in(ymin:ymax,xmin:xmax) = img_in(ymin:ymax,xmin:xmax) - fynd;
+0204       clear starpar starmat fynd ;
+0205       
+0206     <span class="keyword">end</span>
+0207     
+0208   <span class="keyword">end</span>
+0209   
+0210 <span class="keyword">end</span>
+0211 
+0212 idstarsok = identstars;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

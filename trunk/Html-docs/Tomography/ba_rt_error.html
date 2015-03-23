@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ba_rt_error</title>
+  <meta name="keywords" content="ba_rt_error">
+  <meta name="description" content="BA_RT_ERROR - Black aurora inversion error function">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>ba_rt_error
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>BA_RT_ERROR - Black aurora inversion error function</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function err = ba_rt_error(Par,stns,OPS,XfI,YfI,ZfI,rstns,tomo_ops) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> BA_RT_ERROR - Black aurora inversion error function
+   
+ Calling:
+  err = ba_rt_error(Par,stns,OPS,XfI,YfI,ZfI,rstns)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/inv_project_img_surf.html" class="code" title="function [Im_proj] = inv_project_img_surf(img_in,r,optmod,optpar,Xs,Ys,Zs,cmtr)">inv_project_img_surf</a>	INV_PROJECT_IMG_SURF - map IMG_IN - onto an arbitrary surface</li><li><a href="adjust_level.html" class="code" title="function [stns,Vem] = adjust_level(stns,Vem,doit_eh)">adjust_level</a>	ADJUST_LEVEL - Scale 3D intensities to give projections that have</li><li><a href="tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>	TOMO_STEPS - tomographic itterative step(s).</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function err = ba_rt_error(Par,stns,OPS,XfI,YfI,ZfI,rstns,tomo_ops)</a>
+0002 <span class="comment">% BA_RT_ERROR - Black aurora inversion error function</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  err = ba_rt_error(Par,stns,OPS,XfI,YfI,ZfI,rstns)</span>
+0006 
+0007 
+0008 
+0009 <span class="comment">%   Copyright � 2006 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0010 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0011 
+0012 <span class="comment">% Current vertical altitude distribution of volume emission rates:</span>
+0013 <span class="comment">%[I_of_h] = chapman(I0,hmax,w0,h);</span>
+0014 [I_of_h,z_max_I,i_zmax] = auroral_I_altEdep([1 Par],squeeze(ZfI(1,1,:)),OPS);
+0015 I_of_h = (I_of_h/max(I_of_h));
+0016 <span class="comment">% Horisontal 0-th distribution</span>
+0017 Imp_R = <a href="../Camera/inv_project_img_surf.html" class="code" title="function [Im_proj] = inv_project_img_surf(img_in,r,optmod,optpar,Xs,Ys,Zs,cmtr)">inv_project_img_surf</a>(stns(1).img,<span class="keyword">...</span>
+0018                              rstns(1,:),stns(1).optpar(9),<span class="keyword">...</span>
+0019                              stns(1).optpar,<span class="keyword">...</span>
+0020                              XfI(:,:,i_zmax),YfI(:,:,i_zmax),ZfI(:,:,i_zmax),eye(3));
+0021 Imp_D = <a href="../Camera/inv_project_img_surf.html" class="code" title="function [Im_proj] = inv_project_img_surf(img_in,r,optmod,optpar,Xs,Ys,Zs,cmtr)">inv_project_img_surf</a>(stns(2).img,<span class="keyword">...</span>
+0022                              rstns(2,:),stns(1).optpar(9),<span class="keyword">...</span>
+0023                              stns(2).optpar,<span class="keyword">...</span>
+0024                              XfI(:,:,i_zmax),YfI(:,:,i_zmax),ZfI(:,:,i_zmax),eye(3));
+0025 Imp_R(~isfinite(Imp_R)) = .1;
+0026 <span class="keyword">for</span> i1 = size(Imp_R,1):-1:1,
+0027   <span class="keyword">for</span> i2 = size(Imp_R,2):-1:1,
+0028     <span class="keyword">if</span> isfinite(Imp_D(i1,i2))
+0029       I2D(i1,i2) = (Imp_R(i1,i2)/max(Imp_R(:))+Imp_D(i1,i2)/max(Imp_D(:)))/2;
+0030     <span class="keyword">else</span>
+0031       I2D(i1,i2) = Imp_R(i1,i2)/max(Imp_R(:));
+0032     <span class="keyword">end</span>
+0033     Vem(i1,i2,:) = I2D(i1,i2)*I_of_h;
+0034   <span class="keyword">end</span>
+0035 <span class="keyword">end</span>
+0036 [stns,Vem] = <a href="adjust_level.html" class="code" title="function [stns,Vem] = adjust_level(stns,Vem,doit_eh)">adjust_level</a>(stns,Vem,1);
+0037 [Vem,stns] = <a href="tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>(Vem,stns,tomo_ops,6);
+0038 rn1 = tomo_ops.renorm(1,:);
+0039 rn2 = tomo_ops.renorm(2,:);
+0040 qb1 = tomo_ops.qb(1,:);
+0041 qb2 = tomo_ops.qb(2,:);
+0042 <span class="comment">% Scale the projections - make us just use the shape of things...</span>
+0043 stns(2).proj = ( stns(2).proj * <span class="keyword">...</span>
+0044                     sum(sum(stns(2).img(rn2(3):rn2(4),rn2(1):rn2(2))))/<span class="keyword">...</span>
+0045                     sum(sum(stns(2).proj(rn2(3):rn2(4),rn2(1):rn2(2)))));
+0046 stns(1).proj = ( stns(1).proj * <span class="keyword">...</span>
+0047                     sum(sum(stns(1).img(rn1(3):rn1(4),rn1(1):rn1(2))))/<span class="keyword">...</span>
+0048                     sum(sum(stns(1).proj(rn1(3):rn1(4),rn1(1):rn1(2)))));
+0049 
+0050 err2 = sum(sum(( stns(2).img(qb2(3):qb2(4),qb2(1):qb2(2)) - <span class="keyword">...</span>
+0051                  stns(2).proj(qb2(3):qb2(4),qb2(1):qb2(2)) ).^2 ));
+0052 err1 = sum(sum(( stns(1).img(qb1(3):qb1(4),qb1(1):qb1(2)) - <span class="keyword">...</span>
+0053                  stns(1).proj(qb1(3):qb1(4),qb1(1):qb1(2)) ).^2 ));
+0054 err = err1 + err2;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

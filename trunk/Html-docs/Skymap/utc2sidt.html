@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of utc2sidt</title>
+  <meta name="keywords" content="utc2sidt">
+  <meta name="description" content="UTC2SIDT calculates the sidereal time.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>utc2sidt
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>UTC2SIDT calculates the sidereal time.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [sidtime] = utc2sidt(date,utc) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> UTC2SIDT calculates the sidereal time.
+
+ Calling:
+ [sidtime] = utc2sidt(date,utc)
+
+ Takes date and utc as argument.
+ date(1) - the year ( 1995 - 95 )
+ date(2) - month
+ date(3) - day nr in month
+ utc(1)  - hh
+ utc(2)  - mm
+ utc(3)  - ss.ms</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>	DATE2JULIANDATE calculates the julian date at 0h UT</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/alis_find_data2.html" class="code" title="function Filenames = alis_find_data2(STNs,date,start_time,stop_time,ALIS_data_dir)">alis_find_data2</a>	ALIS_FIND_DATA - search for ALIS data from station STN at DATE</li><li><a href="../ALIS/alis_find_data2b.html" class="code" title="function Filenames = alis_find_data2b(STNs,date,start_time,stop_time,ALIS_data_dir)">alis_find_data2b</a>	ALIS_FIND_DATA - search for ALIS data from station STN at DATE</li><li><a href="utc2losidt.html" class="code" title="function [localsidtime] = utc2losidt(date,utc,longitude)">utc2losidt</a>	UTC2LOSIDT calculates the local sidereal time.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [sidtime] = utc2sidt(date,utc)</a>
+0002 <span class="comment">% UTC2SIDT calculates the sidereal time.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% [sidtime] = utc2sidt(date,utc)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Takes date and utc as argument.</span>
+0008 <span class="comment">% date(1) - the year ( 1995 - 95 )</span>
+0009 <span class="comment">% date(2) - month</span>
+0010 <span class="comment">% date(3) - day nr in month</span>
+0011 <span class="comment">% utc(1)  - hh</span>
+0012 <span class="comment">% utc(2)  - mm</span>
+0013 <span class="comment">% utc(3)  - ss.ms</span>
+0014 
+0015 
+0016 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0017 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0018 
+0019 jd = <a href="date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>( date );
+0020 T = ( jd - 2415020 ) / 36525;
+0021 
+0022 qw = .27691398 + 100.00219359 * T + 0.000001075*T^2;
+0023 
+0024 <span class="comment">% Sidereal time at 0 UT.</span>
+0025 sidtime = 24 * ( qw - floor( qw ) );
+0026 
+0027 ut = utc(1) + utc(2)/60 + utc(3)/3600;
+0028 
+0029 sidtime = sidtime + ut * ( 3/60 +57/3600 )/24 + ut ;
+0030 
+0031 <span class="keyword">while</span> ( sidtime &gt; 24 )
+0032   sidtime = sidtime - 24;
+0033 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_plot_fieldline</title>
+  <meta name="keywords" content="ASK_plot_fieldline">
+  <meta name="description" content="ASK_PLOT_FIELDLINE - plot magnetic field-line projection onto an image.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_plot_fieldline
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_PLOT_FIELDLINE - plot magnetic field-line projection onto an image.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function ph = ASK_plot_fieldline(x0,y0,z,az,el,optpar,imsiz,r_Camera,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_PLOT_FIELDLINE - plot magnetic field-line projection onto an image.
+
+ Calling:
+   ph = ASK_plot_fieldline(x0,y0,z,az,el,dphi,optpar,imsiz,l,r_camera)
+ Input:
+  x0         - East footpoint of magnetic field-line (km), scalar
+  y0         - North footpoint of magnetic field-line (km), scalar
+   z         - Altitudes along field-line to plot, (km), [nH x 1]
+  az         - azimuth angle of field-line - clock-wise from
+               north, DEGREES!
+  el         - elevation angle of radar beam, DEGREES!
+  optpar     - optical parameters of camera - is obtained with
+               ASK_get_cnv if OPTPAR is empty.
+  imsiz      - size (pixels) of image to calculate beam projection onto. 
+  r_Camera   - camera location relative to radar site [East, North Above](km)
+               Optional, if left out, will be set to [0,0,0]
+               (colocated with radar)
+ Output:
+  u0 - horizontal image coordinate of radar beam center 
+  v0 - vertical image coordinate of radar beam center 
+  r  - approximate radar beam radius in image
+  u  - horizontal image coordinates of beam-projection
+  v  - vertical image coordinates of beam-projection
+  dr - standard deviation of ( (u-u0).^2 + (v-v0).^2 ).^0.5
+
+ If the default beam-directions is to be used, AZ, EL, DPHI can
+ be set to empty (== []).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_get_cnv.html" class="code" title="function [cnv,cnvscale] = ASK_get_cnv()">ASK_get_cnv</a>	ASK_GET_CNV - gets the cnv from the vs common block and returns it in</li><li><a href="../../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>	PROJECT_POINT - project a point in space R down onto an image</li><li><a href="../../Geometry/points_on_line.html" class="code" title="function  [r_out] = points_on_line(r_0,e_l,l)">points_on_line</a>	POINTS_ON_LINE calculates the vector to a set of points R_OUT</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ph = ASK_plot_fieldline(x0,y0,z,az,el,optpar,imsiz,r_Camera,varargin)</a>
+0002 <span class="comment">% ASK_PLOT_FIELDLINE - plot magnetic field-line projection onto an image.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   ph = ASK_plot_fieldline(x0,y0,z,az,el,dphi,optpar,imsiz,l,r_camera)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  x0         - East footpoint of magnetic field-line (km), scalar</span>
+0008 <span class="comment">%  y0         - North footpoint of magnetic field-line (km), scalar</span>
+0009 <span class="comment">%   z         - Altitudes along field-line to plot, (km), [nH x 1]</span>
+0010 <span class="comment">%  az         - azimuth angle of field-line - clock-wise from</span>
+0011 <span class="comment">%               north, DEGREES!</span>
+0012 <span class="comment">%  el         - elevation angle of radar beam, DEGREES!</span>
+0013 <span class="comment">%  optpar     - optical parameters of camera - is obtained with</span>
+0014 <span class="comment">%               ASK_get_cnv if OPTPAR is empty.</span>
+0015 <span class="comment">%  imsiz      - size (pixels) of image to calculate beam projection onto.</span>
+0016 <span class="comment">%  r_Camera   - camera location relative to radar site [East, North Above](km)</span>
+0017 <span class="comment">%               Optional, if left out, will be set to [0,0,0]</span>
+0018 <span class="comment">%               (colocated with radar)</span>
+0019 <span class="comment">% Output:</span>
+0020 <span class="comment">%  u0 - horizontal image coordinate of radar beam center</span>
+0021 <span class="comment">%  v0 - vertical image coordinate of radar beam center</span>
+0022 <span class="comment">%  r  - approximate radar beam radius in image</span>
+0023 <span class="comment">%  u  - horizontal image coordinates of beam-projection</span>
+0024 <span class="comment">%  v  - vertical image coordinates of beam-projection</span>
+0025 <span class="comment">%  dr - standard deviation of ( (u-u0).^2 + (v-v0).^2 ).^0.5</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% If the default beam-directions is to be used, AZ, EL, DPHI can</span>
+0028 <span class="comment">% be set to empty (== []).</span>
+0029 
+0030 <span class="comment">% Modified from draw_radar.pro</span>
+0031 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0032 <span class="comment">% GPL 3.0 or later applies</span>
+0033 
+0034 
+0035 <span class="comment">% Seems unused: global vs</span>
+0036 <span class="comment">% Seems unused: global cnv</span>
+0037 
+0038 
+0039 <span class="comment">% Overwrite the default values if input is given.</span>
+0040 azi = az*pi/180;
+0041 ele = el*pi/180;
+0042 
+0043 <span class="keyword">if</span> isempty(optpar)
+0044   optpar = [<a href="ASK_get_cnv.html" class="code" title="function [cnv,cnvscale] = ASK_get_cnv()">ASK_get_cnv</a>, 11, 0];
+0045 <span class="keyword">end</span>
+0046 
+0047 <span class="keyword">if</span> nargin &lt; 8 || isempty(r_Camera)
+0048   r_Camera = [0,0,0];
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">% field-line direction</span>
+0052 e_COB = [cos(ele)*sin(azi), cos(ele)*cos(azi), sin(ele)];
+0053 
+0054 
+0055 <span class="comment">% vector to point at altitude l along e_COB</span>
+0056 r0 = <a href="../../Geometry/points_on_line.html" class="code" title="function  [r_out] = points_on_line(r_0,e_l,l)">points_on_line</a>([x0,y0,0],e_COB',z'/e_COB(3));
+0057 <span class="comment">% Calculate image coordinates of r0:</span>
+0058 [u,v] = <a href="../../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(r_Camera,optpar,r0,eye(3),imsiz);
+0059 
+0060 ph = plot(u,v,varargin{:});</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

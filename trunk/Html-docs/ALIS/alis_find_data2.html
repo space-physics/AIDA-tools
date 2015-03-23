@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of alis_find_data2</title>
+  <meta name="keywords" content="alis_find_data2">
+  <meta name="description" content="ALIS_FIND_DATA - search for ALIS data from station STN at DATE">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>alis_find_data2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ALIS_FIND_DATA - search for ALIS data from station STN at DATE</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function Filenames = alis_find_data2(STNs,date,start_time,stop_time,ALIS_data_dir) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ALIS_FIND_DATA - search for ALIS data from station STN at DATE
+ taken between START_TIME and STOP_TIME. Function returns
+ FILENAMES a cell array with full filenames to the images.
+
+ Current BUG/FEATURE - assumes that the ALIS data are located
+ under: /home/DATA/ALIS/stdnames. Edit to set to the appropriate
+ location.
+
+ Example:
+   STN = 'BS';
+   Date = [1999 02 16];
+   Start_t = [1999 02 16 16 25 0];
+   Stop_t = [1999 02 16 18 25 0];
+   Files_Silki = alis_find_data2(STN,Date,start_t,stop_t);
+
+ TODO - clean up this bastard!</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Skymap/utc2sidt.html" class="code" title="function [sidtime] = utc2sidt(date,utc)">utc2sidt</a>	UTC2SIDT calculates the sidereal time.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Tomography/tomo20061212ariel3.html" class="code" title="">tomo20061212ariel3</a>	TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</li><li><a href="../Tomography/tomo20080305FinalIR_082011.html" class="code" title="">tomo20080305FinalIR_082011</a>	TOMO20080305FinalIR_082011 - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="../Tomography/tomo20080305NewBeginnings.html" class="code" title="">tomo20080305NewBeginnings</a>	TOMO20080305NewBeginnings - script for tomographing ALIS 20080305 event, 18:40 UT</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function Filenames = alis_find_data2(STNs,date,start_time,stop_time,ALIS_data_dir)</a>
+0002 <span class="comment">% ALIS_FIND_DATA - search for ALIS data from station STN at DATE</span>
+0003 <span class="comment">% taken between START_TIME and STOP_TIME. Function returns</span>
+0004 <span class="comment">% FILENAMES a cell array with full filenames to the images.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Current BUG/FEATURE - assumes that the ALIS data are located</span>
+0007 <span class="comment">% under: /home/DATA/ALIS/stdnames. Edit to set to the appropriate</span>
+0008 <span class="comment">% location.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Example:</span>
+0011 <span class="comment">%   STN = 'BS';</span>
+0012 <span class="comment">%   Date = [1999 02 16];</span>
+0013 <span class="comment">%   Start_t = [1999 02 16 16 25 0];</span>
+0014 <span class="comment">%   Stop_t = [1999 02 16 18 25 0];</span>
+0015 <span class="comment">%   Files_Silki = alis_find_data2(STN,Date,start_t,stop_t);</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% TODO - clean up this bastard!</span>
+0018 
+0019 
+0020 <span class="comment">%   Copyright © 2007 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0021 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0022 
+0023 <span class="comment">% Scan through this tree</span>
+0024 defALIS_data_dir = <span class="string">'/home/DATA/ALIS/stdnames'</span>;
+0025 <span class="keyword">if</span> nargin &lt; 5 | isempty(ALIS_data_dir)
+0026   ALIS_data_dir = defALIS_data_dir;
+0027 <span class="keyword">end</span>
+0028 
+0029 years  = date(1);<span class="comment">%start_time(1):stop_time(1);</span>
+0030 months = date(2);<span class="comment">%start_time(2):stop_time(2);</span>
+0031 days   = date(3);<span class="comment">%start_time(3):stop_time(3);</span>
+0032 hours  = start_time(4):stop_time(4);
+0033 
+0034 
+0035 <span class="comment">% Start climbing the directory tree with ALIS data.</span>
+0036 cd(ALIS_data_dir)
+0037 
+0038 Filenames = {};
+0039 
+0040 <span class="keyword">for</span> i_s = 1:length(STNs)
+0041   
+0042   STN = STNs(i_s);
+0043   filenames = {};
+0044   <span class="keyword">for</span> i_y = years,
+0045     
+0046     y_str = num2str(i_y,<span class="string">'%02d'</span>);
+0047     <span class="keyword">try</span>
+0048       cd(y_str)
+0049       
+0050       <span class="keyword">for</span> i_m = months,
+0051         
+0052         m_str = num2str(i_m,<span class="string">'%02d'</span>);
+0053         <span class="keyword">try</span>
+0054           cd(m_str)
+0055           
+0056           <span class="keyword">for</span> i_d = days,
+0057             
+0058             d_str = num2str(i_d,<span class="string">'%02d'</span>);
+0059             <span class="keyword">try</span>
+0060               cd(d_str)
+0061               
+0062               <span class="keyword">for</span> i_h = hours,
+0063                 h_str = num2str(i_h,<span class="string">'%02d'</span>);
+0064                 <span class="keyword">try</span>
+0065                   cd(h_str)                                 
+0066                   
+0067                   files = dir([<span class="string">'*'</span>,STN,<span class="string">'.fits'</span>]);
+0068                   [i_n,i_n] = sort({files.name});
+0069                   files = files(i_n);
+0070                                    
+0071                   <span class="comment">%are there data from this hour?</span>
+0072                   <span class="keyword">if</span> ~isempty(files)
+0073                     
+0074                     i_found = 1;
+0075                     t_start = <a href="../Skymap/utc2sidt.html" class="code" title="function [sidtime] = utc2sidt(date,utc)">utc2sidt</a>(start_time(1:3),start_time(4:end));
+0076                     t_stop = <a href="../Skymap/utc2sidt.html" class="code" title="function [sidtime] = utc2sidt(date,utc)">utc2sidt</a>(stop_time(1:3),stop_time(4:end));
+0077                     t_file = sscanf(files(i_found).name(1:14),<span class="string">'%4d%2d%2d%2d%2d%2d'</span>)';
+0078                     t_file = <a href="../Skymap/utc2sidt.html" class="code" title="function [sidtime] = utc2sidt(date,utc)">utc2sidt</a>(t_file(1:3),t_file(4:end));
+0079                     
+0080                     <span class="keyword">while</span> i_found &lt; length(files) &amp;&amp; t_file &lt; t_start
+0081                       i_found = i_found + 1;
+0082                       t_file = sscanf(files(i_found).name(1:14),<span class="string">'%4d%2d%2d%2d%2d%2d'</span>)';
+0083                       t_file = <a href="../Skymap/utc2sidt.html" class="code" title="function [sidtime] = utc2sidt(date,utc)">utc2sidt</a>(t_file(1:3),t_file(4:end));
+0084                     <span class="keyword">end</span>
+0085                     <span class="keyword">while</span>  i_found &lt; length(files) &amp;&amp;  t_file &lt; t_stop
+0086                       <span class="comment">% filenames = {filenames{:},fullfile(ALIS_data_dir,y_str,m_str,d_str,h_str,files(i_found).name)};</span>
+0087                       filenames = [filenames,{fullfile(ALIS_data_dir,y_str,m_str,d_str,h_str,files(i_found).name)}];
+0088                       i_found = i_found + 1;
+0089                       t_file = sscanf(files(i_found).name(1:14),<span class="string">'%4d%2d%2d%2d%2d%2d'</span>)';
+0090                       t_file = <a href="../Skymap/utc2sidt.html" class="code" title="function [sidtime] = utc2sidt(date,utc)">utc2sidt</a>(t_file(1:3),t_file(4:end));
+0091                     <span class="keyword">end</span>
+0092                   <span class="keyword">end</span> <span class="comment">% if length(files)</span>
+0093                   cd(<span class="string">'..'</span>) <span class="comment">%hour-&gt;day</span>
+0094                 <span class="keyword">catch</span>
+0095                   <span class="comment">%do nothing if directory does not exist</span>
+0096                 <span class="keyword">end</span>
+0097               <span class="keyword">end</span> <span class="comment">%hours</span>
+0098               cd(<span class="string">'..'</span>) <span class="comment">%day-&gt;month</span>
+0099             <span class="keyword">catch</span>
+0100             <span class="keyword">end</span>
+0101             
+0102           <span class="keyword">end</span> <span class="comment">%days</span>
+0103           cd(<span class="string">'..'</span>) <span class="comment">%month-&gt;year</span>
+0104           
+0105         <span class="keyword">catch</span>
+0106         <span class="keyword">end</span>
+0107         
+0108       <span class="keyword">end</span> <span class="comment">%for months</span>
+0109       cd(<span class="string">'..'</span>)<span class="comment">% year -&gt; data root</span>
+0110     <span class="keyword">catch</span>
+0111     <span class="keyword">end</span>
+0112   <span class="keyword">end</span> <span class="comment">%for years</span>
+0113   <span class="keyword">if</span> ~isempty(filenames)
+0114     Filenames{end+1} = str2mat(filenames);
+0115   <span class="keyword">end</span>
+0116 <span class="keyword">end</span> <span class="comment">%for stations</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

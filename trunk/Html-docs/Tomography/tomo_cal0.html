@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_cal0</title>
+  <meta name="keywords" content="tomo_cal0">
+  <meta name="description" content="tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_cal0
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [CalFactors,stns,calimgs] = tomo_cal0(stns,XfI,YfI,ZfI,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b
+ 
+ Calling:
+   [CalFactors,stns] = tomo_cal(stns,XfI,YfI,ZfI)
+
+ See also TOMO_INP_CAMERA, <a href="camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">CAMERA_SET_UP_SC</a>, <a href="make_tomo_ops.html" class="code" title="function tomo_ops = make_tomo_ops(stns)">MAKE_TOMO_OPS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>	CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA</li><li><a href="../Camera/inv_project_points.html" class="code" title="function [xx,yy,zz] = inv_project_points(px,py,img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_points</a>	INV_PROJECT_POINTS - maps points (PX,PY) in image IMG_IN to a plane</li><li><a href="../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>	PROJECT_POINT - project a point in space R down onto an image</li><li><a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>	x = xx( phi, lambda , alt )</li><li><a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>	y = yy( phi, lambda, alt)</li><li><a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>	z = zz( phi, lambda, alt )</li><li><a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>	FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</li><li><a href="fix_subplots_tomo.html" class="code" title="function SP = fix_subplots_tomo(nrimages)">fix_subplots_tomo</a>	FIX_SUBPLOTS_TOMO - determine useful subplot orientation</li><li><a href="tomo_slice_i.html" class="code" title="function h = tomo_slice_i(X,Y,Z,V,ix,iy,iz)">tomo_slice_i</a>	TOMO_SLICE_I - slice with arbitrary X, Y, and Z,</li><li><a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [CalFactors,stns,calimgs] = tomo_cal0(stns,XfI,YfI,ZfI,OPS)</a>
+0002 <span class="comment">% tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   [CalFactors,stns] = tomo_cal(stns,XfI,YfI,ZfI)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% See also TOMO_INP_CAMERA, CAMERA_SET_UP_SC, MAKE_TOMO_OPS</span>
+0008 <span class="comment">%</span>
+0009 
+0010 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0011 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0012 
+0013 dOPS.disp3D = 0;
+0014 <span class="keyword">if</span> nargin &gt; 4
+0015   dOPS = <a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0016 <span class="keyword">end</span>
+0017   
+0018 i1 = 0;
+0019 
+0020 <span class="comment">% Determine the size of the 3-D block-of-blobbs:</span>
+0021 threeDdims = size(XfI);
+0022 <span class="comment">% Prepare to put the spherical bright thing in the centre:</span>
+0023 iCenter = round(threeDdims)/2;
+0024 
+0025 <span class="comment">% Determine the closest difference to the 3-D B-o-B edges from the centre:</span>
+0026 lX = abs(diff(squeeze(XfI(iCenter(1),   [1 end],iCenter(3)))));
+0027 lY = abs(diff(squeeze(YfI(   [1 end],iCenter(2),iCenter(3)))));
+0028 lZ = abs(diff(squeeze(ZfI(iCenter(1),iCenter(2),   [1 end]))));
+0029 <span class="comment">% and make the shortest</span>
+0030 rMax = min([lX,lY,lZ])/2;
+0031 <span class="comment">% the radius of the spherical BoB * 0.8:</span>
+0032 r1 = rMax*0.8;
+0033 <span class="comment">% and the centre point:</span>
+0034 rCenter = [XfI(iCenter(1),iCenter(2),iCenter(3)),<span class="keyword">...</span>
+0035            YfI(iCenter(1),iCenter(2),iCenter(3)),<span class="keyword">...</span>
+0036            ZfI(iCenter(1),iCenter(2),iCenter(3))];
+0037 <span class="comment">% and determine the point of the image mid-point at the same altitude:</span>
+0038 [<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>,<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>,<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>] = <a href="../Camera/inv_project_points.html" class="code" title="function [xx,yy,zz] = inv_project_points(px,py,img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_points</a>(round(size(stns(1).img,2)/2),<span class="keyword">...</span>
+0039                                 round(size(stns(1).img,1)/2),<span class="keyword">...</span>
+0040                                 stns(1).img,<span class="keyword">...</span>
+0041                                 stns(1).r,<span class="keyword">...</span>
+0042                                 stns(1).optpar(9),stns(1).optpar,<span class="keyword">...</span>
+0043                                 [0 0 1],rCenter(3),stns(1).obs.trmtr);
+0044 rImgCenter = [<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>,<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>,<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>];
+0045 <span class="comment">% Make for a line between those 2 points.</span>
+0046 dL = linspace(-1,1,23);
+0047 dL = linspace(0,1,15);
+0048 <span class="comment">% $$$ r2 = rMax*0.6</span>
+0049 
+0050 fig4imgs = gcf;
+0051 <span class="keyword">if</span> dOPS.disp3D
+0052   fig3d = figure;
+0053 <span class="keyword">end</span>
+0054 <span class="comment">% Set up a suitable subplot panel distribution for that number (23)</span>
+0055 <span class="comment">% of images:</span>
+0056 figure(fig4imgs)
+0057 SP = <a href="fix_subplots_tomo.html" class="code" title="function SP = fix_subplots_tomo(nrimages)">fix_subplots_tomo</a>(length(dL));
+0058 
+0059 <span class="keyword">for</span> i1 = 1:length(dL),
+0060   <span class="comment">% Set the centre of the sphere</span>
+0061   rC = rCenter + dL(i1)*(rImgCenter-rCenter);
+0062   <span class="comment">% Make the sphere volume emission rate 1e13/2/r photon/km^3/s</span>
+0063   <span class="comment">% But that is not at all what this does! This should be the</span>
+0064   <span class="comment">% volume emission rate that makes the intensity integrated</span>
+0065   <span class="comment">% through the centre exactly one Rayleigh</span>
+0066   Vem = 1e10/2/r1*double( (XfI-rC(1)).^2 + (YfI-rC(2)).^2 + (ZfI-rC(3)).^2 &lt;= r1.^2 );
+0067   <span class="comment">% determine the image point of the sphere centre point:</span>
+0068   [u(i1),v(i1)] = <a href="../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(stns(1).r,<span class="keyword">...</span>
+0069                                 stns(1).optpar,<span class="keyword">...</span>
+0070                                 rC',<span class="keyword">...</span>
+0071                                 stns(1).obs.trmtr,<span class="keyword">...</span>
+0072                                 size(stns(1).img));
+0073   <span class="keyword">if</span> dOPS.disp3D
+0074     figure(fig3d)
+0075     [ixBest,ixBest] = min((XfI(1,:,1)-rC(1)).^2);
+0076     [izBest,izBest] = min((ZfI(1,ixBest,:)-rC(3)).^2);
+0077     [iyBest,iyBest] = min((YfI(:,ixBest,izBest)-rC(2)).^2);
+0078     <a href="tomo_slice_i.html" class="code" title="function h = tomo_slice_i(X,Y,Z,V,ix,iy,iz)">tomo_slice_i</a>(XfI,YfI,ZfI,Vem,ixBest,iyBest,izBest)
+0079     hold on
+0080     [xP,yP,zP] = <a href="../Camera/inv_project_points.html" class="code" title="function [xx,yy,zz] = inv_project_points(px,py,img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_points</a>(u(i1),v(i1),<span class="keyword">...</span>
+0081                                     stns(1).img,<span class="keyword">...</span>
+0082                                     stns(1).r,<span class="keyword">...</span>
+0083                                     stns(1).optpar(9),stns(1).optpar,<span class="keyword">...</span>
+0084                                     [0 0 1],[0:25:300],stns(1).obs.trmtr);
+0085     
+0086     plot3(stns(1).obs.xyz(1),stns(1).obs.xyz(2),stns(1).obs.xyz(3),<span class="string">'r.'</span>)
+0087     plot3(xP,yP,zP,<span class="string">'g'</span>)
+0088     keyboard
+0089     figure(fig4imgs)
+0090   <span class="keyword">end</span>
+0091   <span class="comment">% Calculate the image of the sphere:</span>
+0092   stns(1).proj = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(Vem, <span class="keyword">...</span>
+0093                                  stns(1).uv, <span class="keyword">...</span>
+0094                                  stns(1).d, <span class="keyword">...</span>
+0095                                  stns(1).l_cl, <span class="keyword">...</span>
+0096                                  stns(1).bfk, <span class="keyword">...</span>
+0097                                  size(stns(1).img));
+0098   <span class="comment">% Save away that image</span>
+0099   calimgs{i1} = stns(1).proj;
+0100   <span class="comment">% and display it:</span>
+0101   subplot(SP(1),SP(2),i1)
+0102   imagesc(stns(1).proj)
+0103   hold on
+0104   plot(u(i1),v(i1))
+0105   <span class="comment">% Save away the pixel coordinates for the central point, the</span>
+0106   <span class="comment">% image intensity.</span>
+0107   [phi,theta] = <a href="../Camera/camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>(u(i1),v(i1),stns(1).optpar,stns(1).optpar(9),size(stns(1).img));
+0108   CalFactors(i1,1:3) = [u(i1),v(i1),mean(mean(stns(1).proj(round(v(i1))+[-1:1],round(u(i1))+[-1:1])))];
+0109   CalFactors(i1,4:5) = [phi,theta];
+0110   CalFactors(i1,7)   = 1e10/2/r1;
+0111   <span class="comment">% Should also calculate the</span>
+0112   drawnow
+0113   
+0114 <span class="keyword">end</span>
+0115 
+0116 CalFactors(:,6) = r1;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

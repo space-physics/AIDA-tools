@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_indx2datevec</title>
+  <meta name="keywords" content="ASK_indx2datevec">
+  <meta name="description" content="ASK_INDX2DATEVEC - Convert a frame index into a [yyyy,mm,dd,HH,MM,SS.FFF]">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_indx2datevec
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_INDX2DATEVEC - Convert a frame index into a [yyyy,mm,dd,HH,MM,SS.FFF]</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function time_V = ASK_indx2datevec(indx) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_INDX2DATEVEC - Convert a frame index into a [yyyy,mm,dd,HH,MM,SS.FFF]
+   array.
+ 
+ Calling:
+  time_v = ASK_indx2datevec(indx)
+ Input:
+  INDX - Frame index
+ Output:
+  TIME_V - [yyyy, mm, dd, HH, MM, SS.fff] array with date and time
+           corresponding to the frame index INJDX</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>	ASK_DAT2STR - convert a modified Julian second (mjs) to date string</li><li><a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>	ASK_TIME_V - returns time since the start of the sequence</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_fanograms.html" class="code" title="function [Keos,time_V,u,v] = ASK_fanograms(Indices2do,Cams,shifts,e_fan,width,OPS)">ASK_fanograms</a>	ASK_FANOGRAMS - Produce keograms of a fan-beam-cut from an ASK image sequence</li><li><a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li><li><a href="ASK_keograms.html" class="code" title="function [keo1,keo2,keo3,time_V] = ASK_keograms(fir,las,ste,width,x0,y0,angle,bkg,dist,OPS)">ASK_keograms</a>	ASK_KEOGRAMS - Produce keograms keograms from an ASK image sequence</li><li><a href="ASK_overviewmaker.html" class="code" title="function MegaBlocksDone = ASK_overviewmaker(MegaBlocksDone,data_dir)">ASK_overviewmaker</a>	ASK_overviewmaker - Create mega-block overlayed-keogram for overview</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function time_V = ASK_indx2datevec(indx)</a>
+0002 <span class="comment">% ASK_INDX2DATEVEC - Convert a frame index into a [yyyy,mm,dd,HH,MM,SS.FFF]</span>
+0003 <span class="comment">%   array.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%  time_v = ASK_indx2datevec(indx)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%  INDX - Frame index</span>
+0009 <span class="comment">% Output:</span>
+0010 <span class="comment">%  TIME_V - [yyyy, mm, dd, HH, MM, SS.fff] array with date and time</span>
+0011 <span class="comment">%           corresponding to the frame index INJDX</span>
+0012 
+0013 <span class="comment">% Modified from add_multi.pro</span>
+0014 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0015 <span class="comment">% GPL 3.0 or later applies</span>
+0016 
+0017 time_V = str2num(<a href="ASK_dat2str.html" class="code" title="function str = ASK_dat2str(MJS,FormatNrOrStr)">ASK_dat2str</a>(<a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>(indx,1),<span class="string">'yyyy mm dd HH MM SS.FFF'</span>));</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,630 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_start_guessGACT</title>
+  <meta name="keywords" content="tomo_start_guessGACT">
+  <meta name="description" content="tomo_start_guessGACT - makes 3-D distribution of volume emission rates">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_start_guessGACT
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>tomo_start_guessGACT - makes 3-D distribution of volume emission rates</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [Vem,I2D] = tomo_start_guessGACT(stns,Energy,Ie2H,Xslice,Yslice,Zslice,M2Dto1D,U,V,I_cuts,iPeaks,X3D,Y3D,Z3D,ops) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> tomo_start_guessGACT - makes 3-D distribution of volume emission rates
+  TOMO_START_GUESSGACT does a &quot;generalized-auroral-comp-
+  tomographic&quot; reconstruction of auroral volume emission rates in
+  a plane between 2 imaging stations parallel to the magnetic
+  field by adjusting electron precipitation parameterized into
+  energy and flux for a layer of diffuse precipitation and
+  position, width, energy and flux for a number of identified
+  local maxima in the image-cuts in the given plane, giving
+  altitude distributions of volume emission rates. The parameters
+  are then adjusted to minimize the difference between the
+  image-cuts and the calculated images from the modeled volume
+  emission distributions.
+
+ Calling:
+  [Vem,I2D] = tomo_start_guessGACT(stns,...
+                                   Energy,Ie2H,...
+                                   Xslice,Yslice,Zslice,...
+                                   M2Dto1D,...
+                                   U,V,I_cuts,iPeaks,...
+                                   X3D,Y3D,Z3D,...
+                                   ops)
+  OPS      = tomo_start_guessGACT 
+ Input:
+   stns    - stations struct array [1 x n], stns([1,2]) are the
+             two stations that are used.
+   Energy  - Energy grid to calculate electron spectra on [1 x nE]
+             (eV)
+   Ie2H    - Cell array of monoenergetic-to-production-altitude-
+             profiles for the image emissions (i.e. 5577), [nZs x nE]
+   Xslice  - West-East coordinates of 2-D slice [1 x nH x nZ] (km)
+   Yslice  - South-North coordinates of 2-D slice [1 x nH x nZ] (km)
+   Zslice  - Altitude coordinates of 2-D slice [1 x nH x nZ] (km)
+   M2Dto1D - Cell array of projection matrices from 2-D slice of
+             blobs to image cuts {[nI1 x ( nH * nZ)],[nI2 x ( nH * nZ)]
+   U       - Cell array of horizontal image coordinates of image
+             projections of 2-D slice.
+   V       - Cell array of vertical image coordinates of image
+             projections of 2-D slice.
+   I_cuts  - Cell array with image cuts {interp1(stns(1).img,U{1},V{1}),...}
+   iPeaks  - Cell array with indices to local maxima in I_cuts
+   X3D     - West-East array of coordinates of 3-D block-of-blobs
+             for the 3-D volume emission rates to guess, [NX x NY
+             x NZ] (km)
+   Y3D     - South-North array of coordinates of 3-D block-of-blobs
+             for the 3-D volume emission rates to guess, [NX x NY
+             x NZ] (km)
+   Z3D     - Altitude array of coordinates of 3-D block-of-blobs
+             for the 3-D volume emission rates to guess, [NX x NY
+             x NZ] (km)
+   ops     - options struct, default options returned if function
+             called without input arguments.
+ Output:
+   Vem     - Guestimate of 3-D distribution of volume emission
+             rates [NX x NY x NZ]
+   I2D     - Struct with fields:
+              Vem - cell-array with 2-D volume emission rates in
+                    the slice. [nH x nZ]
+              Ie  - 2-D electron spectra (horizontal x Energy)
+                    [nH x nE]
+              cutImg - cell array with image cuts, 
+              cutProj - cell-array with 1-D projection of the 2-D
+                        volume emission distribution
+ Example:
+  % 1 Calculate the geometric projection matrices and image-cut-coordinates:
+  OPS4red2D = tomo_setup4reduced2D;
+  OPS4red2D.ds = 1;
+  [M2Dto1D_12,U12,V12,X12,Y12,Z12] = tomo_setup4reduced2D(stns(1:2),OPS4red2D);
+  % Get altitude for atmospheric profiles
+  z2D = squeeze(Z12(1,1,:));
+  % Get atmospheric profiles
+  [nHe,nO,nN2,nO2,nAr,Mass,nH,nN,Tex,Tn] = msis(Obstime,z2D,stns(1).obs.longlat(2),stns(1).obs.longlat(1),f107a,f107p,ap);
+  % Calculate monoenergetic-precipitation-2-altitude-profile matrices:
+  Am = ionization_profile_matrix(z2D,Energy,nO,nN2,nO2,Mass);
+  Ie2H = {Am,Am};
+  % Get local maxima - to identify arc positions and intensities.
+  [I_cuts,iPeaks] = tomo_arcpeakfinderinslice(stns,U12,V12,OPS)
+  % Do the GACT-in-slice-2-3D-bob-guess:
+  [Vem,I2D] = tomo_start_guessGACT(stns,...
+                                   Energy,Ie2H,...
+                                   X12,Y12,Z12,...
+                                   M2Dto1D_12,...
+                                   U12,V12,I_cuts,iPeaks,...
+                                   X3D,Y3D,Z3D);
+ 
+ SEE also: <a href="tomo_setup4reduced2D.html" class="code" title="function [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS)">tomo_setup4reduced2D</a>, <a href="tomo_arcpeakfinderinslice.html" class="code" title="function [I_cuts,iPeaks] = tomo_arcpeakfinderinslice(stns,U,V,OPS)">tomo_arcpeakfinderinslice</a>, <a href="tomo_err4sliceGACT.html" class="code" title="function res = tomo_err4sliceGACT(Par,var_pars,par0,M2Dto1D,Ie2H,E,ImgCuts,X2D,Y2D,Z2D,biasAmplitudes,biasVals,out_arg_type,z_max,OPS)">tomo_err4sliceGACT</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/inv_project_LineOfSightVectors.html" class="code" title="function epix = inv_project_LineOfSightVectors(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_LineOfSightVectors</a>	INV_PROJECT_LineOfSightVectors - pixels coordinates to line-of-sight vectors</li><li><a href="../Camera/inv_project_img_surf.html" class="code" title="function [Im_proj] = inv_project_img_surf(img_in,r,optmod,optpar,Xs,Ys,Zs,cmtr)">inv_project_img_surf</a>	INV_PROJECT_IMG_SURF - map IMG_IN - onto an arbitrary surface</li><li><a href="../Camera/inv_project_points.html" class="code" title="function [xx,yy,zz] = inv_project_points(px,py,img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_points</a>	INV_PROJECT_POINTS - maps points (PX,PY) in image IMG_IN to a plane</li><li><a href="../Camera/stereoscopic.html" class="code" title="function [r,l,mindiff] = stereoscopic(r1,e1,r2,e2)">stereoscopic</a>	STEREOSCOPIC calculate the shortest intersection between 2 lines.</li><li><a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>	x = xx( phi, lambda , alt )</li><li><a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>	y = yy( phi, lambda, alt)</li><li><a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>	z = zz( phi, lambda, alt )</li><li><a href="tomo_err4sliceGACT.html" class="code" title="function res = tomo_err4sliceGACT(Par,var_pars,par0,M2Dto1D,Ie2H,E,ImgCuts,X2D,Y2D,Z2D,biasAmplitudes,biasVals,out_arg_type,z_max,OPS)">tomo_err4sliceGACT</a>	tomo_err4sliceGACT - error function for estimating electron spectra</li><li><a href="tomo_slice_i.html" class="code" title="function h = tomo_slice_i(X,Y,Z,V,ix,iy,iz)">tomo_slice_i</a>	TOMO_SLICE_I - slice with arbitrary X, Y, and Z,</li><li><a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>	FMINSEARCHBND: FMINSEARCH, but with bound constraints by transformation</li><li><a href="../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>	INPAINT_NANS: in-paints over nans in an array</li><li><a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="tomo20080305NewBeginnings.html" class="code" title="">tomo20080305NewBeginnings</a>	TOMO20080305NewBeginnings - script for tomographing ALIS 20080305 event, 18:40 UT</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [I0v,I0,v_p,Iupper,Ilower] = reorder_pars4GACT(I0,verNr)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Vem,I2D] = tomo_start_guessGACT(stns,Energy,Ie2H,Xslice,Yslice,Zslice,M2Dto1D,U,V,I_cuts,iPeaks,X3D,Y3D,Z3D,ops)</a>
+0002 <span class="comment">% tomo_start_guessGACT - makes 3-D distribution of volume emission rates</span>
+0003 <span class="comment">%  TOMO_START_GUESSGACT does a &quot;generalized-auroral-comp-</span>
+0004 <span class="comment">%  tomographic&quot; reconstruction of auroral volume emission rates in</span>
+0005 <span class="comment">%  a plane between 2 imaging stations parallel to the magnetic</span>
+0006 <span class="comment">%  field by adjusting electron precipitation parameterized into</span>
+0007 <span class="comment">%  energy and flux for a layer of diffuse precipitation and</span>
+0008 <span class="comment">%  position, width, energy and flux for a number of identified</span>
+0009 <span class="comment">%  local maxima in the image-cuts in the given plane, giving</span>
+0010 <span class="comment">%  altitude distributions of volume emission rates. The parameters</span>
+0011 <span class="comment">%  are then adjusted to minimize the difference between the</span>
+0012 <span class="comment">%  image-cuts and the calculated images from the modeled volume</span>
+0013 <span class="comment">%  emission distributions.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% Calling:</span>
+0016 <span class="comment">%  [Vem,I2D] = tomo_start_guessGACT(stns,...</span>
+0017 <span class="comment">%                                   Energy,Ie2H,...</span>
+0018 <span class="comment">%                                   Xslice,Yslice,Zslice,...</span>
+0019 <span class="comment">%                                   M2Dto1D,...</span>
+0020 <span class="comment">%                                   U,V,I_cuts,iPeaks,...</span>
+0021 <span class="comment">%                                   X3D,Y3D,Z3D,...</span>
+0022 <span class="comment">%                                   ops)</span>
+0023 <span class="comment">%  OPS      = tomo_start_guessGACT</span>
+0024 <span class="comment">% Input:</span>
+0025 <span class="comment">%   stns    - stations struct array [1 x n], stns([1,2]) are the</span>
+0026 <span class="comment">%             two stations that are used.</span>
+0027 <span class="comment">%   Energy  - Energy grid to calculate electron spectra on [1 x nE]</span>
+0028 <span class="comment">%             (eV)</span>
+0029 <span class="comment">%   Ie2H    - Cell array of monoenergetic-to-production-altitude-</span>
+0030 <span class="comment">%             profiles for the image emissions (i.e. 5577), [nZs x nE]</span>
+0031 <span class="comment">%   Xslice  - West-East coordinates of 2-D slice [1 x nH x nZ] (km)</span>
+0032 <span class="comment">%   Yslice  - South-North coordinates of 2-D slice [1 x nH x nZ] (km)</span>
+0033 <span class="comment">%   Zslice  - Altitude coordinates of 2-D slice [1 x nH x nZ] (km)</span>
+0034 <span class="comment">%   M2Dto1D - Cell array of projection matrices from 2-D slice of</span>
+0035 <span class="comment">%             blobs to image cuts {[nI1 x ( nH * nZ)],[nI2 x ( nH * nZ)]</span>
+0036 <span class="comment">%   U       - Cell array of horizontal image coordinates of image</span>
+0037 <span class="comment">%             projections of 2-D slice.</span>
+0038 <span class="comment">%   V       - Cell array of vertical image coordinates of image</span>
+0039 <span class="comment">%             projections of 2-D slice.</span>
+0040 <span class="comment">%   I_cuts  - Cell array with image cuts {interp1(stns(1).img,U{1},V{1}),...}</span>
+0041 <span class="comment">%   iPeaks  - Cell array with indices to local maxima in I_cuts</span>
+0042 <span class="comment">%   X3D     - West-East array of coordinates of 3-D block-of-blobs</span>
+0043 <span class="comment">%             for the 3-D volume emission rates to guess, [NX x NY</span>
+0044 <span class="comment">%             x NZ] (km)</span>
+0045 <span class="comment">%   Y3D     - South-North array of coordinates of 3-D block-of-blobs</span>
+0046 <span class="comment">%             for the 3-D volume emission rates to guess, [NX x NY</span>
+0047 <span class="comment">%             x NZ] (km)</span>
+0048 <span class="comment">%   Z3D     - Altitude array of coordinates of 3-D block-of-blobs</span>
+0049 <span class="comment">%             for the 3-D volume emission rates to guess, [NX x NY</span>
+0050 <span class="comment">%             x NZ] (km)</span>
+0051 <span class="comment">%   ops     - options struct, default options returned if function</span>
+0052 <span class="comment">%             called without input arguments.</span>
+0053 <span class="comment">% Output:</span>
+0054 <span class="comment">%   Vem     - Guestimate of 3-D distribution of volume emission</span>
+0055 <span class="comment">%             rates [NX x NY x NZ]</span>
+0056 <span class="comment">%   I2D     - Struct with fields:</span>
+0057 <span class="comment">%              Vem - cell-array with 2-D volume emission rates in</span>
+0058 <span class="comment">%                    the slice. [nH x nZ]</span>
+0059 <span class="comment">%              Ie  - 2-D electron spectra (horizontal x Energy)</span>
+0060 <span class="comment">%                    [nH x nE]</span>
+0061 <span class="comment">%              cutImg - cell array with image cuts,</span>
+0062 <span class="comment">%              cutProj - cell-array with 1-D projection of the 2-D</span>
+0063 <span class="comment">%                        volume emission distribution</span>
+0064 <span class="comment">% Example:</span>
+0065 <span class="comment">%  % 1 Calculate the geometric projection matrices and image-cut-coordinates:</span>
+0066 <span class="comment">%  OPS4red2D = tomo_setup4reduced2D;</span>
+0067 <span class="comment">%  OPS4red2D.ds = 1;</span>
+0068 <span class="comment">%  [M2Dto1D_12,U12,V12,X12,Y12,Z12] = tomo_setup4reduced2D(stns(1:2),OPS4red2D);</span>
+0069 <span class="comment">%  % Get altitude for atmospheric profiles</span>
+0070 <span class="comment">%  z2D = squeeze(Z12(1,1,:));</span>
+0071 <span class="comment">%  % Get atmospheric profiles</span>
+0072 <span class="comment">%  [nHe,nO,nN2,nO2,nAr,Mass,nH,nN,Tex,Tn] = msis(Obstime,z2D,stns(1).obs.longlat(2),stns(1).obs.longlat(1),f107a,f107p,ap);</span>
+0073 <span class="comment">%  % Calculate monoenergetic-precipitation-2-altitude-profile matrices:</span>
+0074 <span class="comment">%  Am = ionization_profile_matrix(z2D,Energy,nO,nN2,nO2,Mass);</span>
+0075 <span class="comment">%  Ie2H = {Am,Am};</span>
+0076 <span class="comment">%  % Get local maxima - to identify arc positions and intensities.</span>
+0077 <span class="comment">%  [I_cuts,iPeaks] = tomo_arcpeakfinderinslice(stns,U12,V12,OPS)</span>
+0078 <span class="comment">%  % Do the GACT-in-slice-2-3D-bob-guess:</span>
+0079 <span class="comment">%  [Vem,I2D] = tomo_start_guessGACT(stns,...</span>
+0080 <span class="comment">%                                   Energy,Ie2H,...</span>
+0081 <span class="comment">%                                   X12,Y12,Z12,...</span>
+0082 <span class="comment">%                                   M2Dto1D_12,...</span>
+0083 <span class="comment">%                                   U12,V12,I_cuts,iPeaks,...</span>
+0084 <span class="comment">%                                   X3D,Y3D,Z3D);</span>
+0085 <span class="comment">%</span>
+0086 <span class="comment">% SEE also: tomo_setup4reduced2D, tomo_arcpeakfinderinslice, tomo_err4sliceGACT</span>
+0087 
+0088 
+0089 <span class="comment">%   Copyright � 20120405 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0090 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0091 
+0092 dops.zmax = 110;       <span class="comment">% Default guess of altitude of peak volume emission (km)</span>
+0093 dops.iplot = 1;        <span class="comment">% plots or not</span>
+0094 dops.ipng = 0;         <span class="comment">% saves plots in png files in folder</span>
+0095 dops.analys_dir = pwd; <span class="comment">% Where to save the png-files.</span>
+0096 dops.twoDfig = 42;       <span class="comment">% Figure to plot the GACT-results</span>
+0097 dops.threeDfig = 43;       <span class="comment">% Figure to plot the 3-D guess</span>
+0098 dops.ftsz = 14;        <span class="comment">% Fontsizes for axis-labels.</span>
+0099 <span class="comment">%% These two are used in tomo_err4sliceGACT</span>
+0100 dops.transpVem = 1;
+0101 <span class="keyword">try</span>
+0102   dops.normregs = {[],[25 length(I_cuts{2})]}; <span class="comment">% normalization regions just like for tomo_steps!</span>
+0103 <span class="keyword">catch</span>
+0104   dops.normregs = {[],[25 220]}; <span class="comment">% normalization regions just like for tomo_steps!</span>
+0105 <span class="keyword">end</span>
+0106 
+0107 <span class="keyword">if</span> nargin == 0
+0108   Vem = dops;
+0109   <span class="keyword">return</span>
+0110 <span class="keyword">elseif</span> nargin &gt; 14
+0111   dops = <a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dops,ops);
+0112 <span class="keyword">end</span>
+0113 <span class="comment">% If number of Arcs/maxima is one then do the triangulation</span>
+0114 <span class="comment">% If there is only one peak/arc in</span>
+0115 <span class="comment">% each/both/either of the cuts/stasions! So, then we should be able</span>
+0116 <span class="comment">% to use part of this stuff down here, to triangulate the</span>
+0117 <span class="comment">% altitude and horizontal position of the</span>
+0118 <span class="comment">% arc.</span>
+0119 <span class="keyword">if</span> (length(iPeaks{1}) == 1) &amp; (length(iPeaks{1}) == 1),
+0120   <span class="keyword">for</span> iStn = [1, 2], <span class="comment">% iStn - station index</span>
+0121     <span class="comment">% Determine line-of-sight to the local maxima for each station</span>
+0122     <span class="comment">% Index of the selected peak</span>
+0123     cmtr = stns(iStn).obs.trmtr;  <span class="comment">% Rotation matrix from local</span>
+0124                                   <span class="comment">% coordinates to central-station coordinates</span>
+0125     e_pix{iStn} = <a href="../Camera/inv_project_LineOfSightVectors.html" class="code" title="function epix = inv_project_LineOfSightVectors(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_LineOfSightVectors</a>(U{iStn}(iPeaks{iStn}),<span class="keyword">...</span>
+0126                                                  V{iStn}(iPeaks{iStn}),<span class="keyword">...</span>
+0127                                                  stns(iStn).img,1,<span class="keyword">...</span>
+0128                                                  stns(iStn).optpar(9),<span class="keyword">...</span>
+0129                                                  stns(iStn).optpar,<span class="keyword">...</span>
+0130                                                  [0 0 1],10,<span class="keyword">...</span>
+0131                                                  cmtr);
+0132   <span class="keyword">end</span>
+0133   <span class="comment">% Triangulation to get the position:</span>
+0134   [r,l,mindiff] = <a href="../Camera/stereoscopic.html" class="code" title="function [r,l,mindiff] = stereoscopic(r1,e1,r2,e2)">stereoscopic</a>(stns(1).obs.xyz,e_pix{1},stns(2).obs.xyz,e_pix{2}); <span class="comment">% Cycl.</span>
+0135   <a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a> = r(1); <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a> = r(2);<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a> = r(3);
+0136   <span class="comment">% Take the intensity of the image to be equal to the image</span>
+0137   <span class="comment">% intensity.</span>
+0138   IntPeaks = I_cuts{1}(iPeaks{1});
+0139   
+0140   <span class="comment">% Then we start to build a start-guess for the minimization of the 2-D</span>
+0141   <span class="comment">% modeled arcs</span>
+0142   I0 = zeros(length(<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>)+1,9);
+0143   I0(1:end-1,1) = IntPeaks; <span class="comment">% let the peak electron flux be</span>
+0144                             <span class="comment">% proportional to the peak brightness</span>
+0145   I0(1:end-1,2) = <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>;       <span class="comment">% north-south position, km.</span>
+0146   I0(1:end-1,3) = 3;        <span class="comment">% Width in km</span>
+0147   I0(1:end-1,4) = 2;        <span class="comment">% Gaussian exponent for horizontal variations</span>
+0148   I0(1:end-1,5) = 2;        <span class="comment">% E0 (keV), Gaussian centre energy, here if triangulation,</span>
+0149                             <span class="comment">% then pick energy that has peak production at</span>
+0150                             <span class="comment">% alt. use A-matrices</span>
+0151   I0(1:end-1,6) = 0.4;      <span class="comment">% width in energy, Absolutely arbitrary. keV</span>
+0152   I0(1:end-1,7) = 2;        <span class="comment">% Gaussian exponent, energy, &quot;same&quot; as for #4</span>
+0153   I0(1:end-1,8) = 0;        <span class="comment">% dDy</span>
+0154   I0(1:end-1,9) = 0.5;      <span class="comment">% E-exponent, change as you see fit.</span>
+0155   
+0156   <span class="comment">% Diffuse precipitation differently parameterized: allways last row</span>
+0157   <span class="comment">%            Ie_x         y0  dy gx E0 dE gE1 dDy gE2</span>
+0158   I0(<span class="keyword">end</span>,:) = [min(IntPeaks),0,inf, 0, 1, 1,  2,  0,  0];
+0159 <span class="keyword">else</span>
+0160   <span class="comment">% Then we have multiple local maxima &lt;=&gt; multiple arcs. To</span>
+0161   <span class="comment">% automatically align them (an arc in one cut might be outside</span>
+0162   <span class="comment">% the field-of-view in the other) properly and do the</span>
+0163   <span class="comment">% triangulation is a bit difficult so we simply start with</span>
+0164   <span class="comment">% projecting the line-of-sights directions of all local maxima to</span>
+0165   <span class="comment">% one and the same altitude, then the minimization will have a</span>
+0166   <span class="comment">% bit more work to do (, but we get off the hook...).</span>
+0167   iStn = 1;
+0168   <span class="comment">% Should give: iPeaks = 119   156 for our example</span>
+0169   [<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>,<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>,<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>] = <a href="../Camera/inv_project_points.html" class="code" title="function [xx,yy,zz] = inv_project_points(px,py,img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_points</a>(U{1}(iPeaks{iStn}),<span class="keyword">...</span>
+0170                                   V{1}(iPeaks{iStn}),<span class="keyword">...</span>
+0171                                   stns(iStn).img,<span class="keyword">...</span>
+0172                                   stns(iStn).obs.xyz,<span class="keyword">...</span>
+0173                                   3,stns(iStn).obs.optpar,<span class="keyword">...</span>
+0174                                   [0 0 1],ops.zmax,stns(iStn).obs.trmtr);
+0175 
+0176   <span class="comment">% Then we start to build a start-guess for the minimization of the 2-D</span>
+0177   <span class="comment">% modeled arcs</span>
+0178   IntPeaks = I_cuts{iStn}(iPeaks{iStn});
+0179   I0 = zeros(length(<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>)+1,9);
+0180   I0(1:end-1,1) = IntPeaks;
+0181   I0(1:end-1,2) = <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>;
+0182   I0(1:end-1,3) = 3;      <span class="comment">% Width in km</span>
+0183   I0(1:end-1,4) = 2;      <span class="comment">% Gaussian exponent for horizontal variations</span>
+0184   I0(1:end-1,5) = 2;      <span class="comment">% E0 (keV), Gaussian centre energy, here if triangulation,</span>
+0185                           <span class="comment">% then pick energy that has peak production at</span>
+0186                           <span class="comment">% alt. use A-matrices</span>
+0187   I0(1:end-1,6) = 0.4;    <span class="comment">% width in energy, Absolutely arbitrary. keV</span>
+0188   I0(1:end-1,7) = 2;      <span class="comment">% Gaussian exponent, energy, &quot;same&quot; as for #4</span>
+0189   I0(1:end-1,8) = 0;      <span class="comment">% dDy</span>
+0190   I0(1:end-1,9) = 0.5;    <span class="comment">% E-exponent, change as you see fit.</span>
+0191   
+0192   <span class="comment">% Diffuse precipitation differently parameterized: allways last row</span>
+0193   <span class="comment">%            Ie_x         y0  dy gx E0 dE gE1 dDy gE2</span>
+0194   I0(<span class="keyword">end</span>,:) = [min(IntPeaks),0,inf, 0, 5, 1,  2,  0,  0];
+0195   
+0196 <span class="keyword">end</span> <span class="comment">% end here for test on one case</span>
+0197 
+0198 
+0199 <span class="comment">%% Cut out the variable parameters, set lower and upper bounds on everything...</span>
+0200 [I0v,Iconst,v_p,Iupper,Ilower] = <a href="#_sub1" class="code" title="subfunction [I0v,I0,v_p,Iupper,Ilower] = reorder_pars4GACT(I0,verNr)">reorder_pars4GACT</a>(I0,1);
+0201 
+0202 
+0203 fmsOPS = optimset(<span class="string">'fminsearch'</span>);
+0204 fmsOPS.Display = <span class="string">'quiet'</span>;
+0205 <span class="comment">%%</span>
+0206 <span class="comment">% The first three arguments are the variable input parameters</span>
+0207 <span class="comment">% (I), the array with indices of where to sort these into the</span>
+0208 <span class="comment">% full array of all the input parameters. So the first thing</span>
+0209 <span class="comment">% that happens inside the tomo_err4sliceGACT function is:</span>
+0210 <span class="comment">% Iconst(v_p) = I,</span>
+0211 <span class="comment">% This makes it possible to have a function that has a lot of</span>
+0212 <span class="comment">% parameters, but only optimize over any (small) subset of them</span>
+0213 <span class="comment">% by changing the indices in v_p. The rest of the parameters</span>
+0214 <span class="comment">% are &quot;normal&quot; input arguments</span>
+0215 <span class="comment">%I2D =                                tomo_err4sliceGACT(I0v,v_p,Iconst(:),...</span>
+0216 <span class="comment">%                                                 M2Dto1D,Ie2H,Energy/1e3,...</span>
+0217 <span class="comment">%                                                 I_cuts,Xslice,Yslice,Zslice,...</span>
+0218 <span class="comment">%                                                 [],[],2,mean(zz),dops);</span>
+0219 
+0220 <span class="comment">% Run fminsearchbnd a few times to optimize the fit.</span>
+0221 [Ip,fv,exitflag] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="tomo_err4sliceGACT.html" class="code" title="function res = tomo_err4sliceGACT(Par,var_pars,par0,M2Dto1D,Ie2H,E,ImgCuts,X2D,Y2D,Z2D,biasAmplitudes,biasVals,out_arg_type,z_max,OPS)">tomo_err4sliceGACT</a>(I,v_p,Iconst,<span class="keyword">...</span>
+0222                                                   M2Dto1D,Ie2H,Energy/1e3,<span class="keyword">...</span>
+0223                                                   I_cuts,Xslice,Yslice,Zslice,<span class="keyword">...</span>
+0224                                                   [],[],1,mean(<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>),dops),<span class="keyword">...</span>
+0225                                  I0v,Ilower,Iupper,fmsOPS);
+0226 [Ip,fv,exitflag] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="tomo_err4sliceGACT.html" class="code" title="function res = tomo_err4sliceGACT(Par,var_pars,par0,M2Dto1D,Ie2H,E,ImgCuts,X2D,Y2D,Z2D,biasAmplitudes,biasVals,out_arg_type,z_max,OPS)">tomo_err4sliceGACT</a>(I,v_p,Iconst,<span class="keyword">...</span>
+0227                                                   M2Dto1D,Ie2H,Energy/1e3,<span class="keyword">...</span>
+0228                                                   I_cuts,Xslice,Yslice,Zslice,<span class="keyword">...</span>
+0229                                                   [],[],1,mean(<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>),dops),<span class="keyword">...</span>
+0230                                  Ip,Ilower,Iupper,fmsOPS);
+0231 [Ip,fv,exitflag] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="tomo_err4sliceGACT.html" class="code" title="function res = tomo_err4sliceGACT(Par,var_pars,par0,M2Dto1D,Ie2H,E,ImgCuts,X2D,Y2D,Z2D,biasAmplitudes,biasVals,out_arg_type,z_max,OPS)">tomo_err4sliceGACT</a>(I,v_p,Iconst,<span class="keyword">...</span>
+0232                                                   M2Dto1D,Ie2H,Energy/1e3,<span class="keyword">...</span>
+0233                                                   I_cuts,Xslice,Yslice,Zslice,<span class="keyword">...</span>
+0234                                                   [],[],1,mean(<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>),dops),<span class="keyword">...</span>
+0235                                  Ip,Ilower,Iupper,fmsOPS);
+0236 [Ip,fv,exitflag] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="tomo_err4sliceGACT.html" class="code" title="function res = tomo_err4sliceGACT(Par,var_pars,par0,M2Dto1D,Ie2H,E,ImgCuts,X2D,Y2D,Z2D,biasAmplitudes,biasVals,out_arg_type,z_max,OPS)">tomo_err4sliceGACT</a>(I,v_p,Iconst,<span class="keyword">...</span>
+0237                                                   M2Dto1D,Ie2H,Energy/1e3,<span class="keyword">...</span>
+0238                                                   I_cuts,Xslice,Yslice,Zslice,<span class="keyword">...</span>
+0239                                                   [],[],1,mean(<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>),dops),<span class="keyword">...</span>
+0240                                  Ip,Ilower,Iupper,fmsOPS);
+0241 <span class="comment">% Then calculate the corresponding solution, containing electron</span>
+0242 <span class="comment">% spectra (E) above all BOB-columns (Y), the volume distribution of</span>
+0243 <span class="comment">% the emissions (Y x Z) and both the image cuts and the cuts ofd</span>
+0244 <span class="comment">% the projection:</span>
+0245 I2D = <a href="tomo_err4sliceGACT.html" class="code" title="function res = tomo_err4sliceGACT(Par,var_pars,par0,M2Dto1D,Ie2H,E,ImgCuts,X2D,Y2D,Z2D,biasAmplitudes,biasVals,out_arg_type,z_max,OPS)">tomo_err4sliceGACT</a>(Ip,v_p,Iconst,<span class="keyword">...</span>
+0246                          M2Dto1D,Ie2H,Energy/1e3,<span class="keyword">...</span>
+0247                          I_cuts,Xslice,Yslice,Zslice,<span class="keyword">...</span>
+0248                          [],[],2,mean(<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>),dops);
+0249 
+0250 
+0251 <span class="comment">%% Extrapolate the volume emission rates from the slice to the volume - Attempt #1</span>
+0252 
+0253 <span class="comment">%% 1 Get the altitude index for &quot;a good altitude&quot;</span>
+0254 <span class="comment">% (room for improvment here, but this should hopefully not be too</span>
+0255 <span class="comment">% bad, maybe one could use the altitudes of the peak volume emission</span>
+0256 <span class="comment">% rate field line by field line for the altitude index of the</span>
+0257 <span class="comment">% slice, but then one has to be  bit cunninger when extracting the</span>
+0258 <span class="comment">% [x,y,z] curve.)</span>
+0259 <span class="comment">%</span>
+0260 <span class="comment">% So for now we just take flat horisontal projections.</span>
+0261 [dz,indZcut] = min(abs(squeeze(Zslice(1,1,:))-mean(<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>)));
+0262 [dz,indxZ3D] = min(abs(squeeze(Z3D(1,1,:))-mean(<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>)));
+0263 
+0264 <span class="comment">%% 2 Image intensities for each blob in the horizontal layers</span>
+0265 <span class="comment">% a The slice</span>
+0266 [I1Cut_p4SG] = <a href="../Camera/inv_project_img_surf.html" class="code" title="function [Im_proj] = inv_project_img_surf(img_in,r,optmod,optpar,Xs,Ys,Zs,cmtr)">inv_project_img_surf</a>(stns(1).img,stns(1).obs.xyz,stns(1).optpar(9),stns(1).optpar,<span class="keyword">...</span>
+0267                                     squeeze(Xslice(:,:,indZcut)),<span class="keyword">...</span>
+0268                                     squeeze(Yslice(:,:,indZcut)),<span class="keyword">...</span>
+0269                                     squeeze(Zslice(:,:,indZcut)),<span class="keyword">...</span>
+0270                                     stns(1).obs.trmtr);
+0271 <span class="comment">%%</span>
+0272 <span class="comment">% b the 3-D volume:</span>
+0273 [I1Hor_p4SG] = <a href="../Camera/inv_project_img_surf.html" class="code" title="function [Im_proj] = inv_project_img_surf(img_in,r,optmod,optpar,Xs,Ys,Zs,cmtr)">inv_project_img_surf</a>(stns(1).img,stns(1).obs.xyz,stns(1).optpar(9),stns(1).optpar,<span class="keyword">...</span>
+0274                                     squeeze(X3D(:,:,indxZ3D)),<span class="keyword">...</span>
+0275                                     squeeze(Y3D(:,:,indxZ3D)),<span class="keyword">...</span>
+0276                                     squeeze(Z3D(:,:,indxZ3D)),<span class="keyword">...</span>
+0277                                     stns(1).obs.trmtr);
+0278 <span class="comment">%% Remove nans and negatives</span>
+0279 medianI1Hor_p4SG = nanmedian(I1Hor_p4SG(:));
+0280 I1Hor_p4SG(1,:) = medianI1Hor_p4SG;
+0281 I1Hor_p4SG(<span class="keyword">end</span>,:) = medianI1Hor_p4SG;
+0282 I1Hor_p4SG(:,end) = medianI1Hor_p4SG;
+0283 I1Hor_p4SG(:,1) = medianI1Hor_p4SG;
+0284 I1Hor_p4SG = max(1,<a href="../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>(I1Hor_p4SG));                             
+0285 <span class="comment">%% Image intensity lookup</span>
+0286 <span class="comment">% for each blob use its image projection, take the image</span>
+0287 <span class="comment">% intensity of that pixel, find the closest matching pixel</span>
+0288 <span class="comment">% intensity in the projection of the slice, then take the</span>
+0289 <span class="comment">% corresponding altitude variation along the altitude column of the</span>
+0290 <span class="comment">% 3-D block-of-blobs.</span>
+0291 zSlice = squeeze(Zslice(1,1,:));
+0292 zVem   = squeeze(Z3D(1,1,:));
+0293 <span class="keyword">for</span> i1 = 1:size(I1Hor_p4SG,1),
+0294   
+0295   <span class="keyword">for</span> i2 = 1:size(I1Hor_p4SG,2),
+0296     
+0297     <span class="comment">%squeeze(Y3D(:,:,indxZ3D)),...</span>
+0298     [dInts,i4VolEmCol] = min(abs(I1Hor_p4SG(i1,i2) - I1Cut_p4SG) + <span class="keyword">...</span>
+0299                              (squeeze(Xslice(:,:,indZcut)) - squeeze(X3D(i1,i2,indxZ3D))).^2/50^2 + <span class="keyword">...</span>
+0300                              (squeeze(Yslice(:,:,indZcut)) - squeeze(X3D(i1,i2,indxZ3D))).^2/50^2 );
+0301     Vem(i1,i2,:) = interp1(zSlice, I2D.Vem{1}(:,i4VolEmCol) * <span class="keyword">...</span><span class="comment">        % Should be the column with the closes corresponding pixel intensity</span>
+0302                            I1Hor_p4SG(i1,i2)./I1Cut_p4SG(i4VolEmCol), <span class="keyword">...</span><span class="comment">% To take into account possible brighter arc regions outside we scale with the ratio</span>
+0303                            zVem,<span class="string">'pchip'</span>,0.01); <span class="comment">% Extrapolate with something ridiculously faint</span>
+0304   <span class="keyword">end</span>
+0305   
+0306 <span class="keyword">end</span>
+0307 
+0308 <span class="comment">% If desired plot the start-guess proceedings:</span>
+0309 <span class="keyword">if</span> dops.iplot ==1,
+0310   keyboard
+0311   figure(dops.twoDfig);
+0312   clf
+0313   subplot(3,1,1)
+0314   pcolor(squeeze(Yslice(:,:,indZcut)),Energy/1e3,log10(I2D.Ie2D)),shading flat
+0315   caxis([-10 0]+max(caxis))
+0316   set(gca,<span class="string">'yscale'</span>,<span class="string">'log'</span>)
+0317   ylabel(<span class="string">'Energy (keV)'</span>,<span class="string">'fontsize'</span>,dops.ftsz)
+0318   caxis([-6 0]+max(caxis))
+0319   subplot(3,1,2)
+0320   pcolor(squeeze(Yslice(:,:,indZcut)),squeeze(Zslice(1,1,:)),I2D.Vem{1}),shading flat
+0321   ylabel(<span class="string">'Height (km)'</span>,<span class="string">'fontsize'</span>,dops.ftsz)
+0322   xlabel(<span class="string">'Distance South (km)'</span>,<span class="string">'fontsize'</span>,dops.ftsz)
+0323   subplot(3,2,5)
+0324   plot(I2D.cutImg{1},<span class="string">'linewidth'</span>,2)
+0325   plot(I2D.cutProj{1},<span class="string">'r'</span>,<span class="string">'linewidth'</span>,2)
+0326   subplot(3,2,6)
+0327   plot(I2D.cutImg{2},<span class="string">'linewidth'</span>,2)
+0328   plot(I2D.cutProj{2},<span class="string">'r'</span>,<span class="string">'linewidth'</span>,2)
+0329   <span class="keyword">if</span> dops.ipng == 1,
+0330     cd(dops.analys_dir);
+0331     print(<span class="string">'-dpng'</span>,[<span class="string">'GACT-slice_'</span>,sprintf(<span class="string">'%dA_%dh%dm%ds'</span>,<span class="keyword">...</span>
+0332                                          stns(1).obs.filter,stns(1).obs.time(4:end)),<span class="string">'.png'</span>]);
+0333   <span class="keyword">end</span>
+0334   figure(dops.threeDfig)
+0335   clf
+0336   subplot(1,2,1)
+0337   <a href="tomo_slice_i.html" class="code" title="function h = tomo_slice_i(X,Y,Z,V,ix,iy,iz)">tomo_slice_i</a>(X3D,Y3D,Z3D,Vem,[],[],indxZ3D),shading flat,view(0,90)
+0338   subplot(1,2,2)
+0339   <a href="tomo_slice_i.html" class="code" title="function h = tomo_slice_i(X,Y,Z,V,ix,iy,iz)">tomo_slice_i</a>(X3D,Y3D,Z3D,Vem,round(size(Vem,1)/2),round(size(Vem,2)/2),indxZ3D),shading flat,view(0,90)
+0340   <span class="keyword">if</span> dops.ipng == 1,
+0341     cd(dops.analys_dir);
+0342     print(<span class="string">'-dpng'</span>,[<span class="string">'Start-Guess_'</span>,sprintf(<span class="string">'%dA_%dh%dm%ds'</span>,<span class="keyword">...</span>
+0343                                          stns(1).obs.filter,stns(1).obs.time(4:end)),<span class="string">'.png'</span>]);
+0344   <span class="keyword">end</span>
+0345   
+0346 <span class="keyword">end</span>
+0347 
+0348 
+0349 <a name="_sub1" href="#_subfunctions" class="code">function [I0v,I0,v_p,Iupper,Ilower] = reorder_pars4GACT(I0,verNr)</a>
+0350 <span class="comment">% ARC_SPLIT_REORDER_I0VPNBIAS -</span>
+0351 <span class="comment">%</span>
+0352 <span class="comment">% Calling:</span>
+0353 <span class="comment">%   [I0,v_p,Iupper,Ilower] = arc_split_reorder_I0vpNbias(I0 [,verNr])</span>
+0354 <span class="comment">%</span>
+0355 
+0356 
+0357 <span class="comment">%I0 = IstartGuess600{iT}</span>
+0358 <span class="comment">%  I0  y0  dy       g_y       E0   dE   g_E  Ddx   gE2</span>
+0359 <span class="comment">%  I0L I0R xSwitch  dxSwitch  E0_L E0_R dE   DdE   unused</span>
+0360 <span class="comment">% Set the variable parameters:</span>
+0361 
+0362 <span class="comment">%% Set the constant parameter array:</span>
+0363 Iconst = I0;
+0364 
+0365 <span class="keyword">if</span> nargin == 1 | verNr == 1
+0366 
+0367   v_p = zeros(size(I0)); <span class="comment">% Initialize the array that selects the</span>
+0368                          <span class="comment">% elements that we optimize over, those</span>
+0369                          <span class="comment">% that are zero will be kept at the values</span>
+0370                          <span class="comment">% in Iconst</span>
+0371   
+0372   <span class="comment">% Then set the inices to the variable parameters to 1</span>
+0373   v_p(<span class="keyword">end</span>,[1,5,7]) = 1;  <span class="comment">% For the diffuse layer we only let the</span>
+0374                          <span class="comment">% peak intensity, the peak energy and the</span>
+0375                          <span class="comment">% energy exponent g1 vary.</span>
+0376   v_p(1:end-1,[1 2 3 5 6 7]) = 1; <span class="comment">% For the discrete arcs we also let</span>
+0377                                   <span class="comment">% their horizontal position, widths</span>
+0378                                   <span class="comment">% in horizontal distance and energy</span>
+0379                                   <span class="comment">% and energy exponent vary.</span>
+0380   v_p = v_p';
+0381   v_p = logical(v_p(:));
+0382   
+0383   Ilower = I0;
+0384   Iupper = I0;
+0385   <span class="comment">%% Set reasonable values for the lower bounds:</span>
+0386   Ilower(:,1) = 0; <span class="comment">% Minimum peak electron flux</span>
+0387   Ilower(:,2) = I0(:,2) - 10; <span class="comment">% minimum Y (km) position of each arc centre</span>
+0388   Ilower(:,3) = 0.1; <span class="comment">% minimum width of arcs, dy in exp(-(y-y0)^g/dy^g)</span>
+0389   Ilower(:,4) = 1; <span class="comment">% minimum exponent, &quot;g&quot; in expression above</span>
+0390   Ilower(:,5) = 0; <span class="comment">% minimum value of energy parameter E0</span>
+0391   Ilower(:,6) = 0; <span class="comment">% minimum energy width, dE</span>
+0392   Ilower(:,7) = 1; <span class="comment">% minimum exponent of energy, g1 in E^g1*exp(-(E-E0)^g2/dE^g2)</span>
+0393   Ilower(:,9) = 0; <span class="comment">% 2nd minimum exponent of energy, g2 in expression above</span>
+0394   Ilower(:,8) = 0; <span class="comment">% This was something cunny, a parameter for</span>
+0395                    <span class="comment">% giving the spatial Gaussian one width on</span>
+0396                    <span class="comment">% either side of the peak, unless we fit for</span>
+0397                    <span class="comment">% this parameter we can ignore it here</span>
+0398 
+0399   <span class="comment">%% Set reasonable values for the upper bounds:</span>
+0400   Iupper(:,1) = inf;<span class="comment">% Maximum peak electron flux, have no idea, so</span>
+0401                     <span class="comment">% just keep it unconstrained</span>
+0402   Iupper(:,2) = I0(:,2) + 10; <span class="comment">% max Y (km) position of each arc cetre</span>
+0403   Iupper(:,3) = 30; <span class="comment">% maximum width of arcs, dy in exp(-(y-y0)^g/dy^g)</span>
+0404   Iupper(:,4) = 3;  <span class="comment">% maximum exponent, &quot;g&quot; in expression above</span>
+0405   Iupper(:,5) = 25; <span class="comment">% maximum value of energy parameter E0, keV</span>
+0406   Iupper(:,6) = 20; <span class="comment">% maximum energy width, dE, keV</span>
+0407   Iupper(:,7) = 2.5;<span class="comment">% maximum exponent of energy, g1 in E^g2*exp(-(E-E0)^g1/dE^g1)</span>
+0408   Iupper(:,9) = 1;  <span class="comment">% 2nd maximum exponent of energy, g2 in expression above</span>
+0409   Iupper(:,8) = 0;  <span class="comment">% This was something cunny, a parameter for</span>
+0410                     <span class="comment">% giving the spatial Gaussian one width on</span>
+0411                     <span class="comment">% either side of the peak, unless we fit for</span>
+0412                     <span class="comment">% this parameter we can ignore it here</span>
+0413 
+0414   
+0415   <span class="comment">% Special treatment of diffuse layer, identically parameterized:</span>
+0416   <span class="comment">% allways last row special hard settings...</span>
+0417   <span class="comment">%            Ie_x         y0  dy gx  E0  dE  gE1 dDy gE2</span>
+0418   Ilower(<span class="keyword">end</span>,:) = [        0 0 inf  1 0.1  0     1   0   0];
+0419   Iupper(<span class="keyword">end</span>,:) = [      inf,0 inf  4  20 10     5,  0   5];
+0420   <span class="comment">% Transposem to make (:) sort them sensibly so that I(iArc,:)</span>
+0421   <span class="comment">% lies adjacent to each other!</span>
+0422   I0 = I0';
+0423   I0 = I0(:);
+0424   Ilower = Ilower';
+0425   Ilower = Ilower(:);
+0426   Iupper = Iupper';
+0427   Iupper = Iupper(:);
+0428   <span class="comment">% Var pars:</span>
+0429   I0v = I0(v_p);
+0430   Ilower = Ilower(v_p);
+0431   Iupper = Iupper(v_p);
+0432   
+0433 <span class="keyword">elseif</span> nargin == 1 | verNr == 2
+0434 
+0435   v_p = zeros(size(I0)); <span class="comment">% Initialize the array that selects the</span>
+0436                          <span class="comment">% elements that we optimize over, those</span>
+0437                          <span class="comment">% that are zero will be kept at the values</span>
+0438                          <span class="comment">% in Iconst</span>
+0439   
+0440   <span class="comment">% Then set the inices to the variable parameters to 1</span>
+0441   v_p(<span class="keyword">end</span>,[1,5,7]) = 1;  <span class="comment">% For the diffuse layer we only let the</span>
+0442                          <span class="comment">% peak intensity, the peak energy and the</span>
+0443                          <span class="comment">% energy exponent g1 vary.</span>
+0444   v_p(1:end-1,[1 2 3 5 6 7]) = 1; <span class="comment">% For the discrete arcs we also let</span>
+0445                                   <span class="comment">% their horizontal position, widths</span>
+0446                                   <span class="comment">% in horizontal distance and energy</span>
+0447                                   <span class="comment">% and energy exponent vary.</span>
+0448   v_p(1,8) = 1;
+0449   v_p = v_p';
+0450   v_p = logical(v_p(:));
+0451   
+0452   Ilower = I0;
+0453   Iupper = I0;
+0454   <span class="comment">%% Set reasonable values for the lower bounds:</span>
+0455   Ilower(:,1) = 0; <span class="comment">% Minimum peak electron flux</span>
+0456   Ilower(:,2) = I0(:,2) - 10; <span class="comment">% minimum Y (km) position of each arc centre</span>
+0457   Ilower(:,3) = 0.1; <span class="comment">% minimum width of arcs, dy in exp(-(y-y0)^g/dy^g)</span>
+0458   Ilower(:,4) = 1; <span class="comment">% minimum exponent, &quot;g&quot; in expression above</span>
+0459   Ilower(:,5) = 0; <span class="comment">% minimum value of energy parameter E0</span>
+0460   Ilower(:,6) = 0; <span class="comment">% minimum energy width, dE</span>
+0461   Ilower(:,7) = 1; <span class="comment">% minimum exponent of energy, g1 in E^g1*exp(-(E-E0)^g2/dE^g2)</span>
+0462   Ilower(:,9) = 0; <span class="comment">% 2nd minimum exponent of energy, g2 in expression above</span>
+0463   Ilower(:,8) = -1; <span class="comment">% This was something cunny, a parameter for</span>
+0464                    <span class="comment">% giving the spatial Gaussian one width on</span>
+0465                    <span class="comment">% either side of the peak, unless we fit for</span>
+0466                    <span class="comment">% this parameter we can ignore it here</span>
+0467 
+0468   <span class="comment">%% Set reasonable values for the upper bounds:</span>
+0469   Iupper(:,1) = inf;<span class="comment">% Maximum peak electron flux, have no idea, so</span>
+0470                     <span class="comment">% just keep it unconstrained</span>
+0471   Iupper(:,2) = I0(:,2) + 10; <span class="comment">% max Y (km) position of each arc cetre</span>
+0472   Iupper(:,3) = 30; <span class="comment">% maximum width of arcs, dy in exp(-(y-y0)^g/dy^g)</span>
+0473   Iupper(:,4) = 3;  <span class="comment">% maximum exponent, &quot;g&quot; in expression above</span>
+0474   Iupper(:,5) = 25; <span class="comment">% maximum value of energy parameter E0, keV</span>
+0475   Iupper(:,6) = 20; <span class="comment">% maximum energy width, dE, keV</span>
+0476   Iupper(:,7) = 2.5;<span class="comment">% maximum exponent of energy, g1 in E^g2*exp(-(E-E0)^g1/dE^g1)</span>
+0477   Iupper(:,9) = 1;  <span class="comment">% 2nd maximum exponent of energy, g2 in expression above</span>
+0478   Iupper(:,8) = 1;  <span class="comment">% This was something cunny, a parameter for</span>
+0479                     <span class="comment">% giving the spatial Gaussian one width on</span>
+0480                     <span class="comment">% either side of the peak, unless we fit for</span>
+0481                     <span class="comment">% this parameter we can ignore it here</span>
+0482 
+0483   
+0484   <span class="comment">% Special treatment of diffuse layer, identically parameterized:</span>
+0485   <span class="comment">% allways last row special hard settings...</span>
+0486   <span class="comment">%            Ie_x         y0  dy gx  E0  dE  gE1 dDy gE2</span>
+0487   Ilower(<span class="keyword">end</span>,:) = [        0 0 inf  1 0.1  0     1   0   0];
+0488   Iupper(<span class="keyword">end</span>,:) = [      inf,0 inf  4  20 10     5,  0   5];
+0489   <span class="comment">% Transposem to make (:) sort them sensibly so that I(iArc,:)</span>
+0490   <span class="comment">% lies adjacent to each other!</span>
+0491   I0 = I0';
+0492   I0 = I0(:);
+0493   Ilower = Ilower';
+0494   Ilower = Ilower(:);
+0495   Iupper = Iupper';
+0496   Iupper = Iupper(:);
+0497   <span class="comment">% Var pars:</span>
+0498   I0v = I0(v_p);
+0499   Ilower = Ilower(v_p);
+0500   Iupper = Iupper(v_p);
+0501   
+0502 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

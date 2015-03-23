@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of loadparam</title>
+  <meta name="keywords" content="loadparam">
+  <meta name="description" content="LOADPARAM - loads parameters for lens model tests and">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>loadparam
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>LOADPARAM - loads parameters for lens model tests and</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function SkMp = loadparam(SkMp, model, stnn) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> LOADPARAM - loads parameters for lens model tests and 
+                            saves them into an acc file. 
+
+    SYNOPSIS
+
+                SkMp = loadparam(SkMp, model, stnn)
+
+                loads preliminary optical parameters file and saves the relevant
+                parts to an acc file. this function is not intended for general
+                use. intended use basicly is in scripts and data mining from
+                large amounts of prel optpar files.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="saveas_acc.html" class="code" title="function saveok = saveas_acc(optpar,tvec,name,stnnr,az,ze,om)">saveas_acc</a>	SAVEAS_ACC - function to save optical parameters</li><li><a href="../tools/genfilename.html" class="code" title="function filename = genfilename(SkMp, n)">genfilename</a>	GENFILENAME - generates starcal formated filenames</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function SkMp = loadparam(SkMp, model, stnn)</a>
+0002 <span class="comment">% LOADPARAM - loads parameters for lens model tests and</span>
+0003 <span class="comment">%                            saves them into an acc file.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%    SYNOPSIS</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%                SkMp = loadparam(SkMp, model, stnn)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%                loads preliminary optical parameters file and saves the relevant</span>
+0010 <span class="comment">%                parts to an acc file. this function is not intended for general</span>
+0011 <span class="comment">%                use. intended use basicly is in scripts and data mining from</span>
+0012 <span class="comment">%                large amounts of prel optpar files.</span>
+0013 
+0014 <span class="comment">% Copyright � M V 2010</span>
+0015 
+0016 paramfile = <a href="../tools/genfilename.html" class="code" title="function filename = genfilename(SkMp, n)">genfilename</a>(SkMp, 2);
+0017 savefile = <a href="../tools/genfilename.html" class="code" title="function filename = genfilename(SkMp, n)">genfilename</a>(SkMp,1);
+0018 parampath = [<span class="string">'lens_tests/model_'</span>, num2str(model), <span class="string">'/'</span>, stnn, <span class="string">'/'</span>];
+0019 params = [parampath paramfile];
+0020 accsave = [parampath savefile];
+0021 load(params)
+0022 SkMp.identstars = identstars_saved;
+0023 SkMp.optpar = optpar_saved;
+0024 SkMp.optmod = optmod_saved;
+0025 saveok = <a href="saveas_acc.html" class="code" title="function saveok = saveas_acc(optpar,tvec,name,stnnr,az,ze,om)">saveas_acc</a>(SkMp.optpar, <span class="keyword">...</span>
+0026                     SkMp.obs.time, <span class="keyword">...</span>
+0027                     accsave, <span class="keyword">...</span>
+0028                     SkMp.obs.station, <span class="keyword">...</span>
+0029                     SkMp.obs.az, <span class="keyword">...</span>
+0030                     SkMp.obs.ze, <span class="keyword">...</span>
+0031                     SkMp.optmod);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of stdposEISCAT2_200506</title>
+  <meta name="keywords" content="stdposEISCAT2_200506">
+  <meta name="description" content="stdposEISCAT2_200506 - ALIS fields-of-view for position: EISCAT2">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>stdposEISCAT2_200506
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>stdposEISCAT2_200506 - ALIS fields-of-view for position: EISCAT2</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> stdposEISCAT2_200506 - ALIS fields-of-view for position: EISCAT2</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ALISstdpos_visvol.html" class="code" title="function hndl = ALISstdpos_visvol(stnNRs,AZstn,ZEstn,ALTstn,FOVstn,OPS)">ALISstdpos_visvol</a>	ALISSTDPOS_VISVOL - Display ALIS f-o-v ontop of topographic map</li><li><a href="aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>	AIDA_VISIBLEVOL - Calculates the field of view from an ALIS   \  |  /</li><li><a href="../EARTH/nscand_map.html" class="code" title="function PH = nscand_map(latlong_or_xyz,axlim)">nscand_map</a>	NSCAND_MAP - plot topographic mat over northern Scandinavia</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% stdposEISCAT2_200506 - ALIS fields-of-view for position: EISCAT2</span>
+0002 
+0003 <span class="comment">%% Designing an ALIS position</span>
+0004 
+0005 <span class="comment">% In order to make good use of ALIS multi-view-point imaging it is</span>
+0006 <span class="comment">% sometimes necessary to have the cameras look at the same portion</span>
+0007 <span class="comment">% of the sky. To get as good an overlap as possible there is some</span>
+0008 <span class="comment">% tweaking involved. But we are not left alone to toil away with</span>
+0009 <span class="comment">% pen and paper (and eraser) scribling away geometry and</span>
+0010 <span class="comment">% trigonometry. The ALIS toolbox contain a function</span>
+0011 <span class="comment">% |alis_visiblevol| that calculates the approximate field of view</span>
+0012 <span class="comment">% of the ALIS stations with any camera rotation at any selected</span>
+0013 <span class="comment">% altitude.</span>
+0014 
+0015 <span class="comment">%% Set the options.</span>
+0016 <span class="comment">% (As most functions will eventually) |alis_visiblevol| produces a</span>
+0017 <span class="comment">% struct with the default options when called with no input</span>
+0018 <span class="comment">% parameters and one output.</span>
+0019 OPS = <a href="aida_visiblevol.html" class="code" title="function hndl = aida_visiblevol(stn_pos,azim,zenit,alt,camfov,edge,OPS)">aida_visiblevol</a>;
+0020 <span class="comment">%%</span>
+0021 <span class="comment">% |OPS.LL| make the plot in Latitude-Longitude when 1. Otherwise</span>
+0022 <span class="comment">% the plot will be in km relative Kiruna.</span>
+0023 OPS.LL = 1;
+0024 <span class="comment">%%</span>
+0025 <span class="comment">% |OPS.linewidth| is the linewidth of the plot. If it is kept at</span>
+0026 <span class="comment">% its default value (1) it looks a little bit skinny in plots with</span>
+0027 <span class="comment">% the background map.</span>
+0028 OPS.linewidth = 2;
+0029 <span class="comment">%%</span>
+0030 <span class="comment">% Here we remove the field |clrs| - most stations have a designated</span>
+0031 <span class="comment">% color and then it is unnecessary to include this.</span>
+0032 OPS = rmfield(OPS,<span class="string">'clrs'</span>);
+0033 
+0034 axis([15 26 67 71])
+0035 set(gca,<span class="string">'fontsize'</span>,12)
+0036 xlabel(<span class="string">'Longitude'</span>,<span class="string">'fontsize'</span>,16)
+0037 ylabel(<span class="string">'Latitude'</span>,<span class="string">'fontsize'</span>,16) 
+0038 hold on
+0039 <span class="comment">%% The common volume</span>
+0040 <span class="comment">% as seen by the ALIS stations. The input parameters and working of</span>
+0041 <span class="comment">% aida_visiblevol are well explained by the help of the function:</span>
+0042 <span class="comment">% help aida_visiblevol</span>
+0043 <span class="comment">%%</span>
+0044 <span class="comment">% Stations are given by the &quot;depreciated&quot; numbers:</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">% * 1 - Kiruna IRF/Optics lab, dome 6</span>
+0047 <span class="comment">% * 2 - Merasjarvi</span>
+0048 <span class="comment">% * 3 - Silkkimuotka</span>
+0049 <span class="comment">% * 4 - Tjautjas</span>
+0050 <span class="comment">% * 5 - Abisko</span>
+0051 <span class="comment">% * 6 - Nikkaluokta</span>
+0052 <span class="comment">% * 7 - Knutstorp</span>
+0053 <span class="comment">% * 10 - Skibotn</span>
+0054 <span class="comment">% * 11 - Ramfjordmoen (EISCAT)</span>
+0055 stnNR = [7,   3,  4,  5, 10, 11];
+0056 <span class="comment">% Set the corresponding AZIMUTH</span>
+0057 AZstn = [0, 340,  0, 20,180,183];
+0058 <span class="comment">% and ZENITH angles</span>
+0059 ZEstn = [39, 40, 45, 35,  0, 12];
+0060 <span class="comment">% and approximate field of view</span>
+0061 FOVstn = [60,60,60,60,90,1];
+0062 <span class="comment">% Altitude to view the visible regions</span>
+0063 ALTstn = 100*ones(size(stnNR));
+0064 
+0065 <span class="comment">%% Finalized common field-of-view</span>
+0066 <span class="comment">% The final fields-of-view overlap well. It might take some</span>
+0067 <span class="comment">% tweaking and adjustments before a good enough overlap is</span>
+0068 <span class="comment">% obtained. But in al with this script as basis it should not take</span>
+0069 <span class="comment">% more than a few 10s of minutes - at the most.</span>
+0070 hndl = <a href="ALISstdpos_visvol.html" class="code" title="function hndl = ALISstdpos_visvol(stnNRs,AZstn,ZEstn,ALTstn,FOVstn,OPS)">ALISstdpos_visvol</a>(stnNR,AZstn,ZEstn,ALTstn,FOVstn,OPS);
+0071 <span class="comment">%% Background map</span>
+0072 <span class="comment">% This is a good thing to include, it helps the eye when it comes</span>
+0073 <span class="comment">% to judging the field-of-view and comparing it to possible</span>
+0074 <span class="comment">% stellite passes.</span>
+0075 PH = <a href="../EARTH/nscand_map.html" class="code" title="function PH = nscand_map(latlong_or_xyz,axlim)">nscand_map</a>(<span class="string">'l'</span>);
+0076 axis([15 26 67 71 -5 1.5e3*max(ALTstn)])
+0077</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

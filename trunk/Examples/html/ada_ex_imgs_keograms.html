@@ -1,0 +1,294 @@
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>Example of using imgs_keograms</title>
+      <meta name="generator" content="MATLAB 7.1">
+      <meta name="date" content="2006-03-07">
+      <meta name="m-file" content="ada_ex_imgs_keograms"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows.  On Gecko-based browsers, the shrink-to-fit doesn't work. */ 
+p,h1,h2,div.content div {
+  /* for MATLAB's browser */
+  width: 600px;
+  /* for Mozilla, but the "width" tag overrides it anyway */
+  max-width: 600px;
+  /* for IE */
+  width:expression(document.body.clientWidth > 620 ? "600px": "auto" );
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h1>Example of using imgs_keograms</h1>
+         <introduction></introduction>
+         <h2>Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Basic set-up</a></li>
+               <li><a href="#4">Make the keograms:</a></li>
+               <li><a href="#6">Post processing,</a></li>
+               <li><a href="#7">Plot ALIS keogram</a></li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li>this is pretty much what produced kaogram images for the HF gyro-stepping experiment at 20020307</li>
+            </ul>
+         </div>
+         <h2>Basic set-up<a name="2"></a></h2>
+         <p>First we need to load file-names and other assorted stuff. For keograms this also includes which columns and line to collect
+            into keograms.
+         </p><pre class="codeinput"><span class="comment">% 0 Moving to where the data is located:</span>
+cd(<span class="string">'/home/DATA/work/Heating'</span>)
+cd(<span class="string">'/alis/stdnames/2002/03/07'</span>)
+<span class="comment">% 1, load the filenames</span>
+q = dir(<span class="string">'17/*B.fits'</span>);
+files0307 = [repmat(<span class="string">'17/'</span>,[size(q,1) 1]),str2mat(q(:).name)];
+q = dir(<span class="string">'18/*B.fits'</span>);
+files0307 = [files0307;repmat(<span class="string">'18/'</span>,[size(q,1) 1]),str2mat(q(:).name)];
+q = dir(<span class="string">'19/*B.fits'</span>);
+files0307 = [files0307;repmat(<span class="string">'19/'</span>,[size(q,1) 1]),str2mat(q(:).name)];
+
+<span class="comment">% 2, select columns</span>
+cols = [150,155,157,160,162,165,170,175];
+<span class="comment">% 3, and no lines</span>
+colsnlin = 0*cols;
+</pre><p>This time around the pre_processing options needed are a little bit more complex. This is mainly due to the presence of rather
+            low-frequency interference.
+         </p><pre class="codeinput"><span class="comment">% 1, start with the typical pre processing options</span>
+PO = typical_pre_proc_ops;
+<span class="comment">% 2, the interference appears mostly at these vertical spatial</span>
+<span class="comment">% frequencies:</span>
+PO.v_interf_notches = [11 12 13 14 22 23 24];
+<span class="comment">% 3 to remove this low frequencies, we need to remove strong spikes</span>
+<span class="comment">% in the images - such as the brightest stars:</span>
+load <span class="string">/home/bjorn/matlab/Skymap/stars/Ybs.bjg</span>
+<span class="comment">% 3b, here we select the stars brighter than magnitude 2</span>
+is = find(Ybs(:,end-1)&lt;2);
+PO.remove_these_stars = [Ybs(is,1)+Ybs(is,2)/60+Ybs(is,3)/3600 Ybs(is,4)+Ybs(is,5)/60+Ybs(is,6)/3600];
+<span class="comment">% 3c, Then we need to calculate where in the image the stars will</span>
+<span class="comment">% appear, and for that we need the optical parameters:</span>
+load <span class="string">S010_S10_191827_0.acc</span>
+PO.optpar = S010_S10_191827_0([7:14 6 end]);
+<span class="comment">% 4, to avoid problems with odd-sized images:</span>
+PO.outimgsize = 256;
+</pre><h2>Make the keograms:<a name="4"></a></h2>
+         <p>All in one go, <tt>imgs_keograms</tt> can produce keograms of lines and columns in the same call as well
+         </p><pre class="codeinput">[k150,k155,k157,k160,k162,k165,k170,k175,exptimes,tstrs] = imgs_keograms(files0307(383:845,:),cols,colsnlin,PO.optpar,PO);
+</pre><p>This function give observation times, here <tt>tstrs</tt> as a Nx6 array with <tt>[YYYY MM DD HH MM SS.dd]</tt>. That needs to be put into something more easily usefull:
+         </p><pre class="codeinput">times = tstrs(:,4) + tstrs(:,5)/60 + tstrs(:,6)/3600;
+t = (times-18)*60;
+
+clf
+
+hon = 18+[-6:3:60]/60;
+hoff = 18+[-6:3:60]/60+2/60;
+</pre><h2>Post processing,<a name="6"></a></h2>
+         <p>Here ALIS made observations at 5577 and 4278 A during an HF-radio wave experiment. The enhancements at those emission lines
+            are by far weaker than the background intensity. Thus much background needs to be removed, and carefully.
+         </p><pre class="codeinput"><span class="comment">% 1, Here first just take the average enhancement in the central</span>
+<span class="comment">% columns</span>
+enh = (k155+k160+k162+k165+k170)/5;
+enh = enh';
+<span class="comment">% 2, and cut away what is outside as well</span>
+enh = enh(70:110,:)';
+<span class="comment">% 3, subtract the average of the first and last line</span>
+enh = enh-repmat(mean(enh(:,[1 end]),2),[1 41]);
+enh = enh';
+</pre><h2>Plot ALIS keogram<a name="7"></a></h2><pre class="codeinput"><span class="comment">% During this time the ALIS exposure times happened to be taken</span>
+<span class="comment">% after the exposure. Thus we have to correct for that.</span>
+<span class="comment">% -7/3600 is because the obs-time is taken at the _END_ of an exposure</span>
+pcolor(times(170:end-30)'-7/3600,1:min(size(enh)),5*enh(:,170:end-30)*53.9384/16/7)
+shading <span class="string">flat</span>
+caxis([-7 25])
+</pre><img vspace="5" hspace="5" src="ada_ex_imgs_keograms_01.png"> <p>Here the intensity for the latter part is scaled by a factor of 5 since that is approximatelly how much weaker the 4278 A
+            enhancement is compared to the enhancement at 5577 A.
+         </p><pre class="codeinput">hold <span class="string">on</span>
+pcolor(times(1:169)',1:min(size(enh)),enh(:,1:169)*46.1609/16/7)
+shading <span class="string">flat</span>
+<span class="comment">% Set the axis to something fixed,</span>
+axis([17.9 19 1 40])
+<span class="comment">% Add the HF-pump period</span>
+heateronoff(3,hon,hoff)
+<span class="comment">% Change the tick labels on the x-axis.</span>
+timetick
+<span class="comment">% Add a title (with a lot of space in it...)</span>
+title(<span class="string">'5577 A                                             4278 A *5'</span>,<span class="string">'fontsize'</span>,18)
+ylabel(<span class="string">'#pixel'</span>,<span class="string">'fontsize'</span>,16)
+<span class="comment">% Compress the color scale a little</span>
+caxis([-7 25])
+my_cbar([-7 25]);
+xlabel(<span class="string">'Time (UT)'</span>,<span class="string">'fontsize'</span>,16)
+<span class="comment">% Save away the position and size of the axes.</span>
+ax_pos414 = get(gca,<span class="string">'position'</span>);
+</pre><img vspace="5" hspace="5" src="ada_ex_imgs_keograms_02.png"> <p class="footer"><br>
+            Published with MATLAB&reg; 7.1<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Example of using |imgs_keograms|
+
+%%
+% * this is pretty much what produced kaogram images for the HF
+% gyro-stepping experiment at 20020307
+
+%% Basic set-up
+% First we need to load file-names and other assorted stuff. For
+% keograms this also includes which columns and line to collect
+% into keograms.
+
+% 0 Moving to where the data is located:
+cd('/home/DATA/work/Heating')
+cd('/alis/stdnames/2002/03/07')
+% 1, load the filenames
+q = dir('17/*B.fits');
+files0307 = [repmat('17/',[size(q,1) 1]),str2mat(q(:).name)];
+q = dir('18/*B.fits');
+files0307 = [files0307;repmat('18/',[size(q,1) 1]),str2mat(q(:).name)];
+q = dir('19/*B.fits');
+files0307 = [files0307;repmat('19/',[size(q,1) 1]),str2mat(q(:).name)];
+
+% 2, select columns
+cols = [150,155,157,160,162,165,170,175];
+% 3, and no lines
+colsnlin = 0*cols;
+%%
+% This time around the pre_processing options needed are a little
+% bit more complex. This is mainly due to the presence of rather
+% low-frequency interference.
+
+% 1, start with the typical pre processing options
+PO = typical_pre_proc_ops;
+% 2, the interference appears mostly at these vertical spatial
+% frequencies:
+PO.v_interf_notches = [11 12 13 14 22 23 24];
+% 3 to remove this low frequencies, we need to remove strong spikes
+% in the images - such as the brightest stars:
+load /home/bjorn/matlab/Skymap/stars/Ybs.bjg
+% 3b, here we select the stars brighter than magnitude 2
+is = find(Ybs(:,end-1)<2);
+PO.remove_these_stars = [Ybs(is,1)+Ybs(is,2)/60+Ybs(is,3)/3600 Ybs(is,4)+Ybs(is,5)/60+Ybs(is,6)/3600];
+% 3c, Then we need to calculate where in the image the stars will
+% appear, and for that we need the optical parameters:
+load S010_S10_191827_0.acc
+PO.optpar = S010_S10_191827_0([7:14 6 end]);
+% 4, to avoid problems with odd-sized images:
+PO.outimgsize = 256;
+
+%% Make the keograms:
+% All in one go, |imgs_keograms| can produce keograms of lines and
+% columns in the same call as well 
+
+[k150,k155,k157,k160,k162,k165,k170,k175,exptimes,tstrs] = imgs_keograms(files0307(383:845,:),cols,colsnlin,PO.optpar,PO);
+%% 
+% This function give observation times, here |tstrs| as a Nx6 array
+% with |[YYYY MM DD HH MM SS.dd]|. That needs to be put into
+% something more easily usefull:
+times = tstrs(:,4) + tstrs(:,5)/60 + tstrs(:,6)/3600;
+t = (times-18)*60;
+
+clf
+
+hon = 18+[-6:3:60]/60;
+hoff = 18+[-6:3:60]/60+2/60;
+
+%% Post processing,
+% Here ALIS made observations at 5577 and 4278 A during an HF-radio
+% wave experiment. The enhancements at those emission lines are by
+% far weaker than the background intensity. Thus much background
+% needs to be removed, and carefully.
+
+% 1, Here first just take the average enhancement in the central
+% columns 
+enh = (k155+k160+k162+k165+k170)/5;
+enh = enh';
+% 2, and cut away what is outside as well
+enh = enh(70:110,:)';
+% 3, subtract the average of the first and last line
+enh = enh-repmat(mean(enh(:,[1 end]),2),[1 41]);
+enh = enh';
+
+%% Plot ALIS keogram
+
+% During this time the ALIS exposure times happened to be taken
+% after the exposure. Thus we have to correct for that.
+% -7/3600 is because the obs-time is taken at the _END_ of an exposure
+pcolor(times(170:end-30)'-7/3600,1:min(size(enh)),5*enh(:,170:end-30)*53.9384/16/7)
+shading flat
+caxis([-7 25])
+%%
+% Here the intensity for the latter part is scaled by a factor of 5
+% since that is approximatelly how much weaker the 4278 A
+% enhancement is compared to the enhancement at 5577 A.
+hold on
+pcolor(times(1:169)',1:min(size(enh)),enh(:,1:169)*46.1609/16/7)
+shading flat
+% Set the axis to something fixed,
+axis([17.9 19 1 40])
+% Add the HF-pump period
+heateronoff(3,hon,hoff)
+% Change the tick labels on the x-axis.
+timetick
+% Add a title (with a lot of space in it...)
+title('5577 A                                             4278 A *5','fontsize',18)
+ylabel('#pixel','fontsize',16)
+% Compress the color scale a little
+caxis([-7 25])
+my_cbar([-7 25]);
+xlabel('Time (UT)','fontsize',16)
+% Save away the position and size of the axes.
+ax_pos414 = get(gca,'position');
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of bquiver</title>
+  <meta name="keywords" content="bquiver">
+  <meta name="description" content="BQUIVER is a temporary interface to the function ARROW() that is">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>bquiver
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>BQUIVER is a temporary interface to the function ARROW() that is</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function H = bquiver(x,y,dx,dy,l,s) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> BQUIVER is a temporary interface to the function ARROW() that is 
+         currently unavailable for matlab 5.0. ARROWB draws arrows
+         from the points specified by (x,y) to (x+vx,y+vy) in the 
+         colour c.
+
+ Calling:
+ H = bquiver(x,y,dx,dy,l,s)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/arrow3.html" class="code" title="function hn=arrow3(p1,p2,s,w,h,ip,alpha,beta)">arrow3</a>	ARROW3 (R13)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="starerrorplot.html" class="code" title="function starerrorplot(SkMp,nr)">starerrorplot</a>	STARERRORPLOT - Plots the error of the starprojection.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function H = bquiver(x,y,dx,dy,l,s)</a>
+0002 <span class="comment">% BQUIVER is a temporary interface to the function ARROW() that is</span>
+0003 <span class="comment">%         currently unavailable for matlab 5.0. ARROWB draws arrows</span>
+0004 <span class="comment">%         from the points specified by (x,y) to (x+vx,y+vy) in the</span>
+0005 <span class="comment">%         colour c.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">% H = bquiver(x,y,dx,dy,l,s)</span>
+0009 
+0010 <span class="comment">%   Copyright �  1997 by Bjorn Gustavsson &lt;bjorn.gustavsson@irf.se&gt;</span>
+0011 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0012 
+0013 error(nargchk(6,6,nargin));
+0014 
+0015 <span class="comment">%%%out = arrow([x,y],[x+dx*l,y+dy*l],'facecolor',s,'edgecolor',s);</span>
+0016 H=<a href="../tools/arrow3.html" class="code" title="function hn=arrow3(p1,p2,s,w,h,ip,alpha,beta)">arrow3</a>([x,y],[x+dx*l,y+dy*l],s);
+0017 <span class="comment">%set(H,'color',s);</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

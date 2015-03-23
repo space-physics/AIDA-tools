@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of Contents</title>
+  <meta name="keywords" content="Contents">
+  <meta name="description" content="EARTH - WGS-84 teoid model and conversion functions">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html EARTH -->
+<h1>Contents
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>EARTH - WGS-84 teoid model and conversion functions</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> EARTH - WGS-84 teoid model and conversion functions
+ Version (1.6) (20121111)
+ Path -&gt; AIDA_tools/EARTH
+ 
+ EARTH contains the WGS 84 teoid model and transformation
+ functions between some coordinate systems.
+
+ User utility functions, interface to wgs84
+ 
+ Coordinate system and rotation matrices:
+  E_LOCAL       - base vectors for local Cartesian coordinate in the GEO system
+  MAKETRANSFMTR - transformation/rotation matrix between (lat,long) and (lat0,long0)
+ 
+ Global (GEO) coordinate transformations between lat-long-alt and X-Y-Z:
+  LATLONGH_2_R - transforms the point ( LONG, LAT, H ) to (X,Y,Z) Earth centered GEO
+  R_2_LLH      - transforms R to lat,long,alt in earth centred horizontal system (GEO)
+ 
+ Geographic &lt;-&gt; Geomagnetic coordinate transformations
+  GEO2MAG95 - Convert from geographic to geomagnetic coordinates
+  MAG2GEO   - Convert from geomagnetic to geographic coordinates
+ 
+ Local coordinate transformation between lat-logn-alt and x-y-z
+  MAKENLCPOS         - transforms the point (LAT, LONG, ALT) to local (X,Y,Z)
+  LATLONGH_2_xyz     - transforms the point (LAT, LONG, ALT) to local (X,Y,Z)
+  LLH_TO_LOCAL_COORD - transforms the positions (LAT, LONG, ALT) to local (X,Y,Z)
+  XYZ_2_LLH          - transforms X,Y,Z in an lat0,long0 centred horizontal system to long,lat,alt
+ 
+ Topography handling functions:
+  TRACE_LINE_TO_EARTHSURF - from point [x0,y0,z0] in direction [dx,dy,dz]
+  GTOPO2MAPS              - Parse gtopo digital elevation models
+  NSCAND_MAP              - plot topographic mat over northern Scandinavia
+ 
+ WGS-84 Geoid
+
+ n = NN( fi, alt )
+ x = xx( fi, lambda , alt )
+ y = yy( fi, lambda, alt)
+ z = zz( fi, lambda, alt )
+ dndf = dNdfi( fi, lambda )
+ dndl = dNdlambda( fi, lambda )
+ dxdf =  dxdfi( fi, lambda )
+ dxdl = dxdlambda( fi,  lambda )
+ dydf = dydfi( fi, lambda )
+ dydl = dydlambda( double fi, double lambda )
+ dzdf = dzdfi( fi, lambda )
+ dzdl = dzdlambda( fi, lambda )</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

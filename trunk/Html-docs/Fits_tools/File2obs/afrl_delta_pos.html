@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of afrl_delta_pos</title>
+  <meta name="keywords" content="afrl_delta_pos">
+  <meta name="description" content="AFRL_DELTA_POS -  Delta Junction mine longitude and latitude">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Fits_tools --><!-- menu.html File2obs -->
+<h1>afrl_delta_pos
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>AFRL_DELTA_POS -  Delta Junction mine longitude and latitude</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function obs = afrl_delta_pos(obs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> AFRL_DELTA_POS -  Delta Junction mine longitude and latitude
+  into the obs-struct fields pos and longlat</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function obs = afrl_delta_pos(obs)</a>
+0002 <span class="comment">% AFRL_DELTA_POS -  Delta Junction mine longitude and latitude</span>
+0003 <span class="comment">%  into the obs-struct fields pos and longlat</span>
+0004 
+0005 
+0006 <span class="comment">%http://maps.google.com/?ie=UTF8&amp;ll=63.81813,-144.890732&amp;spn=0.002045,0.006802&amp;t=h&amp;z=17</span>
+0007 obs.pos = [-144.890732 63.81813];
+0008 obs.longlat = [-144.890732 63.81813];</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

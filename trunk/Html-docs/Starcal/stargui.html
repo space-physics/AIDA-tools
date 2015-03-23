@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of stargui</title>
+  <meta name="keywords" content="stargui">
+  <meta name="description" content="STARGUI - sets up the GUI for starcal">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>stargui
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STARGUI - sets up the GUI for starcal</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STARGUI - sets up the GUI for starcal
+ Called once from within starcal, that is this script is called
+ once per image to calibrate.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Skymap/def_s_preferences.html" class="code" title="function SkMp = def_s_preferences(SkMp)">def_s_preferences</a>	DEF_S_PREFERENCES - default preferences for starcal</li><li><a href="../Skymap/skymap.html" class="code" title="function [SkMp] = skymap(pos,time,SkMp)">skymap</a>	SKYMAP An easy to astronomical starchart.</li><li><a href="../Skymap/updstrpl.html" class="code" title="function [SkMp] = updstrpl(SkMp)">updstrpl</a>	</li><li><a href="def_s_preferences.html" class="code" title="function SkMp = def_s_preferences(SkMp)">def_s_preferences</a>	DEF_S_PREFERENCES - default preferences for starcal</li><li><a href="errorgui.html" class="code" title="function SkMp = errorgui(SkMp)">errorgui</a>	ERRORGUI - Create the figure and GUI for the errorplots</li><li><a href="../tools/genfilename.html" class="code" title="function filename = genfilename(SkMp, n)">genfilename</a>	GENFILENAME - generates starcal formated filenames</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="starcal.html" class="code" title="function [SkMp] = starcal(varargin)">starcal</a>	STARCAL - startpoint for optical camera calibration.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% STARGUI - sets up the GUI for starcal</span>
+0002 <span class="comment">% Called once from within starcal, that is this script is called</span>
+0003 <span class="comment">% once per image to calibrate.</span>
+0004 <span class="comment">%</span>
+0005 
+0006 <span class="comment">%   Copyright � 20011105 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0007 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0008 
+0009 <span class="comment">% load saved optical parameters and identified stars</span>
+0010 err = 0;
+0011 <span class="comment">%param_file = [filename(1:3), '_', filename(4:16),'_param.mat'];</span>
+0012 <span class="keyword">if</span> ~isempty(filename)
+0013   param_file = [filename(1:3), <span class="string">'_'</span>, filename(4:size(filename,2)-9), <span class="string">'_param.mat'</span>]
+0014   param_file = <a href="../tools/genfilename.html" class="code" title="function filename = genfilename(SkMp, n)">genfilename</a>(SkMp, 2)
+0015   identstars = [];
+0016 <span class="keyword">else</span>
+0017   param_file = <span class="string">''</span>;
+0018   identstars = [];
+0019 <span class="keyword">end</span>
+0020 
+0021 <span class="keyword">if</span> exist(param_file, <span class="string">'file'</span>)
+0022   answ = input(<span class="string">'Load previously saved optical parameters and identified stars? (y/n)\n'</span>, <span class="string">'s'</span>);
+0023   <span class="keyword">if</span> isempty(answ)
+0024     answ = <span class="string">'y'</span>;
+0025   <span class="keyword">end</span>
+0026   <span class="keyword">if</span> answ == <span class="string">'y'</span>
+0027     load(param_file);
+0028     SkMp.param_load = 1;
+0029     SkMp.slider_lock = 1;
+0030     optpar     = optpar_saved;
+0031     optmod    = optmod_saved;
+0032     identstars    = identstars_saved;
+0033   <span class="keyword">end</span>
+0034 <span class="keyword">end</span>
+0035 
+0036 SkMp.optpar = optpar;
+0037 SkMp.optmod = optmod;
+0038 SkMp.identstars = identstars;
+0039 SkMp.selectedstar = [0 0 0 0 0 0 0 0];
+0040 SkMp.img = cal_image;
+0041 SkMp = <a href="def_s_preferences.html" class="code" title="function SkMp = def_s_preferences(SkMp)">def_s_preferences</a>(SkMp);
+0042 
+0043 <span class="comment">%Approximate old FOV.</span>
+0044 <span class="comment">%Make sure the fov angle is always positive by using abs()</span>
+0045 <span class="keyword">if</span> optmod==2
+0046   SkMp.oldfov = 180/pi*asin(1/2/abs(optpar(2)))/optpar(8);
+0047 <span class="keyword">else</span>
+0048   SkMp.oldfov = 180/pi*atan(1/2/abs(optpar(2)));
+0049 <span class="keyword">end</span>
+0050 
+0051 [SkMp] = <a href="../Skymap/skymap.html" class="code" title="function [SkMp] = skymap(pos,time,SkMp)">skymap</a>(obs.longlat,obs.time,SkMp);
+0052 
+0053 SkMp.optpar = optpar;
+0054 SkMp.optmod = optmod;
+0055 <span class="keyword">if</span> optmod==2
+0056   SkMp.oldfov = 180/pi*asin(1/2/abs(optpar(2)))/optpar(8);
+0057 <span class="keyword">else</span>
+0058   SkMp.oldfov = 180/pi*atan(1/2/abs(optpar(2)));
+0059 <span class="keyword">end</span>
+0060 
+0061 <span class="comment">%if exist(param_file, 'file')</span>
+0062 <span class="comment">%    SkMp.slider_lock = 1;</span>
+0063 <span class="comment">%    [SkMp] = updstrpl(SkMp);</span>
+0064 <span class="comment">%    SkMp.slider_lock = 0;</span>
+0065 <span class="comment">%else</span>
+0066 
+0067 <span class="comment">%[SkMp] = updstrpl(SkMp);</span>
+0068 
+0069 <span class="comment">%end</span>
+0070 figure(SkMp.figsky)
+0071 zoom on
+0072 colormap(bone)
+0073 set(SkMp.ui3(3),<span class="string">'Value'</span>,min(90,max(-90,optpar(3))));
+0074 set(SkMp.ui3(1),<span class="string">'Value'</span>,min(90,max(-90,-optpar(4))));
+0075 set(SkMp.ui3(4),<span class="string">'Value'</span>,max(0,abs(SkMp.oldfov)));
+0076 set(SkMp.ui3(4),<span class="string">'Value'</span>,max(0,abs(SkMp.oldfov)));
+0077 set(SkMp.ui3(2),<span class="string">'Value'</span>,min(90,max(-90,optpar(5))));
+0078 flipudlrstr = <span class="string">'SkMp = updfliplrud(SkMp);'</span>;
+0079 
+0080 SkMp.ui3(6) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0081                         <span class="string">'Style'</span>,<span class="string">'Popup'</span>,<span class="keyword">...</span>
+0082                         <span class="string">'String'</span>,<span class="string">'Flip |l-r|u-d'</span>,<span class="keyword">...</span>
+0083                         <span class="string">'Position'</span>,[.91,.94,.075,.05],<span class="keyword">...</span>
+0084                         <span class="string">'Min'</span>,1,<span class="keyword">...</span>
+0085                         <span class="string">'Max'</span>,3,<span class="keyword">...</span>
+0086                         <span class="string">'Value'</span>,1,<span class="keyword">...</span>
+0087                         <span class="string">'Callback'</span>,flipudlrstr);
+0088 <span class="comment">% Pup-up-menu for locking the sliders and only use optimized optpar:</span>
+0089 SkMp.ui3(7) = uicontrol(<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0090             <span class="string">'Style'</span>,<span class="string">'togglebutton'</span>,<span class="keyword">...</span>
+0091             <span class="string">'String'</span>,<span class="string">'SldrLck'</span>,<span class="keyword">...</span>
+0092             <span class="string">'Position'</span>,[.01,.01,.075,.05],<span class="keyword">...</span>
+0093             <span class="string">'Min'</span>,0,<span class="keyword">...</span>
+0094             <span class="string">'Max'</span>,1,<span class="keyword">...</span>
+0095             <span class="string">'Value'</span>,0,<span class="keyword">...</span>
+0096             <span class="string">'Callback'</span>,<span class="string">'[SkMp] = updstrpl(SkMp);'</span>);
+0097 
+0098 <span class="keyword">if</span> ( version_nr &gt; 5.1 )
+0099   
+0100   set(SkMp.ui3(7),<span class="string">'TooltipString'</span>,<span class="string">'Lock sliders'</span>);
+0101   set(SkMp.ui3(6),<span class="string">'TooltipString'</span>,<span class="string">'Mirror star-field LR/UD'</span>);
+0102   
+0103 <span class="keyword">end</span>
+0104 
+0105 <span class="comment">% $$$ hidegui(SkMp.ui3(:),'callback')</span>
+0106 set(SkMp.ui3(:),<span class="string">'handlevisibility'</span>,<span class="string">'callback'</span>)
+0107 
+0108 <span class="comment">%SkMp.oldfov = 180/pi*atan(1/2/optpar(2));</span>
+0109 
+0110 SkMp.uic3(1,10) = uimenu(SkMp.uic3(1,6),<span class="keyword">...</span>
+0111              <span class="string">'Label'</span>,<span class="string">'Calibration/optim'</span>,<span class="keyword">...</span>
+0112              <span class="string">'Callback'</span>,<span class="string">'SkMp = s_preferences(SkMp,5);'</span>);
+0113 SkMp.uic3(1,11) = uimenu(SkMp.uic3(1,6),<span class="keyword">...</span>
+0114              <span class="string">'Label'</span>,<span class="string">'Zoom'</span>,<span class="keyword">...</span>
+0115              <span class="string">'Callback'</span>,<span class="string">'SkMp = s_preferences(SkMp,1);'</span>);
+0116 
+0117 SkMp.uic3(5,1) = uimenu(<span class="string">'Label'</span>,<span class="string">'StarCal'</span>);
+0118 SkMp.uic3(5,2) = uimenu(SkMp.uic3(5,1),<span class="keyword">...</span>
+0119             <span class="string">'Label'</span>,<span class="string">'Magnify'</span>,<span class="keyword">...</span>
+0120             <span class="string">'Callback'</span>,<span class="string">'SkMp.currStarpoint = updzoom(SkMp);'</span>);
+0121 
+0122 SkMp.uic3(5,3) = uimenu(SkMp.uic3(5,1), <span class="keyword">...</span>
+0123             <span class="string">'Label'</span>,<span class="string">'Identify'</span>, <span class="keyword">...</span>
+0124             <span class="string">'Callback'</span>,<span class="string">'[SkMp,starpar] = updfindstar(starpar,SkMp);'</span>);
+0125 SkMp.uic3(5,4) = uimenu(SkMp.uic3(5,1), <span class="keyword">...</span>
+0126             <span class="string">'Label'</span>,<span class="string">'Remove last identified star'</span>, <span class="keyword">...</span>
+0127             <span class="string">'Callback'</span>,<span class="string">'SkMp = upddellastr(SkMp);'</span>);
+0128 SkMp.uic3(5,11) = uimenu(SkMp.uic3(5,1), <span class="keyword">...</span>
+0129             <span class="string">'Label'</span>,<span class="string">'Select an identified star to be removed'</span>, <span class="keyword">...</span>
+0130             <span class="string">'Callback'</span>,<span class="string">'SkMp = updrmstar(SkMp);'</span>);
+0131 SkMp.uic3(5,5) = uimenu(SkMp.uic3(5,1), <span class="keyword">...</span>
+0132             <span class="string">'Label'</span>,<span class="string">'Plot id-stars'</span>, <span class="keyword">...</span>
+0133             <span class="string">'Callback'</span>, <span class="keyword">...</span>
+0134             <span class="string">'plot_stars_over'</span>);
+0135 SkMp.uic3(5,6) = uimenu(SkMp.uic3(5,1), <span class="keyword">...</span>
+0136             <span class="string">'Label'</span>,<span class="string">'Search optpar'</span>, <span class="keyword">...</span>
+0137             <span class="string">'Callback'</span>,<span class="string">'OptF_struct = updautomat(SkMp);'</span>);
+0138 SkMp.uic3(5,10) = uimenu(SkMp.uic3(5,1), <span class="keyword">...</span>
+0139              <span class="string">'Label'</span>,<span class="string">'Revert optpar'</span>, <span class="keyword">...</span>
+0140              <span class="string">'Callback'</span>,<span class="string">'SkMp = revert_optpar(SkMp);'</span>);
+0141 SkMp.uic3(5,7) = uimenu(SkMp.uic3(5,1), <span class="keyword">...</span>
+0142             <span class="string">'Label'</span>,<span class="string">'Save optpar'</span>, <span class="keyword">...</span>
+0143             <span class="string">'Callback'</span>,<span class="string">'saveacc(SkMp)'</span>);
+0144 SkMp.uic3(5,12) = uimenu(SkMp.uic3(5,1), <span class="keyword">...</span>
+0145             <span class="string">'Label'</span>,<span class="string">'Save preliminary optpar and star identification data'</span>, <span class="keyword">...</span>
+0146             <span class="string">'Callback'</span>,<span class="string">'saveoptident(SkMp)'</span>);
+0147 SkMp.uic3(5,8) = uimenu(SkMp.uic3(5,1), <span class="keyword">...</span>
+0148             <span class="string">'Label'</span>,<span class="string">'Semiautoidentify'</span>, <span class="keyword">...</span>
+0149             <span class="string">'Callback'</span>,<span class="string">'updautident'</span>);
+0150 SkMp.uic3(5,9) = uimenu(SkMp.uic3(5,1), <span class="keyword">...</span>
+0151             <span class="string">'Label'</span>,<span class="string">'Autocalibrate'</span>, <span class="keyword">...</span>
+0152             <span class="string">'Callback'</span>,<span class="string">'[SkMp,SkMp.identstars,SkMp.optpar] = trackemdown(SkMp);'</span>);
+0153 
+0154 <span class="comment">% $$$ hidegui(SkMp.uic3(5,:),'callback')</span>
+0155 set(SkMp.uic3(5,:),<span class="string">'handlevisibility'</span>,<span class="string">'callback'</span>)
+0156 
+0157 SkMp.uic3(4,end+1) = uimenu(SkMp.uic3(4,1), <span class="keyword">...</span><span class="comment"> </span>
+0158                 <span class="string">'Label'</span>,<span class="string">'Help calibration'</span>, <span class="keyword">...</span>
+0159                 <span class="string">'Callback'</span>,<span class="string">'starhelp(3)'</span>);
+0160 set(SkMp.uic3(4,2),<span class="string">'label'</span>,<span class="string">'Help stars/sky'</span>)
+0161 SkMp.figzoom = figure(<span class="string">'Name'</span>,<span class="string">'zoom'</span>,<span class="keyword">...</span>
+0162               <span class="string">'Position'</span>,[20,200,250,250],<span class="keyword">...</span>
+0163               <span class="string">'Resize'</span>,<span class="string">'on'</span>,<span class="keyword">...</span>
+0164               <span class="string">'MenuBar'</span>,<span class="string">'none'</span>);
+0165 SkMp.uic4(1,1) = uimenu(<span class="string">'Label'</span>,<span class="string">'Center'</span>);
+0166 SkMp.uic4(1,2) = uimenu(SkMp.uic4(1,1),<span class="keyword">...</span>
+0167             <span class="string">'Label'</span>,<span class="string">'Center'</span>,<span class="keyword">...</span>
+0168             <span class="string">'Callback'</span>,<span class="string">'updcenter2(SkMp);'</span>);
+0169 
+0170 SkMp.uic4(2,1) = uimenu(<span class="string">'Label'</span>,<span class="string">'star'</span>);
+0171 SkMp.uic4(2,2) = uimenu(SkMp.uic4(2,1),<span class="keyword">...</span>
+0172             <span class="string">'Label'</span>,<span class="string">'autopick'</span>,<span class="keyword">...</span>
+0173             <span class="string">'Callback'</span>,<span class="string">'starpar = updstraut(SkMp);'</span>);
+0174 SkMp.uic4(2,3) = uimenu(SkMp.uic4(2,1),<span class="keyword">...</span>
+0175             <span class="string">'Label'</span>,<span class="string">'man.pick'</span>,<span class="keyword">...</span>
+0176             <span class="string">'Callback'</span>,<span class="string">'starpar = updstrman(SkMp);'</span>);
+0177 
+0178 SkMp.uic4(3,1) = uimenu(<span class="string">'Label'</span>,<span class="keyword">...</span>
+0179             <span class="string">'Help'</span>,<span class="string">'Callback'</span>,<span class="keyword">...</span>
+0180             <span class="string">'starhelp(4)'</span>);
+0181 <span class="comment">% $$$ hidegui(SkMp.uic4(:),'callback')</span>
+0182 set(SkMp.uic4(:),<span class="string">'handlevisibility'</span>,<span class="string">'callback'</span>)
+0183 
+0184 <span class="keyword">if</span> ~isfield(SkMp,<span class="string">'errorfig'</span>)
+0185   
+0186   SkMp = <a href="errorgui.html" class="code" title="function SkMp = errorgui(SkMp)">errorgui</a>(SkMp);
+0187   
+0188 <span class="keyword">end</span>
+0189 
+0190 <span class="keyword">if</span> isfield(obs,<span class="string">'optpar'</span>)
+0191   
+0192   set(SkMp.ui3(1),<span class="string">'value'</span>,-obs.optpar(4)) <span class="comment">% East-west</span>
+0193   set(SkMp.ui3(2),<span class="string">'value'</span>,obs.optpar(5))  <span class="comment">% Rotation around optical axis</span>
+0194   set(SkMp.ui3(3),<span class="string">'value'</span>,obs.optpar(3))  <span class="comment">% North-south</span>
+0195   set(SkMp.ui3(4),<span class="string">'value'</span>,abs(180/pi*atan(1/2/optpar(2)))) <span class="comment">% field-of-view</span>
+0196   SkMp.found_optpar = 1;
+0197   SkMp.slider_lock = 0;
+0198   
+0199 <span class="keyword">end</span>  
+0200 
+0201 [SkMp] = <a href="../Skymap/updstrpl.html" class="code" title="function [SkMp] = updstrpl(SkMp)">updstrpl</a>(SkMp);
+0202 
+0203 set(SkMp.uic3(5,9),<span class="string">'enable'</span>,<span class="string">'off'</span>)
+0204 
+0205 <span class="keyword">if</span> isfield(obs,<span class="string">'optpar'</span>)
+0206   
+0207   set(SkMp.ui3(1),<span class="string">'value'</span>,-obs.optpar(4)) <span class="comment">% East-west</span>
+0208   set(SkMp.ui3(2),<span class="string">'value'</span>,obs.optpar(5))  <span class="comment">% Rotation around optical axis</span>
+0209   set(SkMp.ui3(3),<span class="string">'value'</span>,obs.optpar(3))  <span class="comment">% North-south</span>
+0210   set(SkMp.ui3(4),<span class="string">'value'</span>,abs(180/pi*atan(1/2/optpar(2)))) <span class="comment">% field-of-view</span>
+0211   SkMp.found_optpar = 1;
+0212   SkMp.slider_lock = 0;
+0213   
+0214 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

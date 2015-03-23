@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of AIDApositionize</title>
+  <meta name="keywords" content="AIDApositionize">
+  <meta name="description" content="AIDApositionize - calculate station lat-long and xyz positions">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>AIDApositionize
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>AIDApositionize - calculate station lat-long and xyz positions</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [stnXYZ,stnLongLat,trmtr] = AIDApositionize(stationNRs,central_stn_nr) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> AIDApositionize - calculate station lat-long and xyz positions 
+  for multistation auroral imaging systems.
+ 
+ Calling:
+  obs = AIDApositionize(stationNRs,central_stn_nr)
+ Input:
+  stationNRs - array with station numbers
+  central_stn_number - the unique station identifying number of
+        the station that is the origin of the locla horizontal
+        Cartesian coordinate system.
+ Output:
+  stnXYZ - station position in local horizontal coordinate
+           system centred in central-station.
+  stnLongLat - station longitude and latitude
+  trmtr - cell array with rotation matrices from &quot;station local&quot;
+          horizontal coordinate system to central station local
+          horizontal coordinate system.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../EARTH/makenlcpos.html" class="code" title="function [x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt)">makenlcpos</a>	MAKENLCPOS transforms the positions (LAT, LONG, ALT) to (X,Y,Z)</li><li><a href="../EARTH/maketransfmtr.html" class="code" title="function [trmtr] = maketransfmtr(lat0,long0,lat,long,already_degrees)">maketransfmtr</a>	MAKETRANSFMTR - the transformation rotation matrixes</li><li><a href="station_reader.html" class="code" title="function [long,lat,alts,StnNames,stnNR] = station_reader()">station_reader</a>	STATION_READER - collects station number, name, long, lat</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/ALISstdpos_visvol.html" class="code" title="function hndl = ALISstdpos_visvol(stnNRs,AZstn,ZEstn,ALTstn,FOVstn,OPS)">ALISstdpos_visvol</a>	ALISSTDPOS_VISVOL - Display ALIS f-o-v ontop of topographic map</li><li><a href="../ALIS/OldPosPlots/pos4index20051024_north.html" class="code" title="">pos4index20051024_north</a>	pos4index20051024_north - ALIS fields-of-view for position: INDEX-rocket</li><li><a href="../ALIS/OldPosPlots/pos4index20051029.html" class="code" title="">pos4index20051029</a>	pos4index20051029 - ALIS fields-of-view for position: INDEX-rocket</li><li><a href="../ALIS/mk_alis_pos_xyz.html" class="code" title="function [stnXYZ,stnLongLat,trmtr] = mk_alis_pos_xyz(ALISstnNr)">mk_alis_pos_xyz</a>	MK_ALIS_POS_XYZ - get ALIS station coordinates and transformation</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [stnXYZ,stnLongLat,trmtr] = AIDApositionize(stationNRs,central_stn_nr)</a>
+0002 <span class="comment">% AIDApositionize - calculate station lat-long and xyz positions</span>
+0003 <span class="comment">%  for multistation auroral imaging systems.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%  obs = AIDApositionize(stationNRs,central_stn_nr)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%  stationNRs - array with station numbers</span>
+0009 <span class="comment">%  central_stn_number - the unique station identifying number of</span>
+0010 <span class="comment">%        the station that is the origin of the locla horizontal</span>
+0011 <span class="comment">%        Cartesian coordinate system.</span>
+0012 <span class="comment">% Output:</span>
+0013 <span class="comment">%  stnXYZ - station position in local horizontal coordinate</span>
+0014 <span class="comment">%           system centred in central-station.</span>
+0015 <span class="comment">%  stnLongLat - station longitude and latitude</span>
+0016 <span class="comment">%  trmtr - cell array with rotation matrices from &quot;station local&quot;</span>
+0017 <span class="comment">%          horizontal coordinate system to central station local</span>
+0018 <span class="comment">%          horizontal coordinate system.</span>
+0019 
+0020 
+0021 <span class="comment">%   Copyright � 20100715 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0022 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0023 
+0024 
+0025 <span class="comment">% Keep Stations in memory so that we only need to read all station</span>
+0026 <span class="comment">% information once:</span>
+0027 <span class="keyword">persistent</span> Stations
+0028 
+0029 
+0030 <span class="comment">% If there is no StnNames field in Stations</span>
+0031 <span class="keyword">if</span> ~isfield(Stations,<span class="string">'StnNames'</span>)
+0032   <span class="comment">%  we have to read the station information:</span>
+0033   [Stations.long,Stations.lat,Stations.alts,Stations.StnNames,Stations.stnNR] = <a href="station_reader.html" class="code" title="function [long,lat,alts,StnNames,stnNR] = station_reader()">station_reader</a>;
+0034   
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="comment">% For all the stationNRs</span>
+0038 <span class="keyword">for</span> i1 = length(stationNRs):-1:1,
+0039   <span class="comment">% We search for the corresponding Stations index</span>
+0040   iStn = find( stationNRs(i1) == Stations.stnNR );
+0041   <span class="comment">% and extracts its station information, first the longitude and</span>
+0042   <span class="comment">% latitude:</span>
+0043   <span class="keyword">if</span> ~isempty(iStn)
+0044     stnLongLat(i1,:) = [Stations.long(iStn),Stations.lat(iStn)];
+0045   <span class="keyword">end</span>
+0046   <span class="comment">% If we have told AIDApositionize which station number to use for</span>
+0047   <span class="comment">% central station - for a horizontal coordinate system:</span>
+0048   <span class="keyword">if</span> ~isempty(iStn) &amp; nargin &gt; 1
+0049     <span class="comment">% Then use it</span>
+0050     iCStn = find( central_stn_nr == Stations.stnNR );
+0051     <span class="keyword">if</span> ~isempty(iCStn)
+0052       <span class="comment">% To calculate the cartesian coordinates of stationNRs</span>
+0053       [x,y,z] = <a href="../EARTH/makenlcpos.html" class="code" title="function [x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt)">makenlcpos</a>(Stations.lat(iCStn),<span class="keyword">...</span>
+0054                            Stations.long(iCStn),<span class="keyword">...</span>
+0055                            Stations.alts(iCStn),<span class="keyword">...</span>
+0056                            Stations.lat(iStn),<span class="keyword">...</span>
+0057                            Stations.long(iStn),<span class="keyword">...</span>
+0058                            Stations.alts(iStn));
+0059       stnXYZ(i1,:) = [x,y,z];
+0060       <span class="comment">% And the rotation matrix between its local horizontal</span>
+0061       <span class="comment">% coordinates and the central-station horizontal coordinates:</span>
+0062       trmtr{i1} = <a href="../EARTH/maketransfmtr.html" class="code" title="function [trmtr] = maketransfmtr(lat0,long0,lat,long,already_degrees)">maketransfmtr</a>(Stations.lat(iCStn),<span class="keyword">...</span>
+0063                                 Stations.long(iCStn),<span class="keyword">...</span>
+0064                                 Stations.lat(iStn),<span class="keyword">...</span>
+0065                                 Stations.long(iStn),<span class="keyword">...</span>
+0066                                 1);
+0067     <span class="keyword">end</span>
+0068   <span class="keyword">end</span>
+0069   
+0070 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

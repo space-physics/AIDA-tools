@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotspec</title>
+  <meta name="keywords" content="plotspec">
+  <meta name="description" content="SKMP-private called through skymap/starcal GUI and makes">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>plotspec
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SKMP-private called through skymap/starcal GUI and makes</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [ph,SkMp] = plotspec(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SKMP-private called through skymap/starcal GUI and makes
+ a plot of the Pulkovo spectra of a selected star - if it exists.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="updstrinfo.html" class="code" title="function [SkMp,staraz,starze,starid,starmagn,thisstar] = updstrinfo(SkMp)">updstrinfo</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ph,SkMp] = plotspec(SkMp)</a>
+0002 <span class="comment">% SKMP-private called through skymap/starcal GUI and makes</span>
+0003 <span class="comment">% a plot of the Pulkovo spectra of a selected star - if it exists.</span>
+0004 
+0005 
+0006 
+0007 <span class="comment">%   Copyright � 2005 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0008 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0009 
+0010 
+0011 [SkMp,staraz,starze,starid,starmagn,thisstar] = <a href="updstrinfo.html" class="code" title="function [SkMp,staraz,starze,starid,starmagn,thisstar] = updstrinfo(SkMp)">updstrinfo</a>(SkMp);
+0012 
+0013 star_spec_dir = fullfile(fileparts(which(<span class="string">'skymap'</span>)),<span class="string">'stars'</span>);
+0014 qwe_cmd = [<span class="string">'cd '</span>,star_spec_dir,<span class="string">';./getsp '</span>,num2str(thisstar.Bright_Star_Nr),<span class="string">' &gt; /tmp/stasr12.qwe'</span>];
+0015 
+0016 <span class="keyword">try</span>
+0017   <span class="comment">%TBR?: [qwe_q,qwe_w] = unix(qwe_cmd);</span>
+0018   [qwe_q] = unix(qwe_cmd);
+0019   <span class="keyword">if</span> qwe_q == 0
+0020     
+0021     qwe_fp = fopen(<span class="string">'/tmp/stasr12.qwe'</span>,<span class="string">'r'</span>);
+0022     qwe_i = 1;
+0023     <span class="comment">%keyboard</span>
+0024     <span class="keyword">while</span>(~feof(qwe_fp))
+0025       qwe_l = fgets(qwe_fp);
+0026       <span class="keyword">if</span> ~isempty(str2num(qwe_l))
+0027         qwe_spe15(qwe_i,1:length(str2num(qwe_l))) = str2num(qwe_l);
+0028         <span class="keyword">if</span> length(str2num(qwe_l))==1
+0029           qWe_spe15(qWe_i,2) = nan;
+0030         <span class="keyword">end</span>
+0031         qwe_i = qwe_i+1;
+0032       <span class="keyword">end</span>
+0033     <span class="keyword">end</span>
+0034     fclose(qwe_fp);
+0035     <span class="comment">%qwe_i</span>
+0036     <span class="keyword">if</span> ~isfield(SkMp,<span class="string">'fig_spec'</span>)
+0037       
+0038       SkMp.fig_spec = figure;
+0039       
+0040     <span class="keyword">end</span>
+0041     <span class="comment">%keyboard</span>
+0042     figure(SkMp.fig_spec)
+0043     <span class="comment">%qwe2nan_indx = find(abs(diff(qwe_spe15))&gt;300);</span>
+0044     <span class="comment">%qwe_spe15(qwe2nan_indx,:) = nan;</span>
+0045     qwe_spe15(abs(diff(qwe_spe15))&gt;300,:) = nan;
+0046     PH = plot(qwe_spe15(:,1),qwe_spe15(:,2));
+0047     xlabel(<span class="string">'wavelength (nm)'</span>,<span class="string">'fontsize'</span>,16)
+0048     ylabel(<span class="string">'Energy flux W/m^2/m'</span>,<span class="string">'fontsize'</span>,16)
+0049     title([<span class="string">'Spectra for '</span>,thisstar.Name,<span class="string">', `bright star nr'': '</span>,num2str(thisstar.Bright_Star_Nr)],<span class="string">'fontsize'</span>,16)
+0050     clear qwe_*
+0051     
+0052     unix(<span class="string">'rm /tmp/stasr12.qwe'</span>);
+0053     
+0054     <span class="keyword">if</span> nargout &gt; 0
+0055       ph = PH;
+0056     <span class="keyword">end</span>
+0057   <span class="keyword">else</span>
+0058     
+0059     disp(<span class="string">'For this star there is no specra in `Pulkovo Spectrophotometric Catalog'''</span>)
+0060     ph = [];
+0061   <span class="keyword">end</span>
+0062   
+0063 <span class="keyword">catch</span>
+0064   
+0065   warning(<span class="string">'Only works in unix-like environments?'</span>)
+0066   
+0067 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

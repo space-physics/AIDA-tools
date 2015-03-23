@@ -1,0 +1,72 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>spc_make_theta.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function synopsis</FONT></FONT></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1> [theta_out,ze_out,ff_out] = spc_make_theta(gX,gY,optpar,sis)                                                                                        </FONT></FONT></P> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function comments</FONT></FONT></P> 
+<pre> 
+% 
+% spc_make_theta  Calculate the angle from the optical axis, 
+% zenith angle and flatfield correction factor for each star 
+% intensity value. 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files that call spc_make_theta.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="Spec_cal_jobb_mall.htm">Spec_cal_jobb_mall</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of spc_make_theta.m</FONT></FONT></P> 
+<pre> 
+function [theta_out,ze_out,ff_out] = spc_make_theta(gX,gY,optpar,sis) 
+% [theta_out,ze_out,ff_out] = spc_make_theta(gX,gY,optpar,sis) 
+% 
+% spc_make_theta  Calculate the angle from the optical axis, 
+% zenith angle and flatfield correction factor for each star 
+% intensity value. 
+ 
+% Copyright Bjorn Gustavsson 20030901 
+ 
+global bx by 
+ 
+ffc_raw = ffs_correction_raw([bx by],optpar,optpar(9))/bx/by; 
+ffc = ffs_correction2([bx by],optpar,optpar(9)); 
+ 
+gZe = zeros(size(gX)); 
+% ( 
+e_n = [0 0 1]; 
+l_0 = 1; 
+% ) These are really unnecessary? 
+ 
+ 
+[u,v] = meshgrid(1:bx,1:by); 
+[fi,theta] = camera_invmodel(u,v,optpar,optpar(9)); 
+ 
+for ii = 1:length(sis), 
+ 
+  jj = 1; 
+  while jj <= size(gX,2) & gX(ii,jj)~=0 
+    [az,ze] = inv_project_directions(gX(ii,jj),gY(ii,jj),theta,[],3,optpar,e_n,l_0); 
+    ze_out(ii,jj) = ze; 
+    % AAaah saa daaligt att goera det haer haer. 
+    ff_out(ii,jj) = ffc(round(gY(ii,jj)),round(gX(ii,jj))); 
+    theta_out(ii,jj) = theta(round(gY(ii,jj)),round(gX(ii,jj))); 
+    jj = jj+1; 
+  end 
+ 
+end 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 16:26 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

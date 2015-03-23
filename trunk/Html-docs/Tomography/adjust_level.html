@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of adjust_level</title>
+  <meta name="keywords" content="adjust_level">
+  <meta name="description" content="ADJUST_LEVEL - Scale 3D intensities to give projections that have">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>adjust_level
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ADJUST_LEVEL - Scale 3D intensities to give projections that have</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [stns,Vem] = adjust_level(stns,Vem,doit_eh) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ADJUST_LEVEL - Scale 3D intensities to give projections that have
+ the same total intensity as the images. 
+   
+ Calling:
+ [stns,Vem] = adjust_level(stns,Vem,doit_eh)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>	FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ba_rt_error.html" class="code" title="function err = ba_rt_error(Par,stns,OPS,XfI,YfI,ZfI,rstns,tomo_ops)">ba_rt_error</a>	BA_RT_ERROR - Black aurora inversion error function</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [stns,Vem] = adjust_level(stns,Vem,doit_eh)</a>
+0002 <span class="comment">% ADJUST_LEVEL - Scale 3D intensities to give projections that have</span>
+0003 <span class="comment">% the same total intensity as the images.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">% [stns,Vem] = adjust_level(stns,Vem,doit_eh)</span>
+0007 <span class="comment">%</span>
+0008 
+0009 
+0010 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0011 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0012 
+0013 <span class="keyword">for</span> i1 = 1:length(stns),
+0014   
+0015   imgsize = size(stns(i1).img);
+0016   <span class="keyword">if</span> isfield(stns,<span class="string">'sens_mtr'</span>)
+0017     stns(i1).proj = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(Vem,stns(i1).uv,stns(i1).d,stns(i1).l_cl,stns(i1).bfk,imgsize,stns(i1).sens_mtr);
+0018   <span class="keyword">else</span>
+0019     stns(i1).proj = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(Vem,stns(i1).uv,stns(i1).d,stns(i1).l_cl,stns(i1).bfk,imgsize);
+0020   <span class="keyword">end</span>
+0021 <span class="keyword">end</span>
+0022 
+0023 <span class="keyword">if</span> doit_eh
+0024   
+0025   isum = 0;
+0026   psum = 0;
+0027   <span class="keyword">for</span> i1 = 1:length(stns),
+0028     
+0029     isum = isum + sum(stns(i1).img(:));
+0030     psum = psum + sum(stns(i1).proj(:));
+0031     
+0032   <span class="keyword">end</span>
+0033   
+0034   Vem = Vem*isum/psum;
+0035   <span class="keyword">for</span> i1 = 1:length(stns),
+0036     
+0037     stns(i1).proj = stns(i1).proj*isum/psum;
+0038     
+0039   <span class="keyword">end</span>
+0040   
+0041 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fix_ccdcam6</title>
+  <meta name="keywords" content="fix_ccdcam6">
+  <meta name="description" content="Template/example of how to fix the "interesting" placement of">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>fix_ccdcam6
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Template/example of how to fix the "interesting" placement of</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Template/example of how to fix the &quot;interesting&quot; placement of
+ overscan strips in ALIS CCD-cam 6</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="fits2.html" class="code" title="function [header,data] = fits2(name)">fits2</a>	FITS2 reads fits files stored in BE</li><li><a href="quadfix3.html" class="code" title="function [img_out] = quadfix3(img_in,strips,stripsize)">quadfix3</a>	QUADFIX3 quadrant balancing of raw CCD data from overscan-strips</li><li><a href="replace_border.html" class="code" title="function [Img] = replace_border(Img)">replace_border</a>	REPLACE_BORDER - replaces the outermost border</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Template/example of how to fix the &quot;interesting&quot; placement of</span>
+0002 <span class="comment">% overscan strips in ALIS CCD-cam 6</span>
+0003 
+0004 <span class="comment">% Copyright Bjorn Gustavsson 20050110</span>
+0005 
+0006 <span class="comment">% This is only tested on the images from 980325 that I have</span>
+0007 <span class="comment">% available on my PC. All images are 256x256 after processing.</span>
+0008 <span class="comment">% The size of the overscan strip is half the differens of the image</span>
+0009 <span class="comment">% size and this should work for all image sizes. Regarding the</span>
+0010 <span class="comment">% columns in the middle I cant do better than this at the</span>
+0011 <span class="comment">% moment. Their general possition is something you will have to</span>
+0012 <span class="comment">% decide. Further I have found that columns close to the &quot;black&quot;</span>
+0013 <span class="comment">% lines in the image have signal as if they where half</span>
+0014 <span class="comment">% illuminated - valid for binning 4x4 - like if 2x4 of each super</span>
+0015 <span class="comment">% pixel were covered...</span>
+0016 <span class="comment">% The quadrant 1:128,1:128 is approximatelly 1.088 times more</span>
+0017 <span class="comment">% sensitive at least 980325 and it seems to work for images in</span>
+0018 <span class="comment">% 4278, 5577, 6300 and 8446 in the intensity range I've tested.</span>
+0019 
+0020 <span class="comment">% This is the processing steps that seems to balance the quadrants</span>
+0021 [h,d] = <a href="fits2.html" class="code" title="function [header,data] = fits2(name)">fits2</a>(<span class="string">'23P01035.RAF'</span>);
+0022 d = d(:,[1 133 134 2 3 4:132 137:end 135 136]);
+0023 d = <a href="quadfix3.html" class="code" title="function [img_out] = quadfix3(img_in,strips,stripsize)">quadfix3</a>(d,2,diff(size(d))/2);
+0024 d(:,[134 135]) = d(:,[134 135])*2;
+0025 d = d(:,7:end-6);
+0026 d(1:128,1:128) = d(1:128,1:128)/1.08;
+0027 
+0028 <span class="comment">% this is a step by step instructive (not much) argumentation</span>
+0029 [h,d] = <a href="fits2.html" class="code" title="function [header,data] = fits2(name)">fits2</a>(<span class="string">'23P01035.RAF'</span>);
+0030 disp(<span class="string">'[h,d] = fits2(''23P01035.RAF'');'</span>)
+0031 imagesc(<a href="replace_border.html" class="code" title="function [Img] = replace_border(Img)">replace_border</a>(d)),caxis([-31836 -31836+2400])
+0032 disp(<span class="string">'imagesc(replace_border(d)),caxis([-31836 -31836+2400])'</span>)
+0033 disp(<span class="string">'press any key'</span>)
+0034 pause
+0035 axis([125 140 110 180])
+0036 disp(<span class="string">'axis([125 140 110 180])'</span>)
+0037 disp(<span class="string">'press any key'</span>)
+0038 pause
+0039 tmpfig = figure;
+0040 
+0041 subplot(2,1,1)
+0042 plot((d(2:end-1,[1 2 3])))        
+0043 title(<span class="string">'col 1, 2, 3'</span>)
+0044 subplot(2,1,2)
+0045 plot((d(2:end-1,[133 134])))      
+0046 title(<span class="string">'col 133 134'</span>)
+0047 disp(<span class="string">'subplot(2,1,1)'</span>)
+0048 disp(<span class="string">'plot((d(2:end-1,[1 2 3])))'</span>)
+0049 disp(<span class="string">'subplot(2,1,2)'</span>)
+0050 disp(<span class="string">'plot((d(2:end-1,[133 134])))'</span>)
+0051 disp(<span class="string">'Columns 133 &amp; 134 belongs to left overscan strip'</span>)
+0052 disp(<span class="string">'press any key'</span>)
+0053 pause
+0054 clf
+0055 disp(<span class="string">'clf'</span>)
+0056 
+0057 subplot(2,1,1)
+0058 plot((d(2:end-1,[end-2 end-1 end])))
+0059 title(<span class="string">'col end-2 end-1 end'</span>)
+0060 subplot(2,1,2)
+0061 plot((d(2:end-1,[135 136])))      
+0062 title(<span class="string">'col 135 136'</span>)
+0063 disp(<span class="string">'subplot(2,1,1)'</span>)
+0064 disp(<span class="string">'plot((d(2:end-1,[end-2 end-1 end])))'</span>)
+0065 disp(<span class="string">'subplot(2,1,2)'</span>)
+0066 disp(<span class="string">'plot((d(2:end-1,[135 136])))'</span>)
+0067 
+0068 disp(<span class="string">'Columns 135 &amp; 136 belongs to right overscan strip'</span>)
+0069 disp(<span class="string">'rearange these columns'</span>)
+0070 d1 = d(:,[1 133 134 2 3 4:132 137:end 135 136]);
+0071 disp(<span class="string">'d1 = d(:,[1 133 134 2 3 4:132 137:end 135 136]);'</span>)
+0072 
+0073 disp(<span class="string">'press any key'</span>)
+0074 pause
+0075 d2 = <a href="quadfix3.html" class="code" title="function [img_out] = quadfix3(img_in,strips,stripsize)">quadfix3</a>(d1,2,diff(size(d1))/2);
+0076 disp(<span class="string">'d2 = quadfix3(d1,2,diff(size(d1))/2);'</span>)
+0077 clf
+0078 disp(<span class="string">'clf'</span>)
+0079 plot(d2(2:end-1,133:136))
+0080 disp(<span class="string">'plot(d2(2:end-1,133:136))'</span>)
+0081 
+0082 disp(<span class="string">'columns 134 &amp; 135 too small...'</span>)
+0083 disp(<span class="string">'press any key'</span>)
+0084 pause
+0085 
+0086 plot(d2(2:end-1,134:135)./d2(2:end-1,[133 136]))
+0087 disp(<span class="string">'plot(d2(2:end-1,134:135)./d2(2:end-1,[133 136]))'</span>)
+0088 disp(<span class="string">'...by a factor of 2.'</span>)
+0089 disp(<span class="string">'press any key'</span>)
+0090 pause
+0091 
+0092 d3 = d2;                            
+0093 d3(:,[134 135]) = d3(:,[134 135])*2;
+0094 d3 = d3(:,7:end-6);
+0095 disp(<span class="string">'d3 = d2;'</span>)
+0096 disp(<span class="string">'d3(:,[134 135]) = d3(:,[134 135])*2;'</span>)
+0097 disp(<span class="string">'d3 = d3(:,7:end-6);'</span>)
+0098 
+0099 imagesc(d3),caxis([0 2400])
+0100 disp(<span class="string">'imagesc(d3),caxis([0 2400])'</span>)
+0101 disp(<span class="string">'one quadrant is more sensitive?'</span>)
+0102 disp(<span class="string">'press any key'</span>)
+0103 pause
+0104 
+0105 subplot(2,1,1)
+0106 plot(d3(2:end-1,128)./d3(2:end-1,129),<span class="string">'r'</span>)
+0107 grid
+0108 subplot(2,1,2)
+0109 plot(d3(128,:)./d3(129,:))
+0110 grid
+0111 
+0112 disp(<span class="string">'subplot(2,1,1)'</span>)
+0113 disp(<span class="string">'plot(d3(2:end-1,128)./d3(2:end-1,129),''r'''</span>)
+0114 disp(<span class="string">'grid'</span>)
+0115 disp(<span class="string">'subplot(2,1,2)'</span>)
+0116 disp(<span class="string">'plot(d3(128,:)./d3(129,:))'</span>)
+0117 disp(<span class="string">'grid'</span>)
+0118 disp(<span class="string">'mean(medfilt1(d3(128,1:end/2)./d3(129,1:end/2),3)) = '</span>)
+0119 disp(mean(medfilt1(d3(128,1:end/2)./d3(129,1:end/2),3)))
+0120 disp(<span class="string">'mean(medfilt1(d3(128,end/2+1:end-1)./d3(129,end/2+1:end-1),3)) = '</span>)
+0121 disp(mean(medfilt1(d3(128,end/2+1:end-1)./d3(129,end/2+1:end-1),3)))
+0122 disp(<span class="string">'mean(medfilt1(d3(2:end/2,128)./d3(2:end/2,129),3)) = '</span>)
+0123 disp(mean(medfilt1(d3(2:end/2,128)./d3(2:end/2,129),3)))
+0124 disp(<span class="string">'mean(medfilt1(d3(end/2+1:end-1,128)./d3(end/2+1:end-1,129),3)) = '</span>)
+0125 disp(mean(medfilt1(d3(end/2+1:end-1,128)./d3(end/2+1:end-1,129),3)))
+0126 
+0127 disp(<span class="string">'press any key'</span>)
+0128 pause
+0129 
+0130 d4 = d3;                               
+0131 d4(1:128,1:128) = d4(1:128,1:128)/1.08;
+0132 
+0133 disp(<span class="string">'d4 = d3;'</span>)
+0134 disp(<span class="string">'try with correction factor 1/1.08'</span>)
+0135 disp(<span class="string">'d4(1:128,1:128) = d4(1:128,1:128)/1.08;'</span>)
+0136 close(tmpfig)
+0137 imagesc(d4),caxis([0 2400])
+0138 title(<span class="string">'Maybe not so bad for this image...'</span>)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

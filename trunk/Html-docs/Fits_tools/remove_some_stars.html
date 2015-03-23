@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of remove_some_stars</title>
+  <meta name="keywords" content="remove_some_stars">
+  <meta name="description" content="REMOVE_SOME_STARS - Remove bright stars from images,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>remove_some_stars
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>REMOVE_SOME_STARS - Remove bright stars from images,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function img_out = remove_some_stars(img_in,time,pos,optpar,remove_these_stars,size_r_t_s) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> REMOVE_SOME_STARS - Remove bright stars from images,
+   The bright star spot is replaced by the average in the
+   surrounding frame. Usefull for removal of stars that are to big
+   or bright to be efficiently removed with 2-D median-filter.
+ 
+ Calling:
+   img_out = remove_some_stars(img_in,time,pos,optpar,remove_these_stars,size_r_t_s)
+
+ Input:
+   IMG_IN - image with annoying bright stars.
+   TIME - Date and UT-time of observation [YYYY, MM, DD, hh, mm, ss.xx]
+   POS - Latitude and longitudee of observations site (degrees)
+   OPTPAR - Optical parameters that describe the optics and rotation
+            of the camera,
+   REMOVE_THESE_STARS - Star-catalog entries of stars to remove.
+   SIZE_R_T_S - size of region to be replaced with average of
+                surrounding frame.
+ Output:
+   IMG_OUT - image after removal of bright stars.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>	PROJECT_DIRECTIONS - calculates the image positions [UA,WA] from (AZ,ZE)</li><li><a href="../Skymap/starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>	STARPOS2 gives the azimuth, zenith and apparent zenith angles</li><li><a href="../Starcal/IOfcns/inimage.html" class="code" title="function [true] = inimage(x,y,bx,by)">inimage</a>	INIMAGE  tests if a point (X,Y) is within the image,</li><li><a href="../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>	INPAINT_NANS: in-paints over nans in an array</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function img_out = remove_some_stars(img_in,time,pos,optpar,remove_these_stars,size_r_t_s)</a>
+0002 <span class="comment">% REMOVE_SOME_STARS - Remove bright stars from images,</span>
+0003 <span class="comment">%   The bright star spot is replaced by the average in the</span>
+0004 <span class="comment">%   surrounding frame. Usefull for removal of stars that are to big</span>
+0005 <span class="comment">%   or bright to be efficiently removed with 2-D median-filter.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%   img_out = remove_some_stars(img_in,time,pos,optpar,remove_these_stars,size_r_t_s)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Input:</span>
+0011 <span class="comment">%   IMG_IN - image with annoying bright stars.</span>
+0012 <span class="comment">%   TIME - Date and UT-time of observation [YYYY, MM, DD, hh, mm, ss.xx]</span>
+0013 <span class="comment">%   POS - Latitude and longitudee of observations site (degrees)</span>
+0014 <span class="comment">%   OPTPAR - Optical parameters that describe the optics and rotation</span>
+0015 <span class="comment">%            of the camera,</span>
+0016 <span class="comment">%   REMOVE_THESE_STARS - Star-catalog entries of stars to remove.</span>
+0017 <span class="comment">%   SIZE_R_T_S - size of region to be replaced with average of</span>
+0018 <span class="comment">%                surrounding frame.</span>
+0019 <span class="comment">% Output:</span>
+0020 <span class="comment">%   IMG_OUT - image after removal of bright stars.</span>
+0021 
+0022 
+0023 <span class="comment">%   Copyright � 20061004 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0024 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0025 
+0026 <span class="keyword">global</span> bxy bx by
+0027 
+0028 <span class="keyword">if</span> nargin &gt; 5
+0029   
+0030   dl = size_r_t_s;
+0031   
+0032 <span class="keyword">else</span>
+0033   
+0034   dl = 1;
+0035   
+0036 <span class="keyword">end</span>
+0037 
+0038 img_out = img_in;
+0039 <span class="keyword">if</span> ~isempty(remove_these_stars)
+0040   
+0041   bxy = size(img_out);
+0042   bx = bxy(1);
+0043   by = bxy(2);
+0044   <span class="comment">% Calculate the sky positions of the stars to mask out:</span>
+0045   [az,ze] = <a href="../Skymap/starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>(remove_these_stars(:,1),<span class="keyword">...</span>
+0046                      remove_these_stars(:,2),<span class="keyword">...</span>
+0047                      time(1:3),<span class="keyword">...</span>
+0048                      time(4:6),<span class="keyword">...</span>
+0049                      pos(2),<span class="keyword">...</span>
+0050                      pos(1));
+0051   
+0052   <span class="comment">% and their image positions:</span>
+0053   <span class="keyword">if</span> isstruct(optpar)
+0054     [ua,wa] = <a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(az',ze',optpar,optpar.mod,bxy);
+0055   <span class="keyword">else</span>
+0056     [ua,wa] = <a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(az',ze',optpar,optpar(9),bxy);
+0057   <span class="keyword">end</span>
+0058   ua = round(ua);
+0059   wa = round(wa);
+0060   iu = find(<a href="../Starcal/IOfcns/inimage.html" class="code" title="function [true] = inimage(x,y,bx,by)">inimage</a>(ua-4,wa-4,bx-7,by-7));
+0061   
+0062   <span class="keyword">for</span> i = 1:length(iu),
+0063     <span class="comment">% Get the image reagion around each star position</span>
+0064     wreg1 = max( min( wa(iu(i))-dl:wa(iu(i))+dl, bx), 1);
+0065     ureg1 = max( min( ua(iu(i))-dl:ua(iu(i))+dl ,by) ,1);
+0066     wreg2 = max( min( wa(iu(i))-(dl+1):wa(iu(i))+(dl+1), bx), 1);
+0067     ureg2 = max( min( ua(iu(i))-(dl+1):ua(iu(i))+(dl+1) ,by) ,1);
+0068     A_diff = length(ureg2)*length(wreg2) - length(ureg1)*length(wreg1);
+0069     
+0070     <span class="comment">%if we have inpaint_nans</span>
+0071     <span class="keyword">if</span> exist(<span class="string">'inpaint_nans'</span>,<span class="string">'file'</span>)
+0072       <span class="comment">% then we can simply set that image region to NAN</span>
+0073       img_out(wreg1,ureg1) = nan;
+0074     <span class="keyword">else</span>
+0075       <span class="comment">% Otherwise we just set the pixel intensities to the average</span>
+0076       <span class="comment">% of the intensities in the surrounding frame:</span>
+0077       img_out(wreg1,ureg1) = (sum(sum(img_out(wreg2,ureg2)))-<span class="keyword">...</span>
+0078                               sum(sum(img_out(wreg1,ureg1))))/A_diff;
+0079     <span class="keyword">end</span>
+0080     
+0081   <span class="keyword">end</span>
+0082   
+0083 <span class="keyword">end</span>
+0084 
+0085 <span class="keyword">try</span>
+0086   <span class="comment">% If we had INPAINT_NANS then we should just use that to obtain a</span>
+0087   <span class="comment">% smoother intensity mask:</span>
+0088   img_out = <a href="../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>(img_out,4);
+0089 <span class="keyword">catch</span>
+0090   <span class="comment">% no luck this time around...</span>
+0091 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

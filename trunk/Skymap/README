@@ -1,0 +1,125 @@
+Skymap - Medium accuracy star chart program.
+
+          Written by Björn Gustavsson
+	  Dept. of Communications Systems
+	  Lancaster University
+	  Lancaster
+	  United Kingdom
+          Email address: bjorn@irf.se
+
+skymap;
+[SkMp] = skymap;
+[SkMp] = skymap(pos,time);
+[SkMp] = skymap(pos,time,SkMp);
+
+==============================================================
+skymap.m
+==============================================================
+  skymap sets up a graphical user interface for 
+  the skymap and an input figure for selection of 
+  observation sites and date and time. The program should be called in
+  one of the three ways above. Here it is important that the output
+  argument is called 'SkMp', since the program stores its state
+  and all variables in this struct and looks for it when used. POS is
+  a 1 by 2 vector with latitude and longitude - positive east and
+  north. Time should be in the format [yyyy m d h m s]. If you supply
+  SkMp it should contain the correct fields.
+
+==============================================================
+date2juldate.m: [jd] = date2juldate(date)
+==============================================================
+  
+  Function date2juldate(date) 
+  calculates the julian date ( jd ) at 0h ut 
+  takes input date as an array with date(1) <-> the year ( 1995 - 95 ) 
+                                   date(2) <-> month 
+                                   date(3) <-> day nr in month 
+
+==============================================================
+nutation.m: [N] = nutation(date,utc)
+==============================================================
+
+  Function that do _not_ calculate the correction matrix for
+  nutation. It is left for other users to replace with a function that
+  calculates the appropriate correction matrix. As of now it does
+  nothing. Or rather give eye(3) - but as for rotation matrixes that is
+  about just the same.
+
+==============================================================
+refrcorr.m: [apze] = refrcorr(ze)
+==============================================================
+
+  Function REFRCORR - a simple atmospheric refraction 
+  correction function for zenith angles. 
+
+==============================================================
+starpos2.m: [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)
+==============================================================
+
+  STARPOS2 - function that calculates the azimuth, zenith 
+  and apparent zenith angles for a sky object. 
+  It makes some good corrections for precession. 
+  Formulas from spherical astronomy by Robin m. Green 
+  Cambridge Univ. Press. 1985 
+  
+  Input:  ra <-> right acsention of the object in hour 
+          decl <-> declination of the object in degrees 
+          date <-> date for the observation. Date = [year month day] 
+          utc <-> utc time for the observation. UTC = [hour minute second] 
+          lat <-> latitude of the observer in degres 
+          long <-> longitude of the observer 
+  Output: az <-> azimuth angle clockwise from north in radians 
+          ze <-> zenith angle in radians 
+          apze <-> apparent zenith angle in radians
+
+==============================================================
+utc2losidt.m: [localsidtime] = utc2losidt(date,utc,longitud)
+==============================================================
+  
+   Function UTC2LOSIDT calculates the local sidereal time. 
+   Takes date and utc and longitude as argument. 
+   date(1) <-> the year ( 95 <-> 1995 ) 
+   date(2) <-> month 
+   date(3) <-> day nr in month 
+   utc(1) <-> hh 
+   utc(2) <-> mm 
+   utc(3) <-> ss.ms 
+   longitude in degrees!
+
+==============================================================
+utc2sidt.m: [sidtime] = utc2sidt(date,utc)
+==============================================================
+   
+   Function UTC2SIDT calculates the sidereal time. 
+   Takes date and utc as argument. 
+   date(1) <-> the year ( 1995 - 95 ) 
+   date(2) <-> month 
+   date(3) <-> day nr in month 
+   utc(1) <-> hh 
+   utc(2) <-> mm 
+   utc(3) <-> ss.ms
+
+==============================================================
+the rest.m
+==============================================================
+
+  The remaining functions are more or less background functions
+  that are appropriately accessed through the GUI.
+
+==============================================================
+User tuning
+==============================================================
+
+To modify the list of observation sites and observation
+positions, all a user need to do is to modify/add/remove
+as wanted in the files Stations/station.name and
+Stations/stationpos.dat.
+
+To include higher order corrections in the positions the
+user can modify the functions refrcorr.m and nutation.m
+
+For copyright see COPYRIGHT.
+
+For simple use just type 'skymap' at the prompt.
+
+Enjoy!

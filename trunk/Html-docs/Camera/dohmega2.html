@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dohmega2</title>
+  <meta name="keywords" content="dohmega2">
+  <meta name="description" content="DOHMEGA2 - calculate the solid angle spanned by a pixel.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>dohmega2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>DOHMEGA2 - calculate the solid angle spanned by a pixel.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [dohm] = dohmega2( theta , optpar, omode, alfa ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> DOHMEGA2 - calculate the solid angle spanned by a pixel.
+          
+ Calling:
+ [dohm] = dohmega2( theta , f, omode, alfa )
+ 
+ INPUT:
+  THETA is the polar angle relative to the optical axis,
+  OPTPAR is the optical parameter,
+  OMODE  is the optical transfer function number and 
+  ALFA is an additional parameter. 
+ 
+          See also <a href="dohmega.html" class="code" title="function [dohm] = dohmega( a1,a2,a3,a4,a5 )">DOHMEGA</a> and  <a href="dohmega2.html" class="code" title="function [dohm] = dohmega2( theta , optpar, omode, alfa )">DOHMEGA2</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="dohmega.html" class="code" title="function [dohm] = dohmega( a1,a2,a3,a4,a5 )">dohmega</a>	DOHMEGA - calculate the solid angle spanned by a pixel.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [dohm] = dohmega2( theta , optpar, omode, alfa )</a>
+0002 <span class="comment">% DOHMEGA2 - calculate the solid angle spanned by a pixel.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% [dohm] = dohmega2( theta , f, omode, alfa )</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%  THETA is the polar angle relative to the optical axis,</span>
+0009 <span class="comment">%  OPTPAR is the optical parameter,</span>
+0010 <span class="comment">%  OMODE  is the optical transfer function number and</span>
+0011 <span class="comment">%  ALFA is an additional parameter.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%          See also DOHMEGA and  DOHMEGA2</span>
+0014 
+0015 
+0016 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0017 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0018 
+0019 error(nargchk(4,4,nargin))
+0020 fu = optpar(1);
+0021 fv = optpar(2);
+0022 alfa = optpar(8);
+0023 <span class="comment">% £££ f = optpar(1);</span>
+0024 <span class="comment">% £££ du = optpar(6);</span>
+0025 <span class="comment">% £££ dv = optpar(7);</span>
+0026 
+0027 <span class="keyword">if</span> ( omode == 1 )
+0028   
+0029   dohm = (cos(theta).^3/fu/fv);
+0030   
+0031 <span class="keyword">elseif</span> ( omode == 2 )
+0032   <span class="comment">% u^2+v^2 = f*sin(theta/2)</span>
+0033   <span class="comment">%dohm = (4/f/f)*ones(size(theta));</span>
+0034   <span class="comment">% replaced with u^2+v^2 = f*sin(theta*alfa)</span>
+0035   dohm = (1/alfa/fu/fv)*sin(theta)./cos(alfa*theta)./sin(alfa*theta);
+0036   dohm(theta(:)&lt;1e-13) = (1/fu/fv/alfa);
+0037   
+0038 <span class="keyword">elseif</span> ( omode == 3 )
+0039   
+0040   <span class="comment">%a = cos(theta);</span>
+0041   <span class="comment">%b = theta;</span>
+0042   
+0043   dohm = sin(theta)./(-1+alfa*tan(theta).^2-tan(theta).^2)./(-tan(theta)*alfa+ alfa*theta+tan(theta))/fu/fv;
+0044   dohm(theta(:) &lt; 1e-13) = (1/fu/fv);
+0045   
+0046 <span class="keyword">elseif</span> ( omode == 4 )
+0047   <span class="comment">% r = f*theta^alfa</span>
+0048   dohm = sin(theta)./theta.^(2*alfa-1)/alfa/fu/fv;
+0049   dohm(theta(:) &lt; 1e-13) = (1/fu/fv);
+0050 <span class="keyword">elseif</span> ( omode == 5 )
+0051   <span class="comment">% u^2+v^2 = f*tan( alpha*theta/2 )</span>
+0052   dohm = (1/alfa/fu/fv)*sin(theta).*cos(alfa*theta).^3./sin(alfa*theta);
+0053   dohm(theta(:)&lt;1e-13) = (1/fu/fv/alfa.^2);
+0054   
+0055 <span class="keyword">end</span>
+0056 dohm = abs(dohm);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

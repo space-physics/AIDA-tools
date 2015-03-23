@@ -1,0 +1,1373 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ImageViewer</title>
+  <meta name="keywords" content="ImageViewer">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>ImageViewer
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>	TYPICAL_PRE_PROC_OPS - Typical ALIS-fits preprocessing options</li><li><a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>	imgs_smart_caxis - alpha-percentile setting of color-axis,</li><li><a href="ImageViewer.html" class="code" title="">ImageViewer</a>	</li><li><a href="ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>	ISCHAR - return true if STR is a char-array</li><li><a href="merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ImageViewer.html" class="code" title="">ImageViewer</a>	</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function obj = ImageViewer(dirname)</a></li><li><a href="#_sub2" class="code">function resizeFcn(obj, varargin)</a></li><li><a href="#_sub3" class="code">function fileInfoBtnCallback(obj, varargin)</a></li><li><a href="#_sub4" class="code">function fileMetaBtnCallback(obj, varargin)</a></li><li><a href="#_sub5" class="code">function showDirectory(obj, dirname)</a></li><li><a href="#_sub6" class="code">function getPreviewImages(obj, varargin)</a></li><li><a href="#_sub7" class="code">function x = getPreviewImageData(obj, filename)</a></li><li><a href="#_sub8" class="code">function fileListBoxCallback(obj, hObj, varargin)</a></li><li><a href="#_sub9" class="code">function previewImageClickFcn(varargin)</a></li><li><a href="#_sub10" class="code">function chooseDirectoryCallback(obj, varargin)</a></li><li><a href="#_sub11" class="code">function upDirectoryCallback(obj, varargin)</a></li><li><a href="#_sub12" class="code">function resetView(obj, varargin)</a></li><li><a href="#_sub13" class="code">function loadImage(obj, filename)</a></li><li><a href="#_sub14" class="code">function clearImageAxes(obj)</a></li><li><a href="#_sub15" class="code">function winBtnDownFcn(obj, hObj, varargin)</a></li><li><a href="#_sub16" class="code">function winBtnMotionFcn(varargin)</a></li><li><a href="#_sub17" class="code">function zoomMotionFcn(hObj, varargin)</a></li><li><a href="#_sub18" class="code">function scrollWheelFcn(obj, varargin)</a></li><li><a href="#_sub19" class="code">function winBtnUpFcn(obj, hObj, varargin)</a></li><li><a href="#_sub20" class="code">function startTimer(obj)</a></li><li><a href="#_sub21" class="code">function stopTimerFcn(obj, varargin)</a></li><li><a href="#_sub22" class="code">function stopTimer(obj, varargin)</a></li><li><a href="#_sub23" class="code">function [x, info,o] = readImageFileFcn(obj, filename)</a></li><li><a href="#_sub24" class="code">function newdirname = fixLongDirName(dirname)</a></li><li><a href="#_sub25" class="code">function helpBtnCallback(varargin)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 classdef <a href="ImageViewer.html" class="code" title="">ImageViewer</a> &lt; handle
+0002 <span class="comment">%IMAGEVIEWER  Interactively pan and zoom images on the computer.</span>
+0003 <span class="comment">%   IMAGEVIEWER starts a GUI for opening image files and interactive</span>
+0004 <span class="comment">%   panning and zooming.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   IMAGEVIEWER(DIRNAME) starts the GUI with DIRNAME as the initial</span>
+0007 <span class="comment">%   directory.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   The GUI allows you to navigate through your computer and quickly view</span>
+0010 <span class="comment">%   image files. It also allows you to interactively explore your images by</span>
+0011 <span class="comment">%   panning (clicking and drag), zooming (right-click and drag), and</span>
+0012 <span class="comment">%   centering view (double-clicking).</span>
+0013 <span class="comment">%</span>
+0014 
+0015 <span class="comment">% Copyright 2006-2012 The MathWorks, Inc.</span>
+0016 
+0017 <span class="comment">% VERSIONS:</span>
+0018 <span class="comment">%   v1.0 - first version. (was pictureviewer.m)</span>
+0019 <span class="comment">%   v1.1 - convert to nested functions. (Nov 13, 2006)</span>
+0020 <span class="comment">%   v1.2 - bug fix to deal with different image types (Nov 15, 2006)</span>
+0021 <span class="comment">%   v1.3 - bug fix for centering, sorting of image files.</span>
+0022 <span class="comment">%          add resize window feature.</span>
+0023 <span class="comment">%          change FINDOBJ to FINDALL (Nov 16, 2006)</span>
+0024 <span class="comment">%   v1.4 - cosmetic changes to the GUI.</span>
+0025 <span class="comment">%          a better timer management. (Dec 2, 2006)</span>
+0026 <span class="comment">%   v1.5 - added scroll wheel zoom functionality. This only works with</span>
+0027 <span class="comment">%          R2007a or later. (Jan 10, 2007)</span>
+0028 <span class="comment">%   v1.51 - add white background under red zoom line (June 2007)</span>
+0029 <span class="comment">%   v2.0 - Implemented in MATLAB Classes. (Aug 2012)</span>
+0030 <span class="comment">% Jiro Doke</span>
+0031 <span class="comment">% April 2006</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%   v2.7 - Modified the image reading part to include AIDA-tools</span>
+0034 <span class="comment">%          standard ALIS fits-image reading-n-preprocessing and</span>
+0035 <span class="comment">%          automatic histogram clipping of intensities, also</span>
+0036 <span class="comment">%          changed image displaying function from image to imagesc</span>
+0037 <span class="comment">%          (20121115 B. Gustavsson)</span>
+0038 
+0039 properties (Hidden, Access=protected)
+0040 handles
+0041     <span class="keyword">end</span>
+0042     
+0043     properties (Constant, Hidden, Access=protected)
+0044     closedHandPointer = [
+0045         NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN
+0046         NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN
+0047         NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN
+0048         NaN,NaN,NaN,NaN,2  ,2  ,NaN,2  ,2  ,NaN,2  ,2  ,NaN,NaN,NaN,NaN
+0049         NaN,NaN,NaN,2  ,1  ,1  ,2  ,1  ,1  ,2  ,1  ,1  ,2  ,2  ,NaN,NaN
+0050         NaN,NaN,2  ,1  ,2  ,2  ,1  ,2  ,2  ,1  ,2  ,2  ,1  ,1  ,2  ,NaN
+0051         NaN,NaN,2  ,1  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,1  ,2  ,1  ,2
+0052         NaN,NaN,NaN,2  ,1  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,1  ,2
+0053         NaN,NaN,2  ,1  ,1  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,1  ,2
+0054         NaN,2  ,1  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,1  ,2
+0055         NaN,2  ,1  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,1  ,2
+0056         NaN,2  ,1  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,1  ,2  ,NaN
+0057         NaN,NaN,2  ,1  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,1  ,2  ,NaN
+0058         NaN,NaN,NaN,2  ,1  ,2  ,2  ,2  ,2  ,2  ,2  ,2  ,1  ,2  ,NaN,NaN
+0059         NaN,NaN,NaN,NaN,2  ,1  ,2  ,2  ,2  ,2  ,2  ,2  ,1  ,2  ,NaN,NaN
+0060         NaN,NaN,NaN,NaN,2  ,1  ,2  ,2  ,2  ,2  ,2  ,2  ,1  ,2  ,NaN,NaN
+0061                         ];
+0062     
+0063     zoomInOutPointer = [
+0064         NaN,NaN,NaN,2  ,2  ,NaN,NaN,NaN,NaN,NaN,NaN,2  ,2  ,NaN,NaN,NaN
+0065         NaN,NaN,2  ,1  ,1  ,2  ,NaN,NaN,NaN,NaN,2  ,1  ,1  ,2  ,NaN,NaN
+0066         NaN,2  ,1  ,1  ,1  ,1  ,2  ,NaN,NaN,2  ,2  ,1  ,1  ,2  ,2  ,NaN
+0067         2  ,1  ,1  ,1  ,1  ,1  ,1  ,2  ,2  ,1  ,1  ,1  ,1  ,1  ,1  ,2
+0068         2  ,1  ,2  ,1  ,1  ,2  ,1  ,2  ,2  ,1  ,1  ,1  ,1  ,1  ,1  ,2
+0069         NaN,2  ,2  ,1  ,1  ,2  ,2  ,NaN,NaN,2  ,2  ,1  ,1  ,2  ,2  ,NaN
+0070         NaN,NaN,2  ,1  ,1  ,2  ,NaN,NaN,NaN,NaN,2  ,1  ,1  ,2  ,NaN,NaN
+0071         NaN,NaN,NaN,2  ,2  ,NaN,NaN,NaN,NaN,NaN,NaN,2  ,2  ,NaN,NaN,NaN
+0072         NaN,NaN,NaN,2  ,2  ,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN
+0073         NaN,NaN,2  ,1  ,1  ,2  ,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN
+0074         NaN,2  ,2  ,1  ,1  ,2  ,2  ,NaN,NaN,2  ,2  ,2  ,2  ,2  ,2  ,NaN
+0075         2  ,1  ,2  ,1  ,1  ,2  ,1  ,2  ,2  ,1  ,1  ,1  ,1  ,1  ,1  ,2
+0076         2  ,1  ,1  ,1  ,1  ,1  ,1  ,2  ,2  ,1  ,1  ,1  ,1  ,1  ,1  ,2
+0077         NaN,2  ,1  ,1  ,1  ,1  ,2  ,NaN,NaN,2  ,2  ,2  ,2  ,2  ,2  ,NaN
+0078         NaN,NaN,2  ,1  ,1  ,2  ,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN
+0079         NaN,NaN,NaN,2  ,2  ,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN
+0080                        ];
+0081         
+0082     <span class="keyword">end</span>
+0083     
+0084     methods
+0085 <a name="_sub0" href="#_subfunctions" class="code">function obj = ImageViewer(dirname)</a>
+0086 
+0087 verNumber = <span class="string">'2.0'</span>;
+0088 
+0089 <span class="keyword">if</span> nargin == 0
+0090   dirname = pwd;
+0091 <span class="keyword">else</span>
+0092   <span class="keyword">if</span> ~<a href="ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(dirname) || ~isdir(dirname)
+0093     error(<span class="string">'Invalid input argument.\n  Syntax: %s(DIRNAME)'</span>, upper(mfilename));
+0094   <span class="keyword">end</span>
+0095 <span class="keyword">end</span>
+0096 
+0097 delete(findall(0, <span class="string">'type'</span>, <span class="string">'figure'</span>, <span class="string">'tag'</span>, <span class="string">'ImageViewer'</span>));
+0098 
+0099 bgcolor1 = [.8 .8 .8];
+0100 txtcolor = [.3 .3 .3];
+0101 
+0102 figH = figure(<span class="keyword">...</span>
+0103     <span class="string">'units'</span>                         , <span class="string">'normalized'</span>, <span class="keyword">...</span>
+0104     <span class="string">'busyaction'</span>                    , <span class="string">'queue'</span>, <span class="keyword">...</span>
+0105     <span class="string">'color'</span>                         , bgcolor1, <span class="keyword">...</span>
+0106     <span class="string">'deletefcn'</span>                     , @obj.stopTimerFcn, <span class="keyword">...</span>
+0107     <span class="string">'doublebuffer'</span>                  , <span class="string">'on'</span>, <span class="keyword">...</span>
+0108     <span class="string">'handlevisibility'</span>              , <span class="string">'callback'</span>, <span class="keyword">...</span>
+0109     <span class="string">'interruptible'</span>                 , <span class="string">'on'</span>, <span class="keyword">...</span>
+0110     <span class="string">'menubar'</span>                       , <span class="string">'none'</span>, <span class="keyword">...</span>
+0111     <span class="string">'name'</span>                          , upper(mfilename), <span class="keyword">...</span>
+0112     <span class="string">'numbertitle'</span>                   , <span class="string">'off'</span>, <span class="keyword">...</span>
+0113     <span class="string">'outerposition'</span>                 , [.1 .1 .8 .8], <span class="keyword">...</span>
+0114     <span class="string">'resize'</span>                        , <span class="string">'on'</span>, <span class="keyword">...</span>
+0115     <span class="string">'resizefcn'</span>                     , @obj.resizeFcn, <span class="keyword">...</span>
+0116     <span class="string">'tag'</span>                           , <span class="string">'ImageViewer'</span>, <span class="keyword">...</span>
+0117     <span class="string">'toolbar'</span>                       , <span class="string">'none'</span>, <span class="keyword">...</span>
+0118     <span class="string">'visible'</span>                       , <span class="string">'off'</span>, <span class="keyword">...</span>
+0119     <span class="string">'defaultaxesunits'</span>              , <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0120     <span class="string">'defaulttextfontunits'</span>          , <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0121     <span class="string">'defaulttextfontname'</span>           , <span class="string">'Verdana'</span>, <span class="keyword">...</span>
+0122     <span class="string">'defaulttextfontsize'</span>           , 12, <span class="keyword">...</span>
+0123     <span class="string">'defaultuicontrolunits'</span>         , <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0124     <span class="string">'defaultuicontrolfontunits'</span>     , <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0125     <span class="string">'defaultuicontrolfontsize'</span>      , 10, <span class="keyword">...</span>
+0126     <span class="string">'defaultuicontrolfontname'</span>      , <span class="string">'Verdana'</span>, <span class="keyword">...</span>
+0127     <span class="string">'colormap'</span>                      , bone(256),<span class="keyword">...</span>
+0128     <span class="string">'defaultuicontrolinterruptible'</span> , <span class="string">'off'</span>);
+0129 
+0130 <span class="keyword">try</span>
+0131   <span class="keyword">if</span> ~verLessThan(<span class="string">'matlab'</span>, <span class="string">'7.4'</span>)
+0132     set(figH, <span class="string">'windowscrollwheelfcn'</span>, @obj.scrollWheelFcn);
+0133   <span class="keyword">end</span>
+0134 <span class="keyword">catch</span> <span class="comment">%#ok&lt;CTCH&gt;</span>
+0135       <span class="comment">% verLessThan was introduced in v7.4</span>
+0136       <span class="comment">% if there is an error, that means it is less than 7.4</span>
+0137 <span class="keyword">end</span>
+0138             
+0139 uph(1) = uipanel(<span class="keyword">...</span>
+0140     <span class="string">'units'</span>                     , <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0141     <span class="string">'backgroundcolor'</span>           , bgcolor1, <span class="keyword">...</span>
+0142     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0143     <span class="string">'bordertype'</span>                , <span class="string">'beveledin'</span>, <span class="keyword">...</span>
+0144     <span class="string">'tag'</span>                       , <span class="string">'versionPanel'</span>);
+0145 uicontrol(<span class="keyword">...</span>
+0146     <span class="string">'style'</span>                     , <span class="string">'text'</span>, <span class="keyword">...</span>
+0147     <span class="string">'foregroundcolor'</span>           , txtcolor, <span class="keyword">...</span>
+0148     <span class="string">'backgroundcolor'</span>           , bgcolor1, <span class="keyword">...</span>
+0149     <span class="string">'horizontalalignment'</span>       , <span class="string">'center'</span>, <span class="keyword">...</span>
+0150     <span class="string">'fontweight'</span>                , <span class="string">'bold'</span>, <span class="keyword">...</span>
+0151     <span class="string">'string'</span>                    , sprintf(<span class="string">'Ver %s'</span>, verNumber), <span class="keyword">...</span>
+0152     <span class="string">'parent'</span>                    , uph(1), <span class="keyword">...</span>
+0153     <span class="string">'tag'</span>                       , <span class="string">'versionText'</span>);
+0154 uph(2) = uipanel(<span class="keyword">...</span>
+0155     <span class="string">'units'</span>                     , <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0156     <span class="string">'backgroundcolor'</span>           , bgcolor1, <span class="keyword">...</span>
+0157     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0158     <span class="string">'bordertype'</span>                , <span class="string">'beveledin'</span>, <span class="keyword">...</span>
+0159     <span class="string">'tag'</span>                       , <span class="string">'statusPanel'</span>);
+0160 uicontrol(<span class="keyword">...</span>
+0161     <span class="string">'style'</span>                     , <span class="string">'text'</span>, <span class="keyword">...</span>
+0162     <span class="string">'foregroundcolor'</span>           , txtcolor, <span class="keyword">...</span>
+0163     <span class="string">'backgroundcolor'</span>           , bgcolor1, <span class="keyword">...</span>
+0164     <span class="string">'horizontalalignment'</span>       , <span class="string">'right'</span>, <span class="keyword">...</span>
+0165     <span class="string">'fontweight'</span>                , <span class="string">'bold'</span>, <span class="keyword">...</span>
+0166     <span class="string">'string'</span>                    , <span class="string">''</span>, <span class="keyword">...</span>
+0167     <span class="string">'parent'</span>                    , uph(2), <span class="keyword">...</span>
+0168     <span class="string">'tag'</span>                       , <span class="string">'statusText'</span>);
+0169 uph(3) = uipanel(<span class="keyword">...</span>
+0170     <span class="string">'units'</span>                     , <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0171     <span class="string">'bordertype'</span>                , <span class="string">'etchedout'</span>, <span class="keyword">...</span>
+0172     <span class="string">'fontname'</span>                  , <span class="string">'Verdana'</span>, <span class="keyword">...</span>
+0173     <span class="string">'fontweight'</span>                , <span class="string">'bold'</span>, <span class="keyword">...</span>
+0174     <span class="string">'title'</span>                     , <span class="string">'View'</span>, <span class="keyword">...</span>
+0175     <span class="string">'titleposition'</span>             , <span class="string">'centertop'</span>, <span class="keyword">...</span>
+0176     <span class="string">'backgroundcolor'</span>           , bgcolor1, <span class="keyword">...</span>
+0177     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0178     <span class="string">'tag'</span>                       , <span class="string">'frame1'</span>);
+0179 uicontrol(<span class="keyword">...</span>
+0180     <span class="string">'style'</span>                     , <span class="string">'text'</span>, <span class="keyword">...</span>
+0181     <span class="string">'string'</span>                    , <span class="string">''</span>, <span class="keyword">...</span>
+0182     <span class="string">'horizontalalignment'</span>       , <span class="string">'center'</span>, <span class="keyword">...</span>
+0183     <span class="string">'fontweight'</span>                , <span class="string">'bold'</span>, <span class="keyword">...</span>
+0184     <span class="string">'fontsize'</span>                  , 12, <span class="keyword">...</span>
+0185     <span class="string">'backgroundcolor'</span>           , bgcolor1, <span class="keyword">...</span>
+0186     <span class="string">'foregroundcolor'</span>           , [.2, .2, .2], <span class="keyword">...</span>
+0187     <span class="string">'parent'</span>                    , uph(3), <span class="keyword">...</span>
+0188     <span class="string">'tag'</span>                       , <span class="string">'ZoomCaptionText'</span>);
+0189 uicontrol(<span class="keyword">...</span>
+0190     <span class="string">'style'</span>                     , <span class="string">'pushbutton'</span>, <span class="keyword">...</span>
+0191     <span class="string">'string'</span>                    , <span class="string">'Full'</span>, <span class="keyword">...</span>
+0192     <span class="string">'fontweight'</span>                , <span class="string">'bold'</span>, <span class="keyword">...</span>
+0193     <span class="string">'callback'</span>                  , @obj.resetView, <span class="keyword">...</span>
+0194     <span class="string">'enable'</span>                    , <span class="string">'off'</span>, <span class="keyword">...</span>
+0195     <span class="string">'tooltipstring'</span>             , <span class="string">'View full image'</span>, <span class="keyword">...</span>
+0196     <span class="string">'parent'</span>                    , uph(3), <span class="keyword">...</span>
+0197     <span class="string">'tag'</span>                       , <span class="string">'ResetViewBtn1'</span>);
+0198 uicontrol(<span class="keyword">...</span>
+0199     <span class="string">'style'</span>                     , <span class="string">'pushbutton'</span>, <span class="keyword">...</span>
+0200     <span class="string">'string'</span>                    , <span class="string">'100%'</span>, <span class="keyword">...</span>
+0201     <span class="string">'fontweight'</span>                , <span class="string">'bold'</span>, <span class="keyword">...</span>
+0202     <span class="string">'callback'</span>                  , @obj.resetView, <span class="keyword">...</span>
+0203     <span class="string">'enable'</span>                    , <span class="string">'off'</span>, <span class="keyword">...</span>
+0204     <span class="string">'tooltipstring'</span>             , <span class="string">'View true size'</span>, <span class="keyword">...</span>
+0205     <span class="string">'parent'</span>                    , uph(3), <span class="keyword">...</span>
+0206     <span class="string">'tag'</span>                       , <span class="string">'ResetViewBtn2'</span>);
+0207 uicontrol(<span class="keyword">...</span>
+0208     <span class="string">'style'</span>                     , <span class="string">'pushbutton'</span>, <span class="keyword">...</span>
+0209     <span class="string">'string'</span>                    , <span class="string">'Help'</span>, <span class="keyword">...</span>
+0210     <span class="string">'fontweight'</span>                , <span class="string">'bold'</span>, <span class="keyword">...</span>
+0211     <span class="string">'callback'</span>                  , @<a href="#_sub25" class="code" title="subfunction helpBtnCallback(varargin)">helpBtnCallback</a>, <span class="keyword">...</span>
+0212     <span class="string">'enable'</span>                    , <span class="string">'on'</span>, <span class="keyword">...</span>
+0213     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0214     <span class="string">'tag'</span>                       , <span class="string">'HelpBtn'</span>);
+0215 uicontrol(<span class="keyword">...</span>
+0216     <span class="string">'style'</span>                     , <span class="string">'togglebutton'</span>, <span class="keyword">...</span>
+0217     <span class="string">'string'</span>                    , <span class="string">'File Info'</span>, <span class="keyword">...</span>
+0218     <span class="string">'fontweight'</span>                , <span class="string">'bold'</span>, <span class="keyword">...</span>
+0219     <span class="string">'callback'</span>                  , @obj.fileInfoBtnCallback, <span class="keyword">...</span>
+0220     <span class="string">'enable'</span>                    , <span class="string">'off'</span>, <span class="keyword">...</span>
+0221     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0222     <span class="string">'tag'</span>                       , <span class="string">'FileInfoBtn'</span>);
+0223 uicontrol(<span class="keyword">...</span>
+0224     <span class="string">'style'</span>                     , <span class="string">'togglebutton'</span>, <span class="keyword">...</span>
+0225     <span class="string">'string'</span>                    , <span class="string">'File MetaData'</span>, <span class="keyword">...</span>
+0226     <span class="string">'fontweight'</span>                , <span class="string">'bold'</span>, <span class="keyword">...</span>
+0227     <span class="string">'callback'</span>                  , @obj.fileMetaBtnCallback, <span class="keyword">...</span>
+0228     <span class="string">'enable'</span>                    , <span class="string">'off'</span>, <span class="keyword">...</span>
+0229     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0230     <span class="string">'tag'</span>                       , <span class="string">'FileMetaBtn'</span>);
+0231 uph(4) = uipanel(<span class="keyword">...</span>
+0232     <span class="string">'units'</span>                     , <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0233     <span class="string">'backgroundcolor'</span>           , bgcolor1, <span class="keyword">...</span>
+0234     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0235     <span class="string">'bordertype'</span>                , <span class="string">'beveledin'</span>, <span class="keyword">...</span>
+0236     <span class="string">'tag'</span>                       , <span class="string">'CurrentDirectoryPanel'</span>);
+0237 uicontrol(<span class="keyword">...</span>
+0238     <span class="string">'style'</span>                     , <span class="string">'text'</span>, <span class="keyword">...</span>
+0239     <span class="string">'backgroundcolor'</span>           , bgcolor1, <span class="keyword">...</span>
+0240     <span class="string">'horizontalalignment'</span>       , <span class="string">'left'</span>, <span class="keyword">...</span>
+0241     <span class="string">'parent'</span>                    , uph(4), <span class="keyword">...</span>
+0242     <span class="string">'tag'</span>                       , <span class="string">'CurrentDirectoryEdit'</span>);
+0243 uicontrol(<span class="keyword">...</span>
+0244     <span class="string">'style'</span>                     , <span class="string">'pushbutton'</span>, <span class="keyword">...</span>
+0245     <span class="string">'string'</span>                    , <span class="string">'...'</span>, <span class="keyword">...</span>
+0246     <span class="string">'backgroundcolor'</span>           , bgcolor1, <span class="keyword">...</span>
+0247     <span class="string">'callback'</span>                  , @obj.chooseDirectoryCallback, <span class="keyword">...</span>
+0248     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0249     <span class="string">'tag'</span>                       , <span class="string">'ChooseDirectoryBtn'</span>);
+0250 
+0251 <span class="comment">% Up Directory Icon</span>
+0252 map = [0 0 0;bgcolor1;1 1 0;1 1 1];
+0253 upDirIcon = uint8([
+0254     1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+0255     1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+0256     1 1 1 0 0 0 0 0 1 1 1 1 1 1 1 1
+0257     1 1 0 3 2 3 2 3 0 1 1 1 1 1 1 1
+0258     1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+0259     1 0 2 3 2 3 2 3 2 3 2 3 2 3 2 0
+0260     1 0 3 2 3 2 0 2 3 2 3 2 3 2 3 0
+0261     1 0 2 3 2 0 0 0 2 3 2 3 2 3 2 0
+0262     1 0 3 2 0 0 0 0 0 2 3 2 3 2 3 0
+0263     1 0 2 3 2 3 0 3 2 3 2 3 2 3 2 0
+0264     1 0 3 2 3 2 0 2 3 2 3 2 3 2 3 0
+0265     1 0 2 3 2 3 0 0 0 0 0 3 2 3 2 0
+0266     1 0 3 2 3 2 3 2 3 2 3 2 3 2 3 0
+0267     1 0 2 3 2 3 2 3 2 3 2 3 2 3 2 0
+0268     1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0269     1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+0270                   ]);
+0271 rgbIcon = ind2rgb(upDirIcon, map);
+0272 
+0273 uicontrol(<span class="keyword">...</span>
+0274     <span class="string">'style'</span>                     , <span class="string">'pushbutton'</span>, <span class="keyword">...</span>
+0275     <span class="string">'cdata'</span>                     , rgbIcon, <span class="keyword">...</span>
+0276     <span class="string">'backgroundcolor'</span>           , bgcolor1, <span class="keyword">...</span>
+0277     <span class="string">'callback'</span>                  , @obj.upDirectoryCallback, <span class="keyword">...</span>
+0278     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0279     <span class="string">'tag'</span>                       , <span class="string">'UpDirectoryBtn'</span>);
+0280 uicontrol(<span class="keyword">...</span>
+0281     <span class="string">'style'</span>                     , <span class="string">'listbox'</span>, <span class="keyword">...</span>
+0282     <span class="string">'backgroundcolor'</span>           , <span class="string">'white'</span>, <span class="keyword">...</span>
+0283     <span class="string">'callback'</span>                  , @obj.fileListBoxCallback, <span class="keyword">...</span>
+0284     <span class="string">'fontname'</span>                  , <span class="string">'FixedWidth'</span>, <span class="keyword">...</span>
+0285     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0286     <span class="string">'tag'</span>                       , <span class="string">'FileListBox'</span>);
+0287 
+0288 uph(5) = uipanel(<span class="keyword">...</span>
+0289     <span class="string">'units'</span>                     , <span class="string">'pixels'</span>, <span class="keyword">...</span>
+0290     <span class="string">'bordertype'</span>                , <span class="string">'etchedout'</span>, <span class="keyword">...</span>
+0291     <span class="string">'backgroundcolor'</span>           , bgcolor1, <span class="keyword">...</span>
+0292     <span class="string">'fontname'</span>                  , <span class="string">'Verdana'</span>, <span class="keyword">...</span>
+0293     <span class="string">'fontsize'</span>                  , 10, <span class="keyword">...</span>
+0294     <span class="string">'fontweight'</span>                , <span class="string">'bold'</span>, <span class="keyword">...</span>
+0295     <span class="string">'title'</span>                     , <span class="string">'Preview'</span>, <span class="keyword">...</span>
+0296     <span class="string">'titleposition'</span>             , <span class="string">'centertop'</span>, <span class="keyword">...</span>
+0297     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0298     <span class="string">'tag'</span>                       , <span class="string">'PreviewImagePanel'</span>);
+0299 
+0300 axes(<span class="keyword">...</span>
+0301     <span class="string">'handlevisibility'</span>          , <span class="string">'callback'</span>, <span class="keyword">...</span>
+0302     <span class="string">'parent'</span>                    , uph(5), <span class="keyword">...</span>
+0303     <span class="string">'visible'</span>                   , <span class="string">'off'</span>, <span class="keyword">...</span>
+0304     <span class="string">'tag'</span>                       , <span class="string">'PreviewImageAxes'</span>);
+0305 
+0306 axes(<span class="keyword">...</span>
+0307     <span class="string">'box'</span>                       , <span class="string">'on'</span>, <span class="keyword">...</span>
+0308     <span class="string">'xtick'</span>                     , [], <span class="keyword">...</span>
+0309     <span class="string">'ytick'</span>                     , [], <span class="keyword">...</span>
+0310     <span class="string">'handlevisibility'</span>          , <span class="string">'callback'</span>, <span class="keyword">...</span>
+0311     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0312     <span class="string">'tag'</span>                       , <span class="string">'ImageAxes'</span>);
+0313 
+0314 <span class="comment">% for drawing the zoom line</span>
+0315 axH = axes(<span class="keyword">...</span>
+0316     <span class="string">'units'</span>                     , <span class="string">'normalized'</span>, <span class="keyword">...</span>
+0317     <span class="string">'position'</span>                  , [0 0 1 1], <span class="keyword">...</span>
+0318     <span class="string">'box'</span>                       , <span class="string">'on'</span>, <span class="keyword">...</span>
+0319     <span class="string">'hittest'</span>                   , <span class="string">'off'</span>, <span class="keyword">...</span>
+0320     <span class="string">'xlim'</span>                      , [0 1], <span class="keyword">...</span>
+0321     <span class="string">'xtick'</span>                     , [], <span class="keyword">...</span>
+0322     <span class="string">'ylim'</span>                      , [0 1], <span class="keyword">...</span>
+0323     <span class="string">'ytick'</span>                     , [], <span class="keyword">...</span>
+0324     <span class="string">'handlevisibility'</span>          , <span class="string">'callback'</span>, <span class="keyword">...</span>
+0325     <span class="string">'visible'</span>                   , <span class="string">'off'</span>, <span class="keyword">...</span>
+0326     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0327     <span class="string">'tag'</span>                       , <span class="string">'InvisibleAxes'</span>);
+0328 
+0329 line(NaN, NaN, <span class="keyword">...</span>
+0330      <span class="string">'linestyle'</span>                 , <span class="string">'-'</span>, <span class="keyword">...</span>
+0331      <span class="string">'linewidth'</span>                 , 3, <span class="keyword">...</span>
+0332      <span class="string">'color'</span>                     , <span class="string">'w'</span>, <span class="keyword">...</span>
+0333      <span class="string">'parent'</span>                    , axH, <span class="keyword">...</span>
+0334      <span class="string">'tag'</span>                       , <span class="string">'ZoomLine'</span>);
+0335 line(NaN, NaN, <span class="keyword">...</span>
+0336      <span class="string">'linestyle'</span>                 , <span class="string">'--'</span>, <span class="keyword">...</span>
+0337      <span class="string">'linewidth'</span>                 , 2, <span class="keyword">...</span>
+0338      <span class="string">'color'</span>                     , <span class="string">'r'</span>, <span class="keyword">...</span>
+0339      <span class="string">'parent'</span>                    , axH, <span class="keyword">...</span>
+0340      <span class="string">'tag'</span>                       , <span class="string">'ZoomLine'</span>);
+0341 
+0342 uicontrol(<span class="keyword">...</span>
+0343     <span class="string">'style'</span>                     , <span class="string">'listbox'</span>, <span class="keyword">...</span>
+0344     <span class="string">'backgroundcolor'</span>           , [.75, .75, 1], <span class="keyword">...</span>
+0345     <span class="string">'fontname'</span>                  , <span class="string">'FixedWidth'</span>, <span class="keyword">...</span>
+0346     <span class="string">'fontsize'</span>                  , 14, <span class="keyword">...</span>
+0347     <span class="string">'visible'</span>                   , <span class="string">'off'</span>, <span class="keyword">...</span>
+0348     <span class="string">'enable'</span>                    , <span class="string">'inactive'</span>, <span class="keyword">...</span>
+0349     <span class="string">'interruptible'</span>             , <span class="string">'off'</span>, <span class="keyword">...</span>
+0350     <span class="string">'busyaction'</span>                , <span class="string">'queue'</span>, <span class="keyword">...</span>
+0351     <span class="string">'horizontalalignment'</span>       , <span class="string">'left'</span>, <span class="keyword">...</span>
+0352     <span class="string">'parent'</span>                    , figH, <span class="keyword">...</span>
+0353     <span class="string">'tag'</span>                       , <span class="string">'MessageTextBox'</span>);
+0354 
+0355 obj.handles             = guihandles(figH);
+0356 obj.handles.figPos      = [];
+0357 obj.handles.axPos       = [];
+0358 obj.handles.lastDir     = dirname;
+0359 obj.handles.ImX         = [];
+0360 obj.handles.tm          = timer(<span class="keyword">...</span>
+0361     <span class="string">'name'</span>            , <span class="string">'image preview timer'</span>, <span class="keyword">...</span>
+0362     <span class="string">'executionmode'</span>   , <span class="string">'fixedspacing'</span>, <span class="keyword">...</span>
+0363     <span class="string">'objectvisibility'</span>, <span class="string">'off'</span>, <span class="keyword">...</span>
+0364     <span class="string">'taskstoexecute'</span>  , inf, <span class="keyword">...</span>
+0365     <span class="string">'period'</span>          , 0.001, <span class="keyword">...</span>
+0366     <span class="string">'startdelay'</span>      , 3, <span class="keyword">...</span>
+0367     <span class="string">'timerfcn'</span>        , @obj.getPreviewImages);
+0368 
+0369 <a href="#_sub2" class="code" title="subfunction resizeFcn(obj, varargin)">resizeFcn</a>(obj);
+0370 
+0371 <span class="comment">% Show initial directory</span>
+0372 <a href="#_sub5" class="code" title="subfunction showDirectory(obj, dirname)">showDirectory</a>(obj);
+0373 
+0374 set(figH, <span class="string">'visible'</span>, <span class="string">'on'</span>);
+0375 
+0376         <span class="keyword">end</span>
+0377 <span class="comment">%--------------------------------------------------------------------------</span>
+0378 <span class="comment">% resizeFcn</span>
+0379 <span class="comment">%   This resizes the figure window appropriately</span>
+0380 <span class="comment">%--------------------------------------------------------------------------</span>
+0381 <a name="_sub1" href="#_subfunctions" class="code">function resizeFcn(obj, varargin)</a>
+0382 
+0383 set(obj.handles.ImageViewer, <span class="string">'units'</span>, <span class="string">'pixels'</span>);
+0384 figPos = get(obj.handles.ImageViewer, <span class="string">'position'</span>);
+0385 
+0386 <span class="comment">% figure can't be too small or off the screen</span>
+0387 <span class="keyword">if</span> figPos(3) &lt; 750 || figPos(4) &lt; 500
+0388   figPos(3) = max([750 figPos(3)]);
+0389   figPos(4) = max([500 figPos(4)]);
+0390   screenSize = get(0, <span class="string">'screensize'</span>);
+0391   <span class="keyword">if</span> figPos(1)+figPos(3) &gt; screenSize(3)
+0392     figPos(1) = screenSize(3) - figPos(3) - 50;
+0393   <span class="keyword">end</span>
+0394   <span class="keyword">if</span> figPos(2)+figPos(4) &gt; screenSize(4)
+0395     figPos(2) = screenSize(4) - figPos(4) - 50;
+0396   <span class="keyword">end</span>
+0397   
+0398   set(obj.handles.ImageViewer, <span class="string">'position'</span>, figPos);
+0399   
+0400 <span class="keyword">end</span>
+0401 
+0402 set(obj.handles.versionPanel         , <span class="string">'position'</span>, [1, 1, 100, 25]);
+0403 set(obj.handles.versionText          , <span class="string">'position'</span>, [2, 2, 96, 20]);
+0404 set(obj.handles.statusPanel          , <span class="string">'position'</span>, [102, 1, figPos(3)-102, 25]);
+0405 set(obj.handles.statusText           , <span class="string">'position'</span>, [2, 2, figPos(3)-107, 20]);
+0406 set(obj.handles.frame1               , <span class="string">'position'</span>, [figPos(3)-115, figPos(4)-55, 110, 53]);
+0407 set(obj.handles.ZoomCaptionText      , <span class="string">'position'</span>, [5, 22, 100, 17]);
+0408 set(obj.handles.ResetViewBtn1        , <span class="string">'position'</span>, [5, 2, 47, 20]);
+0409 set(obj.handles.ResetViewBtn2        , <span class="string">'position'</span>, [55, 2, 47, 20]);
+0410 set(obj.handles.HelpBtn              , <span class="string">'position'</span>, [figPos(3)-220, figPos(4)-28, 100, 20]);
+0411 set(obj.handles.FileInfoBtn          , <span class="string">'position'</span>, [figPos(3)-220, figPos(4)-50, 100, 20]);
+0412 set(obj.handles.FileMetaBtn          , <span class="string">'position'</span>, [figPos(3)-340, figPos(4)-50, 100, 20]);
+0413 set(obj.handles.CurrentDirectoryPanel, <span class="string">'position'</span>, [20, figPos(4)-30, 215, 20]);
+0414 set(obj.handles.CurrentDirectoryEdit , <span class="string">'position'</span>, [1, 1, 213, 18]);
+0415 set(obj.handles.ChooseDirectoryBtn   , <span class="string">'position'</span>, [237, figPos(4)-30, 20, 20]);
+0416 set(obj.handles.UpDirectoryBtn       , <span class="string">'position'</span>, [259, figPos(4)-30, 20, 20]);
+0417 set(obj.handles.FileListBox          , <span class="string">'position'</span>, [20, 270, 260, figPos(4)-310]);
+0418 set(obj.handles.PreviewImagePanel    , <span class="string">'position'</span>, [20, 40, 260, 220]);
+0419 set(obj.handles.PreviewImageAxes     , <span class="string">'position'</span>, [5, 5, 245, 190]);
+0420 set(obj.handles.ImageAxes            , <span class="string">'position'</span>, [300, 40, figPos(3)-310, figPos(4)-120]);
+0421 axPos = get(obj.handles.ImageAxes    , <span class="string">'position'</span>);
+0422 
+0423 textBoxDim  = [400, 200];
+0424 rightMargin = figPos(3)-(axPos(1)+axPos(3));
+0425 topMargin   = figPos(4)-(axPos(2)+axPos(4));
+0426 set(obj.handles.MessageTextBox      , <span class="string">'position'</span>, [figPos(3)-rightMargin-textBoxDim(1), <span class="keyword">...</span>
+0427                     figPos(4)-topMargin-textBoxDim(2), <span class="keyword">...</span>
+0428                     textBoxDim]);
+0429 obj.handles.figPos = figPos;
+0430 obj.handles.axPos  = axPos;
+0431 
+0432 titleStr = get(get(obj.handles.ImageAxes, <span class="string">'title'</span>), <span class="string">'string'</span>);
+0433 <span class="keyword">if</span> ~isempty(titleStr)
+0434   <span class="comment">% resize image as well</span>
+0435   <a href="#_sub13" class="code" title="subfunction loadImage(obj, filename)">loadImage</a>(obj, titleStr);
+0436 <span class="keyword">end</span>
+0437 
+0438         <span class="keyword">end</span>
+0439         
+0440         
+0441 <span class="comment">%--------------------------------------------------------------------------</span>
+0442 <span class="comment">% fileInfoBtnCallback</span>
+0443 <span class="comment">%   This displays the file info of the image that's displayed</span>
+0444 <span class="comment">%--------------------------------------------------------------------------</span>
+0445 <a name="_sub2" href="#_subfunctions" class="code">function fileInfoBtnCallback(obj, varargin)</a>
+0446 
+0447 hObj = varargin{1};
+0448 
+0449 <span class="keyword">if</span> get(hObj, <span class="string">'value'</span>)
+0450   
+0451   <span class="comment">% First 9 fields of IMFINFO are always the same</span>
+0452   fnames      = fieldnames(obj.handles.iminfo); fnames = fnames(1:9);
+0453   vals        = struct2cell(obj.handles.iminfo); vals = vals(1:9);
+0454   
+0455   <span class="comment">% Only show file name (not full path)</span>
+0456   [p, n, e]   = fileparts(vals{1}); <span class="comment">%#ok&lt;ASGLU&gt;</span>
+0457   vals{1}     = [n e];
+0458   sID         = cellfun(<span class="string">'isclass'</span>, vals, <span class="string">'char'</span>);
+0459   dID         = cellfun(<span class="string">'isclass'</span>, vals, <span class="string">'double'</span>);
+0460   fmt         = cell(2, 9);
+0461   fmt(1, :)   = repmat({<span class="string">'%15s: '</span>}, 1, 9);
+0462   fmt(2, sID) = repmat({<span class="string">'%s|'</span>}, 1, length(find(sID)));
+0463   fmt(2, dID) = repmat({<span class="string">'%d|'</span>}, 1, length(find(dID)));
+0464   tmp         = [fnames(:),vals(:)]';
+0465   str         = sprintf([fmt{:}], tmp{:});
+0466   set(obj.handles.MessageTextBox, <span class="string">'string'</span>, str, <span class="string">'visible'</span>, <span class="string">'on'</span>);
+0467   
+0468 <span class="keyword">else</span>
+0469   set(obj.handles.MessageTextBox, <span class="string">'visible'</span>, <span class="string">'off'</span>);
+0470   
+0471 <span class="keyword">end</span>
+0472 
+0473         <span class="keyword">end</span>
+0474 
+0475 <span class="comment">%--------------------------------------------------------------------------</span>
+0476 <span class="comment">% fileMetaBtnCallback</span>
+0477 <span class="comment">%   This displays the file info of the image that's displayed</span>
+0478 <span class="comment">%--------------------------------------------------------------------------</span>
+0479 <a name="_sub3" href="#_subfunctions" class="code">function fileMetaBtnCallback(obj, varargin)</a>
+0480 
+0481 
+0482 hObj = varargin{1};
+0483 
+0484 <span class="keyword">if</span> ~isempty(obj.handles.MetaData)
+0485   
+0486   <span class="keyword">if</span> get(hObj, <span class="string">'value'</span>)
+0487     
+0488     o = obj.handles.MetaData;
+0489     <span class="comment">%keyboard</span>
+0490     str1  = sprintf(<span class="string">'%18s %d-%02d-%02d %02d:%02d:%02d|'</span>,<span class="string">'time:'</span>,o.time);
+0491     str2  = sprintf(<span class="string">'%18s %f, %f|'</span>,<span class="string">'Obs location:'</span>,o.longlat);
+0492     str3  = sprintf(<span class="string">'%18s [%4.2f, %4.2f, %4.2f]|'</span>,<span class="string">'Obs sys position:'</span>,o.xyz);
+0493     str4  = sprintf(<span class="string">'%18s %4.2f|'</span>,<span class="string">'Azimuth:'</span>,o.az);
+0494     str5  = sprintf(<span class="string">'%18s %4.2f|'</span>,<span class="string">'Zenith:'</span>,o.ze);
+0495     str6  = sprintf(<span class="string">'%18s %d|'</span>,<span class="string">'Station nr:'</span>,o.station);
+0496     str7  = sprintf(<span class="string">'%18s %d|'</span>,<span class="string">'Camera nr:'</span>,o.camnr);
+0497     str8  = sprintf(<span class="string">'%18s %f|'</span>,<span class="string">'Exposure time:'</span>,o.exptime);
+0498     str9  = sprintf(<span class="string">'%18s %d|'</span>,<span class="string">'Emission:'</span>,o.filter);
+0499     str10 = sprintf(<span class="string">'%18s %s|'</span>,<span class="string">'Site:'</span>,o.site);
+0500     
+0501     Str = [str1,str2,str3,str4,str5,str6,str7,str8,str9,str10];
+0502     set(obj.handles.MessageTextBox, <span class="string">'string'</span>, Str, <span class="string">'visible'</span>, <span class="string">'on'</span>);
+0503     
+0504   <span class="keyword">else</span>
+0505     set(obj.handles.MessageTextBox, <span class="string">'visible'</span>, <span class="string">'off'</span>);
+0506     
+0507   <span class="keyword">end</span>
+0508   
+0509 <span class="keyword">end</span>
+0510         <span class="keyword">end</span>
+0511 
+0512 <span class="comment">%--------------------------------------------------------------------------</span>
+0513 <span class="comment">% showDirectory</span>
+0514 <span class="comment">%   This function shows a list of image files in the directory</span>
+0515 <span class="comment">%--------------------------------------------------------------------------</span>
+0516 <a name="_sub4" href="#_subfunctions" class="code">function showDirectory(obj, dirname)</a>
+0517 
+0518 <span class="comment">% Reset settings and images</span>
+0519 <a href="#_sub22" class="code" title="subfunction stopTimer(obj, varargin)">stopTimer</a>(obj);
+0520 cla(obj.handles.PreviewImageAxes);
+0521 axis(obj.handles.PreviewImageAxes, <span class="string">'normal'</span>);
+0522 <a href="#_sub14" class="code" title="subfunction clearImageAxes(obj)">clearImageAxes</a>(obj);
+0523 <span class="comment">%----------------------------------------------------------------------</span>
+0524 
+0525 <span class="keyword">if</span> nargin == 2
+0526   obj.handles.lastDir = dirname;
+0527 <span class="keyword">else</span>
+0528   <span class="keyword">if</span> isempty(obj.handles.lastDir)
+0529     obj.handles.lastDir = pwd;
+0530   <span class="keyword">end</span>
+0531 <span class="keyword">end</span>
+0532 
+0533 set(obj.handles.CurrentDirectoryEdit, <span class="string">'string'</span>, <span class="keyword">...</span>
+0534                   <a href="#_sub24" class="code" title="subfunction newdirname = fixLongDirName(dirname)">fixLongDirName</a>(obj.handles.lastDir), <span class="keyword">...</span>
+0535                   <span class="string">'tooltipstring'</span>, obj.handles.lastDir);
+0536 
+0537 <span class="comment">% Get image formats</span>
+0538 imf  = imformats;
+0539 exts = lower([imf.ext]);
+0540 exts_str = sprintf(<span class="string">'%s|'</span>, exts{:}); exts_str(end) = <span class="string">''</span>;
+0541 d = dir(obj.handles.lastDir);
+0542 
+0543 filenames = sort({d(~[d.isdir]).name});
+0544 filenames_L = lower(filenames);
+0545 
+0546 <span class="comment">% Find all the image files</span>
+0547 imagefiles_idx = regexp(filenames_L, sprintf(<span class="string">'[^ \f\n\r\t\v.]+\\.(%s)'</span>,exts_str));
+0548 imagefiles = filenames(~cellfun(@isempty, imagefiles_idx));
+0549 
+0550 dirnames = sort({d([d.isdir]).name});
+0551 dirnames(ismember(dirnames, {<span class="string">'.'</span>, <span class="string">'..'</span>})) = <span class="string">''</span>;            
+0552 
+0553 <span class="keyword">if</span> isempty(imagefiles)
+0554   obj.handles.imageID = [];
+0555   obj.handles.imageNames = {};
+0556   obj.handles.imagePreviews = {};
+0557   runTimer = false;
+0558 <span class="keyword">else</span>
+0559   obj.handles.imageID = 1:length(imagefiles);
+0560   obj.handles.imageNames = imagefiles;
+0561   obj.handles.imagePreviews = cell(1,length(imagefiles));
+0562   runTimer = true;
+0563 <span class="keyword">end</span>
+0564             
+0565 <span class="keyword">if</span> isempty(dirnames)
+0566   n = imagefiles;
+0567 <span class="keyword">else</span>
+0568   dirnames = strcat(repmat({<span class="string">'['</span>}, 1, length(dirnames)), dirnames, repmat({<span class="string">']'</span>}, 1, length(dirnames)));
+0569   n = [dirnames, imagefiles];
+0570   
+0571   obj.handles.imageID = obj.handles.imageID + length(dirnames);
+0572 <span class="keyword">end</span>
+0573 set(obj.handles.FileListBox, <span class="string">'string'</span>, n, <span class="string">'value'</span>, 1);
+0574 
+0575 <span class="keyword">if</span> runTimer
+0576   <a href="#_sub20" class="code" title="subfunction startTimer(obj)">startTimer</a>(obj);
+0577 <span class="keyword">end</span>
+0578 
+0579 <span class="keyword">if</span> ~isempty(obj.handles.imageID)
+0580   set(obj.handles.ImageViewer, <span class="string">'selectiontype'</span>, <span class="string">'normal'</span>);
+0581   set(obj.handles.FileListBox, <span class="string">'value'</span>, obj.handles.imageID(1));
+0582   <a href="#_sub8" class="code" title="subfunction fileListBoxCallback(obj, hObj, varargin)">fileListBoxCallback</a>(obj);
+0583 <span class="keyword">end</span>
+0584 
+0585         <span class="keyword">end</span>
+0586         
+0587 <span class="comment">%--------------------------------------------------------------------------</span>
+0588 <span class="comment">% getPreviewImages</span>
+0589 <span class="comment">%   This is the TimerFcn for the preview timer object</span>
+0590 <span class="comment">%--------------------------------------------------------------------------</span>
+0591 <a name="_sub5" href="#_subfunctions" class="code">function getPreviewImages(obj, varargin)</a>
+0592             
+0593 <span class="keyword">try</span>
+0594   
+0595   id = find(cellfun(<span class="string">'isempty'</span>, obj.handles.imagePreviews));
+0596   
+0597   <span class="keyword">if</span> ~isempty(id)
+0598     set(obj.handles.statusText, <span class="string">'string'</span>, <span class="keyword">...</span>
+0599                       sprintf(<span class="string">'Generating Thumbnails ... %d of %d'</span>, <span class="keyword">...</span>
+0600                               length(obj.handles.imagePreviews)-length(id)+1, <span class="keyword">...</span>
+0601                               length(obj.handles.imagePreviews)));
+0602     drawnow;
+0603     obj.handles.imagePreviews{id(1)} = <span class="keyword">...</span>
+0604         <a href="#_sub7" class="code" title="subfunction x = getPreviewImageData(obj, filename)">getPreviewImageData</a>(obj, <span class="keyword">...</span>
+0605                             fullfile(get(obj.handles.CurrentDirectoryEdit, <span class="string">'tooltipstring'</span>), <span class="keyword">...</span>
+0606                                      obj.handles.imageNames{id(1)}));
+0607     
+0608   <span class="keyword">else</span> <span class="comment">% All previews are generated. Stop timer</span>
+0609     set(obj.handles.statusText, <span class="string">'string'</span>, <span class="string">''</span>);
+0610     <a href="#_sub22" class="code" title="subfunction stopTimer(obj, varargin)">stopTimer</a>(obj);
+0611     
+0612   <span class="keyword">end</span>
+0613   
+0614 <span class="keyword">catch</span> <span class="comment">%#ok&lt;CTCH&gt;</span>
+0615   
+0616 <span class="keyword">end</span>
+0617 
+0618         <span class="keyword">end</span>
+0619         
+0620 <span class="comment">%--------------------------------------------------------------------------</span>
+0621 <span class="comment">% getPreviewImageData</span>
+0622 <span class="comment">%   This reads in image file for thumbnails</span>
+0623 <span class="comment">%--------------------------------------------------------------------------</span>
+0624 <a name="_sub6" href="#_subfunctions" class="code">function x = getPreviewImageData(obj, filename)</a>
+0625 
+0626 x = <a href="#_sub23" class="code" title="subfunction [x, info,o] = readImageFileFcn(obj, filename)">readImageFileFcn</a>(obj, filename);
+0627 <span class="keyword">if</span> ~isnan(x)
+0628   sz = size(x);
+0629   r = [200, 200] ./ sz(1:2);
+0630   
+0631   <span class="comment">% Crude IMRESIZE (non-toolbox)</span>
+0632   xd = round(linspace(1,sz(1), round(sz(1) * min(r))));
+0633   yd = round(linspace(1,sz(2), round(sz(2) * min(r))));
+0634   x = x(xd, yd, :);
+0635 <span class="keyword">end</span>
+0636 
+0637         <span class="keyword">end</span>
+0638         
+0639 <span class="comment">%--------------------------------------------------------------------------</span>
+0640 <span class="comment">% fileListBoxCallback</span>
+0641 <span class="comment">%   This gets called when an entry is selected in the file list box</span>
+0642 <span class="comment">%--------------------------------------------------------------------------</span>
+0643 <a name="_sub7" href="#_subfunctions" class="code">function fileListBoxCallback(obj, hObj, varargin)</a>
+0644 
+0645 <span class="keyword">if</span> nargin == 1
+0646   hObj = obj.handles.FileListBox;
+0647 <span class="keyword">end</span>
+0648 <a href="#_sub22" class="code" title="subfunction stopTimer(obj, varargin)">stopTimer</a>(obj);
+0649 val = get(hObj, <span class="string">'value'</span>);
+0650 str = cellstr(get(hObj, <span class="string">'string'</span>));
+0651 
+0652 <span class="keyword">if</span> ~isempty(str)
+0653   
+0654   <span class="keyword">switch</span> get(obj.handles.ImageViewer, <span class="string">'selectiontype'</span>)
+0655    <span class="keyword">case</span> <span class="string">'normal'</span>   <span class="comment">% single click - show preview</span>
+0656     
+0657     <span class="keyword">if</span> str{val}(1) == <span class="string">'['</span> &amp;&amp; str{val}(end) == <span class="string">']'</span>
+0658       cla(obj.handles.PreviewImageAxes);
+0659       axis(obj.handles.PreviewImageAxes, <span class="string">'normal'</span>);
+0660       
+0661     <span class="keyword">else</span>
+0662       id = find(obj.handles.imageID == val);
+0663       <span class="keyword">if</span> isempty(obj.handles.imagePreviews{id});
+0664         obj.handles.imagePreviews{id} = <span class="keyword">...</span>
+0665             <a href="#_sub7" class="code" title="subfunction x = getPreviewImageData(obj, filename)">getPreviewImageData</a>(obj, <span class="keyword">...</span>
+0666                                 fullfile(<span class="keyword">...</span>
+0667                                     get(obj.handles.CurrentDirectoryEdit, <span class="string">'tooltipstring'</span>), <span class="keyword">...</span>
+0668                                     str{val}));
+0669       <span class="keyword">end</span>
+0670       
+0671       <span class="keyword">if</span> ~isnan(obj.handles.imagePreviews{id})
+0672         imagesc(obj.handles.imagePreviews{id}, <span class="keyword">...</span>
+0673               <span class="string">'parent'</span>, obj.handles.PreviewImageAxes, <span class="keyword">...</span>
+0674               <span class="string">'hittest'</span>, <span class="string">'off'</span>);
+0675         set(obj.handles.PreviewImagePanel, <span class="string">'buttondownfcn'</span>, @<a href="#_sub9" class="code" title="subfunction previewImageClickFcn(varargin)">previewImageClickFcn</a>);
+0676         <span class="keyword">if</span> isa(obj.handles.imagePreviews{id},<span class="string">'double'</span>) | isa(obj.handles.imagePreviews{id},<span class="string">'single'</span>)
+0677           <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.003,obj.handles.imagePreviews{id}(:))
+0678         <span class="keyword">end</span>
+0679       <span class="keyword">else</span> <span class="comment">% unable to load image</span>
+0680         cla(obj.handles.PreviewImageAxes);
+0681         set(obj.handles.PreviewImagePanel, <span class="string">'buttondownfcn'</span>, <span class="string">''</span>);
+0682         text(0.5, 0.5, <span class="string">'Can''t Load Image'</span>, <span class="keyword">...</span>
+0683              <span class="string">'parent'</span>, obj.handles.PreviewImageAxes, <span class="keyword">...</span>
+0684              <span class="string">'horizontalalignment'</span>, <span class="string">'center'</span>, <span class="keyword">...</span>
+0685              <span class="string">'verticalalignment'</span>, <span class="string">'middle'</span>);
+0686         set(obj.handles.PreviewImageAxes, <span class="string">'xlim'</span>, [0 1], <span class="string">'ylim'</span>, [0 1]);
+0687         
+0688       <span class="keyword">end</span>
+0689       
+0690       axis(obj.handles.PreviewImageAxes, <span class="string">'equal'</span>);
+0691       set(obj.handles.PreviewImageAxes, <span class="string">'visible'</span>, <span class="string">'off'</span>);
+0692       
+0693     <span class="keyword">end</span>
+0694     <a href="#_sub20" class="code" title="subfunction startTimer(obj)">startTimer</a>(obj);
+0695     
+0696    <span class="keyword">case</span> <span class="string">'open'</span>   <span class="comment">% double click - open image and display</span>
+0697     
+0698     <span class="keyword">if</span> str{val}(1) == <span class="string">'['</span> &amp;&amp; str{val}(end) == <span class="string">']'</span>
+0699       dirname = get(obj.handles.CurrentDirectoryEdit, <span class="string">'tooltipstring'</span>);
+0700       newdirname = fullfile(dirname, str{val}(2:end-1));
+0701       <a href="#_sub5" class="code" title="subfunction showDirectory(obj, dirname)">showDirectory</a>(obj, newdirname)
+0702       
+0703     <span class="keyword">else</span>
+0704       obj.handles.ImX = [];
+0705       <a href="#_sub13" class="code" title="subfunction loadImage(obj, filename)">loadImage</a>(obj, fullfile(get(obj.handles.CurrentDirectoryEdit, <span class="string">'tooltipstring'</span>), str{val}));
+0706       
+0707       <a href="#_sub20" class="code" title="subfunction startTimer(obj)">startTimer</a>(obj);
+0708     <span class="keyword">end</span>
+0709   <span class="keyword">end</span>
+0710   
+0711 <span class="keyword">end</span>
+0712 
+0713 <span class="comment">%----------------------------------------------------------------------</span>
+0714 <span class="comment">% previewImageClickFcn</span>
+0715 <span class="comment">%   This loads the image when the thumbnail is double-clicked</span>
+0716 <span class="comment">%----------------------------------------------------------------------</span>
+0717 <a name="_sub8" href="#_subfunctions" class="code">function previewImageClickFcn(varargin)</a>
+0718 
+0719 <span class="keyword">switch</span> get(obj.handles.ImageViewer, <span class="string">'selectiontype'</span>)
+0720   
+0721  <span class="keyword">case</span> <span class="string">'open'</span>   <span class="comment">% double-click</span>
+0722   
+0723   <a href="#_sub22" class="code" title="subfunction stopTimer(obj, varargin)">stopTimer</a>(obj);
+0724   
+0725   obj.handles.ImX = [];
+0726   <a href="#_sub13" class="code" title="subfunction loadImage(obj, filename)">loadImage</a>(obj, fullfile(get(obj.handles.CurrentDirectoryEdit, <span class="string">'tooltipstring'</span>), str{val}));
+0727   
+0728   <a href="#_sub20" class="code" title="subfunction startTimer(obj)">startTimer</a>(obj);
+0729   
+0730 <span class="keyword">end</span>
+0731             <span class="keyword">end</span>
+0732             
+0733         <span class="keyword">end</span>
+0734         
+0735 <span class="comment">%--------------------------------------------------------------------------</span>
+0736 <span class="comment">% chooseDirectoryCallback</span>
+0737 <span class="comment">%   This opens a directory selector</span>
+0738 <span class="comment">%--------------------------------------------------------------------------</span>
+0739 <a name="_sub9" href="#_subfunctions" class="code">function chooseDirectoryCallback(obj, varargin)</a>
+0740 
+0741 <a href="#_sub22" class="code" title="subfunction stopTimer(obj, varargin)">stopTimer</a>(obj);
+0742 dirname = uigetdir(get(obj.handles.CurrentDirectoryEdit, <span class="string">'tooltipstring'</span>), <span class="keyword">...</span>
+0743                    <span class="string">'Choose Directory'</span>);
+0744 <span class="keyword">if</span> <a href="ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(dirname)
+0745   <a href="#_sub5" class="code" title="subfunction showDirectory(obj, dirname)">showDirectory</a>(obj, dirname)
+0746 <span class="keyword">end</span>
+0747 
+0748         <span class="keyword">end</span>
+0749         
+0750 <span class="comment">%--------------------------------------------------------------------------</span>
+0751 <span class="comment">% upDirectoryCallback</span>
+0752 <span class="comment">%   This moves up the current directory</span>
+0753 <span class="comment">%--------------------------------------------------------------------------</span>
+0754 <a name="_sub10" href="#_subfunctions" class="code">function upDirectoryCallback(obj, varargin)</a>
+0755 
+0756 <a href="#_sub22" class="code" title="subfunction stopTimer(obj, varargin)">stopTimer</a>(obj);
+0757 dirname = get(obj.handles.CurrentDirectoryEdit, <span class="string">'tooltipstring'</span>);
+0758 dirname2 = fileparts(dirname);
+0759 <span class="keyword">if</span> ~isequal(dirname, dirname2)
+0760   <a href="#_sub5" class="code" title="subfunction showDirectory(obj, dirname)">showDirectory</a>(obj, dirname2)
+0761 <span class="keyword">end</span>
+0762 
+0763         <span class="keyword">end</span>
+0764         
+0765 <span class="comment">%--------------------------------------------------------------------------</span>
+0766 <span class="comment">% resetView</span>
+0767 <span class="comment">%   This resets the view to &quot;Full&quot; or &quot;100%&quot; magnification</span>
+0768 <span class="comment">%--------------------------------------------------------------------------</span>
+0769 <a name="_sub11" href="#_subfunctions" class="code">function resetView(obj, varargin)</a>
+0770 
+0771 hObj = varargin{1};
+0772 <a href="#_sub22" class="code" title="subfunction stopTimer(obj, varargin)">stopTimer</a>(obj);
+0773 set(obj.handles.MessageTextBox, <span class="string">'visible'</span>, <span class="string">'off'</span>);
+0774 set(obj.handles.FileInfoBtn, <span class="string">'value'</span>, false);
+0775 set(obj.handles.FileMetaBtn, <span class="string">'value'</span>, false);
+0776             
+0777 <span class="keyword">switch</span> get(hObj, <span class="string">'string'</span>)
+0778  <span class="keyword">case</span> <span class="string">'Full'</span>
+0779   xlimit = obj.handles.xlimFull;
+0780   ylimit = obj.handles.ylimFull;
+0781   
+0782  <span class="keyword">case</span> <span class="string">'100%'</span>
+0783   xlimit = obj.handles.xlim100;
+0784   ylimit = obj.handles.ylim100;
+0785 <span class="keyword">end</span>
+0786 
+0787 xl = xlim(obj.handles.ImageAxes); xd = (xlimit - xl)/10;
+0788 yl = ylim(obj.handles.ImageAxes); yd = (ylimit - yl)/10;
+0789 
+0790 <span class="comment">% Restore only if needed</span>
+0791 <span class="keyword">if</span> ~(isequal(xd, [0 0]) &amp;&amp; isequal(yd, [0 0]))
+0792   
+0793   set(obj.handles.statusText, <span class="string">'string'</span>, <span class="string">'Restoring View...'</span>);
+0794   
+0795   <span class="comment">% Animate with &quot;good&quot; speed</span>
+0796   <span class="keyword">for</span> id = [1, 4, 6.5, 7.8, 8.5, 9, 9.3, 9.6, 9.8, 10]
+0797     
+0798     set(obj.handles.ImageAxes, <span class="keyword">...</span>
+0799         <span class="string">'xlim'</span>                , xl + xd * id, <span class="keyword">...</span>
+0800         <span class="string">'ylim'</span>                , yl + yd * id, <span class="keyword">...</span>
+0801         <span class="string">'cameraviewanglemode'</span> , <span class="string">'auto'</span>, <span class="keyword">...</span>
+0802         <span class="string">'dataaspectratiomode'</span> , <span class="string">'auto'</span>, <span class="keyword">...</span>
+0803         <span class="string">'plotboxaspectratio'</span>  , obj.handles.pbar);
+0804     set(obj.handles.ZoomCaptionText, <span class="string">'string'</span>, sprintf(<span class="string">'%d %%'</span>, <span class="keyword">...</span>
+0805                                                       round(diff(obj.handles.xlim100)/diff(xl + xd * id)*100)));
+0806     
+0807     pause(0.01);
+0808   <span class="keyword">end</span>
+0809   
+0810   set(obj.handles.statusText, <span class="string">'string'</span>, <span class="string">''</span>);
+0811   
+0812 <span class="keyword">end</span>
+0813 
+0814 <a href="#_sub20" class="code" title="subfunction startTimer(obj)">startTimer</a>(obj);
+0815 
+0816         <span class="keyword">end</span>
+0817         
+0818 <span class="comment">%--------------------------------------------------------------------------</span>
+0819 <span class="comment">% loadImage</span>
+0820 <span class="comment">%   This loads the selected image and displays it</span>
+0821 <span class="comment">%--------------------------------------------------------------------------</span>
+0822 <a name="_sub12" href="#_subfunctions" class="code">function loadImage(obj, filename)</a>
+0823 
+0824 <span class="keyword">try</span>
+0825   <span class="keyword">if</span> isempty(obj.handles.ImX)
+0826     <a href="#_sub14" class="code" title="subfunction clearImageAxes(obj)">clearImageAxes</a>(obj);
+0827     set(obj.handles.statusText, <span class="string">'string'</span>, <span class="string">'Loading Image...'</span>);
+0828     drawnow;
+0829     [obj.handles.ImX, obj.handles.iminfo, obj.handles.MetaData] = <a href="#_sub23" class="code" title="subfunction [x, info,o] = readImageFileFcn(obj, filename)">readImageFileFcn</a>(obj, filename);
+0830   <span class="keyword">end</span>
+0831   
+0832   <span class="keyword">if</span> ~isnan(obj.handles.ImX)
+0833     iH = imagesc(obj.handles.ImX, <span class="string">'parent'</span>, obj.handles.ImageAxes);
+0834     <span class="keyword">if</span> isa(obj.handles.ImX,<span class="string">'double'</span>) | isa(obj.handles.ImX,<span class="string">'single'</span>)
+0835       <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.003,obj.handles.ImX(:))
+0836     <span class="keyword">end</span>
+0837     set(iH, <span class="string">'hittest'</span>, <span class="string">'off'</span>);
+0838     axis(obj.handles.ImageAxes, <span class="string">'equal'</span>);
+0839     set(obj.handles.ImageAxes, <span class="keyword">...</span>
+0840         <span class="string">'box'</span>             , <span class="string">'on'</span>, <span class="keyword">...</span>
+0841         <span class="string">'xtick'</span>           , [], <span class="keyword">...</span>
+0842         <span class="string">'ytick'</span>           , [], <span class="keyword">...</span>
+0843         <span class="string">'buttondownfcn'</span>   , @obj.winBtnDownFcn, <span class="keyword">...</span>
+0844         <span class="string">'interruptible'</span>   , <span class="string">'off'</span>, <span class="keyword">...</span>
+0845         <span class="string">'busyaction'</span>      , <span class="string">'queue'</span>, <span class="keyword">...</span>
+0846         <span class="string">'handlevisibility'</span>, <span class="string">'callback'</span>);
+0847     set(obj.handles.ResetViewBtn1, <span class="string">'enable'</span>, <span class="string">'on'</span>);
+0848     set(obj.handles.ResetViewBtn2, <span class="string">'enable'</span>, <span class="string">'on'</span>);
+0849     set(obj.handles.FileInfoBtn  , <span class="string">'enable'</span>, <span class="string">'on'</span>);
+0850     set(obj.handles.FileMetaBtn  , <span class="string">'enable'</span>, <span class="string">'on'</span>);
+0851     set(get(obj.handles.ImageAxes, <span class="string">'title'</span>), <span class="keyword">...</span>
+0852         <span class="string">'string'</span>      , sprintf(<span class="string">'%s'</span>, filename), <span class="keyword">...</span>
+0853         <span class="string">'interpreter'</span> , <span class="string">'none'</span>);
+0854     obj.handles.pbar     = get(obj.handles.ImageAxes, <span class="string">'plotboxaspectratio'</span>);
+0855     obj.handles.xlimFull = get(obj.handles.ImageAxes, <span class="string">'xlim'</span>);
+0856     obj.handles.ylimFull = get(obj.handles.ImageAxes, <span class="string">'ylim'</span>);
+0857     
+0858     <span class="comment">% If image is small, show at 100% size</span>
+0859     sz              = size(obj.handles.ImX);
+0860     obj.handles.xlim100 = sz(2)/2 + [-1, 1] * obj.handles.axPos(3)/2;
+0861     obj.handles.ylim100 = sz(1)/2 + [-1, 1] * obj.handles.axPos(4)/2;
+0862     <span class="keyword">if</span> all(obj.handles.axPos(3:4) &gt; sz([2 1]))
+0863       set(obj.handles.ImageAxes, <span class="keyword">...</span>
+0864           <span class="string">'xlim'</span>                , obj.handles.xlim100, <span class="keyword">...</span>
+0865           <span class="string">'ylim'</span>                , obj.handles.ylim100, <span class="keyword">...</span>
+0866           <span class="string">'cameraviewanglemode'</span> , <span class="string">'auto'</span>, <span class="keyword">...</span>
+0867           <span class="string">'dataaspectratiomode'</span> , <span class="string">'auto'</span>, <span class="keyword">...</span>
+0868           <span class="string">'plotboxaspectratio'</span>  , obj.handles.pbar);
+0869       set(obj.handles.ZoomCaptionText, <span class="string">'string'</span>, <span class="string">'100 %'</span>);
+0870       
+0871     <span class="keyword">else</span>
+0872       set(obj.handles.ZoomCaptionText, <span class="string">'string'</span>, sprintf(<span class="string">'%d %%'</span>, <span class="keyword">...</span>
+0873                                                         round(diff(obj.handles.xlim100)/diff(obj.handles.xlimFull)*100)));
+0874     <span class="keyword">end</span>
+0875   <span class="keyword">end</span>
+0876   
+0877 <span class="keyword">catch</span> ME
+0878   <span class="comment">%keyboard</span>
+0879   errordlg({<span class="string">'Could not open image file'</span>, ME.message}, <span class="string">'Error'</span>);
+0880   <a href="#_sub14" class="code" title="subfunction clearImageAxes(obj)">clearImageAxes</a>(obj);
+0881   
+0882 <span class="keyword">end</span>
+0883 
+0884 set(obj.handles.statusText, <span class="string">'string'</span>, <span class="string">''</span>);
+0885 
+0886         <span class="keyword">end</span>
+0887         
+0888 <span class="comment">%--------------------------------------------------------------------------</span>
+0889 <span class="comment">% clearImageAxes</span>
+0890 <span class="comment">%   This clears the image axis</span>
+0891 <span class="comment">%--------------------------------------------------------------------------</span>
+0892 <a name="_sub13" href="#_subfunctions" class="code">function clearImageAxes(obj)</a>
+0893 
+0894 cla(obj.handles.ImageAxes);
+0895 axis(obj.handles.ImageAxes, <span class="string">'normal'</span>);
+0896 set(get(obj.handles.ImageAxes, <span class="string">'title'</span>) , <span class="string">'string'</span>        , <span class="string">''</span>);
+0897 set(obj.handles.ImageAxes               , <span class="string">'buttondownfcn'</span> , <span class="string">''</span>);
+0898 set(obj.handles.ResetViewBtn1           , <span class="string">'enable'</span>        , <span class="string">'off'</span>);
+0899 set(obj.handles.ResetViewBtn2           , <span class="string">'enable'</span>        , <span class="string">'off'</span>);
+0900 set(obj.handles.FileInfoBtn             , <span class="string">'enable'</span>        , <span class="string">'off'</span>, <span class="keyword">...</span>
+0901                   <span class="string">'value'</span>         , false);
+0902 set(obj.handles.FileMetaBtn             , <span class="string">'enable'</span>        , <span class="string">'off'</span>, <span class="keyword">...</span>
+0903                   <span class="string">'value'</span>         , false);
+0904 set(obj.handles.ZoomCaptionText         , <span class="string">'string'</span>        , <span class="string">''</span>);
+0905 set(obj.handles.MessageTextBox          , <span class="string">'visible'</span>       , <span class="string">'off'</span>);
+0906 obj.handles.ImX = [];
+0907 
+0908         <span class="keyword">end</span>
+0909         
+0910 <span class="comment">%--------------------------------------------------------------------------</span>
+0911 <span class="comment">% winBtnDownFcn</span>
+0912 <span class="comment">%   This is called when the mouse is clicked in one of the axes</span>
+0913 <span class="comment">%   NORMAL clicks will start panning mode.</span>
+0914 <span class="comment">%   ALT clicks will start zooming mode.</span>
+0915 <span class="comment">%   OPEN clicks will center the view.</span>
+0916 <span class="comment">%--------------------------------------------------------------------------</span>
+0917 <a name="_sub14" href="#_subfunctions" class="code">function winBtnDownFcn(obj, hObj, varargin)</a>
+0918 
+0919 <a href="#_sub22" class="code" title="subfunction stopTimer(obj, varargin)">stopTimer</a>(obj);
+0920 set(obj.handles.MessageTextBox, <span class="string">'visible'</span>, <span class="string">'off'</span>);
+0921 set(obj.handles.FileInfoBtn, <span class="string">'value'</span>, false);
+0922 set(obj.handles.FileMetaBtn, <span class="string">'value'</span>, false);
+0923 
+0924 <span class="keyword">switch</span> get(obj.handles.ImageViewer, <span class="string">'selectiontype'</span>)
+0925  <span class="keyword">case</span> <span class="string">'normal'</span>
+0926   <span class="comment">% Start panning mode</span>
+0927   
+0928   xy = get(hObj, <span class="string">'currentpoint'</span>);
+0929   set(obj.handles.ImageViewer, <span class="keyword">...</span>
+0930       <span class="string">'pointer'</span>               , <span class="string">'custom'</span>, <span class="keyword">...</span>
+0931       <span class="string">'pointershapecdata'</span>     , ImageViewer.closedHandPointer, <span class="keyword">...</span>
+0932       <span class="string">'windowbuttonmotionfcn'</span> , @<a href="#_sub16" class="code" title="subfunction winBtnMotionFcn(varargin)">winBtnMotionFcn</a>);
+0933   set(obj.handles.ImageViewer, <span class="string">'windowbuttonupfcn'</span>, @obj.winBtnUpFcn);
+0934   
+0935  <span class="keyword">case</span> <span class="string">'alt'</span>
+0936   <span class="comment">% Start zooming mode</span>
+0937   
+0938   xl = get(hObj, <span class="string">'xlim'</span>); midX = mean(xl); rngXhalf = diff(xl) / 2;
+0939   yl = get(hObj, <span class="string">'ylim'</span>); midY = mean(yl); rngYhalf = diff(yl) / 2;
+0940   curPt  = mean(get(hObj, <span class="string">'currentpoint'</span>));curPt = curPt(1:2);
+0941   curPt2 = (curPt-[midX, midY]) ./ [rngXhalf, rngYhalf];
+0942   curPt  = [curPt; curPt];
+0943   curPt2 = [-(1+curPt2).*[rngXhalf, rngYhalf];<span class="keyword">...</span>
+0944             (1-curPt2).*[rngXhalf, rngYhalf]];
+0945   initPt = get(obj.handles.ImageViewer, <span class="string">'currentpoint'</span>);
+0946   set(obj.handles.statusText, <span class="string">'string'</span>, <span class="string">'Zooming...'</span>);
+0947   set(obj.handles.ImageViewer, <span class="keyword">...</span>
+0948       <span class="string">'pointer'</span>               , <span class="string">'custom'</span>, <span class="keyword">...</span>
+0949       <span class="string">'pointershapecdata'</span>     , ImageViewer.zoomInOutPointer, <span class="keyword">...</span>
+0950       <span class="string">'windowbuttonmotionfcn'</span> , @<a href="#_sub17" class="code" title="subfunction zoomMotionFcn(hObj, varargin)">zoomMotionFcn</a>);
+0951   set(obj.handles.ImageViewer, <span class="string">'windowbuttonupfcn'</span>, @obj.winBtnUpFcn);
+0952   
+0953  <span class="keyword">case</span> <span class="string">'open'</span>
+0954   <span class="comment">% Center the view</span>
+0955   
+0956   set(obj.handles.ImageViewer, <span class="string">'windowbuttonupfcn'</span>, @obj.winBtnUpFcn);
+0957   
+0958   <span class="comment">% Get current units</span>
+0959   un    = get(0, <span class="string">'units'</span>);
+0960   set(0, <span class="string">'units'</span>, <span class="string">'pixels'</span>);
+0961   pt2   = get(0, <span class="string">'pointerlocation'</span>);
+0962   pt    = get(hObj, <span class="string">'currentpoint'</span>);
+0963   axPos = get(hObj, <span class="string">'position'</span>);
+0964   xl = get(hObj, <span class="string">'xlim'</span>); midX = mean(xl);
+0965   yl = get(hObj, <span class="string">'ylim'</span>); midY = mean(yl);
+0966   
+0967   <span class="comment">% update figure position in case it was moved</span>
+0968   obj.handles.figPos = get(obj.handles.ImageViewer, <span class="string">'position'</span>);
+0969   
+0970   <span class="comment">% get distance between cursor and center of axes</span>
+0971   d = norm(pt2 - (obj.handles.figPos(1:2) + axPos(1:2) + axPos(3:4)/2));
+0972   
+0973   <span class="keyword">if</span> d &gt; 2  <span class="comment">% center only if distance is at least 2 pixels away</span>
+0974     ld = (mean(pt(:, 1:2)) - [midX, midY]) / 10;
+0975     pd = ((obj.handles.figPos(1:2) + axPos(1:2) + axPos(3:4) / 2) - pt2) / 10;
+0976     
+0977     set(obj.handles.statusText, <span class="string">'string'</span>, <span class="string">'Centering...'</span>);
+0978     
+0979     <span class="comment">% Animate with &quot;good&quot; speed</span>
+0980     <span class="keyword">for</span> id = [1, 4, 6.5, 7.8, 8.5, 9, 9.3, 9.6, 9.8, 10]
+0981       
+0982       <span class="comment">% Set axes limits and automatically set ticks</span>
+0983       <span class="comment">% Set aspect ratios</span>
+0984       set(hObj, <span class="keyword">...</span>
+0985           <span class="string">'xlim'</span>                , xl + id * ld(1), <span class="keyword">...</span>
+0986           <span class="string">'ylim'</span>                , yl + id * ld(2), <span class="keyword">...</span>
+0987           <span class="string">'cameraviewanglemode'</span> , <span class="string">'auto'</span>, <span class="keyword">...</span>
+0988           <span class="string">'dataaspectratiomode'</span> , <span class="string">'auto'</span>, <span class="keyword">...</span>
+0989           <span class="string">'plotboxaspectratio'</span>  , obj.handles.pbar);
+0990       
+0991       <span class="comment">% Move pointer with limits</span>
+0992       set(0, <span class="string">'pointerlocation'</span>, pt2 + id * pd);
+0993       
+0994       pause(0.01);
+0995     <span class="keyword">end</span>
+0996     
+0997   <span class="keyword">end</span>
+0998   
+0999   <span class="comment">% Reset UNITS</span>
+1000   set(0, <span class="string">'units'</span>, un);
+1001   
+1002 <span class="keyword">end</span>
+1003 
+1004 <span class="comment">%----------------------------------------------------------------------</span>
+1005 <span class="comment">% winBtnMotionFcn (nested under winBtnDownFcn)</span>
+1006 <span class="comment">%   This function is called when click-n-drag (panning) is happening</span>
+1007 <span class="comment">%----------------------------------------------------------------------</span>
+1008 <a name="_sub15" href="#_subfunctions" class="code">function winBtnMotionFcn(varargin)</a>
+1009 
+1010 pt = get(obj.handles.ImageAxes, <span class="string">'currentpoint'</span>);
+1011 
+1012 <span class="comment">% Update axes limits and automatically set ticks</span>
+1013 <span class="comment">% Set aspect ratios</span>
+1014 set(obj.handles.ImageAxes, <span class="keyword">...</span>
+1015     <span class="string">'xlim'</span>, get(obj.handles.ImageAxes, <span class="string">'xlim'</span>) + (xy(1,1)-(pt(1,1)+pt(2,1))/2), <span class="keyword">...</span>
+1016     <span class="string">'ylim'</span>, get(obj.handles.ImageAxes, <span class="string">'ylim'</span>) + (xy(1,2)-(pt(1,2)+pt(2,2))/2), <span class="keyword">...</span>
+1017     <span class="string">'cameraviewanglemode'</span> , <span class="string">'auto'</span>, <span class="keyword">...</span>
+1018                     <span class="string">'dataaspectratiomode'</span> , <span class="string">'auto'</span>, <span class="keyword">...</span>
+1019     <span class="string">'plotboxaspectratio'</span>  , obj.handles.pbar);
+1020 set(obj.handles.statusText, <span class="string">'string'</span>, <span class="string">'Panning...'</span>);
+1021 
+1022             <span class="keyword">end</span>
+1023             
+1024             
+1025 <span class="comment">%----------------------------------------------------------------------</span>
+1026 <span class="comment">% zoomMotionFcn (nested under winBtnDownFcn)</span>
+1027 <span class="comment">%   This performs the click-n-drag zooming function. The pointer</span>
+1028 <span class="comment">%   location relative to the initial point determines the amount of</span>
+1029 <span class="comment">%   zoom (in or out).</span>
+1030 <span class="comment">%----------------------------------------------------------------------</span>
+1031 <a name="_sub16" href="#_subfunctions" class="code">function zoomMotionFcn(hObj, varargin)</a>
+1032 
+1033 <span class="comment">% Power law allows for the inverse to work:</span>
+1034                 <span class="comment">%      C^(x) * C^(-x) = 1</span>
+1035 <span class="comment">% Choose C to get &quot;appropriate&quot; zoom factor</span>
+1036 C                   = 50;
+1037 pt                  = get(hObj, <span class="string">'currentpoint'</span>);
+1038 r                   = C ^ ((initPt(2) - pt(2)) / obj.handles.figPos(4));
+1039 newLimSpan          = r * curPt2; dTemp = diff(newLimSpan);
+1040 pt(1)               = initPt(1);
+1041 
+1042 <span class="comment">% Determine new limits based on r</span>
+1043 lims                = curPt + newLimSpan;
+1044 
+1045 <span class="comment">% Update axes limits and automatically set ticks</span>
+1046                 <span class="comment">% Set aspect ratios</span>
+1047 set(obj.handles.ImageAxes, <span class="keyword">...</span>
+1048     <span class="string">'xlim'</span>                , lims(:,1), <span class="keyword">...</span>
+1049     <span class="string">'ylim'</span>                , lims(:,2), <span class="keyword">...</span>
+1050                     <span class="string">'cameraviewanglemode'</span> , <span class="string">'auto'</span>, <span class="keyword">...</span>
+1051     <span class="string">'dataaspectratiomode'</span> , <span class="string">'auto'</span>, <span class="keyword">...</span>
+1052     <span class="string">'plotboxaspectratio'</span>  , obj.handles.pbar);
+1053 
+1054 <span class="comment">% Update zoom indicator line</span>
+1055 set(obj.handles.ZoomLine, <span class="keyword">...</span>
+1056     <span class="string">'xdata'</span>, [initPt(1), pt(1)]/obj.handles.figPos(3), <span class="keyword">...</span>
+1057     <span class="string">'ydata'</span>, [initPt(2), pt(2)]/obj.handles.figPos(4));
+1058 set(obj.handles.ZoomCaptionText, <span class="string">'string'</span>, sprintf(<span class="string">'%d %%'</span>, <span class="keyword">...</span>
+1059                                                   round(diff(obj.handles.xlim100)/dTemp(1)*100)));
+1060 
+1061             <span class="keyword">end</span>
+1062             
+1063         <span class="keyword">end</span>
+1064         
+1065         
+1066 <a name="_sub17" href="#_subfunctions" class="code">function scrollWheelFcn(obj, varargin)</a>
+1067 
+1068 <a href="#_sub22" class="code" title="subfunction stopTimer(obj, varargin)">stopTimer</a>(obj);
+1069 
+1070 <span class="keyword">if</span> ~isempty(obj.handles.ImX)
+1071   
+1072   <span class="comment">% Power law allows for the inverse to work:</span>
+1073   <span class="comment">%      C^(x) * C^(-x) = 1</span>
+1074   <span class="comment">% Choose C to get &quot;appropriate&quot; zoom factor</span>
+1075   C                   = 1.02;
+1076   
+1077   xl = get(obj.handles.ImageAxes, <span class="string">'xlim'</span>); midX = mean(xl); rngXhalf = diff(xl) / 2;
+1078   yl = get(obj.handles.ImageAxes, <span class="string">'ylim'</span>); midY = mean(yl); rngYhalf = diff(yl) / 2;
+1079   curPt  = mean(get(obj.handles.ImageAxes, <span class="string">'currentpoint'</span>));curPt = curPt(1:2);
+1080   curPt2 = (curPt-[midX, midY]) ./ [rngXhalf, rngYhalf];
+1081   curPt  = [curPt; curPt];
+1082   curPt2 = [-(1+curPt2).*[rngXhalf, rngYhalf];<span class="keyword">...</span>
+1083             (1-curPt2).*[rngXhalf, rngYhalf]];
+1084   
+1085   edata = varargin{2};
+1086   r = C^(edata.VerticalScrollCount*edata.VerticalScrollAmount);
+1087   newLimSpan          = r * curPt2;dTemp = diff(newLimSpan);
+1088   
+1089   <span class="comment">% Determine new limits based on r</span>
+1090   lims                = curPt + newLimSpan;
+1091   
+1092   <span class="comment">% Update axes limits and automatically set ticks</span>
+1093   <span class="comment">% Set aspect ratios</span>
+1094   set(obj.handles.ImageAxes, <span class="keyword">...</span>
+1095       <span class="string">'xlim'</span>                , lims(:,1), <span class="keyword">...</span>
+1096       <span class="string">'ylim'</span>                , lims(:,2), <span class="keyword">...</span>
+1097       <span class="string">'cameraviewanglemode'</span> , <span class="string">'auto'</span>, <span class="keyword">...</span>
+1098       <span class="string">'dataaspectratiomode'</span> , <span class="string">'auto'</span>, <span class="keyword">...</span>
+1099       <span class="string">'plotboxaspectratio'</span>  , obj.handles.pbar);
+1100   
+1101   <span class="comment">% Update zoom value</span>
+1102   set(obj.handles.ZoomCaptionText, <span class="string">'string'</span>, sprintf(<span class="string">'%d %%'</span>, <span class="keyword">...</span>
+1103                                                     round(diff(obj.handles.xlim100)/dTemp(1)*100)));
+1104   
+1105 <span class="keyword">end</span>
+1106 
+1107 <a href="#_sub20" class="code" title="subfunction startTimer(obj)">startTimer</a>(obj);
+1108 
+1109         <span class="keyword">end</span>
+1110         
+1111 <span class="comment">%--------------------------------------------------------------------------</span>
+1112 <span class="comment">% winBtnUpFcn</span>
+1113 <span class="comment">%   This is called when the mouse is released</span>
+1114 <span class="comment">%--------------------------------------------------------------------------</span>
+1115 <a name="_sub18" href="#_subfunctions" class="code">function winBtnUpFcn(obj, hObj, varargin)</a>
+1116 
+1117 set(hObj, <span class="keyword">...</span>
+1118     <span class="string">'pointer'</span>               , <span class="string">'arrow'</span>, <span class="keyword">...</span>
+1119     <span class="string">'windowbuttonmotionfcn'</span> , <span class="string">''</span>);
+1120 set(obj.handles.statusText, <span class="string">'string'</span>, <span class="string">''</span>);
+1121 set(obj.handles.ZoomLine, <span class="string">'xdata'</span>, NaN, <span class="string">'ydata'</span>, NaN);
+1122 set(obj.handles.ImageViewer, <span class="string">'windowbuttonupfcn'</span>, <span class="string">''</span>);
+1123 
+1124 <a href="#_sub20" class="code" title="subfunction startTimer(obj)">startTimer</a>(obj);
+1125 
+1126         <span class="keyword">end</span>
+1127         
+1128         
+1129 <span class="comment">%--------------------------------------------------------------------------</span>
+1130 <span class="comment">% startTimer</span>
+1131 <span class="comment">%   This starts the timer. If the timer object is invalid, it creates a new</span>
+1132 <span class="comment">%   one.</span>
+1133 <span class="comment">%--------------------------------------------------------------------------</span>
+1134 <a name="_sub19" href="#_subfunctions" class="code">function startTimer(obj)</a>
+1135 
+1136 <span class="keyword">try</span>
+1137   
+1138   <span class="keyword">if</span> ~strcmpi(obj.handles.tm.Running, <span class="string">'on'</span>);
+1139     start(obj.handles.tm);
+1140   <span class="keyword">end</span>
+1141   
+1142 <span class="keyword">catch</span> <span class="comment">%#ok&lt;CTCH&gt;</span>
+1143   
+1144   obj.handles.tm          = timer(<span class="keyword">...</span>
+1145       <span class="string">'name'</span>            , <span class="string">'image preview timer'</span>, <span class="keyword">...</span>
+1146       <span class="string">'executionmode'</span>   , <span class="string">'fixedspacing'</span>, <span class="keyword">...</span>
+1147       <span class="string">'objectvisibility'</span>, <span class="string">'off'</span>, <span class="keyword">...</span>
+1148       <span class="string">'taskstoexecute'</span>  , inf, <span class="keyword">...</span>
+1149       <span class="string">'period'</span>          , 0.001, <span class="keyword">...</span>
+1150       <span class="string">'startdelay'</span>      , 3, <span class="keyword">...</span>
+1151       <span class="string">'timerfcn'</span>        , @obj.getPreviewImages);
+1152   start(obj.handles.tm);
+1153   
+1154 <span class="keyword">end</span>
+1155 
+1156         <span class="keyword">end</span>
+1157         
+1158         
+1159 <span class="comment">%--------------------------------------------------------------------------</span>
+1160 <span class="comment">% stopTimerFcn</span>
+1161 <span class="comment">%   This gets called when the figure is closed.</span>
+1162 <span class="comment">%--------------------------------------------------------------------------</span>
+1163 <a name="_sub20" href="#_subfunctions" class="code">function stopTimerFcn(obj, varargin)</a>
+1164 
+1165 stop(obj.handles.tm);
+1166 <span class="comment">% wait until timer stops</span>
+1167 <span class="keyword">while</span> ~strcmpi(obj.handles.tm.Running, <span class="string">'off'</span>)
+1168   drawnow;
+1169 <span class="keyword">end</span>
+1170 delete(obj.handles.tm);
+1171 
+1172         <span class="keyword">end</span>
+1173         
+1174         
+1175 <span class="comment">%--------------------------------------------------------------------------</span>
+1176 <span class="comment">% stopTimer</span>
+1177 <span class="comment">%   This stops the timer object used for generating image previews</span>
+1178 <span class="comment">%--------------------------------------------------------------------------</span>
+1179 <a name="_sub21" href="#_subfunctions" class="code">function stopTimer(obj, varargin)</a>
+1180 
+1181 stop(obj.handles.tm);
+1182 
+1183 <span class="comment">% wait until timer stops</span>
+1184 <span class="keyword">while</span> ~strcmpi(obj.handles.tm.Running, <span class="string">'off'</span>)
+1185   drawnow;
+1186 <span class="keyword">end</span>
+1187 
+1188 set(obj.handles.statusText, <span class="string">'string'</span>, <span class="string">''</span>);
+1189 
+1190         <span class="keyword">end</span>
+1191         
+1192         
+1193 <span class="comment">%--------------------------------------------------------------------------</span>
+1194 <span class="comment">% readImageFileFcn</span>
+1195 <span class="comment">%   This function reads in the image file and converts to TRUECOLOR</span>
+1196 <span class="comment">%--------------------------------------------------------------------------</span>
+1197 <a name="_sub22" href="#_subfunctions" class="code">function [x, info,o] = readImageFileFcn(obj, filename)</a>
+1198 
+1199 <span class="keyword">try</span>
+1200   
+1201   info = imfinfo(filename);
+1202   
+1203   <span class="keyword">if</span> strcmp(info.Format,<span class="string">'fits'</span>)
+1204     PO = <a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>(<span class="string">'alis'</span>);
+1205     PO.BE = 1;
+1206     <span class="comment">% filename</span>
+1207     [x,h,o] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(filename,PO);
+1208     
+1209     info = info(1);
+1210     info.Width = size(x,2);        
+1211     info.PrimaryData.Size = size(x);
+1212     info.ColorType = <span class="string">'double'</span>;
+1213     info.PrimaryData = <a href="merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(info.PrimaryData,o);
+1214     info.MetaData = o;
+1215   <span class="keyword">else</span>
+1216     o = [];
+1217     [x,mp] = imread(filename);
+1218   <span class="keyword">end</span>
+1219   <span class="comment">% keyboard</span>
+1220   <span class="keyword">switch</span> info.ColorType
+1221    <span class="keyword">case</span> <span class="string">'grayscale'</span>
+1222     <span class="keyword">switch</span> class(x)
+1223      <span class="keyword">case</span> <span class="string">'logical'</span>
+1224       x = uint8(x);
+1225       mp = [0 0 0;1 1 1];
+1226       
+1227      <span class="keyword">case</span> <span class="string">'uint8'</span>
+1228       mp = gray(256);
+1229       
+1230      <span class="keyword">case</span> <span class="string">'uint16'</span>
+1231       mp = gray(2^16);
+1232       
+1233      <span class="keyword">case</span> {<span class="string">'double'</span>,<span class="string">'single'</span>}
+1234       cmapsz = size(get(obj.handles.ImageViewer, <span class="string">'Colormap'</span>), 1)
+1235       mp = gray(cmapsz);
+1236       mp = bone(256);
+1237      <span class="keyword">case</span> <span class="string">'int16'</span>
+1238       x = double(x)+2^15;
+1239       x = uint16((x-min(x(:)))/(max(x(:))-min(x(:)))*(2^16));
+1240       mp = gray(2^16);
+1241       
+1242      <span class="keyword">otherwise</span>
+1243       cmapsz = size(get(obj.handles.ImageViewer, <span class="string">'Colormap'</span>), 1);
+1244       mp = gray(cmapsz);
+1245     <span class="keyword">end</span>
+1246     x = ind2rgb(x, mp);
+1247     
+1248    <span class="keyword">case</span> <span class="string">'indexed'</span>
+1249     <span class="keyword">if</span> isempty(mp)
+1250       mp = info.Colormap;
+1251     <span class="keyword">end</span>
+1252     x = ind2rgb(x, mp);
+1253     
+1254    <span class="keyword">otherwise</span>
+1255   <span class="keyword">end</span>
+1256   
+1257 <span class="keyword">catch</span> <span class="comment">%#ok&lt;CTCH&gt;</span>
+1258   x = NaN;
+1259   info = [];
+1260   
+1261 <span class="keyword">end</span>
+1262         <span class="keyword">end</span>
+1263         
+1264     <span class="keyword">end</span>
+1265 <span class="keyword">end</span>
+1266 
+1267 
+1268 
+1269 <span class="comment">%--------------------------------------------------------------------------</span>
+1270 <span class="comment">% fixLongDirName</span>
+1271 <span class="comment">%   This truncates the directory string if it is too long to display</span>
+1272 <span class="comment">%--------------------------------------------------------------------------</span>
+1273 <a name="_sub23" href="#_subfunctions" class="code">function newdirname = fixLongDirName(dirname)</a>
+1274 <span class="comment">% Modify string for long directory names</span>
+1275 <span class="keyword">if</span> length(dirname) &gt; 20
+1276   [tmp1, tmp2] = strtok(dirname, filesep); <span class="comment">%#ok&lt;ASGLU&gt;</span>
+1277   <span class="keyword">if</span> isempty(tmp2)
+1278     newdirname = dirname;
+1279     
+1280   <span class="keyword">else</span>
+1281     <span class="comment">% in case the directory name starts with a file separator.</span>
+1282     id = strfind(dirname, tmp2);
+1283     tmp1 = dirname(1:id(1));
+1284     [p, tmp2] = fileparts(dirname);
+1285     <span class="keyword">if</span> strcmp(tmp1, p) || isempty(tmp2)
+1286       newdirname = dirname;
+1287       
+1288     <span class="keyword">else</span>
+1289       newdirname = fullfile(tmp1, <span class="string">'...'</span>, tmp2);
+1290       tmp3 = <span class="string">''</span>;
+1291       <span class="keyword">while</span> length(newdirname) &lt; 20
+1292         tmp3 = fullfile(tmp2, tmp3);
+1293         [p, tmp2] = fileparts(p);
+1294         <span class="keyword">if</span> strcmp(tmp1, p)  <span class="comment">% reach root directory</span>
+1295           newdirname = dirname;
+1296           <span class="comment">%break; % it will break because dirname is longer than 30 chars</span>
+1297           
+1298         <span class="keyword">else</span>
+1299           newdirname = fullfile(tmp1, <span class="string">'...'</span>, tmp2, tmp3);
+1300           
+1301         <span class="keyword">end</span>
+1302       <span class="keyword">end</span>
+1303     <span class="keyword">end</span>
+1304   <span class="keyword">end</span>
+1305 <span class="keyword">else</span>
+1306   newdirname = dirname;
+1307 <span class="keyword">end</span>
+1308 
+1309 <span class="keyword">end</span>
+1310 
+1311 
+1312 <span class="comment">%--------------------------------------------------------------------------</span>
+1313 <span class="comment">% helpBtnCallback</span>
+1314 <span class="comment">%   This opens up a help dialog box</span>
+1315 <span class="comment">%--------------------------------------------------------------------------</span>
+1316 <a name="_sub24" href="#_subfunctions" class="code">function helpBtnCallback(varargin)</a>
+1317 
+1318 helpdlg({<span class="keyword">...</span>
+1319     <span class="string">'Navigate through directories using the list box on the left.'</span>, <span class="keyword">...</span>
+1320     <span class="string">'Single-click to see the preview.'</span>, <span class="keyword">...</span>
+1321     <span class="string">'Double-click (list box OR preview image) to open and display image.'</span>, <span class="keyword">...</span>
+1322     <span class="string">''</span>, <span class="string">'Click and drag to pan the image.'</span>, <span class="keyword">...</span>
+1323     <span class="string">'Right click and drag to zoom. (or scroll wheel if R2007a or later)'</span>, <span class="keyword">...</span>
+1324     <span class="string">'Double-click to center view.'</span>, <span class="keyword">...</span>
+1325     <span class="string">'''Full'' displays the whole image.'</span>, <span class="keyword">...</span>
+1326     <span class="string">'''100%'' displays the image at the true resolution.'</span>, <span class="keyword">...</span>
+1327     <span class="string">'''File Info'' displays the current image file info.'</span>}, <span class="string">'Help'</span>);
+1328 
+1329 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

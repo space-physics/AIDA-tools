@@ -1,0 +1,257 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of errDeParallax2DiffuseS</title>
+  <meta name="keywords" content="errDeParallax2DiffuseS">
+  <meta name="description" content="errDeParallax2DiffuseS - error function for estimating electron spectra">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Inversion -->
+<h1>errDeParallax2DiffuseS
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>errDeParallax2DiffuseS - error function for estimating electron spectra</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function res = errDeParallax2DiffuseS(Par,var_pars,par0,trmtr2d21d,Ie2H,E,ImgCuts,Y,Z,biasAmplitudes,biasVals,out_arg_type,z_max) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> errDeParallax2DiffuseS - error function for estimating electron spectra
+ from auroral arcs seen of magnetic zenith
+
+ Calling:
+  res = errDeParallax2(Par,var_pars,par0,trmtr2d21d,Ie2H,E,ImgCuts,Y,Z,biasAmplitudes,biasVals,out_arg_type)
+ Input:
+  Par            - 
+  var_pars       - 
+  par0           - 
+  trmtr2d21d     - Projection matrix from 2-D horizontal-altitude
+                   volume emission distribution, down to linear
+                   image cut. [nZ*nY x nPixels]
+  Ie2H           - Cell array {nLambda x 1} with projection metrices
+                   from electron spectra to altitude variation of
+                   volume emission rate each cell element: [nZ x nE]
+  E              - Array of energies for Ie2H{i1}(i2,:). Assumed
+                   to be keV.
+  ImgCuts        - Cell array {nLambda x 1} with observed image
+                   intensities in a linear image cut [1 x nPixels]
+  Y              - Horizontal grid [nZ x nY] (km), Should be
+                   skewed so that columns are paralell with the
+                   magnetic field.
+  Z              - Altitude grid [nZ x nY] (km), should be flat in
+                   the sense that each line (Z(iZ,:)) is at the
+                   same altitude.
+  biasAmplitudes - Amplitude of 
+  biasVals       - 
+  out_arg_type   -</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Aurora/runner4FlamingRays.html" class="code" title="function Ibest = runner4FlamingRays(indices2run,Keos,IstartGuesses,Ibestest,trmtr2Dto1D,A1Z,A2Z,E,Y,Z,OPS)">runner4FlamingRays</a>	runner4FlamingRays - Estimate electron precipitation variation with E and Y</li><li><a href="../Aurora/runner4FlamingRays0.html" class="code" title="">runner4FlamingRays0</a>	% Example script: how to estimate electron energies in flaming rays</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function res = errDeParallax2DiffuseS(Par,var_pars,par0,trmtr2d21d,Ie2H,E,ImgCuts,Y,Z,biasAmplitudes,biasVals,out_arg_type,z_max)</a>
+0002 <span class="comment">% errDeParallax2DiffuseS - error function for estimating electron spectra</span>
+0003 <span class="comment">% from auroral arcs seen of magnetic zenith</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%  res = errDeParallax2(Par,var_pars,par0,trmtr2d21d,Ie2H,E,ImgCuts,Y,Z,biasAmplitudes,biasVals,out_arg_type)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%  Par            -</span>
+0009 <span class="comment">%  var_pars       -</span>
+0010 <span class="comment">%  par0           -</span>
+0011 <span class="comment">%  trmtr2d21d     - Projection matrix from 2-D horizontal-altitude</span>
+0012 <span class="comment">%                   volume emission distribution, down to linear</span>
+0013 <span class="comment">%                   image cut. [nZ*nY x nPixels]</span>
+0014 <span class="comment">%  Ie2H           - Cell array {nLambda x 1} with projection metrices</span>
+0015 <span class="comment">%                   from electron spectra to altitude variation of</span>
+0016 <span class="comment">%                   volume emission rate each cell element: [nZ x nE]</span>
+0017 <span class="comment">%  E              - Array of energies for Ie2H{i1}(i2,:). Assumed</span>
+0018 <span class="comment">%                   to be keV.</span>
+0019 <span class="comment">%  ImgCuts        - Cell array {nLambda x 1} with observed image</span>
+0020 <span class="comment">%                   intensities in a linear image cut [1 x nPixels]</span>
+0021 <span class="comment">%  Y              - Horizontal grid [nZ x nY] (km), Should be</span>
+0022 <span class="comment">%                   skewed so that columns are paralell with the</span>
+0023 <span class="comment">%                   magnetic field.</span>
+0024 <span class="comment">%  Z              - Altitude grid [nZ x nY] (km), should be flat in</span>
+0025 <span class="comment">%                   the sense that each line (Z(iZ,:)) is at the</span>
+0026 <span class="comment">%                   same altitude.</span>
+0027 <span class="comment">%  biasAmplitudes - Amplitude of</span>
+0028 <span class="comment">%  biasVals       -</span>
+0029 <span class="comment">%  out_arg_type   -</span>
+0030 
+0031 
+0032 <span class="comment">%   Copyright � 2011 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0033 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0034 
+0035 <span class="comment">% constraining_error = 0;</span>
+0036 
+0037 <span class="keyword">if</span> nargin &gt;12
+0038   [i110,i110] = min(abs(Z(:,1)-z_max));
+0039 <span class="keyword">else</span>
+0040   [i110,i110] = min(abs(Z(:,1)-106));
+0041 <span class="keyword">end</span>
+0042 I0 = par0;          <span class="comment">% The complete parameter set, with stable</span>
+0043                     <span class="comment">% parameters as well</span>
+0044 <span class="keyword">if</span> ~isempty(Par)
+0045   I0(var_pars) = Par; <span class="comment">% Insert the variable parameters into that</span>
+0046                       <span class="comment">% array. This way we can optimize the selected</span>
+0047                       <span class="comment">% var_pars while keeping the others constant -</span>
+0048                       <span class="comment">% subspace search...</span>
+0049   I0 = reshape(I0,9,[])'; <span class="comment">% Reshape parameter array to [nArcs x 9] to</span>
+0050                           <span class="comment">% make for [I0 x0 dx gx E0 dE gE Ddx g_E2]</span>
+0051 <span class="keyword">end</span>
+0052 <span class="keyword">for</span> i2 = length(ImgCuts):-1:1,
+0053   Vem{i2} = zeros(size(Z));
+0054 <span class="keyword">end</span>
+0055 Ie2D = 0;
+0056 
+0057 <span class="keyword">for</span> i1 = 1:(size(I0,1)-1),
+0058   <span class="comment">%disp(I0(i1,:))</span>
+0059   <span class="comment">% Before first we extract the parameters for this arc:</span>
+0060   Imax = I0(i1,1);     <span class="comment">% Peak intensity of this arc</span>
+0061   x0   = I0(i1,2);     <span class="comment">% Horizontal center of this arc</span>
+0062   dx   = I0(i1,3);     <span class="comment">% Horizontal width of this arc</span>
+0063   g_x  = I0(i1,4);     <span class="comment">% Spatial shape factor of this arc -</span>
+0064                        <span class="comment">% bias towards 2, constrain between 1.5 and 3</span>
+0065   E0   = I0(i1,5);<span class="comment">%*1e3% Central energy of this arc</span>
+0066   dE   = I0(i1,6);<span class="comment">%*1e3% Width in energy of this arc</span>
+0067   g_E  = I0(i1,7);     <span class="comment">% Shape factor energy-wise of this arc</span>
+0068   Ddx =  I0(i1,8);     <span class="comment">% Ratio of dx between left and right side of</span>
+0069                        <span class="comment">% x0, bias towards zero, constrain to</span>
+0070                        <span class="comment">% between -0.1 and 0.1</span>
+0071   g_E2 = I0(i1,9);     <span class="comment">% Exponent for power of E before the</span>
+0072                        <span class="comment">% exponential term in electron flux.</span>
+0073   
+0074   <span class="comment">% First we make the electron spectra from the current</span>
+0075   <span class="comment">% electron energy spectrum parameters for arc i1:</span>
+0076   Ie = E.^g_E2.*exp(-abs(E-E0).^g_E/dE^g_E).*E; 
+0077   <span class="comment">% Then we make the horizontal intensity variation of the</span>
+0078   <span class="comment">% precipitation:</span>
+0079   Ix = Imax * exp( -abs( (Y(i110,:) - x0)./(dx*(1+Ddx*(Y(i110,:) - x0&gt;0)))).^g_x);
+0080   <span class="comment">% Then we make altitude profiles for all the emissions:</span>
+0081   <span class="keyword">for</span> i2 = length(ImgCuts):-1:1,
+0082     
+0083     I_Z{i2} = Ie2H{i2}*Ie;
+0084     <span class="comment">%[Izmax,izmax] = max(I_Z{i2})</span>
+0085     <span class="comment">% I_Z2 = Ie2H2*Ie;</span>
+0086     <span class="comment">% The altitude-horizontal variation of the volume emission</span>
+0087     <span class="comment">% rates should just be the outer product of the two:</span>
+0088     <span class="comment">%Ivh{i2} = I_Z{i2}*Ix;</span>
+0089     Ivh = I_Z{i2}*Ix;
+0090     <span class="comment">% Ivh2 = I_Z2*Ix';</span>
+0091     Vem{i2} = Vem{i2} + Ivh;<span class="comment">%{i2};</span>
+0092     <span class="comment">% Vem2 = Vem2 + Ivh2;</span>
+0093     
+0094   <span class="keyword">end</span>
+0095   <span class="keyword">if</span> out_arg_type ~= 1
+0096     Ie2D = Ie2D + Ie*Ix;
+0097   <span class="keyword">end</span>
+0098 <span class="keyword">end</span>
+0099 <span class="comment">%VemDisc = Vem;</span>
+0100 <span class="comment">% Special treatment of diffuse aurora</span>
+0101 <span class="keyword">for</span> i1 = (size(I0,1)),
+0102   
+0103   I0_L = I0(i1,1);
+0104   I0_R = I0(i1,2);
+0105   y_0  = I0(i1,3);
+0106   dy   = I0(i1,4);
+0107   E0_L = I0(i1,5);
+0108   E0_R = I0(i1,6)*E0_L;
+0109   dE   = I0(i1,7); <span class="comment">% Fix this one to 1-2</span>
+0110   DdE  = I0(i1,8); <span class="comment">% Fix this baby to 1!</span>
+0111   IeL  = exp(-abs(E-E0_L).^2/dE^2).*E;
+0112   IeR  = exp(-abs(E-E0_R).^2/(dE*DdE)^2).*E;
+0113   IxR  = I0_L * (1 + erf( (Y(i110,:) - y_0)./dy)/2 );
+0114   IxL  = I0_R * (1 - erf( (Y(i110,:) - y_0)./dy)/2 );
+0115   <span class="keyword">for</span> i2 = length(ImgCuts):-1:1,
+0116     
+0117     I_Z{i2} = Ie2H{i2}*IeL;
+0118     <span class="comment">%Ivh{i2} = I_Z{i2}*IxL;</span>
+0119     Ivh = I_Z{i2}*IxL;
+0120     Vem{i2} = Vem{i2} + Ivh;<span class="comment">%{i2};</span>
+0121     
+0122   <span class="keyword">end</span>
+0123   <span class="keyword">if</span> out_arg_type ~= 1
+0124     Ie2D = Ie2D + IeL*IxL;
+0125   <span class="keyword">end</span>
+0126   <span class="keyword">for</span> i2 = length(ImgCuts):-1:1,
+0127     
+0128     I_Z{i2} = Ie2H{i2}*IeR;
+0129     <span class="comment">%Ivh{i2} = I_Z{i2}*IxR;</span>
+0130     Ivh = I_Z{i2}*IxR;
+0131     Vem{i2} = Vem{i2} + Ivh;<span class="comment">%{i2};</span>
+0132     
+0133   <span class="keyword">end</span>
+0134   <span class="keyword">if</span> out_arg_type ~= 1
+0135     Ie2D = Ie2D + IeR*IxR;
+0136   <span class="keyword">end</span>
+0137   
+0138 <span class="keyword">end</span>
+0139 <span class="comment">% $$$ for i1 = 1:length(ImgCuts),</span>
+0140 <span class="comment">% $$$   Vem{i1} = Vem{i1}';</span>
+0141 <span class="comment">% $$$ end</span>
+0142 <span class="comment">%%% keyboard</span>
+0143 
+0144 <span class="comment">% $$$ minVem = min(Vem(:));</span>
+0145 <span class="comment">% $$$ err = abs(minVem)*(minVem&lt;0);</span>
+0146 <span class="comment">% $$$ w_stns = [2,1.5];</span>
+0147 err = 0;
+0148 <span class="keyword">for</span> i1 = length(ImgCuts):-1:1,
+0149   
+0150   
+0151   <span class="comment">% Extract the the cut-out along selected cut</span>
+0152   cutImg{i1}  = ImgCuts{i1};<span class="comment">%interp2(stns(i1).img,u,v);</span>
+0153   cutProj{i1} = trmtr2d21d*Vem{i1}(:);<span class="comment">%interp2(stns(i1).proj,u,v);</span>
+0154   
+0155   <span class="comment">% square Image difference:</span>
+0156   <span class="comment">% err1 = w_stns(min(i1,numel(w_stns)))*sum(sum(( i_reg(:) - p_reg(:) ).^2));</span>
+0157   <span class="comment">% Wheighted square errors</span>
+0158   <span class="comment">%err1 = sum(( ImgCuts{i1} - cutProj{i1} ).^2./(abs(cutProj{i1}).^.5+1));</span>
+0159   <span class="comment">% Scrap that weighted stuff! WE NEED to give higher weights to</span>
+0160   <span class="comment">% the brighter parts!</span>
+0161   err1 = sum( ( ImgCuts{i1}(3:end-1) - cutProj{i1}(3:end-1) ).^2 );
+0162   <span class="comment">% And to avoid edge effects skip the first few points in either</span>
+0163   <span class="comment">% end...</span>
+0164   err = err + err1;
+0165   
+0166 <span class="keyword">end</span>
+0167 
+0168 <span class="keyword">if</span> ~isempty(biasAmplitudes)
+0169   err = err + sum(biasAmplitudes(:).*( Par(:) - biasVals(:) ).^2);
+0170   err = err + 500*sum( ( 2 - I0(:,6) ).^5 .* ( I0(:,6) &lt; 2) );
+0171 <span class="keyword">end</span>
+0172 
+0173 <span class="keyword">if</span> err &lt; 0 | ~isfinite(err)
+0174   keyboard
+0175 <span class="keyword">end</span>
+0176 <span class="keyword">switch</span> out_arg_type
+0177  <span class="keyword">case</span> 1 <span class="comment">% Error</span>
+0178   res = err;
+0179  <span class="keyword">case</span> 2 <span class="comment">% Vem and projections</span>
+0180   res.par = I0;
+0181   res.err = err;
+0182   res.Vem{1} = Vem{1};
+0183   res.Vem{2} = Vem{2};
+0184   res.cutImg = cutImg;
+0185   res.cutProj = cutProj;
+0186   res.Ie2D = Ie2D;
+0187  <span class="keyword">otherwise</span>
+0188 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

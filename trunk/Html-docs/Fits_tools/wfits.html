@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of wfits</title>
+  <meta name="keywords" content="wfits">
+  <meta name="description" content="WFITS - function to write fits files.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>wfits
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>WFITS - function to write fits files.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function ok = wfits(header,data,name) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> WFITS - function to write fits files.
+
+ Calling:
+ function ok = wfits(header,data,name)
+ 
+ Input:
+         HEADER - string matrix with 80 characters
+         per line.
+         Mandatory entries in the header are:
+         1 'SIMPLE  '
+         2 'BITPIX  '
+         3 'NAXIS   '
+         4 'NAXISn  '
+         : other
+         last 'END  '
+         For valid values for the keyworlds see fits documentation
+         DATA is the imaegearray to be stored.
+         NAME is the filename.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="fitsfindkey.html" class="code" title="function [i] = fitsfindkey(V,S)">fitsfindkey</a>	fitsfindkey - Searches a FITS header V for keyword S</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="kosch2fits.html" class="code" title="function ok = kosch2fits(filename,filename_out)">kosch2fits</a>	KOSCH2FITS - Transform Kosch's images to fits format.</li><li><a href="kosch_double2fits.html" class="code" title="function ok = kosch_double2fits(filename,filename_out)">kosch_double2fits</a>	KOSCH_DOUBLE2FITS - Transform Kosch's double-format images to fits format.</li><li><a href="kosch_float2fits.html" class="code" title="function ok = kosch_float2fits(filename,filename_out)">kosch_float2fits</a>	KOSCH_FLOAT2FITS - Transform Kosch's float-format images to fits format.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ok = wfits(header,data,name)</a>
+0002 <span class="comment">% WFITS - function to write fits files.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% function ok = wfits(header,data,name)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%         HEADER - string matrix with 80 characters</span>
+0009 <span class="comment">%         per line.</span>
+0010 <span class="comment">%         Mandatory entries in the header are:</span>
+0011 <span class="comment">%         1 'SIMPLE  '</span>
+0012 <span class="comment">%         2 'BITPIX  '</span>
+0013 <span class="comment">%         3 'NAXIS   '</span>
+0014 <span class="comment">%         4 'NAXISn  '</span>
+0015 <span class="comment">%         : other</span>
+0016 <span class="comment">%         last 'END  '</span>
+0017 <span class="comment">%         For valid values for the keyworlds see fits documentation</span>
+0018 <span class="comment">%         DATA is the imaegearray to be stored.</span>
+0019 <span class="comment">%         NAME is the filename.</span>
+0020 <span class="comment">%</span>
+0021 
+0022 
+0023 <span class="comment">%   Copyright � 19980525 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0024 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0025 
+0026 
+0027 [fid] = fopen(name,<span class="string">'w'</span>);
+0028 <span class="keyword">if</span> (fid == -1),
+0029   <span class="comment">%msgstr = sprintf('Unable to open the file: %s\n',name);</span>
+0030   <span class="comment">%error(msgstr)</span>
+0031   error(<span class="string">'Unable to open the file: %s\n'</span>,name)
+0032 <span class="keyword">end</span>
+0033 
+0034 fprintf(fid,<span class="string">'%s'</span>,header');
+0035 <span class="keyword">for</span> i = 1:size(header,1)
+0036   
+0037   key{i} = sscanf(header(i,:),<span class="string">'%8s='</span>,1);
+0038   keyval{i}=deblank(header(i,[10:end]));
+0039   
+0040 <span class="keyword">end</span>
+0041 
+0042 <span class="keyword">if</span> ~( strncmp(header(i,:),<span class="string">'END'</span>,3) == 1 )
+0043   
+0044   error(<span class="string">'Missing ''END'' in header'</span>)
+0045   
+0046 <span class="keyword">end</span>
+0047 blank = <span class="string">'                                                                                '</span>;
+0048 
+0049 <span class="keyword">while</span> rem( i,36 ) ~= 0 
+0050   
+0051   fwrite(fid,blank,<span class="string">'char'</span>);
+0052   i = i+1;
+0053   
+0054 <span class="keyword">end</span>
+0055 
+0056 
+0057 bitpix=sscanf(keyval{<a href="fitsfindkey.html" class="code" title="function [i] = fitsfindkey(V,S)">fitsfindkey</a>(key,<span class="string">'BITPIX'</span>)},<span class="string">'%d'</span>);
+0058 
+0059 <span class="keyword">if</span> ( bitpix == 8 )
+0060   
+0061   fwrite(fid,data',<span class="string">'uint8'</span>);
+0062   
+0063 <span class="keyword">elseif</span> ( bitpix == 16 )
+0064   
+0065   fwrite(fid,data',<span class="string">'int16'</span>);
+0066   
+0067 <span class="keyword">end</span>
+0068 <span class="keyword">if</span> ( bitpix == 32 )
+0069   
+0070   fwrite(fid,data',<span class="string">'int16'</span>);
+0071   
+0072 <span class="keyword">end</span>
+0073 <span class="keyword">if</span> ( bitpix == -32 )
+0074   
+0075   fwrite(fid,data',<span class="string">'float32'</span>);
+0076   
+0077 <span class="keyword">end</span>
+0078 fclose(fid);
+0079 <span class="keyword">if</span> nargout ~= 0
+0080   ok = 1;
+0081 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

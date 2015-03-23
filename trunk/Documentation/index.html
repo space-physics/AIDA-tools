@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>What! A well documented project? Nah not by him!!!</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+  </head>
+  
+  <body class="section-1" bgcolor="#FFFFF0">
+    <ul id="menu">
+      <li id="nav-1"><a href="../Documentation/index.html">AIDA-home</a>
+	<ul id="subnav-1">
+	  <li><a href="#overview">Overview</a></li>
+	  <li><a href="installation.html">Installation</a></li>
+	  <li><a href="getting-started.html">Getting started</a></li>
+	  <li><a href="intros.html">Introductions</a></li>
+<!-- 	  <li><a href="#links">Links</a></li> -->
+	</ul>
+      </li>
+      <li id="nav-2"><a href="../Documentation/intros.html">Image analysis (introductions)</a>
+	<ul id="subnav-2">
+	  <li><a href="BBH.pdf">Tutorial</a></li>
+	  <li><a href="optics.html">Camera</a></li>
+	  <li><a href="starcal.html">Starcal</a></li>
+	  <li><a href="Skymap/index.html">Skymap</a></li>
+	  <li><a href="getting-started.html">Getting started</a></li>
+	</ul>
+      </li>
+      <li id="nav-3"><a href="../Html-exmpls/index.html">Examples</a>
+	<ul id="subnav-3">
+	  <li><a href="#imgs-ex">Imgtools</a></li>
+	  <li><a href="#tomo">Tomography</a></li>
+	  <li><a href="#alis">ALIS</a></li>
+	  <li><a href="#links">Links</a></li>
+	</ul>
+      </li>
+      <li id="nav-4"><a href="../Html-docs/index.html">Matlab-src-tree</a>
+      </li>
+    </ul>
+    <div id="contents">
+      <h1>AIDA: Auroral Image Data Analysis tools</h1>
+      <center><em>Advanced image processing tools and
+	  friends</em></center>
+      This is the on-line documentation of the AIDA toolbox. It provides
+      a small and self-contained set of functions for single (keograms
+      et al.) and multi-viewpoint image data analysis  (tomography,
+      stereoscopic triangulations). Further it includes tools for
+      camera calibration using images of background stars. This
+      fundamental functionality is based on general camera models, and
+      a small ephemeris program. 
+      <p>
+	Initially these functions were designed to work with data from
+	the <a href="http://www.alis.irf.se">Auroral Large
+	  Imaging System (ALIS)</a> but they should work with any 
+	image data. However the set of functions for producing and 
+	refining ALIS experiment set-up programs and a set of functions
+	for browsing ALIS data are included as well. These functions
+	can easily be customized and extended for use with other
+	imaging systems. In all the following matlab toolboxes are included:
+      <ul>
+	<li><SPAN class="LI-HD">ALIS</SPAN> - functions directly related
+	  to ALIS. Contains data browser, experiment-programmer. <br>(
+	  intro,
+	  <a href="../Html-exmpls/index.html#alis">examples</a>,
+	  <a href="../Html-docs/ALIS/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li>
+	<li><SPAN class="LI-HD">ASK</SPAN> - functions directly
+	  related to analysis of data from the Auroral Structure and
+	  Kinetics instrument - ASK. <br>(
+	  intro,
+	  examples,
+	  <a href="../Html-docs/ASK/HSOFT/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li>
+	<li><SPAN class="LI-HD">Camera</SPAN> - Black-box-model of 
+	  the imaging process. Everything related to camera models,
+	  image projections, stereoscopy, camera related image
+	  corrections.
+	  <br>(<a href="optics.html">intro</a>,
+	  examples,
+	  <a href="../Html-docs/Camera/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li>
+	<li><SPAN class="LI-HD">Fits_tools</SPAN> - functions for
+	  reading and writing <A
+	    HREF="http://fits.gsfc.nasa.gov/">fits</a> 
+<!-- 	    HREF="http://archive.stsci.edu/fits/index.html">fits</a> -->
+	  files, and related image correction functions. <br>(	  intro,
+	  examples,
+	  <a href="../Html-docs/Fits_tools/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li>
+	<li><SPAN class="LI-HD">Imgtools</SPAN> - general image analysis
+	  functions. <br>(
+	  intro,
+	  <a href="../Html-exmpls/index.html#imgs-ex">example</a>,
+	  <a href="../Html-docs/Imgtools/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li>
+	<li><SPAN class="LI-HD">Tomography</SPAN> - toolbox for doing
+	  3-D cone beam tomographic inversion from a small number of
+	  view-points. <br>(
+	  intro,
+	  <a href="../Examples/html/tomo_EXMPL970216.html">examples</a>,
+	  <a href="../Html-docs/Tomography/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li>
+	<li><SPAN class="LI-HD">Starcal</SPAN> - program for doing
+	  geometric camera calibrations. 
+	  <br>(<a href="starcal.html">intro</a>,
+	  examples,
+	  <a href="../Html-docs/Starcal/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li>
+	<li><SPAN class="LI-HD">Skymap</SPAN> - a star chart, ephemeris program. <br>(
+	  <a href="Skymap/index.html">intro</a>,
+	  examples, 
+	  <a href="../Html-docs/Skymap/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li>
+      </ul>
+      <p>
+      The following toolboxes are utility-tools, helper functions and
+      building blocks the functions above use:
+      </p>
+      <ul>
+	<li><SPAN class="LI-HD">EARTH</SPAN> - 
+	  <a href="http://en.wikipedia.org/wiki/World_Geodetic_System">WGS-84</a> geoid model. <br>(
+	  <a href="earth.html">intro</a>,
+	  examples, 
+	  <a href="../Html-docs/EARTH/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li>
+	<li><SPAN class="LI-HD">Geometry</SPAN> - some small functions
+	  for doing 3-D geometry.
+	  <br>(intro,
+	  examples,
+	  <a href="../Html-docs/Geometry/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li>
+	<li><SPAN class="LI-HD">I3D</SPAN> - functions for
+	  three-dimensional intensity distributions. <br>(
+	  intro,
+	  examples,
+	  <a href="../Html-docs/I3D/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li> 
+	<li><SPAN class="LI-HD">Inversion</SPAN> - small set of SVD
+	  based least square functions. <br>(
+	  intro,
+	  examples,
+	  <a href="../Html-docs/Inversion/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li> 
+	<li><SPAN class="LI-HD">tools</SPAN> - Assorted and auxiliary
+	  tools with varied origins.<br>(
+	  intro,
+	  examples,
+	  <a href="../Html-docs/tools/Contents.html">function list</a>,
+	  <a href="../Html-docs/index.html">m-src-doc</a>)</li> 
+      </ul>
+      <p>
+	AIDA_tools are
+	<a href="http://www.alis.irf.se/~bjorn/AIDA-latest.tbz">
+	  provided as is, free of charge</a> - but with 
+	the hope for luxurious gifts, flattering and fame.<br>
+	...and under the <a href="COPYRIGHT">GNU GENERAL PUBLIC LICENSE</a>
+	where nothing else is explicitly stated...
+        Contributions with bug-fixes, improvements of code or
+        documentation is most wellcome. To make this possible in as
+        convenient way as posibly possible AIDA-tools is now under
+        <a
+         href="https://aniara.irf.se/websvn/listing.php?repname=AIDA_tools&path=%2F&sc=0"><em>subversion</em> version control</a>,
+        currently it is behind password, to get access please contact
+      <a href="mailto:urban@irf.se">Urban Br&auml;ndstr&ouml;m</a> for
+      help with access.
+      </p>
+      <a name="links"></a><h3>Related Links</h3>
+      <ul>
+	<li><a href="http://www.alis.irf.se">ALIS</a>
+	  The Auroral Large Imaging System
+	  <ul>
+	    <li><a href="http://www.alis.irf.se/~urban/avh/html/htmlthesis.html">ALIS reference publication</a>
+	    <li><a href="http://alis.irf.se/?item=data">ALIS image database</a>
+	  </ul>
+	<li><a href="http://fits.gsfc.nasa.gov/">FITS</a>
+	  the reference site for Flexible Image Transport System.
+	<li><a href="http://en.wikipedia.org/wiki/World_Geodetic_System">WGS-84</a> Geoid model.
+      </ul>
+    </div>
+    <p>
+      <a href="http://validator.w3.org/check?uri=referer"><img
+	  src="http://www.w3.org/Icons/valid-html401"
+	  alt="Valid HTML 4.01 Transitional" height="31" width="88"></a>
+    </p>
+    <address><a href="mailto:bjorn@irf.se">Bj&ouml;rn Gustavsson</a></address>
+    <!-- Created: Tue Apr  9 22:46:13 JST 2002 -->
+    <!-- hhmts start -->Last modified: Mon Apr 15 00:19:21 CEST 2013 <!-- hhmts end -->
+  </body>
+</html>

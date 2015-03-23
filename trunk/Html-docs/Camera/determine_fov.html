@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of determine_fov</title>
+  <meta name="keywords" content="determine_fov">
+  <meta name="description" content="DETERMINE_FOV - determine field-of-view of optics">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>determine_fov
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>DETERMINE_FOV - determine field-of-view of optics</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function fov = determine_fov(imgsiz,optpar,optmod) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> DETERMINE_FOV - determine field-of-view of optics
+ with optical transfer function OPTMOD with optical parameters
+ OPTPAR
+
+ Calling:
+ fov = determine_fov(imgsiz,optpar,optmod)
+ 
+ Input:
+   IMGSIZ - image size
+   OPTPAR - optical parameters
+   OPTMOD - optical model,
+ 
+ See also: <a href="camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">CAMERA_MODEL</a>, CAMERA_INV_MODEL</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>	CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function fov = determine_fov(imgsiz,optpar,optmod)</a>
+0002 <span class="comment">% DETERMINE_FOV - determine field-of-view of optics</span>
+0003 <span class="comment">% with optical transfer function OPTMOD with optical parameters</span>
+0004 <span class="comment">% OPTPAR</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% fov = determine_fov(imgsiz,optpar,optmod)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%   IMGSIZ - image size</span>
+0011 <span class="comment">%   OPTPAR - optical parameters</span>
+0012 <span class="comment">%   OPTMOD - optical model,</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% See also: CAMERA_MODEL, CAMERA_INV_MODEL</span>
+0015 
+0016 
+0017 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0018 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0019 
+0020 
+0021 
+0022 <span class="keyword">global</span> bx
+0023 <span class="keyword">global</span> by
+0024 
+0025 bx = imgsiz(1);
+0026 by = imgsiz(2);
+0027 
+0028 [fi,taeta] = <a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>([1 1 imgsiz(1)],<span class="keyword">...</span>
+0029                              [1 imgsiz(2) imgsiz(2)],<span class="keyword">...</span>
+0030                              optpar,optmod,imgsiz);
+0031 
+0032 e_c1 = [sin(taeta(1))*sin(fi(1)) sin(taeta(1))*cos(fi(1)) cos(taeta(1))];
+0033 e_c3 = [sin(taeta(2))*sin(fi(2)) sin(taeta(2))*cos(fi(2)) cos(taeta(2))];
+0034 e_c2 = [sin(taeta(3))*sin(fi(3)) sin(taeta(3))*cos(fi(3)) cos(taeta(3))];
+0035 
+0036 fov(3) = acos(dot(e_c1,e_c3));
+0037 fov(1) = acos(dot(e_c1,e_c2));
+0038 fov(2) = acos(dot(e_c2,e_c3));
+0039 
+0040 [fi,taeta] = <a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>([1 imgsiz(1) imgsiz(1)/2 imgsiz(1)/2],<span class="keyword">...</span>
+0041                              [imgsiz(2)/2 imgsiz(2)/2 1 imgsiz(2)],<span class="keyword">...</span>
+0042                              optpar,optmod,imgsiz);
+0043 
+0044 e_c1 = [sin(taeta(1))*sin(fi(1)) sin(taeta(1))*cos(fi(1)) cos(taeta(1))];
+0045 e_c2 = [sin(taeta(2))*sin(fi(2)) sin(taeta(2))*cos(fi(2)) cos(taeta(2))];
+0046 e_c3 = [sin(taeta(3))*sin(fi(3)) sin(taeta(3))*cos(fi(3)) cos(taeta(3))];
+0047 e_c4 = [sin(taeta(4))*sin(fi(4)) sin(taeta(4))*cos(fi(4)) cos(taeta(4))];
+0048 
+0049 fov(4) = acos(dot(e_c1,e_c2));
+0050 fov(5) = acos(dot(e_c3,e_c4));</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

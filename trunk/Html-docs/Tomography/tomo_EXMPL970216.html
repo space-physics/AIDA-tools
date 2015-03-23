@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_EXMPL970216</title>
+  <meta name="keywords" content="tomo_EXMPL970216">
+  <meta name="description" content="% TOMO_EXMPL970216 - Template/example script for auroral tomography,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_EXMPL970216
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% TOMO_EXMPL970216 - Template/example script for auroral tomography,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% TOMO_EXMPL970216 - Template/example script for auroral tomography,</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">camera_set_up_sc</a>	CAMERA_SET_UP_SC - Calculates the projection matrix from 3-D simple cubic grid</li><li><a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>	FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</li><li><a href="make_tomo_ops.html" class="code" title="function tomo_ops = make_tomo_ops(stns)">make_tomo_ops</a>	MAKE_TOMO_OPS - User interface to set some parameters for the</li><li><a href="sc_positioning.html" class="code" title="function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)">sc_positioning</a>	SC_POSITIONING - position voxels/base-functions in SC grid.</li><li><a href="tomo_inp_images.html" class="code" title="function stns = tomo_inp_images(file_list,stns,img_ops)">tomo_inp_images</a>	TOMO_INP_IMAGES - Preprocessing of images for tomography plus</li><li><a href="tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>	TOMO_STEPS - tomographic itterative step(s).</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% TOMO_EXMPL970216 - Template/example script for auroral tomography,</span>
+0002 
+0003 <span class="comment">%%</span>
+0004 <span class="comment">% This script is developed to be used as a template script for</span>
+0005 <span class="comment">% tomographic reconstruction of ALIS data. It should be well suited</span>
+0006 <span class="comment">% for adaption to most cases, and could as well be used by other</span>
+0007 <span class="comment">% ground based auroral imaging systems - provided that the requisit</span>
+0008 <span class="comment">% background information about the image locations and the</span>
+0009 <span class="comment">% geometrical characteristics of the imagers is made available for</span>
+0010 <span class="comment">% the functions that require so.</span>
+0011 
+0012 <span class="comment">%% Tomography for ALIS</span>
+0013 <span class="comment">% Skeleton script for auroral tomography, developed for use with</span>
+0014 <span class="comment">% ALIS data. The tomographic inversion is based on the</span>
+0015 <span class="comment">% &quot;quick-and-'dirty'-but-more-accurate&quot; projection algorithm based</span>
+0016 <span class="comment">% on blobbs (smooth basis functions, in this implementation cos^2)</span>
+0017 <span class="comment">% by Peter Rydesaeter [Rydesaeter and Gustavsson 2001]. The</span>
+0018 <span class="comment">% currently available itterative inversions are ART, mSIRT, SIRT</span>
+0019 <span class="comment">% and FMAPE is on the task list.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% This script could be used as a pattern script. For adaption to</span>
+0022 <span class="comment">% specific events adjust, modify and wrap to make it fit your needs and</span>
+0023 <span class="comment">% whishes.</span>
+0024 
+0025 <span class="comment">%% Step 1: loading images</span>
+0026 <span class="comment">% To load images and set up camera parameters:</span>
+0027 <span class="comment">%  1, make an array of fits file names for all images from one</span>
+0028 <span class="comment">%  event (same time)</span>
+0029 <span class="comment">%[q,w] = my_unix('ls -1 --color=never 970216/[56]*.RAF');</span>
+0030 alisdataroot = <span class="string">'/media/MYBOOK_3/bjorn-tmp/ALIS/stdnames'</span>;
+0031 cd(alisdataroot)
+0032 cd(<span class="string">'1997/02/16/20'</span>)
+0033 w5 = dir(<span class="string">'*A.fits'</span>);
+0034 w6 = dir(<span class="string">'*N.fits'</span>);
+0035 <span class="comment">%file_list = str2mat(w(2,:),w(9,:))</span>
+0036 file_list = str2mat(w5(2).name,w6(2).name)
+0037 
+0038 stns = <a href="tomo_inp_images.html" class="code" title="function stns = tomo_inp_images(file_list,stns,img_ops)">tomo_inp_images</a>(file_list);
+0039 <span class="comment">% stns = tomo_inp_images(file_list,[],POs);</span>
+0040 <span class="comment">% or</span>
+0041 <span class="comment">% stns = tomo_inp_images(file_list,img_ops);</span>
+0042 <span class="comment">% Where FILE_LIST is the image files from the different stations</span>
+0043 <span class="comment">% (=viewing positions). IMG_OPS should be a structure as returned</span>
+0044 <span class="comment">% from TYPICAL_PRE_PROC_OPS (or an array of such structures). For</span>
+0045 <span class="comment">% format of IMG_OPS see INIMG. If only FILE_LIST is given default</span>
+0046 <span class="comment">% parameters are used for image pre-processing, 2-D 3x3 median</span>
+0047 <span class="comment">% filtering, quadrant correction and image resizing to 256x256</span>
+0048 <span class="comment">% pixels.</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">% The function automatically searches for optical parameters.</span>
+0051 
+0052 <span class="comment">%% Setting up the geometry</span>
+0053 <span class="comment">% Still not very polished/finished set up of the geography/geometry</span>
+0054 <span class="comment">% of the 3-D region of/for/(in which) the reconstruction. Some use</span>
+0055 <span class="comment">% of INV_PROJECT_IMG might be helpfull for determining/selecting an</span>
+0056 <span class="comment">% appropriate region of the reconstruction. One thing to remember</span>
+0057 <span class="comment">% is that MATLAB(R) is building their 3-D arrays as V(y,x,z). Here</span>
+0058 <span class="comment">% a choise is wether to use the direction along the magnetic field</span>
+0059 <span class="comment">% or the vertical as the third dimension. The 'field aligned</span>
+0060 <span class="comment">% proximity' filtering should preferably be used with r3 || e_m.</span>
+0061 <span class="comment">% 1, Make the base function block:</span>
+0062 Vem = zeros([90 100 64]);
+0063 <span class="comment">% set the lower south-west corner:</span>
+0064 r0 = [-64*2 -64*2 80];
+0065 r0 = [-128 -64 80];
+0066 <span class="comment">% Set blob separation:</span>
+0067 dl = 1.8;
+0068 <span class="comment">% Define the latice unit vectors</span>
+0069 dr1 = [dl 0 0];
+0070 dr2 = [0 dl 0];
+0071 <span class="comment">% With e3 || vertical:</span>
+0072 dr3 = [0 0 dl];
+0073 <span class="comment">% or || magnetic zenith:</span>
+0074 dr3 = [0 -dl*tan(pi*12/180) dl*cos(pi*12/180)];
+0075 <span class="comment">% above is an error, below is a corrected version</span>
+0076 dr3 = [0 -dl*tan(pi*12/180) dl];
+0077 <span class="comment">% Calculate duplicate arrays for the position of the base functions:</span>
+0078 [r,X,Y,Z] = <a href="sc_positioning.html" class="code" title="function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)">sc_positioning</a>(r0,dr1,dr2,dr3,Vem);
+0079 XfI = r0(1)+dr1(1)*(X-1)+dr2(1)*(Y-1)+dr3(1)*(Z-1);
+0080 YfI = r0(2)+dr1(2)*(X-1)+dr2(2)*(Y-1)+dr3(2)*(Z-1);
+0081 ZfI = r0(3)+dr1(3)*(X-1)+dr2(3)*(Y-1)+dr3(3)*(Z-1);
+0082 
+0083 <span class="comment">%% Set the number of size layers</span>
+0084 <span class="comment">% the projection algorithm divides the base into classes based on</span>
+0085 <span class="comment">% the size of their footprint in the image. Here it is needed to</span>
+0086 <span class="comment">% select the number of layers to use in the image projection, more</span>
+0087 <span class="comment">% is better and slower: 8 minimum, 10 better, 16 getting on the</span>
+0088 <span class="comment">% slow side...</span>
+0089 nr_layers = 10;
+0090 
+0091 <span class="comment">%% Creating the station  structure</span>
+0092 <span class="comment">% Here we make the structure array holding the projection matrix,</span>
+0093 <span class="comment">% the filter kernels and size grouping of the base functions needed</span>
+0094 <span class="comment">% for the fast projection.</span>
+0095 <span class="comment">% Set up the stuff on the camera and 3D structure needed for the</span>
+0096 <span class="comment">% fast projection.</span>
+0097 <span class="keyword">for</span> i1 = 1:length(stns),
+0098   
+0099   rstn = stns(i1).obs.xyz;
+0100   optpar = stns(i1).optpar;
+0101   imgsize = size(stns(i1).img);
+0102   cmt = stns(i1).obs.trmtr;
+0103   [stns(i1).uv,stns(i1).d,stns(i1).l_cl,stns(i1).bfk] = <a href="camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">camera_set_up_sc</a>(r,X,Y,Z,optpar,rstn,imgsize,nr_layers,cmt);
+0104   
+0105 <span class="keyword">end</span>
+0106 
+0107 <span class="keyword">for</span> i1 = 1:length(stns),
+0108   
+0109   stns(i1).proj = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(ones(size(X)),<span class="keyword">...</span>
+0110                                  stns(i1).uv,<span class="keyword">...</span>
+0111                                  stns(i1).d,<span class="keyword">...</span>
+0112                                  stns(i1).l_cl,<span class="keyword">...</span>
+0113                                  stns(i1).bfk,<span class="keyword">...</span>
+0114                                  size(stns(i1).img),1);
+0115   
+0116 <span class="keyword">end</span>
+0117 
+0118 <span class="comment">%% Options for the tomographic inversion</span>
+0119 <span class="comment">%</span>
+0120 <span class="comment">% To Set some parameters for The tomographic inversion.</span>
+0121 tomo_ops = <a href="make_tomo_ops.html" class="code" title="function tomo_ops = make_tomo_ops(stns)">make_tomo_ops</a>(stns);
+0122 <span class="comment">% Or:</span>
+0123 <span class="comment">% tomo_ops = make_tomo_ops;</span>
+0124 <span class="comment">% Where STNS is an array of &quot;station-structures&quot; as described</span>
+0125 <span class="comment">% below.</span>
+0126 <span class="comment">% These options are: 1, 'quiet border' the frame around the images</span>
+0127 <span class="comment">% where the ratio between observed image and current projection is</span>
+0128 <span class="comment">% set to 1 this is to avoid problems with edge effects from a porly</span>
+0129 <span class="comment">% known flat-field sensitivity correction; 2, relative scaling of</span>
+0130 <span class="comment">% images and the normalization region to avoid problems with</span>
+0131 <span class="comment">% absolute sensitivity uncertainties and such; 3, choice of</span>
+0132 <span class="comment">% itterative method; 4, choise of 3-D filtering method and filter</span>
+0133 <span class="comment">% kernel.</span>
+0134 
+0135 
+0136 <span class="comment">%% Start guess</span>
+0137 <span class="comment">% To avoid the problems in the reconstruction stemming from</span>
+0138 <span class="comment">% uncertainties in absolute sensitivity, vignetting, orientation</span>
+0139 <span class="comment">% and non-overlapping-f-o-vs it is preferable to usee non-flat</span>
+0140 <span class="comment">% start guesses that tries to approximate the distribution of</span>
+0141 <span class="comment">% volume emission.</span>
+0142 <span class="comment">% A Cunning (?) method to obtain a resonable start guess for the</span>
+0143 <span class="comment">% reconstruction is to adjust a 3D distribution with chapman</span>
+0144 <span class="comment">% profiles centered at ALT with width WIDTH. STRONGLY</span>
+0145 <span class="comment">% RECOMENDED. It is found that the exact value of ALT does not</span>
+0146 <span class="comment">% affect the resulting reconstruction. But the regarding the width</span>
+0147 <span class="comment">% it is preferable to err on the narrow side here as the</span>
+0148 <span class="comment">% reconstruction tends to spread the volume emission in altitude</span>
+0149 <span class="comment">% rather than compress it.</span>
+0150 alt_max5577 = 115;
+0151 width = 25;
+0152 [Vem0,stns] = tomo_start_guess(stns,alt_max5577,width,XfI,YfI,ZfI);
+0153 clf
+0154 slice(Vem0,47,50,20),shading interp,caxis([0 .7e8]),view(90,0)
+0155 <span class="comment">%%</span>
+0156 slice(Vem0,47,50,20),shading interp,caxis([0 .7e8]),view(0,90)
+0157 pause(3)
+0158 slice(Vem0,47,50,20),shading interp,caxis([0 .7e8]),view(90,0)
+0159 <span class="comment">%% Intensity scaling</span>
+0160 <span class="comment">% This start guess should then be scaled.</span>
+0161 <span class="comment">% Function to scale 3D intensities to give projections that are in</span>
+0162 <span class="comment">% the same intensity range as the images. Not needed here since the</span>
+0163 <span class="comment">% function is already called from within TOMO_START_GUESS, but</span>
+0164 <span class="comment">% might be usefull in the working process.</span>
+0165 <span class="comment">% [stns,Vem] = adjust_level(stns,Vem,1);</span>
+0166 
+0167 <span class="comment">%% Tomographic update:</span>
+0168 <span class="comment">% Here are the itterative tomographic steps and filtering made.</span>
+0169 nr_laps = 1;
+0170 fS = [7 7 5 5 3 3];
+0171 Vem = Vem0;
+0172 <span class="keyword">for</span> i_f = 1:6,                                                                 
+0173   
+0174   <span class="comment">% Here we make the filter kernel smaller and smaller as the</span>
+0175   <span class="comment">% reconstruction proceeds</span>
+0176   [xf,yf] = meshgrid(1:fS(i_f),1:fS(i_f));            
+0177   fK = exp(-(xf-mean(xf(:))).^2/mean(xf(:)).^2-(yf-mean(yf(:))).^2/mean(yf(:))^2);
+0178   <span class="comment">% It is no more difficult than to adjust the</span>
+0179   <span class="comment">% |tomo_ops.filterkernel|. And the other options are no more</span>
+0180   <span class="comment">% difficult to modify</span>
+0181   tomo_ops(1).filterkernel = fK;
+0182   
+0183   [Vem,stns] = <a href="tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>(Vem,stns,tomo_ops,nr_laps);
+0184   pause(2)
+0185 <span class="keyword">end</span>
+0186 clf
+0187 slice(Vem,47,50,20),shading interp,caxis([0 .7e8])
+0188 <span class="comment">%%</span>
+0189 pause(3)
+0190 slice(Vem,47,50,20),shading interp,caxis([0 .7e8]),view(0,90)
+0191 <span class="comment">%%</span>
+0192 pause(3)
+0193 slice(Vem,47,50,20),shading interp,caxis([0 .7e8]),view(90,0)
+0194 
+0195 Vemx = Vem0;
+0196 <span class="keyword">for</span> i_f = 1:6,                                                                 
+0197   [xf,yf] = meshgrid(1:fS(i_f),1:fS(i_f));            
+0198   fK = exp(-(xf-mean(xf(:))).^2/mean(2*xf(:)).^2-(yf-mean(0.7*yf(:))).^2/mean(yf(:))^2);
+0199   tomo_ops(1).filterkernel = fK;
+0200   [Vemx,stns] = <a href="tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>(Vemx,stns,tomo_ops,nr_laps);
+0201   pause(2)
+0202 <span class="keyword">end</span>
+0203 clf
+0204 slice(Vemx,47,50,20),shading interp,caxis([0 .7e8])
+0205 pause(3)
+0206 slice(Vemx,47,50,20),shading interp,caxis([0 .7e8]),view(0,90)
+0207 pause(3)
+0208 slice(Vemx,47,50,20),shading interp,caxis([0 .7e8]),view(90,0)
+0209 
+0210 <span class="comment">% This tomographic tools requires the 'Camera' tools 'Fits_tools'</span>
+0211 <span class="comment">% and also a few functions currently (2001-08-22) residing in</span>
+0212 <span class="comment">% 'Starcal'.</span>
+0213 
+0214 
+0215 
+0216 <span class="comment">%   Copyright � 2010 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0217 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

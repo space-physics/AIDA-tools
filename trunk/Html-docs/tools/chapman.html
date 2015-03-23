@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of chapman</title>
+  <meta name="keywords" content="chapman">
+  <meta name="description" content="CHAPMAN - gives the Chapman profile.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>chapman
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>CHAPMAN - gives the Chapman profile.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [chpm_int] = chapman(I0,hmax,w0,h) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> CHAPMAN - gives the Chapman profile.
+ 
+ Calling:
+   chpm_int = chapman(I0,hmax,w0,h)
+ Input: 
+   I0 - Max intensity
+   H0 - altitude of max intensity
+   W0 - width
+   H  - Altitude array.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [chpm_int] = chapman(I0,hmax,w0,h)</a>
+0002 <span class="comment">% CHAPMAN - gives the Chapman profile.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   chpm_int = chapman(I0,hmax,w0,h)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%   I0 - Max intensity</span>
+0008 <span class="comment">%   H0 - altitude of max intensity</span>
+0009 <span class="comment">%   W0 - width</span>
+0010 <span class="comment">%   H  - Altitude array.</span>
+0011 
+0012 <span class="comment">%       Bjorn Gustavsson</span>
+0013 <span class="comment">%    Copyright � 1997 by Bjorn Gustavsson</span>
+0014 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0015 
+0016 hi = (h-hmax)./w0;
+0017 
+0018 chpm_int = 1*I0*exp(1-hi-exp(-hi));</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

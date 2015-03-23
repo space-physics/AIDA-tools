@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of img_reg_bg_red</title>
+  <meta name="keywords" content="img_reg_bg_red">
+  <meta name="description" content="IMG_REG_BG_RED - removal of estimated background in image region">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>img_reg_bg_red
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>IMG_REG_BG_RED - removal of estimated background in image region</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [Iout,Ibg] = img_reg_bg_red(Iin,reg4bg,method,method_args) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> IMG_REG_BG_RED - removal of estimated background in image region
+   The background is estimated from &quot;in-painting&quot; of the image
+   values i the frame of the region REG4BG.
+
+ Calling:
+   [Iout,Ibg] = img_reg_bg_red(Iin,reg4bg)
+ Input:
+   Iin - input image [n x m], Assumed double, no type-checking done
+   reg4bg - corners of the background region [x_min, x_max, y_min, y_max]
+   method - selection of estimation method [{'gridfit'} | 'griddata' |'inpaint_nans']
+   method_args - cell array with optional arguments to respective estimator function
+ Output:
+   Iout - image with estimated background removed
+   Ibg - estimated backgound
+
+ The background is estimated by using gridfit, griddata,
+ inpaint_nans.
+ 
+ SEE also: GRIDFIT, GRIDDATA, INPAINT_NANS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/gridfit.html" class="code" title="function [zgrid,xgrid,ygrid] = gridfit(x,y,z,xnodes,ynodes,varargin)">gridfit</a>	gridfit: estimates a surface on a 2d grid, based on scattered data</li><li><a href="../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>	INPAINT_NANS: in-paints over nans in an array</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Iout,Ibg] = img_reg_bg_red(Iin,reg4bg,method,method_args)</a>
+0002 <span class="comment">% IMG_REG_BG_RED - removal of estimated background in image region</span>
+0003 <span class="comment">%   The background is estimated from &quot;in-painting&quot; of the image</span>
+0004 <span class="comment">%   values i the frame of the region REG4BG.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%   [Iout,Ibg] = img_reg_bg_red(Iin,reg4bg)</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%   Iin - input image [n x m], Assumed double, no type-checking done</span>
+0010 <span class="comment">%   reg4bg - corners of the background region [x_min, x_max, y_min, y_max]</span>
+0011 <span class="comment">%   method - selection of estimation method [{'gridfit'} | 'griddata' |'inpaint_nans']</span>
+0012 <span class="comment">%   method_args - cell array with optional arguments to respective estimator function</span>
+0013 <span class="comment">% Output:</span>
+0014 <span class="comment">%   Iout - image with estimated background removed</span>
+0015 <span class="comment">%   Ibg - estimated backgound</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% The background is estimated by using gridfit, griddata,</span>
+0018 <span class="comment">% inpaint_nans.</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% SEE also: GRIDFIT, GRIDDATA, INPAINT_NANS</span>
+0021 
+0022 
+0023 <span class="comment">%   Copyright � 2007 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0024 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0025 
+0026 <span class="keyword">if</span> nargin &lt; 3 | isempty(method)
+0027   method = <span class="string">'gridfit'</span>;
+0028 <span class="keyword">end</span>
+0029 Iout = Iin;
+0030 <span class="keyword">switch</span> method
+0031  <span class="keyword">case</span> <span class="string">'gridfit'</span>
+0032   
+0033   [x1,y1] = meshgrid(reg4bg(1):reg4bg(2),reg4bg(3):reg4bg(4));
+0034   Ibg = Iin(reg4bg(3):reg4bg(4),reg4bg(1):reg4bg(2));
+0035   b = [Ibg(1,:),Ibg(<span class="keyword">end</span>,:),Ibg(:,1)',Ibg(:,end)'];
+0036   X = [x1(1,:),x1(<span class="keyword">end</span>,:),x1(:,1)',x1(:,end)'];
+0037   Y = [y1(1,:),y1(<span class="keyword">end</span>,:),y1(:,1)',y1(:,end)'];
+0038   
+0039   <span class="keyword">if</span> nargin &lt; 4 | isempty(method_args)
+0040     Ibg = <a href="../tools/gridfit.html" class="code" title="function [zgrid,xgrid,ygrid] = gridfit(x,y,z,xnodes,ynodes,varargin)">gridfit</a>(X,Y,b,x1(1,:),y1(:,1));
+0041   <span class="keyword">else</span>
+0042     Ibg = <a href="../tools/gridfit.html" class="code" title="function [zgrid,xgrid,ygrid] = gridfit(x,y,z,xnodes,ynodes,varargin)">gridfit</a>(X,Y,b,x1(1,:),y1(:,1),method_args{:});
+0043   <span class="keyword">end</span>
+0044   Iout = Iin;
+0045   Iout(reg4bg(3):reg4bg(4),reg4bg(1):reg4bg(2)) = Iout(reg4bg(3):reg4bg(4),reg4bg(1):reg4bg(2)) - Ibg;
+0046  <span class="keyword">case</span> <span class="string">'griddata'</span>
+0047   
+0048   [x1,y1] = meshgrid(reg4bg(1):reg4bg(2),reg4bg(3):reg4bg(4));
+0049   Ibg = Iin(reg4bg(3):reg4bg(4),reg4bg(1):reg4bg(2));
+0050   b = [Ibg(1,:),Ibg(<span class="keyword">end</span>,:),Ibg(:,1)',Ibg(:,end)',Ibg(3,:),Ibg(end-2,:),Ibg(:,3)',Ibg(:,end-3)'];
+0051   X = [x1(1,:),  x1(<span class="keyword">end</span>,:), x1(:,1)', x1(:,end)', x1(3,:), x1(end-2,:), x1(:,3)', x1(:,end-2)'];
+0052   Y = [y1(1,:),  y1(<span class="keyword">end</span>,:), y1(:,1)', y1(:,end)', y1(3,:), y1(end-2,:), y1(:,3)', y1(:,end-2)'];
+0053   
+0054   <span class="keyword">if</span> nargin &lt; 4 | isempty(method_args)
+0055     Ibg = griddata(X,Y,b,x1,y1,<span class="string">'cubic'</span>);
+0056   <span class="keyword">else</span>
+0057     Ibg = griddata(X,Y,b,x1,y1,method_args);
+0058   <span class="keyword">end</span>
+0059   Iout = Iin;
+0060   Iout(reg4bg(3):reg4bg(4),reg4bg(1):reg4bg(2)) = Iout(reg4bg(3):reg4bg(4),reg4bg(1):reg4bg(2)) - Ibg;
+0061   
+0062  <span class="keyword">case</span> <span class="string">'inpaint_nans'</span>
+0063   
+0064   Iout = Iin;
+0065   Iout(reg4bg(3):reg4bg(4),reg4bg(1):reg4bg(2)) = nan;
+0066   
+0067   <span class="keyword">if</span> nargin &lt; 4 | isempty(method_args)
+0068     Ibg = <a href="../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>(Iout);
+0069   <span class="keyword">else</span>
+0070     Ibg = <a href="../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>(Iout,method_args);
+0071   <span class="keyword">end</span>
+0072   Iout = Iin - Ibg;
+0073  <span class="keyword">otherwise</span>
+0074   disp([<span class="string">'img_reg_bg_red: Unknown method: '</span>,method,<span class="string">' selected'</span>])
+0075 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

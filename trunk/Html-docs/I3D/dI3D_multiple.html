@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of dI3D_multiple</title>
+  <meta name="keywords" content="dI3D_multiple">
+  <meta name="description" content="dI3D_multiple - multiple 3-D generalized Gaussians">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html I3D -->
+<h1>dI3D_multiple
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>dI3D_multiple - multiple 3-D generalized Gaussians</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> dI3D_multiple - multiple 3-D generalized Gaussians
+ DI3D_multiple gives a sum of 3-D generalized Gaussians with
+ parameters from I0_r0_dr. The values are calculated in the 3-D
+ grid points of X, Y, Z [N,M,n]. The Gaussians can be tilted an
+ angle mag_ze away from e_z in the Y-Z plane.
+ 
+ Calling:
+  [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)
+ 
+ Input:
+  I0_r0_dr - array of prameters:
+  I0_r0_dr(1:11:end-4) - I0, peak values of Gaussians (respectively)
+  I0_r0_dr(2:11:end-4) - x0, center points in x direction
+  I0_r0_dr(3:11:end-4) - y0, center points in y direction
+  I0_r0_dr(4:11:end-4) - z0, center points in z direction
+  I0_r0_dr(5:11:end-4) - sx, width in x direction
+  I0_r0_dr(6:11:end-4) - sy, width in y direction
+  I0_r0_dr(7:11:end-4) - sz, width in z direction below z0
+  I0_r0_dr(8:11:end-4) - sz, width in z direction above z0
+  I0_r0_dr(9:11:end-4) - gamma, exponent of Gaussian exp(-d^gamma) vertical
+  I0_r0_dr(10:11:end-4) - fi, rotation of horisontal elipsoid.
+  I0_r0_dr(11:11:end-4) - gammaxy exponent of Gaussian exp(-d^gammaxy) horisontal
+  I0_r0_dr(end-3) - wind in x-direction (unused)
+  I0_r0_dr(end-2) - wind in y-direction (unused)
+  I0_r0_dr(end-1) - wind in z-direction (unused)
+  I0_r0_dr(end)   - Diffusion parameter (unused)
+  X - x-coordinate of 3-D grid
+  Y - y-coordinate of 3-D grid
+  Z - z-coordinate of 3-D grid
+  dt - unused,
+  tau - unused, 
+  mag_ze - rotation angle from e_z (radians) in the Y-Z plane.
+ 
+ Note: I0_r0_dr has to have size [1x(4+N*11)], N being the number
+ off Gaussians, the function automatically calculates the number
+ of Gaussians used through: N = length(I0_r0_dr(1:end-4))/11 which
+ has to be an integer.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="V_em_3d.html" class="code" title="function [V_em] = V_em_3d(I0_R0_DR,X,Y,Z,tau3D,T)">V_em_3d</a>	V_em_3d calculate volume emission rates by C-EQ integration with interpolated-parameters</li><li><a href="V_em_ex_alt.html" class="code" title="function [em_a,ex_a,ex_b,em_b] = V_em_ex_alt(I0_R0_DR,X,Y,Z,tau3D,T,fn)">V_em_ex_alt</a>	V_em_ex_alt, altitude, time variation of emission and excitation,</li><li><a href="V_em_ex_alt2.html" class="code" title="function [em_h,ex_h] = V_em_ex_alt2(I0_R0_DR,X,Y,Z,tau3D,T,fn)">V_em_ex_alt2</a>	V_em_ex_alt2 - time variation of altitude distribution of emission and excitation</li><li><a href="V_em_ex_alt_mag.html" class="code" title="function [em_a,ex_a] = V_em_ex_alt_mag(I0_R0_DR,X,Y,Z,tau3D,T)">V_em_ex_alt_mag</a>	V_em_ex_alt_mag - altitude distribution of emission and</li><li><a href="V_em_save_intrp.html" class="code" title="function ok = V_em_save_intrp(I0_R0_DR,X,Y,Z,tau3D,T)">V_em_save_intrp</a>	V_em_save_intrp - save volume distribution emission and</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)</a>
+0002 <span class="comment">% dI3D_multiple - multiple 3-D generalized Gaussians</span>
+0003 <span class="comment">% DI3D_multiple gives a sum of 3-D generalized Gaussians with</span>
+0004 <span class="comment">% parameters from I0_r0_dr. The values are calculated in the 3-D</span>
+0005 <span class="comment">% grid points of X, Y, Z [N,M,n]. The Gaussians can be tilted an</span>
+0006 <span class="comment">% angle mag_ze away from e_z in the Y-Z plane.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">%  [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Input:</span>
+0012 <span class="comment">%  I0_r0_dr - array of prameters:</span>
+0013 <span class="comment">%  I0_r0_dr(1:11:end-4) - I0, peak values of Gaussians (respectively)</span>
+0014 <span class="comment">%  I0_r0_dr(2:11:end-4) - x0, center points in x direction</span>
+0015 <span class="comment">%  I0_r0_dr(3:11:end-4) - y0, center points in y direction</span>
+0016 <span class="comment">%  I0_r0_dr(4:11:end-4) - z0, center points in z direction</span>
+0017 <span class="comment">%  I0_r0_dr(5:11:end-4) - sx, width in x direction</span>
+0018 <span class="comment">%  I0_r0_dr(6:11:end-4) - sy, width in y direction</span>
+0019 <span class="comment">%  I0_r0_dr(7:11:end-4) - sz, width in z direction below z0</span>
+0020 <span class="comment">%  I0_r0_dr(8:11:end-4) - sz, width in z direction above z0</span>
+0021 <span class="comment">%  I0_r0_dr(9:11:end-4) - gamma, exponent of Gaussian exp(-d^gamma) vertical</span>
+0022 <span class="comment">%  I0_r0_dr(10:11:end-4) - fi, rotation of horisontal elipsoid.</span>
+0023 <span class="comment">%  I0_r0_dr(11:11:end-4) - gammaxy exponent of Gaussian exp(-d^gammaxy) horisontal</span>
+0024 <span class="comment">%  I0_r0_dr(end-3) - wind in x-direction (unused)</span>
+0025 <span class="comment">%  I0_r0_dr(end-2) - wind in y-direction (unused)</span>
+0026 <span class="comment">%  I0_r0_dr(end-1) - wind in z-direction (unused)</span>
+0027 <span class="comment">%  I0_r0_dr(end)   - Diffusion parameter (unused)</span>
+0028 <span class="comment">%  X - x-coordinate of 3-D grid</span>
+0029 <span class="comment">%  Y - y-coordinate of 3-D grid</span>
+0030 <span class="comment">%  Z - z-coordinate of 3-D grid</span>
+0031 <span class="comment">%  dt - unused,</span>
+0032 <span class="comment">%  tau - unused,</span>
+0033 <span class="comment">%  mag_ze - rotation angle from e_z (radians) in the Y-Z plane.</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">% Note: I0_r0_dr has to have size [1x(4+N*11)], N being the number</span>
+0036 <span class="comment">% off Gaussians, the function automatically calculates the number</span>
+0037 <span class="comment">% of Gaussians used through: N = length(I0_r0_dr(1:end-4))/11 which</span>
+0038 <span class="comment">% has to be an integer.</span>
+0039 
+0040 
+0041 <span class="comment">%   Copyright � 20071129 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0042 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0043 
+0044 <span class="keyword">if</span> nargin &lt; 7
+0045   mag_ze = 12*pi/180;
+0046 <span class="keyword">end</span>
+0047 
+0048 V_em = zeros(size(X));
+0049 
+0050 I0_r0_dr = reshape(I0_r0_dr(1:end-4), <span class="keyword">...</span>
+0051            [11 length(I0_r0_dr(1:end-4))/11])';
+0052 
+0053 <span class="keyword">for</span> i1 = 1:min(size(I0_r0_dr)),
+0054   
+0055   I0  = I0_r0_dr(i1,1);
+0056   x_0 = I0_r0_dr(i1,2);
+0057   y_0 = I0_r0_dr(i1,3);
+0058   z_0 = I0_r0_dr(i1,4);
+0059   dsx = I0_r0_dr(i1,5);
+0060   dsy = I0_r0_dr(i1,6);
+0061   dsz1 = I0_r0_dr(i1,7);
+0062   dsz2 = I0_r0_dr(i1,8);
+0063   gamma = abs(I0_r0_dr(i1,9));
+0064   fi1 = I0_r0_dr(i1,10);
+0065   gamma_xy = I0_r0_dr(i1,11);
+0066   
+0067   <span class="comment">% Second try! different vertical and horisontal shape factors</span>
+0068   <span class="keyword">if</span> numel(mag_ze) == 1
+0069     Ixyz = exp(-abs( ( ( X - x_0(end)) * cos(fi1) + ( Y - y_0 ) * sin(fi1) ).^2/dsx(end)^2 +<span class="keyword">...</span>
+0070                      ( (Y - ( y_0(end) - sin(mag_ze)*(Z-z_0(end)) ) ) * cos(fi1) - ( X - x_0(end) ) * sin(fi1) ).^2/dsy(end)^2 <span class="keyword">...</span>
+0071                      ).^(gamma_xy/2) <span class="keyword">...</span>
+0072                -abs( (Z-z_0(end)).^2 <span class="keyword">...</span>
+0073                      /dsz1(end)^2.*(Z&lt;z_0(end)) <span class="keyword">...</span>
+0074                      + (Z-z_0(end)).^2 <span class="keyword">...</span>
+0075                      /dsz2(end)^2.*(Z&gt;=z_0(end))).^(gamma(end)/2));
+0076   <span class="keyword">else</span>
+0077     
+0078     Ixyz = exp(-abs( ( ( X - ( x_0(end) - sin(mag_ze(1))*sin(mag_ze(2))*(Z-z_0(end)) )) * cos(fi1) + ( Y - y_0 ) * sin(fi1) ).^2/dsx(end)^2 +<span class="keyword">...</span>
+0079                      ( ( Y - ( y_0(end) - sin(mag_ze(1))*cos(mag_ze(2))*(Z-z_0(end)) ) ) * cos(fi1) - ( X - x_0(end) ) * sin(fi1) ).^2/dsy(end)^2 <span class="keyword">...</span>
+0080                      ).^(gamma_xy/2) <span class="keyword">...</span>
+0081                -abs( (Z-z_0(end)).^2 <span class="keyword">...</span>
+0082                      /dsz1(end)^2.*(Z&lt;z_0(end)) <span class="keyword">...</span>
+0083                      + (Z-z_0(end)).^2 <span class="keyword">...</span>
+0084                      /dsz2(end)^2.*(Z&gt;=z_0(end))).^(gamma(end)/2));
+0085     
+0086   <span class="keyword">end</span>
+0087   
+0088   <span class="comment">%den vore nog bra att koera genom iterator.</span>
+0089   <span class="comment">%notfiniteindx = find(~isfinite(Ixyz(:)));</span>
+0090   <span class="comment">%Ixyz(notfiniteindx) = 0;</span>
+0091   Ixyz(~isfinite(Ixyz(:))) = 0;
+0092   V_em = V_em + I0(end)*Ixyz;
+0093   
+0094 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

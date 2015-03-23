@@ -1,0 +1,10 @@
+station: ALIS-STN=  str2num(strtok(img_head(hindx,11:end),'/')) 0 / ALIS station number. DEPRECIATED!
+site:    ALISSITE=  header2site_v5(img_head(hindx,11:end))    'OKiruna(Optiklab.)' / name of ALIS station
+az:	 ALISAZ  =  str2num(strtok(img_head(hindx,11:end),'/')) 270. / [DEG] Azimuth (Deg. east from north)
+ze:	 ALISZE  =  str2num(strtok(img_head(hindx,11:end),'/')) 0.025 / [Deg] Zenith angle (Deg. from zenith)
+alpha:	 ALISALFA=  str2num(strtok(img_head(hindx,11:end),'/')) -1 / [Counts] CPS angular encoder counts for alfa ax
+beta:	 ALISBETA=  str2num(strtok(img_head(hindx,11:end),'/')) -1 / [Counts] CPS angular encoder counts for beta ax
+filter:	 ALISEMI =  10*str2num(strtok(img_head(hindx,11:end),'/')) 557.7 / [nm] observed center wavelength
+camnr:	 INSTRUME=  header2stnnr_v5(img_head(hindx,11:end))            ' /etc/aniara/mima3 ' / name of instrument
+sx:      NAXIS1  =  str2num(strtok(img_head(hindx,11:end),'/'))                132
+sy:      NAXIS2  =  str2num(strtok(img_head(hindx,11:end),'/'))                128

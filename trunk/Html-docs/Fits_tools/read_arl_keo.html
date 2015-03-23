@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of read_arl_keo</title>
+  <meta name="keywords" content="read_arl_keo">
+  <meta name="description" content="READ_ARL_KEO - reads Airforce research labs (Todd Pedersen's) KEO image format">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>read_arl_keo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>READ_ARL_KEO - reads Airforce research labs (Todd Pedersen's) KEO image format</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [d,o] = read_arl_keo(filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> READ_ARL_KEO - reads Airforce research labs (Todd Pedersen's) KEO image format
+   ([335 325] uint16 block).
+
+ Calling:
+   [d,o] = read_arl_keo(filename)
+ Input:
+   filename - filename either a string with name of file (either
+              relative of full path to file) or a struct from the
+              'dir' command (then care have to be taken that the
+              filename.name points to the file)
+ Output:
+   d - data, [NxN] sized double array
+   o - observation struct holding available information of
+       observation.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>	ISCHAR - return true if STR is a char-array</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>	READ_IMG - reads image data and process header info.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [d,o] = read_arl_keo(filename)</a>
+0002 <span class="comment">% READ_ARL_KEO - reads Airforce research labs (Todd Pedersen's) KEO image format</span>
+0003 <span class="comment">%   ([335 325] uint16 block).</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%   [d,o] = read_arl_keo(filename)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%   filename - filename either a string with name of file (either</span>
+0009 <span class="comment">%              relative of full path to file) or a struct from the</span>
+0010 <span class="comment">%              'dir' command (then care have to be taken that the</span>
+0011 <span class="comment">%              filename.name points to the file)</span>
+0012 <span class="comment">% Output:</span>
+0013 <span class="comment">%   d - data, [NxN] sized double array</span>
+0014 <span class="comment">%   o - observation struct holding available information of</span>
+0015 <span class="comment">%       observation.</span>
+0016 
+0017 
+0018 <span class="comment">%   Copyright � 20100715 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0019 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0020 
+0021 <span class="keyword">if</span> <a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(filename)
+0022   
+0023   tmp = dir(filename);
+0024   N = (tmp.bytes/2)^(1/2);
+0025   fp = fopen(filename,<span class="string">'r'</span>);
+0026   d = fread(fp,[335 325],<span class="string">'uint16'</span>);
+0027   
+0028 <span class="keyword">else</span>
+0029   
+0030   N = (filename.bytes/2)^(1/2);
+0031   fp = fopen(filename.name,<span class="string">'r'</span>);
+0032   d = fread(fp,[335 325],<span class="string">'uint16'</span>);
+0033   
+0034 <span class="keyword">end</span>
+0035 
+0036 fclose(fp);
+0037 
+0038 o.time = d(1:6,1)';
+0039 
+0040 o.filter = d(7,1)';
+0041 <span class="comment">% TODO: check how to do this with byteswap!</span>
+0042 lat = d(10:12,1)';
+0043 long = d(13:15,1)';
+0044 lat = sum((lat-2^16*(lat&gt;90)).*[1,1/60,1/60^2]);
+0045 <span class="keyword">if</span> long&gt;30000
+0046   long = sum((long-2^16*(long&gt;90)).*[1,1/60,1/60^2]);
+0047 <span class="keyword">else</span>
+0048   long = sum(long.*[1,1/60,1/60^2]);
+0049 <span class="keyword">end</span>  
+0050 o.pos = [-long,lat];
+0051 o.pos = [-145.157375,62.40723];
+0052 o.longlat = [-145.157375,62.40723];
+0053 <span class="comment">%&lt;http://maps.google.com/?ie=UTF8&amp;ll=62.40723,-145.157375&amp;spn=0.034349,0.108833&amp;t=h&amp;z=13&gt;</span>
+0054 o.size = d(22:23,1)';
+0055 o.exptime = d(9,1)' ;
+0056 o.camnr = 0;
+0057 o.beta = [];
+0058 o.alfa = [];
+0059 o.az = 0;
+0060 o.ze = 0;
+0061 o.station = 401;
+0062 
+0063 axc = [26 302 16 292];
+0064 d = d(axc(3):axc(4),axc(1):axc(2));</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

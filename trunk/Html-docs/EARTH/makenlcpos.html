@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of makenlcpos</title>
+  <meta name="keywords" content="makenlcpos">
+  <meta name="description" content="MAKENLCPOS transforms the positions (LAT, LONG, ALT) to (X,Y,Z)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html EARTH -->
+<h1>makenlcpos
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>MAKENLCPOS transforms the positions (LAT, LONG, ALT) to (X,Y,Z)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MAKENLCPOS transforms the positions (LAT, LONG, ALT) to (X,Y,Z)
+ in a Cartesian coordinate system x || east , y || north, z ||
+ zenit centered in (lat0,long0) at altitude ALT0 above sea level. 
+ 
+ CALLING:
+ [x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt)
+ 
+ INPUT: 
+    LAT0 latitude of reference point (origin of coordinates), in degrees
+    LONG0 longiture,of reference point (origin of coordinates) in degrees
+    ALT0 altitude,  of reference point (origin of coordinates) in km
+    LAT latitude, in degrees
+    LONG longiture, in degrees
+    ALT altitude, in km</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="llh_to_local_coord.html" class="code" title="function [x,y,z] = llh_to_local_coord(lat0,long0,alt0,lat,long,alt)">llh_to_local_coord</a>	LLH_TO_LOCAL_COORD transforms the positions (LAT, LONG, ALT) to (X,Y,Z)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="gtopo2maps.html" class="code" title="function varargout = gtopo2maps(gtopo_file,gtopo_hdr,ops)">gtopo2maps</a>	GTOPO2MAPS - Parse gtopo digital elevation models</li><li><a href="../Fits_tools/AIDApositionize.html" class="code" title="function [stnXYZ,stnLongLat,trmtr] = AIDApositionize(stationNRs,central_stn_nr)">AIDApositionize</a>	AIDApositionize - calculate station lat-long and xyz positions</li><li><a href="../Fits_tools/AIDAstationize.html" class="code" title="function obs = AIDAstationize(obs,central_stn_nr)">AIDAstationize</a>	AIDAstationize - calculate station lat-long and xyz positions</li><li><a href="../Tomography/hh_tomo1234_New01.html" class="code" title="">hh_tomo1234_New01</a>	HH_TOMO1234_NEW01 - script for tomographing 2007 HIPAS-observations</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt)</a>
+0002 <span class="comment">% MAKENLCPOS transforms the positions (LAT, LONG, ALT) to (X,Y,Z)</span>
+0003 <span class="comment">% in a Cartesian coordinate system x || east , y || north, z ||</span>
+0004 <span class="comment">% zenit centered in (lat0,long0) at altitude ALT0 above sea level.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% CALLING:</span>
+0007 <span class="comment">% [x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% INPUT:</span>
+0010 <span class="comment">%    LAT0 latitude of reference point (origin of coordinates), in degrees</span>
+0011 <span class="comment">%    LONG0 longiture,of reference point (origin of coordinates) in degrees</span>
+0012 <span class="comment">%    ALT0 altitude,  of reference point (origin of coordinates) in km</span>
+0013 <span class="comment">%    LAT latitude, in degrees</span>
+0014 <span class="comment">%    LONG longiture, in degrees</span>
+0015 <span class="comment">%    ALT altitude, in km</span>
+0016 
+0017 
+0018 
+0019 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0020 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0021 
+0022 
+0023 [x,y,z] = <a href="llh_to_local_coord.html" class="code" title="function [x,y,z] = llh_to_local_coord(lat0,long0,alt0,lat,long,alt)">llh_to_local_coord</a>(lat0,long0,alt0,lat,long,alt);
+0024 
+0025 <span class="comment">% $$$ f = 1/298.257;</span>
+0026 <span class="comment">% $$$ e = (2*f-f*f).^.5;</span>
+0027 <span class="comment">% $$$ a = 6378.137;</span>
+0028 <span class="comment">% $$$</span>
+0029 <span class="comment">% $$$ phi(1,:) = pi/180*lat0*ones(size(lat));</span>
+0030 <span class="comment">% $$$ lambda(1,:) = pi/180*long0*ones(size(long));</span>
+0031 <span class="comment">% $$$ phi(2,:) = pi/180*lat;</span>
+0032 <span class="comment">% $$$ lambda(2,:) = pi/180*long;</span>
+0033 <span class="comment">% $$$</span>
+0034 <span class="comment">% $$$</span>
+0035 <span class="comment">% $$$ e1(1,:) = cos(lambda(1,:)).*cos(phi(1,:)).*(alt0 + a./(1 - e^2*sin(phi(1,:))).^(1/2));</span>
+0036 <span class="comment">% $$$ e1(2,:) = 0;</span>
+0037 <span class="comment">% $$$ e1(3,:) = -cos(phi(1,:)).*sin(lambda(1,:)).*(alt0 + a./(1 - e^2*sin(phi(1,:))).^(1/2));</span>
+0038 <span class="comment">% $$$</span>
+0039 <span class="comment">% $$$ e1 = e1/norm(e1);%*e1')^.5;</span>
+0040 <span class="comment">% $$$</span>
+0041 <span class="comment">% $$$</span>
+0042 <span class="comment">% $$$ e2(1,:) = (a*e^2*cos(phi(1,:)).^2.*sin(lambda(1,:)))./(2*(1 - e^2*sin(phi(1,:))).^(3/2)) - sin(lambda(1,:)).*sin(phi(1,:)).*(alt0 + a./(1 - e^2*sin(phi(1,:))).^(1/2));</span>
+0043 <span class="comment">% $$$ e2(2,:) = cos(phi(1,:)).*(alt0 - (a*(e^2 - 1))./(1 - e^2*sin(phi(1,:))).^(1/2)) - (a*e^2*cos(phi(1,:)).*sin(phi(1,:)).*(e^2 - 1))./(2*(1 - e^2*sin(phi(1,:))).^(3/2));</span>
+0044 <span class="comment">% $$$ e2(3,:) =(a*e^2*cos(lambda(1,:)).*cos(phi(1,:)).^2)./(2*(1 - e^2*sin(phi(1,:))).^(3/2)) - cos(lambda(1,:)).*sin(phi(1,:)).*(alt0 + a./(1 - e^2*sin(phi(1,:))).^(1/2));</span>
+0045 <span class="comment">% $$$</span>
+0046 <span class="comment">% $$$ e2 = e2/norm(e2);%*e2')^.5;</span>
+0047 <span class="comment">% $$$</span>
+0048 <span class="comment">% $$$ e3 = cross(e1,e2);</span>
+0049 <span class="comment">% $$$</span>
+0050 <span class="comment">% $$$ ro(1,:) = xx(phi(1,:),lambda(1,:),alt0);</span>
+0051 <span class="comment">% $$$ ro(2,:) = yy(phi(1,:),lambda(1,:),alt0);</span>
+0052 <span class="comment">% $$$ ro(3,:) = zz(phi(1,:),lambda(1,:),alt0);</span>
+0053 <span class="comment">% $$$</span>
+0054 <span class="comment">% $$$ r(1,:) = xx(phi(2,:),lambda(2,:),alt');</span>
+0055 <span class="comment">% $$$ r(2,:) = yy(phi(2,:),lambda(2,:),alt');</span>
+0056 <span class="comment">% $$$ r(3,:) = zz(phi(2,:),lambda(2,:),alt');</span>
+0057 <span class="comment">% $$$</span>
+0058 <span class="comment">% $$$ r_ro = r - ro;</span>
+0059 <span class="comment">% $$$</span>
+0060 <span class="comment">% $$$ x = dot(r_ro,e1);</span>
+0061 <span class="comment">% $$$ y = dot(r_ro,e2);</span>
+0062 <span class="comment">% $$$ z = dot(r_ro,e3);</span>
+0063 <span class="comment">% $$$</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

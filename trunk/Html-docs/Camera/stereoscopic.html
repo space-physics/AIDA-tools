@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of stereoscopic</title>
+  <meta name="keywords" content="stereoscopic">
+  <meta name="description" content="STEREOSCOPIC calculate the shortest intersection between 2 lines.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>stereoscopic
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STEREOSCOPIC calculate the shortest intersection between 2 lines.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [r,l,mindiff] = stereoscopic(r1,e1,r2,e2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STEREOSCOPIC calculate the shortest intersection between 2 lines.
+ The lines should be given as a start point Ri and a direction
+ vector Ei.
+
+ Calling:
+  [r,l,mindiff] = stereo(r1,e1,r2,e2)
+ 
+ Input:
+  r1 - position of line 1 vertex
+  e1 - unit vector of line 1
+  r2 - position of line 2 vertex
+  e2 - unit vector of line 2
+ 
+ Output:
+  r       - vector to mid-point of shortest intersection between
+            line 1 and line 2
+  l       - lengths from r1 and r2 respectively to the end-points
+            of the shortest intersection
+  mindiff - length of shortest intersection
+ 
+ See also <a href="triangulate.html" class="code" title="function [xtr,ytr,ztr,tu1,tv1,tu2,tv2,minl] = triangulate(img1,r1,img2,r2,cm1,cm2,PO,Opts)">TRIANGULATE</a>,</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Geometry/diff2_ps_on_ls.html" class="code" title="function [diff2] = diff2_ps_on_ls(l,r1,e1,r2,e2)">diff2_ps_on_ls</a>	DIFF2_PS_ON_LS calculates squared distance between points on 2 different lines.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Tomography/tomo_start_guessGACT.html" class="code" title="function [Vem,I2D] = tomo_start_guessGACT(stns,Energy,Ie2H,Xslice,Yslice,Zslice,M2Dto1D,U,V,I_cuts,iPeaks,X3D,Y3D,Z3D,ops)">tomo_start_guessGACT</a>	tomo_start_guessGACT - makes 3-D distribution of volume emission rates</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [r,l,mindiff] = stereoscopic(r1,e1,r2,e2)</a>
+0002 <span class="comment">% STEREOSCOPIC calculate the shortest intersection between 2 lines.</span>
+0003 <span class="comment">% The lines should be given as a start point Ri and a direction</span>
+0004 <span class="comment">% vector Ei.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%  [r,l,mindiff] = stereo(r1,e1,r2,e2)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%  r1 - position of line 1 vertex</span>
+0011 <span class="comment">%  e1 - unit vector of line 1</span>
+0012 <span class="comment">%  r2 - position of line 2 vertex</span>
+0013 <span class="comment">%  e2 - unit vector of line 2</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% Output:</span>
+0016 <span class="comment">%  r       - vector to mid-point of shortest intersection between</span>
+0017 <span class="comment">%            line 1 and line 2</span>
+0018 <span class="comment">%  l       - lengths from r1 and r2 respectively to the end-points</span>
+0019 <span class="comment">%            of the shortest intersection</span>
+0020 <span class="comment">%  mindiff - length of shortest intersection</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% See also TRIANGULATE,</span>
+0023 
+0024 
+0025 <span class="comment">%   Copyright � 2001 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0026 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0027 
+0028 
+0029 <span class="comment">% direct algebra inversion!!!</span>
+0030 rhs = [dot(r2,e1)-dot(r1,e1) dot(r2,e2)-dot(r1,e2)];
+0031 M = [1 -dot(e1,e2);dot(e1,e2) -1];
+0032 <span class="comment">% This is what we calculate below: l = (inv(M)*rhs')';</span>
+0033 l = (M\rhs')';
+0034 
+0035 mindiff = <a href="../Geometry/diff2_ps_on_ls.html" class="code" title="function [diff2] = diff2_ps_on_ls(l,r1,e1,r2,e2)">diff2_ps_on_ls</a>(l,r1,e1,r2,e2);
+0036 
+0037 r = .5*(r1+l(1)*e1+r2+l(2)*e2);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

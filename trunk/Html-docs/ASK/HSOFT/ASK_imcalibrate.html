@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_imcalibrate</title>
+  <meta name="keywords" content="ASK_imcalibrate">
+  <meta name="description" content="ASK_IMCALIBRATE - scale the images to Rayleighs">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_imcalibrate
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_IMCALIBRATE - scale the images to Rayleighs</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function img_out = ASK_imcalibrate(img_in) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_IMCALIBRATE - scale the images to Rayleighs
+   
+ Calling:
+   img_out = ASK_imcalibrate(img_in,d_field,fmd_field)
+ Input:
+   img_in    - Input image, uncalibrated
+   d_field   - Dark/background image
+   fmd_field - flatfield/sensitivity image
+ Output:
+   img_out - (img_in - d_field)./fmd_field;
+
+ Written to mimic imcalibrate.pro
+
+ Function def was: function img_out = ASK_imcalibrate(img_in)%,d_field,fmd_field)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>	ASK_READ_V - Read ASK image #i1 from current camera in current "mega-block"</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function img_out = ASK_imcalibrate(img_in)</a>
+0002 <span class="comment">% ASK_IMCALIBRATE - scale the images to Rayleighs</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   img_out = ASK_imcalibrate(img_in,d_field,fmd_field)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%   img_in    - Input image, uncalibrated</span>
+0008 <span class="comment">%   d_field   - Dark/background image</span>
+0009 <span class="comment">%   fmd_field - flatfield/sensitivity image</span>
+0010 <span class="comment">% Output:</span>
+0011 <span class="comment">%   img_out - (img_in - d_field)./fmd_field;</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Written to mimic imcalibrate.pro</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% Function def was: function img_out = ASK_imcalibrate(img_in)%,d_field,fmd_field)</span>
+0016 
+0017 <span class="comment">% Modified from add_multi.pro</span>
+0018 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0019 <span class="comment">% GPL 3.0 or later applies</span>
+0020 
+0021 <span class="keyword">global</span> imcal <span class="comment">% WITH: d_field, fmd_field</span>
+0022 
+0023 img_out = (img_in - imcal.d_field)./imcal.fmd_field;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

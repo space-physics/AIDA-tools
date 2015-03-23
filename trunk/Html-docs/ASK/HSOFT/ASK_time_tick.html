@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_time_tick</title>
+  <meta name="keywords" content="ASK_time_tick">
+  <meta name="description" content="ASK_TIME_AXIS - suitable settings for time tick marks and labels.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_time_tick
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_TIME_AXIS - suitable settings for time tick marks and labels.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [ticks,tickn,tickv,tickm] = ASK_time_tick(StartTimeMJS,dTime,less) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_TIME_AXIS - suitable settings for time tick marks and labels.
+ Inputs: mjs - start time of the plot, length - length in seconds
+ Outputs: ticks, tickn, tickv, tickm. These should be passed to
+  plot as keywords, e.g. xtickn=tickn, xminor=tickm.
+ The xrange of the plot should be from 0 to length. i.e. xran=[0,length]
+ The x values of the plot should therefore be mjs-mjs0, where mjs0 is the
+ first mjs value.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_MJS_TT.html" class="code" title="function varargout = ASK_MJS_TT(MJS)">ASK_MJS_TT</a>	ASK_MJS_TT - convert modified Julian second to calender date</li><li><a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>	ASK_TT_MJS - converts calendar date to modified Julian second</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ticks,tickn,tickv,tickm] = ASK_time_tick(StartTimeMJS,dTime,less)</a>
+0002 <span class="comment">% ASK_TIME_AXIS - suitable settings for time tick marks and labels.</span>
+0003 <span class="comment">% Inputs: mjs - start time of the plot, length - length in seconds</span>
+0004 <span class="comment">% Outputs: ticks, tickn, tickv, tickm. These should be passed to</span>
+0005 <span class="comment">%  plot as keywords, e.g. xtickn=tickn, xminor=tickm.</span>
+0006 <span class="comment">% The xrange of the plot should be from 0 to length. i.e. xran=[0,length]</span>
+0007 <span class="comment">% The x values of the plot should therefore be mjs-mjs0, where mjs0 is the</span>
+0008 <span class="comment">% first mjs value.</span>
+0009 
+0010 <span class="comment">% Modified from add_multi.pro</span>
+0011 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0012 <span class="comment">% GPL 3.0 or later applies</span>
+0013 
+0014 
+0015 major = [1.0/300.0,1.0/120.0,1.0/60, 1.0/30.0, 0.05, 0.1, 0.25, 0.5,1,2,5,10,15,30,60,120,180,240];<span class="comment">% number of minutes per major tick</span>
+0016 minor = [2,        5,        4,      2,        3,    6,   3,    6,  4,1,5, 5, 3, 3, 4,  4,  6,  8];<span class="comment">% number of minor ticks</span>
+0017 time_tick = dTime/60/5; <span class="comment">% approximate number of minutes for each tick</span>
+0018 <span class="keyword">if</span> nargin &gt; 2 &amp;&amp; less
+0019   time_tick = dTime/60/3;
+0020 <span class="keyword">end</span>
+0021 
+0022 opt = find( major &lt;= time_tick, 1,<span class="string">'last'</span>);
+0023 <span class="keyword">if</span> isempty(opt)
+0024   opt = 1;
+0025 <span class="keyword">end</span>
+0026 
+0027 step = major(opt);
+0028 
+0029 
+0030 numb = floor(dTime/60./step);
+0031 [year,month,day,hour,minute,sec] = <a href="ASK_MJS_TT.html" class="code" title="function varargout = ASK_MJS_TT(MJS)">ASK_MJS_TT</a>(StartTimeMJS);
+0032 mjs_Date = <a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>([year,month,day,0,0,0]);
+0033 
+0034 start_t = StartTimeMJS - mjs_Date;
+0035 start   = ( floor( ( StartTimeMJS - mjs_Date )/60./step )+1 )*step*60;
+0036 tickv   = [0:numb]*step*60.0 + start; <span class="comment">% findgen ???</span>
+0037 ticks   = numb; <span class="comment">% -1 removed, guessing at index from 1 instead of</span>
+0038                 <span class="comment">% from 0...</span>
+0039 
+0040 
+0041 <span class="keyword">for</span> i1 = 1:ticks,
+0042   
+0043   [year,month,day,hour,minute,sec] = <a href="ASK_MJS_TT.html" class="code" title="function varargout = ASK_MJS_TT(MJS)">ASK_MJS_TT</a>(mjs_Date + tickv(i1));
+0044   tickn{i1} = sprintf(<span class="string">'%02d:%02d'</span>,hour,minute); <span class="comment">% string(ho,mi,form='(i2.2,&quot;:&quot;,i02.2)');</span>
+0045   <span class="keyword">if</span> (opt &lt;= 8)
+0046     tickn{i1} = sprintf(<span class="string">'%02d:%02d:%02d'</span>,hour,minute,floor(sec)); <span class="comment">% string(ho,mi,se, form='(i2.2,&quot;:&quot;,i02.2,&quot;:&quot;,i02.2)');</span>
+0047   <span class="keyword">end</span>
+0048   <span class="keyword">if</span> (opt &lt;= 2)
+0049     tickn{i1} = sprintf(<span class="string">'%02d:%02d:%05.2f'</span>,hour,minute,sec);  <span class="comment">% string(ho,mi,se+0.001*ms, form='(i2.2,&quot;:&quot;,i02.2,&quot;:&quot;,f05.2)');</span>
+0050   <span class="keyword">end</span>
+0051 <span class="keyword">end</span>
+0052 
+0053 tickv = tickv - start_t;
+0054 ddd = find(tickv &gt; dTime);
+0055 count = length(ddd);
+0056 <span class="keyword">if</span> (count &gt; 0)
+0057   tickv(ddd) = [];
+0058 <span class="keyword">end</span>
+0059 tickm = minor(opt);
+0060 
+0061 cAX = axis;
+0062 dT = cAX(2)-cAX(1);
+0063 
+0064 set(gca,<span class="string">'xtick'</span>,ax(1)+dT/dTime*tickv(1:min(length(tickv),length(tickn))),<span class="keyword">...</span>
+0065         <span class="string">'xticklabel'</span>,tickn(1:min(length(tickv),length(tickn))))</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of mk_alis_pos_xyz</title>
+  <meta name="keywords" content="mk_alis_pos_xyz">
+  <meta name="description" content="MK_ALIS_POS_XYZ - get ALIS station coordinates and transformation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>mk_alis_pos_xyz
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>MK_ALIS_POS_XYZ - get ALIS station coordinates and transformation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [stnXYZ,stnLongLat,trmtr] = mk_alis_pos_xyz(ALISstnNr) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MK_ALIS_POS_XYZ - get ALIS station coordinates and transformation
+ matrices. 
+ 
+ Calling:
+   [stnXYZ,stnLongLat,trmtr] = mk_alis_pos_xyz(ALISstnNr)
+ Input:
+   ALISstnsNr - ALIS station identification number [1-7,10,11],
+                optional - defaults to [1:7,10]
+ Output:
+   stnXYZ     - local horizontal ALIS station coordinates (local
+                at IRF-Kiruna)
+   stnLongLat - longitude and latitude for ALIS stations
+   trmtr      - tranformation matrices between local ALIS-station
+                coordinates to IRF-Kiruna coordinates.
+ 
+ SEE also: AIDApositionize, AIDAstationize</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/AIDApositionize.html" class="code" title="function [stnXYZ,stnLongLat,trmtr] = AIDApositionize(stationNRs,central_stn_nr)">AIDApositionize</a>	AIDApositionize - calculate station lat-long and xyz positions</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [stnXYZ,stnLongLat,trmtr] = mk_alis_pos_xyz(ALISstnNr)</a>
+0002 <span class="comment">% MK_ALIS_POS_XYZ - get ALIS station coordinates and transformation</span>
+0003 <span class="comment">% matrices.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%   [stnXYZ,stnLongLat,trmtr] = mk_alis_pos_xyz(ALISstnNr)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%   ALISstnsNr - ALIS station identification number [1-7,10,11],</span>
+0009 <span class="comment">%                optional - defaults to [1:7,10]</span>
+0010 <span class="comment">% Output:</span>
+0011 <span class="comment">%   stnXYZ     - local horizontal ALIS station coordinates (local</span>
+0012 <span class="comment">%                at IRF-Kiruna)</span>
+0013 <span class="comment">%   stnLongLat - longitude and latitude for ALIS stations</span>
+0014 <span class="comment">%   trmtr      - tranformation matrices between local ALIS-station</span>
+0015 <span class="comment">%                coordinates to IRF-Kiruna coordinates.</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% SEE also: AIDApositionize, AIDAstationize</span>
+0018 
+0019 <span class="comment">%   Copyright � 20121203 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0020 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0021 
+0022 
+0023 <span class="comment">% If we have no input argument with station number...</span>
+0024 <span class="keyword">if</span> nargin == 0
+0025   <span class="comment">% ...then use the default ALIS stations:</span>
+0026   ALISstnNr = [1 2 3 4 5 6 7 10];
+0027 <span class="keyword">end</span>
+0028 
+0029 <span class="comment">% Delegate the work to the AIDApositionize function:</span>
+0030 [stnXYZ,stnLongLat,trmtr] = <a href="../Fits_tools/AIDApositionize.html" class="code" title="function [stnXYZ,stnLongLat,trmtr] = AIDApositionize(stationNRs,central_stn_nr)">AIDApositionize</a>(ALISstnNr,1);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

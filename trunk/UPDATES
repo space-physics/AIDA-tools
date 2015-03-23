@@ -1,0 +1,207 @@
+AIDA_tools version Beta (20100318)
+
+Updates:
+
+Tomography:
+* tomo_start_guess_altvar1 - a start-guesser with adaptive h0-n-width,
+  this will return a better guess of the altitude and width of the
+  aurora. This works as a rough automatic triangulation - but only
+  with one altitude and width for the entire horizontal extension of
+  the block-of-blobs.
+* tomo_slice_i - version of slice that uses the proper orientation of
+  the 3-D X, Y and Z grids.
+* make_tomo_ops can now display where the 3-D block of blobs falls in
+  the images. This requires that one makes projections of a flat
+  Vem. See the tomo-examples.
+
+Starcal:
+* Now possible to remove a selected identified star from the Starcal
+  menu in the starcal window.
+* Several functions uses mouse graphical selection (ginput)
+  (semi_autoidentify, triangulate, identify star) they now take
+  keyboard-output from ginput, characters according to figure labels.
+
+Spectral_cal:
+* spc_spectral_int_conv2.m now accepts function handle for filter
+  caracteristic
+
+Overall:
+* There is now a new version of the station position and station name
+  files. Now there is one file per imaging system with the format
+  StNr "station name" longdeg  longmin  longsec N_or_S latdeg  latmin  latsec alt 
+  These files should be located in AIDA_tools/.data and have filenames
+  ending in .stations, currently there are 4 .stations files: ALIS,
+  Miracle HAARPOON and Xephem. 
+* When reading data with inimg the metadata struct returned (o, obs)
+  now contains some new fields: .longlat (will eventually replace .pos
+  that will be obsoleted), .xyz and .trmtr. The last 2 fields give the
+  cartesian position of the station relative to a "central station"
+  and the rotation matrix between the station-local horizontal
+  coordinates and the central coordinates, if this can be
+  calculated. To get this there has to be a field .central_station
+  in the pre-processing struct sent in to the inimg
+  function. central_station should be the unique station identifier of
+  the station choosen to be the origin of the cartesian horisontal
+  coordinates central station. 
+
+Minor fixes:
+* Zoom will now by default be on at all times in starcal.
+* The problem with sliders that dissapeared have now been fixed.
+* For starcal - now the error-figure is opened at once.
+* The HTML-documentation is now updated.
+
+AIDA_Tools version 0.70710
+
+Updates:
+
+1, typical_pre_proc_ops now gives different settings depending on the
+   file type argument it is called with. Most importantly, for others
+   than 'alis' the quirky quadrant balancing is turned off.
+2, The tomo_opts function now returns an array of structs instead of
+   a struct with arrays. This makes it far easier to run the
+   tomography with different subsets of images. Previously one had to
+   make one such struct for each set of stations one wanted to run the
+   tomography over.
+3, An example of how to make inimg read a file with an image in an
+   unknown file format is included.
+
+
+
+AIDA_Tools version 0.70
+
+Updates:
+
+1, Updated the image reading functions to handle broken fits images. In
+   case the fits-file does not contain a valid header an empty image is
+   returned together with the header.
+2, Improved reading of other file formats. Provided the pre-processing
+   option struct contains a field 'filetype'
+   [{'fits'}|'sbig'|'afrl-raw'] that have fits as default, but makes
+   it possible to read SBIG files or Todd Pedersens Air-Force Research
+   Labs raw images. For other file formats that matlab cannot read
+   with 'imread' or load with 'load' tailormade data reading functions
+   can be used if a function handle is supplied in the pre-processing
+   options field 'read_data_fcn'. Then a function handle that produces
+   an 'obs' struct should also be supplied. Either a function that
+   parses a header in the field 'log2obs', or a function that takes
+   the image file name in the field 'try_to_be_smart_fnc'.
+3, A new non-parametric model for the optical transfer is
+   introduced. (not guaranteed that all functions support it yet. This
+   model is based on two 2-D to two 2-D interpolation mappings of
+   smoothing surfaces from the image coordinates to the horisontal
+   components of the pixel lines-of-sight.
+4  Bits and pieces have been fixed.
+   1, in the starcalibration work the colormap got realy boring in
+      autoidentify mode. This was due to a 'bug' (or changed behaviour
+      in matlabs contour function) this is now fixed.
+
+AIDA_Tools version 0.7
+
+There is a new release of the Auroral Image Data Analysis tools I presented in
+January 2006. 
+
+This, I think, is a more "ready" version of these functions in that it now has a
+far cleaner structure and the m-files are now less scattered across my
+matlab-directories. Thus, future bug-fixes and updates should be quicker and
+less ad-hoc messy.
+
+0, RELEASE
+
+After the Image processing course I got a little bit wiser, not much
+but enough to realize some improvements were needed to the overall
+structure of my matlab routines and the documentation. Everything is
+not yet finished but at least it is time to release the first version
+of ADA_tools (ALIS Data Analysis tools). 
+
+Some of the problems that were revealed and made the routines almost
+nightmareish to use for others than me:
+* Cumbersome at startup.
+* Crashing when running in different matlab versions.
+* Crashing on windows (and mac?)
+* Lacking in documentation
+* Not all image corrections properly done automatically.
+
+
+This and other topics of the same nature made me realize that the
+ALIS-related programs needed to be restructured signifficantly. Not in
+any way that realy affects the user or change user interface, but
+rather the file structure and what should be needed at startup. Then I
+also realised that some additional calibration work would be good to
+include, and then that an improved documentation and a thorough
+tutorial would be good.
+
+Now that the progress of the tutorial have come to a halt and the
+calibration stuff might be updated at a later time it is overdue to
+produce a new release of my matlab toolboxes for ALIS data analysis.
+
+AIDA_tools = Auroral Image Data Analysis tools
+
+
+IMPROVED FUNCTIONALITY.
+
+
+Bias correction for ALIS data in most common binning configurations
+for all cameras. Exactly what binning configurations differ from
+camera to camera, look in AIDA_tools/.data/ccd#N for what binning-factor
+we have bias corrections for CCD#N. For the absent ones the default is
+to make an educated guess if bias correction is included in the image
+pre-processing.
+
+Various ALIS related data are stored in AIDA_tools/.data. The least
+related but maybe most important to mention is the topography of
+northern Scandinavia that is stored in the file NS-geography.mat.
+To use the topography just load the file:
+
+>> load NS-geography
+
+Then either display it as an image (less useful):
+
+>> imagesc(Nscand)
+
+Or do something like this:
+
+>> pcolor(long_Nscand,lat_Nscand,N_scand),shading flat
+>> cmap = summer;      
+>> cmap(1,:) = [0 0 1];
+>> colormap(cmap)  
+
+Most of the rest of the data files are handled automatically or
+if not self explanatory at least "self figure-outable". 
+
+
+
+IMPPROVED DOCUMENTATION
+
+
+There was the ambition to have an extensive tutorial, more extensive
+than the image processing stuff I presented in January. There is quiet
+some work to do before that ambition is in put to rest. However there
+are a beginning that contains some introductions, some worked examples
+and a complete cross referensed source code documentation. Matlab has
+some way of making this kind of html-documentation reachable from
+within matlabs gui. This documentation is not reachable that way as
+far as I know. The to-level start point is:
+
+AIDA_tools/Documentation/index.html
+
+Some links are still dead ends, but there should be somethings decently
+working as well.
+
+
+
+6, TODO
+
+
+Pixel-2-pixel variation of sensitivity should be done real soon now,
+but is not yet done. Then that image correction will be included by
+default. This will not wait for a major update.
+
+Update/complete the data base for camera calibrations. The data-base
+of camera calibration parameters are not as complete as one could
+wish. The plan was to have the functions reading ALIS data to search
+that data-base and then select the best valid optical
+parameters. However, since the data-base is not complete this has not
+realy been achieved to the degree one could whish. Thus whenever you
+do any camera calibrations with 'starcal' please send me the resulting
+optical parameters together with the name of the fits file and
+preferably also date and time of the exposure.

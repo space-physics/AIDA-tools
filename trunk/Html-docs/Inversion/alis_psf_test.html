@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of alis_psf_test</title>
+  <meta name="keywords" content="alis_psf_test">
+  <meta name="description" content="Script file used to calculate 4 2D-to-1D projection matrices">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Inversion -->
+<h1>alis_psf_test
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Script file used to calculate 4 2D-to-1D projection matrices</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Script file used to calculate 4 2D-to-1D projection matrices
+ Used for calculating tomographic point spread functions for my
+ thesis/ B Gustavsson</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ALIS_make_projmatr.html" class="code" title="function [pm1,X,Y,Z,mtb3t] = ALIS_make_projmatr(dr1,dr2,dr3,sx,sy,sz,optpar,rllc,ap)">ALIS_make_projmatr</a>	ALIS_MAKE_PROJMATR - make projection matrix for ALIS camera,</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Script file used to calculate 4 2D-to-1D projection matrices</span>
+0002 <span class="comment">% Used for calculating tomographic point spread functions for my</span>
+0003 <span class="comment">% thesis/ B Gustavsson</span>
+0004 
+0005 
+0006 <span class="comment">%   Copyright � 2000 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0007 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0008 
+0009 sx = 2;
+0010 sy = 64;
+0011 sz = 64;
+0012 dr1 = [10 0 0];
+0013 dr2 = [0 2 0];
+0014 dr3 = [0 0 2];
+0015 
+0016 optpar1 = [1.02 -1.021 -0.02 0.01 0.01 .001 -.001 .345 3 0];
+0017 optpar2 = [1.02 -1.021 -0.02 -20.01 0.01 .001 -.001 .345 3 0];
+0018 optpar3 = [1.02 -1.021  0.02 20.01 0.01 .001 -.001 .345 3 0];
+0019 optpar4 = [1.02 -1.021  0.02 30.01 0.01 .001 -.001 .345 3 0];
+0020 rllc = [-5 -64 90];
+0021 [pm1,X1,Y1,Z1] = <a href="ALIS_make_projmatr.html" class="code" title="function [pm1,X,Y,Z,mtb3t] = ALIS_make_projmatr(dr1,dr2,dr3,sx,sy,sz,optpar,rllc,ap)">ALIS_make_projmatr</a>(dr1,dr2,dr3,sx,sy,sz,optpar1,rllc);
+0022 save pm1b.mat pm1 X1 Y1 Z1
+0023 rllc = [-5 -64 90]+[0 -50 0];
+0024 [pm2,X2,Y2,Z2] = <a href="ALIS_make_projmatr.html" class="code" title="function [pm1,X,Y,Z,mtb3t] = ALIS_make_projmatr(dr1,dr2,dr3,sx,sy,sz,optpar,rllc,ap)">ALIS_make_projmatr</a>(dr1,dr2,dr3,sx,sy,sz,optpar2,rllc);
+0025 save pm2b.mat pm2 X2 Y2 Z2
+0026 rllc = [-5 -64 90]+[0 50 0];
+0027 [pm3,X3,Y3,Z3] = <a href="ALIS_make_projmatr.html" class="code" title="function [pm1,X,Y,Z,mtb3t] = ALIS_make_projmatr(dr1,dr2,dr3,sx,sy,sz,optpar,rllc,ap)">ALIS_make_projmatr</a>(dr1,dr2,dr3,sx,sy,sz,optpar3,rllc);
+0028 save pm3b.mat pm3 X3 Y3 Z3
+0029 rllc = [-5 -64 90]+[0 100 0];
+0030 [pm4,X4,Y4,Z4] = <a href="ALIS_make_projmatr.html" class="code" title="function [pm1,X,Y,Z,mtb3t] = ALIS_make_projmatr(dr1,dr2,dr3,sx,sy,sz,optpar,rllc,ap)">ALIS_make_projmatr</a>(dr1,dr2,dr3,sx,sy,sz,optpar4,rllc);
+0031 save pm4b.mat pm4 X4 Y4 Z4
+0032 
+0033 [fi1,taeta1] = alisbestaemfitaeta(64,1:128,optpar1,3);
+0034 [fi2,taeta2] = alisbestaemfitaeta(64,1:128,optpar2,3);
+0035 [fi3,taeta3] = alisbestaemfitaeta(64,1:128,optpar3,3);
+0036 [fi4,taeta4] = alisbestaemfitaeta(64,1:128,optpar4,3);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

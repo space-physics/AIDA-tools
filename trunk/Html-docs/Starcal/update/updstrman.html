@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of updstrman</title>
+  <meta name="keywords" content="updstrman">
+  <meta name="description" content="UPDSTRMAN -">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Starcal --><!-- menu.html update -->
+<h1>updstrman
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>UPDSTRMAN -</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [starpar] = updstrman(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> UPDSTRMAN -</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Starcal/starint.html" class="code" title="function [starintens] = starint(fv,xmin,xmax,ymin,ymax)">starint</a>	STARINT evaluation of a 2D gaussian.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [starpar] = updstrman(SkMp)</a>
+0002 <span class="comment">% UPDSTRMAN -</span>
+0003 <span class="comment">%</span>
+0004 
+0005 <span class="comment">%   Copyright © 2011 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0006 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0007 
+0008 <span class="keyword">global</span> bx by bxy
+0009 bxy = size(SkMp.img);
+0010 bx = bxy(1);
+0011 by = bxy(2);
+0012 
+0013 
+0014 figure( SkMp.figzoom )
+0015 
+0016 <span class="comment">%[x0,y0,button] = ginput(1);</span>
+0017 [x0,y0] = ginput(1);
+0018 
+0019 dl = SkMp.prefs.sz_z_r;
+0020 
+0021 x0 = (x0);
+0022 y0 = (y0);
+0023 
+0024 xmin = floor(min(max(x0-dl/2,1),by-dl));
+0025 xmax = floor(max(min(x0+dl/2,by),dl+1));
+0026 ymin = floor(min(max(y0-dl/2,1),bx-dl));
+0027 ymax = floor(max(min(y0+dl/2,bx),dl+1));
+0028 
+0029 starmat = SkMp.img(ymin:ymax,xmin:xmax);
+0030 background = ( mean(starmat(1,:)) + mean(starmat(<span class="keyword">end</span>,:)) + <span class="keyword">...</span>
+0031            mean(starmat(:,end)) + mean(starmat(:,1)) )/4;
+0032 
+0033 starpar = [x0,y0,SkMp.img(floor(y0),floor(x0))-background,.5,0,.5];
+0034 fynd = <a href="../../Starcal/starint.html" class="code" title="function [starintens] = starint(fv,xmin,xmax,ymin,ymax)">starint</a>(starpar,xmin,xmax,ymin,ymax);
+0035 
+0036 hold off
+0037 <span class="keyword">if</span> ( max(max(starmat)) - min(min(starmat)) &gt; eps )
+0038   
+0039   contour(xmin:xmax,ymin:ymax,starmat,8,<span class="string">'b'</span>)
+0040   
+0041 <span class="keyword">end</span>
+0042 hold on
+0043 <span class="keyword">if</span> ( max(max(fynd)) - min(min(fynd)) &gt; eps )
+0044   
+0045   contour(xmin:xmax,ymin:ymax,fynd,8,<span class="string">'r'</span>)
+0046   
+0047 <span class="keyword">end</span>
+0048 hold off</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

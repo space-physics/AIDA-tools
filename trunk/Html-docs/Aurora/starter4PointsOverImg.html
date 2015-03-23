@@ -1,0 +1,244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of starter4PointsOverImg</title>
+  <meta name="keywords" content="starter4PointsOverImg">
+  <meta name="description" content="starter4PointsOverImg - starting function for ASC image overplotting">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Aurora -->
+<h1>starter4PointsOverImg
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>starter4PointsOverImg - starting function for ASC image overplotting</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function starter4PointsOverImg(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> starter4PointsOverImg - starting function for ASC image overplotting
+  This function is a gui-creating function making a GUI for ASC
+  overplotting gui that can pull all-sky camera images and plot
+  the image projection of a number of desired 3-D points.
+ 
+ Calling:
+  starter4PointsOverImg(longlatalt,{ImgNames,titleStr,longlataltCams,optpar,imReg{,lblStr{,gridstyle}}})
+ Input:
+  longlatalt    - double array [nPoints x 3] with longitude,
+                  latitude and altitude of the points to project
+                  onto the image plane (deg, deg, km). Defaults to
+                  footpoints and directions for the HARE campaign
+                  17.61, 77.20 (degrees), 105 km
+                  18.90, 76.18 (degrees), 105 km
+                  20.27, 74.80 (degrees), 105 km
+                  21.73, 72.75 (degrees), 105 km
+                  22.96, 69.91 (degrees), 105 km
+                  19.23, 69.58 (degrees), 105 km
+  ImgName       - Cell array with file-names to images to read,
+                  autoupdated url-s to &quot;most recent image&quot; seems
+                  most useful. Defaults to:
+                  {'http://polaris.nipr.ac.jp/~acaurora/aurora/Longyearbyen/latest.jpg',
+                   'http://polaris.nipr.ac.jp/~acaurora/aurora/Tromso/latest.jpg'};
+  long0lat0alt0 - Cell array (1 x nCams) with location [long, lat, alt]
+                  (deg, deg, km) of the imagers. Defaults to:
+                   {[16+2/60          78+09/60,        0.445],
+                    [19+13/60+38/3600 69+35/60+11/3600 0.086]};
+  optpar        - optical parameters specifying the geometric
+                  characteristics of the camera, as obtained with
+                  STARCAL. Defaults to:
+                  {[-0.73644 -0.72566 -1.0699 0.469 0.85278 0.0052725 -0.00043956 0.47421 2 0],
+                   [-0.73644 -0.72566 -1.0699 0.469 0.85278 0.0052725 -0.00043956 0.47421 2 0]};
+  imReg         - Cell array with image regions used in the star-
+                  calibration. Defaults to:
+                  {[132,590,15,480], [132,590,15,480]}
+  titleStr      - Cell array with title strings (typically name of
+                  site where ASC is located). Defaults to:
+                  {'ESR','Ramfjord'};
+  lableStr      - Cell array with label strings (typically
+                  number/name of overplotted points. Defaults to:
+                  {'1','2',...,sprintf('%d',nr_points)};
+  gridstyle     - [{'ll'}| 'az-ze' | ''] flag for selection of
+                  gridlines to plot, ll - longitide-latitude grid,
+                  az-ze - azimuth-zenith grid, '' (empty) no
+                  grid. Defaults to:
+                  'll'  
+ 
+ Notes: Either the function should be called with:
+ * no input arguments - then it will run with defaults for all
+   parameters,
+ * only the first input parameter - that array of points will be
+   used together with the default camera parameters
+ * 6 (or 7) parameters, with either an empty first input parameter
+   (then the default points will be used together with the given
+   camera parameters) or with an array for the point
+   coordinates. The 7th input array will only control the grid
+   style.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="callbackFcn4PointsOverImg.html" class="code" title="function callbackFcn4PointsOverImg(ImgName,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblStrs,gridstyle)">callbackFcn4PointsOverImg</a>	callbackFcn4PointsOverImg - wrapping of 2 functions for ASC image overplotting</li><li><a href="../tools/in_ranges.html" class="code" title="function is_true = in_ranges(t,t_ranges)">in_ranges</a>	IN_RANGES - True if T is in any of the T_RANGES intervalls</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/startPointsOverImgSpider2.html" class="code" title="">startPointsOverImgSpider2</a>	</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function starter4PointsOverImg(varargin)</a>
+0002 <span class="comment">% starter4PointsOverImg - starting function for ASC image overplotting</span>
+0003 <span class="comment">%  This function is a gui-creating function making a GUI for ASC</span>
+0004 <span class="comment">%  overplotting gui that can pull all-sky camera images and plot</span>
+0005 <span class="comment">%  the image projection of a number of desired 3-D points.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%  starter4PointsOverImg(longlatalt,{ImgNames,titleStr,longlataltCams,optpar,imReg{,lblStr{,gridstyle}}})</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%  longlatalt    - double array [nPoints x 3] with longitude,</span>
+0011 <span class="comment">%                  latitude and altitude of the points to project</span>
+0012 <span class="comment">%                  onto the image plane (deg, deg, km). Defaults to</span>
+0013 <span class="comment">%                  footpoints and directions for the HARE campaign</span>
+0014 <span class="comment">%                  17.61, 77.20 (degrees), 105 km</span>
+0015 <span class="comment">%                  18.90, 76.18 (degrees), 105 km</span>
+0016 <span class="comment">%                  20.27, 74.80 (degrees), 105 km</span>
+0017 <span class="comment">%                  21.73, 72.75 (degrees), 105 km</span>
+0018 <span class="comment">%                  22.96, 69.91 (degrees), 105 km</span>
+0019 <span class="comment">%                  19.23, 69.58 (degrees), 105 km</span>
+0020 <span class="comment">%  ImgName       - Cell array with file-names to images to read,</span>
+0021 <span class="comment">%                  autoupdated url-s to &quot;most recent image&quot; seems</span>
+0022 <span class="comment">%                  most useful. Defaults to:</span>
+0023 <span class="comment">%                  {'http://polaris.nipr.ac.jp/~acaurora/aurora/Longyearbyen/latest.jpg',</span>
+0024 <span class="comment">%                   'http://polaris.nipr.ac.jp/~acaurora/aurora/Tromso/latest.jpg'};</span>
+0025 <span class="comment">%  long0lat0alt0 - Cell array (1 x nCams) with location [long, lat, alt]</span>
+0026 <span class="comment">%                  (deg, deg, km) of the imagers. Defaults to:</span>
+0027 <span class="comment">%                   {[16+2/60          78+09/60,        0.445],</span>
+0028 <span class="comment">%                    [19+13/60+38/3600 69+35/60+11/3600 0.086]};</span>
+0029 <span class="comment">%  optpar        - optical parameters specifying the geometric</span>
+0030 <span class="comment">%                  characteristics of the camera, as obtained with</span>
+0031 <span class="comment">%                  STARCAL. Defaults to:</span>
+0032 <span class="comment">%                  {[-0.73644 -0.72566 -1.0699 0.469 0.85278 0.0052725 -0.00043956 0.47421 2 0],</span>
+0033 <span class="comment">%                   [-0.73644 -0.72566 -1.0699 0.469 0.85278 0.0052725 -0.00043956 0.47421 2 0]};</span>
+0034 <span class="comment">%  imReg         - Cell array with image regions used in the star-</span>
+0035 <span class="comment">%                  calibration. Defaults to:</span>
+0036 <span class="comment">%                  {[132,590,15,480], [132,590,15,480]}</span>
+0037 <span class="comment">%  titleStr      - Cell array with title strings (typically name of</span>
+0038 <span class="comment">%                  site where ASC is located). Defaults to:</span>
+0039 <span class="comment">%                  {'ESR','Ramfjord'};</span>
+0040 <span class="comment">%  lableStr      - Cell array with label strings (typically</span>
+0041 <span class="comment">%                  number/name of overplotted points. Defaults to:</span>
+0042 <span class="comment">%                  {'1','2',...,sprintf('%d',nr_points)};</span>
+0043 <span class="comment">%  gridstyle     - [{'ll'}| 'az-ze' | ''] flag for selection of</span>
+0044 <span class="comment">%                  gridlines to plot, ll - longitide-latitude grid,</span>
+0045 <span class="comment">%                  az-ze - azimuth-zenith grid, '' (empty) no</span>
+0046 <span class="comment">%                  grid. Defaults to:</span>
+0047 <span class="comment">%                  'll'</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">% Notes: Either the function should be called with:</span>
+0050 <span class="comment">% * no input arguments - then it will run with defaults for all</span>
+0051 <span class="comment">%   parameters,</span>
+0052 <span class="comment">% * only the first input parameter - that array of points will be</span>
+0053 <span class="comment">%   used together with the default camera parameters</span>
+0054 <span class="comment">% * 6 (or 7) parameters, with either an empty first input parameter</span>
+0055 <span class="comment">%   (then the default points will be used together with the given</span>
+0056 <span class="comment">%   camera parameters) or with an array for the point</span>
+0057 <span class="comment">%   coordinates. The 7th input array will only control the grid</span>
+0058 <span class="comment">%   style.</span>
+0059 
+0060 <span class="comment">% Copyright � 20121013 Bj�n Gustavsson</span>
+0061 <span class="comment">% This is free software, licensed under GNU GPL version 3 or later.</span>
+0062 
+0063 
+0064 
+0065 
+0066 <span class="keyword">if</span> nargin &gt; 0 &amp; ~isempty(varargin{1})
+0067   longlatalt = varargin{1};
+0068 <span class="keyword">else</span>
+0069   longlatalt = [ 17.52843 77.06578 104.8983
+0070                  18.81277 76.03857 104.7718
+0071                  20.17844 74.64872 104.5892
+0072                  21.63571 72.58227 105.2754
+0073                  22.86825 69.71968 104.7995
+0074                  19.15863 69.38518 104.695];
+0075 <span class="comment">% $$$                  17.61 77.20 105</span>
+0076 <span class="comment">% $$$                  18.90 76.18 105</span>
+0077 <span class="comment">% $$$                  20.27 74.80 105</span>
+0078 <span class="comment">% $$$                  21.73 72.75 105</span>
+0079 <span class="comment">% $$$                  22.96 69.91 105</span>
+0080 <span class="comment">% $$$                  19.23 69.58 105];</span>
+0081 <span class="keyword">end</span>
+0082 
+0083 gridstyle = <span class="string">'ll'</span>;
+0084 <span class="keyword">for</span> i1 = 1:size(longlatalt,1)
+0085   lblStr{i1} = sprintf(<span class="string">'%d'</span>,i1);
+0086 <span class="keyword">end</span>
+0087 <span class="keyword">if</span> <a href="../tools/in_ranges.html" class="code" title="function is_true = in_ranges(t,t_ranges)">in_ranges</a>(nargin,[1.1 5.9])
+0088   error(<span class="string">'starter4PointsOverImg expects either 0 1 6 7 or 8 input arguments with %d input argumetns things ought to go wonky'</span>,nargin)
+0089 <span class="keyword">elseif</span> nargin &gt; 5
+0090   UrlNames =       varargin{2};  
+0091   titleStrs =      varargin{3};
+0092   longlataltCams = varargin{4};
+0093   optpars =        varargin{5};
+0094   ImRegS =         varargin{6};
+0095   <span class="keyword">if</span> nargin &gt; 6
+0096     lblStr = varargin{7};
+0097   <span class="keyword">end</span>
+0098   <span class="keyword">if</span> nargin &gt; 7
+0099     gridstyle = varargin{8};
+0100   <span class="keyword">end</span>
+0101 <span class="keyword">else</span>
+0102   
+0103   UrlNames = {<span class="string">'http://polaris.nipr.ac.jp/~acaurora/aurora/Longyearbyen/latest.jpg'</span>,<span class="keyword">...</span>
+0104               <span class="string">'http://kho.unis.no/Quicklooks/kho_dslr.jpg'</span>,<span class="keyword">...</span>
+0105               <span class="string">'http://polaris.nipr.ac.jp/~acaurora/aurora/Tromso/latest.jpg'</span>,<span class="keyword">...</span>
+0106               <span class="string">'http://www.irf.se/allsky/LASTv2.JPG'</span>};
+0107   titleStrs = {<span class="string">'ESR-NIPR'</span>,<span class="keyword">...</span>
+0108                <span class="string">'ESR-UNIS'</span>,<span class="keyword">...</span>
+0109                <span class="string">'Ramfjord'</span>,<span class="keyword">...</span>
+0110                <span class="string">'Kiruna'</span>};
+0111   longlataltCams = {[16+2/60          78+09/60,        0.445],<span class="keyword">...</span>
+0112                     [16+2/60          78+09/60,        0.445],<span class="keyword">...</span>
+0113                     [19+13/60+38/3600 69+35/60+11/3600 0.086],<span class="keyword">...</span>
+0114                     [20.4112          67.8407,         0.2]};
+0115   optpars = {[-0.7406   -0.7306   -0.6692  0.9842  27.8691   0.0024    -0.0023     0.4678  2 0],<span class="keyword">...</span>
+0116              [-0.67435  -0.67468   1.2732  1.2487  29.676    0.039831   0.0087395  0.5249  2 0],<span class="keyword">...</span>
+0117              [-0.73644  -0.72566  -1.0699  0.469    0.85278  0.0052725 -0.00043956 0.47421 2 0],<span class="keyword">...</span>
+0118              [-0.7062   -0.7055    0.0781  0.0215   9.5699  -0.0051    -0.0000     0.4751  2 0]};
+0119   ImRegS = {[132,590,15,480],<span class="keyword">...</span>
+0120             [1,480,1,480],<span class="keyword">...</span>
+0121             [132,590,15,480],<span class="keyword">...</span>
+0122             [1 479,122 600]};
+0123 <span class="keyword">end</span>
+0124 <span class="comment">% KHO DSLR</span>
+0125 <span class="comment">% SkMp.img = SkMp.img(1:480,20:end);</span>
+0126 <span class="comment">% optp = [ -7.1740773e-01  -6.8878515e-01   3.2366751e+00 1.6978168e+00   4.0734457e+01   2.0467589e-02   8.5427099e-03 5.1304480e-01 2 0]</span>
+0127 <span class="comment">% http://kho.unis.no/Quicklooks/kho_dslr.jpg</span>
+0128 figure
+0129 mh = uimenu(gcf,<span class="string">'Label'</span>,<span class="string">'ASC-update'</span>,<span class="string">'handlevisibility'</span>,<span class="string">'off'</span>);
+0130 
+0131 <span class="keyword">for</span> i1 = 1:length(UrlNames),
+0132   fcn{i1} = @(src,eventdata) <a href="callbackFcn4PointsOverImg.html" class="code" title="function callbackFcn4PointsOverImg(ImgName,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblStrs,gridstyle)">callbackFcn4PointsOverImg</a>(UrlNames{i1},<span class="keyword">...</span>
+0133                                                     longlataltCams{i1},<span class="keyword">...</span>
+0134                                                     longlatalt,<span class="keyword">...</span>
+0135                                                     optpars{i1},<span class="keyword">...</span>
+0136                                                     ImRegS{i1},<span class="keyword">...</span>
+0137                                                     titleStrs{i1},<span class="keyword">...</span>
+0138                                                     lblStr,<span class="keyword">...</span>
+0139                                                     gridstyle);
+0140   eh{i1} = uimenu(mh,<span class="keyword">...</span>
+0141                   <span class="string">'Label'</span>,titleStrs{i1},<span class="keyword">...</span>
+0142                   <span class="string">'callback'</span>,fcn{i1},<span class="keyword">...</span>
+0143                   <span class="string">'handlevisibility'</span>,<span class="string">'callback'</span>);
+0144 <span class="keyword">end</span>
+0145 
+0146 feval(fcn{1})</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

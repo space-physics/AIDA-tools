@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_time_axis</title>
+  <meta name="keywords" content="ASK_time_axis">
+  <meta name="description" content="ASK_TIME_AXIS - formated time onto the x-labels">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_time_axis
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_TIME_AXIS - formated time onto the x-labels</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [ticks,tickn,tickv,tickm] = ASK_time_axis(StartTimeMJS,dTime,less) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_TIME_AXIS - formated time onto the x-labels
+   
+ Calling:
+    [ticks,tickn,tickv,tickm] = ASK_time_axis(StartTimeMJS,dTime,less)
+ 
+ Adapted from time_axis.pro, NOT TESTED WITH MUCH SUCCESS? Is used
+ in ASK_keogram_overlayed.m!</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_MJS_TT.html" class="code" title="function varargout = ASK_MJS_TT(MJS)">ASK_MJS_TT</a>	ASK_MJS_TT - convert modified Julian second to calender date</li><li><a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>	ASK_TT_MJS - converts calendar date to modified Julian second</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ticks,tickn,tickv,tickm] = ASK_time_axis(StartTimeMJS,dTime,less)</a>
+0002 <span class="comment">% ASK_TIME_AXIS - formated time onto the x-labels</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%    [ticks,tickn,tickv,tickm] = ASK_time_axis(StartTimeMJS,dTime,less)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Adapted from time_axis.pro, NOT TESTED WITH MUCH SUCCESS? Is used</span>
+0008 <span class="comment">% in ASK_keogram_overlayed.m!</span>
+0009 
+0010 <span class="comment">% Modified from add_multi.pro</span>
+0011 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0012 <span class="comment">% GPL 3.0 or later applies</span>
+0013 
+0014 major = [1/300,1/120,1/60, 1/30, 0.05, 0.1, 0.25, 0.5, 1,2,5,10,15,30,60,120,180,240];<span class="comment">% number of minutes per major tick</span>
+0015 minor = [2,        5,   4,    2,    3,    6,   3,   6, 4,1,5, 5, 3, 3, 4,  4,  6,  8];<span class="comment">% number of minor ticks</span>
+0016 time_tick = dTime/60/5; <span class="comment">% approximate number of minutes for each tick</span>
+0017 <span class="keyword">if</span> nargin &gt; 2 &amp;&amp; less
+0018   time_tick = dTime/60/3;
+0019 <span class="keyword">end</span>
+0020 
+0021 opt = find( major &lt;= time_tick, 1,<span class="string">'last'</span>);
+0022 <span class="keyword">if</span> isempty(opt)
+0023   opt = 1;
+0024 <span class="keyword">end</span>
+0025 
+0026 step = major(opt);
+0027 
+0028 
+0029 numb = floor(dTime/60./step);
+0030 [year,month,day,hour,minute,sec] = <a href="ASK_MJS_TT.html" class="code" title="function varargout = ASK_MJS_TT(MJS)">ASK_MJS_TT</a>(StartTimeMJS);
+0031 mjs_Date = <a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>([year,month,day,0,0,0]);
+0032 
+0033 start_t = StartTimeMJS - mjs_Date;
+0034 start   = ( floor( ( StartTimeMJS - mjs_Date )/60./step )+1 )*step*60;
+0035 tickv   = [0:numb]*step*60.0 + start;
+0036 ticks   = numb; <span class="comment">% -1 removed, guessing at index from 1 instead of</span>
+0037                 <span class="comment">% from 0...</span>
+0038 tickn{1} = <span class="string">''</span>;
+0039 
+0040 <span class="keyword">for</span> i1 = 1:(ticks+1),
+0041   
+0042   [year,month,day,hour,minute,sec] = <a href="ASK_MJS_TT.html" class="code" title="function varargout = ASK_MJS_TT(MJS)">ASK_MJS_TT</a>(mjs_Date + tickv(i1));
+0043   tickn{i1} = sprintf(<span class="string">'%02d:%02d'</span>,hour,minute);
+0044   <span class="keyword">if</span> (opt &lt;= 8)
+0045     tickn{i1} = sprintf(<span class="string">'%02d:%02d:%02d'</span>,hour,minute,floor(sec));
+0046   <span class="keyword">end</span>
+0047   <span class="keyword">if</span> (opt &lt;= 2)
+0048     tickn{i1} = sprintf(<span class="string">'%02d:%02d:%05.2f'</span>,hour,minute,sec);
+0049   <span class="keyword">end</span>
+0050 <span class="keyword">end</span>
+0051 <span class="comment">% whos tickn tickv</span>
+0052 tickv = tickv - start_t;
+0053 ddd = find(tickv &gt; dTime);
+0054 count = length(ddd);
+0055 <span class="comment">% whos tickn tickv</span>
+0056 
+0057 <span class="keyword">if</span> (count &gt; 0)
+0058   tickv(ddd) = [];
+0059 <span class="keyword">end</span>
+0060 tickm = minor(opt);
+0061 
+0062 
+0063 t0 = axis;
+0064 t0 = t0(1);
+0065 tickv = t0 + tickv/3600;
+0066 set(gca,<span class="string">'xtick'</span>,tickv,<span class="string">'xticklabel'</span>,tickn)
+0067 
+0068 <span class="comment">% $$$ pro time_axis, mjs, length, ticks, tickn, tickv, tickm, less=less</span>
+0069 <span class="comment">% $$$ ;</span>
+0070 <span class="comment">% $$$ ; the procedure to make the correct settings for the time axis</span>
+0071 <span class="comment">% $$$ ; Inputs: mjs - start time of the plot, length - length in seconds</span>
+0072 <span class="comment">% $$$ ; Outputs: ticks, tickn, tickv, tickm. These should be passed to</span>
+0073 <span class="comment">% $$$ ;  plot as keywords, e.g. xtickn=tickn, xminor=tickm.</span>
+0074 <span class="comment">% $$$ ; The xrange of the plot should be from 0 to length. i.e. xran=[0,length]</span>
+0075 <span class="comment">% $$$ ; The x values of the plot should therefore be mjs-mjs0, where mjs0 is the</span>
+0076 <span class="comment">% $$$ ; first mjs value.</span>
+0077 <span class="comment">% $$$ ;</span>
+0078 <span class="comment">% $$$ ; Dan added keyword less 20/08/08, to help persuade the routine to make less tick marks</span>
+0079 <span class="comment">% $$$ ;</span>
+0080 <span class="comment">% $$$ ; Time axis setup</span>
+0081 <span class="comment">% $$$ ;</span>
+0082 <span class="comment">% $$$ major = [1.0/300.0d0,1.0/120.0d0,1.0/60.0d0, 1.0/30.0d0, 0.05, 0.1, 0.25, 0.5,1,2,5,10,15,30,60,120,180,240] ; number of minutes per major tick</span>
+0083 <span class="comment">% $$$ minor = [2,          5,          4,          2,    3,   6,    3,   6,4,1,5, 5, 3, 3, 4,  4,  6,  8] ; number of minor ticks</span>
+0084 <span class="comment">% $$$ timetick = length/60./5.  ; approximate number of minutes for each tick</span>
+0085 <span class="comment">% $$$ if keyword_set(less)</span>
+0086 <span class="comment">% $$$   timetick = length/60./3.</span>
+0087 <span class="comment">% $$$ end</span>
+0088 <span class="comment">% $$$ dd = where(major le timetick, count)</span>
+0089 <span class="comment">% $$$ if (count le 0)</span>
+0090 <span class="comment">% $$$   opt = 1</span>
+0091 <span class="comment">% $$$ else</span>
+0092 <span class="comment">% $$$   opt = dd(count-1)</span>
+0093 <span class="comment">% $$$ end</span>
+0094 <span class="comment">% $$$ step = major(opt)</span>
+0095 <span class="comment">% $$$ numb = floor(length/60./step) +1</span>
+0096 <span class="comment">% $$$ mjs_tt, mjs,y,m,d,ho,mi,se,ms</span>
+0097 <span class="comment">% $$$ tt_mjs, y,m,d,0,0,0,0,mjs_d</span>
+0098 <span class="comment">% $$$ start_t = mjs-mjs_d</span>
+0099 <span class="comment">% $$$ start   = ( floor( (mjs-mjs_d)/60./step )+1 )*step*60.</span>
+0100 <span class="comment">% $$$ tickv   = findgen(numb)*step*60.0+start</span>
+0101 <span class="comment">% $$$ tickn   = strarr(numb)</span>
+0102 <span class="comment">% $$$ ticks   = numb-1</span>
+0103 <span class="comment">% $$$</span>
+0104 <span class="comment">% $$$ for i = 0:ticks,</span>
+0105 <span class="comment">% $$$   mjs_tt,mjs_d+tickv(i),y,m,d,ho,mi,se,ms</span>
+0106 <span class="comment">% $$$   tickn(i) = string(ho,mi,form='(i2.2,&quot;:&quot;,i02.2)');</span>
+0107 <span class="comment">% $$$   if (opt &lt;= 7)</span>
+0108 <span class="comment">% $$$     tickn(i) = string(ho,mi,se, form='(i2.2,&quot;:&quot;,i02.2,&quot;:&quot;,i02.2)');</span>
+0109 <span class="comment">% $$$   end</span>
+0110 <span class="comment">% $$$   if (opt le 1)</span>
+0111 <span class="comment">% $$$     tickn(i) = string(ho,mi,se+0.001*ms, form='(i2.2,&quot;:&quot;,i02.2,&quot;:&quot;,f05.2)');</span>
+0112 <span class="comment">% $$$   end</span>
+0113 <span class="comment">% $$$ end</span>
+0114 <span class="comment">% $$$</span>
+0115 <span class="comment">% $$$ tickv = tickv - start_t;</span>
+0116 <span class="comment">% $$$ ddd = where(tickv gt length, count);</span>
+0117 <span class="comment">% $$$ if (count &gt; 0)</span>
+0118 <span class="comment">% $$$   tickv(ddd) = length</span>
+0119 <span class="comment">% $$$   tickn(ddd) = ' '</span>
+0120 <span class="comment">% $$$ end</span>
+0121 <span class="comment">% $$$ tickm=minor(opt)</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

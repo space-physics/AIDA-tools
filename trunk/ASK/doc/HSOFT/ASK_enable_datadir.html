@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_enable_datadir</title>
+  <meta name="keywords" content="ASK_enable_datadir">
+  <meta name="description" content="ASK_ENABLE_DATADIR - short routine to automatically enable">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_enable_datadir
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_ENABLE_DATADIR - short routine to automatically enable</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function ASK_enable_datadir(datadir,smartdark,flat_tromso) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_ENABLE_DATADIR - short routine to automatically enable 
+  a data directory from the ASK data acquisition 
+  system
+ 
+ Calling:
+   ASK_enable_datadir(datadir,smartdark,flat_tromso)
+ Input:
+   datadir - The full path to the megablock you want to enable.
+ Keywords:
+   smartdark - Set this so a dark from the dark-sequence just
+               before the data is created and added in the
+               description file 
+   flat_tromso - Normally flats are taken from ask.lut, but if
+                 flat_tromso is set then some hard-coded flat
+                 names are used.
+
+ This function is untested, and will write setup-files - so should
+ be avoided until tested carefully!</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>	ASK_TT_MJS - converts calendar date to modified Julian second</li><li><a href="ASK_enable_datadir.html" class="code" title="function ASK_enable_datadir(datadir,smartdark,flat_tromso)">ASK_enable_datadir</a>	ASK_ENABLE_DATADIR - short routine to automatically enable</li><li><a href="ASK_get_dark_name.html" class="code" title="function [dark_name,dark_short] = ASK_get_dark_name(dpath,BeforeOrAfter)">ASK_get_dark_name</a>	ASK_GET_DARK_NAME - get the name of the dark megablock corresponding to the</li><li><a href="ASK_locate_int.html" class="code" title="function [start_indx,stop_indx] = ASK_locate_int(t1,t2,mjs1,mjs2,hardBoundaries)">ASK_locate_int</a>	ASK_LOCATE_INT -</li><li><a href="ASK_make_askdark.html" class="code" title="function ASK_make_askdark(filename,flat)">ASK_make_askdark</a>	ASK_MAKE_ASKDARK - Script that creates darks or flats.</li><li><a href="ASK_read_asklut.html" class="code" title="function asklut = ASK_read_asklut(filename)">ASK_read_asklut</a>	ASK_READ_ASKLUT - reads ASK meta-datafrom look up tables</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_enable_datadir.html" class="code" title="function ASK_enable_datadir(datadir,smartdark,flat_tromso)">ASK_enable_datadir</a>	ASK_ENABLE_DATADIR - short routine to automatically enable</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ASK_enable_datadir(datadir,smartdark,flat_tromso)</a>
+0002 <span class="comment">% ASK_ENABLE_DATADIR - short routine to automatically enable</span>
+0003 <span class="comment">%  a data directory from the ASK data acquisition</span>
+0004 <span class="comment">%  system</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%   ASK_enable_datadir(datadir,smartdark,flat_tromso)</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%   datadir - The full path to the megablock you want to enable.</span>
+0010 <span class="comment">% Keywords:</span>
+0011 <span class="comment">%   smartdark - Set this so a dark from the dark-sequence just</span>
+0012 <span class="comment">%               before the data is created and added in the</span>
+0013 <span class="comment">%               description file</span>
+0014 <span class="comment">%   flat_tromso - Normally flats are taken from ask.lut, but if</span>
+0015 <span class="comment">%                 flat_tromso is set then some hard-coded flat</span>
+0016 <span class="comment">%                 names are used.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% This function is untested, and will write setup-files - so should</span>
+0019 <span class="comment">% be avoided until tested carefully!</span>
+0020 
+0021 <span class="comment">% Dan modified this 09/11/09, to look in ask.lut for the flat file name.</span>
+0022 <span class="comment">%</span>
+0023 
+0024 <span class="comment">% global hities % Seems unused.</span>
+0025 <span class="keyword">global</span> asklut <span class="comment">% WITH: ask_t1, ask_t2, ask_lat, ask_lon, ask_ncam, ask_uon, ask_cam, ask_cnv, ask_fps, ask_bin, ask_cal, ask_flat</span>
+0026 
+0027 
+0028 <span class="comment">% $$$ disp('Have you tested that this function does not ruin existing')</span>
+0029 <span class="comment">% $$$ disp('setup-files?')</span>
+0030 <span class="comment">% $$$ disp('If you have not then this is the time to escape disaster')</span>
+0031 <span class="comment">% $$$ disp('by typing:')</span>
+0032 <span class="comment">% $$$ disp('dbquit')</span>
+0033 <span class="comment">% $$$ disp('after the prompt. Otherwise just type:')</span>
+0034 <span class="comment">% $$$ disp('return')</span>
+0035 <span class="comment">% $$$ disp('after the prompt to continue with enabling the data directory.')</span>
+0036 <span class="comment">% $$$ keyboard</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%  first locate the start time information</span>
+0039 <span class="comment">%</span>
+0040 
+0041 posFsep = findstr(datadir,filesep);
+0042 aaa = datadir(posFsep(end)+1:end);
+0043 
+0044 num = 0;
+0045 yr = str2num(aaa(1:4));
+0046 mo = str2num(aaa(5:6));
+0047 da = str2num(aaa(7:8));
+0048 ho = str2num(aaa(9:10));
+0049 mi = str2num(aaa(11:12));
+0050 se = str2num(aaa(13:14));
+0051 
+0052 Dtype = aaa(15);
+0053 nums = aaa(16);
+0054 
+0055 <span class="keyword">switch</span> nums
+0056  <span class="keyword">case</span> <span class="string">'A'</span>
+0057   <a href="ASK_read_asklut.html" class="code" title="function asklut = ASK_read_asklut(filename)">ASK_read_asklut</a>(<span class="string">'alvis'</span>)
+0058   num = 1;
+0059   data_type = <span class="string">'ask'</span>;
+0060   cameranum = <span class="string">'ALVIS'</span>;
+0061   ccdx = 1004;
+0062   ccdy = 1002;
+0063  <span class="keyword">case</span>  <span class="string">'1'</span> 
+0064   <a href="ASK_read_asklut.html" class="code" title="function asklut = ASK_read_asklut(filename)">ASK_read_asklut</a>(<span class="string">'/stp/raid2/ask/data/setup/ask.lut'</span>);
+0065   num = 1;
+0066   data_type = <span class="string">'ask'</span>;
+0067   cameranum = <span class="string">'ASK #1'</span>;
+0068   ccdx = 512;
+0069   ccdy = 512;
+0070  <span class="keyword">case</span>   <span class="string">'2'</span>
+0071   <a href="ASK_read_asklut.html" class="code" title="function asklut = ASK_read_asklut(filename)">ASK_read_asklut</a>(<span class="string">'/stp/raid2/ask/data/setup/ask.lut'</span>);
+0072   num = 2;
+0073   data_type = <span class="string">'ask'</span>;
+0074   cameranum = <span class="string">'ASK #2'</span>;
+0075   ccdx = 512;
+0076   ccdy = 512;
+0077  <span class="keyword">case</span> <span class="string">'3'</span>
+0078   <a href="ASK_read_asklut.html" class="code" title="function asklut = ASK_read_asklut(filename)">ASK_read_asklut</a>(<span class="string">'/stp/raid2/ask/data/setup/ask.lut'</span>);
+0079   num = 3;
+0080   data_type = <span class="string">'ask'</span>;
+0081   cameranum = <span class="string">'ASK #3'</span>;
+0082   ccdx = 512;
+0083   ccdy = 512;
+0084  <span class="keyword">otherwise</span>
+0085   disp([<span class="string">'Unknown Dtype ID: '</span>,nums])
+0086 <span class="keyword">end</span>
+0087 
+0088 b = findstr(aaa,<span class="string">'w'</span>);
+0089 <span class="keyword">if</span> ~isempty(b)
+0090   prefix = <span class="string">'mean-'</span>;
+0091 <span class="keyword">else</span> 
+0092   prefix = <span class="string">'image-'</span>;
+0093 <span class="keyword">end</span>
+0094 
+0095 mjs = <a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>([yr,mo,da,ho,mi,se]);
+0096 
+0097 [sta,sto] = <a href="ASK_locate_int.html" class="code" title="function [start_indx,stop_indx] = ASK_locate_int(t1,t2,mjs1,mjs2,hardBoundaries)">ASK_locate_int</a>(asklut.ask_t1, asklut.ask_t2, mjs, mjs);
+0098 latitude  = asklut.ask_lat(sta);
+0099 longitude = asklut.ask_long(sta);
+0100 
+0101 filter     = asklut.ask_cam{num, sta};
+0102 time_res   = 1.0/asklut.ask_fps(num, sta);
+0103 flat_field = asklut.ask_flat{num,sta};
+0104 
+0105 <span class="comment">% writing here the information on the description file</span>
+0106 <span class="comment">%</span>
+0107 description_name = [aaa,<span class="string">'.TXT'</span>];
+0108 <span class="keyword">if</span> num == asklut.ask_uon(sta)
+0109   data_type = [data_type,<span class="string">'3'</span>];
+0110 <span class="keyword">end</span>
+0111 <span class="keyword">if</span> Dtype == <span class="string">'d'</span>
+0112   data_type = [data_type,<span class="string">'d'</span>];
+0113 <span class="keyword">end</span>
+0114 start_num = 1;
+0115 
+0116 <span class="keyword">if</span> exist(datadir,<span class="string">'dir'</span>) ~= 7
+0117   disp(<span class="string">'Error: data directory does not exist!'</span>)
+0118   <span class="keyword">return</span>
+0119 <span class="keyword">end</span>
+0120 
+0121 [status,aaaa] = system([<span class="string">'ls '</span>,datadir,<span class="string">' | grep '</span>,prefix,<span class="string">' |wc'</span>]);
+0122 
+0123 <span class="comment">% reads, aaaa, n_files</span>
+0124 n_files  = sscanf(aaaa,<span class="string">'%d'</span>);
+0125 stop_num = n_files(1);
+0126 nstep    = 1;
+0127 
+0128 <span class="keyword">if</span> ~isempty(b)
+0129   nstep     = 2*asklut.ask_fps(num-1, sta);
+0130   start_num = nstep+1;
+0131   stop_num  = fix(n_files*nstep+1);
+0132 <span class="keyword">end</span>
+0133 
+0134 <span class="comment">%if type eq 'd' then stop_num = '100'</span>
+0135 disp([<span class="string">'Enabling data directory: '</span>, description_name])
+0136 disp([<span class="string">'Consider changing filename: '</span>, description_name,<span class="string">' to: '</span>,lower(description_name)])
+0137 dark_field = <span class="string">'nodark'</span>;
+0138 
+0139 <span class="keyword">if</span> Dtype == <span class="string">'d'</span> 
+0140   flat_field = <span class="string">'noflat'</span>;
+0141 <span class="keyword">elseif</span> length(strtrim(flat_field)) &lt; 1
+0142   disp(<span class="string">'Warning! No flat file listed in lookup table, using noflat.'</span>)
+0143   flat_field = <span class="string">'noflat'</span>;
+0144 <span class="keyword">end</span>
+0145 <span class="comment">%%%%%PUT IN FLATS DIRECTLY!! Changed by Hanna on 11/6 2007. Now the</span>
+0146 <span class="comment">%%%%%flats for 2006/2007 are put into the description files directly,</span>
+0147 <span class="comment">%%%%%if the keyword flat_tromso is set.</span>
+0148 <span class="keyword">if</span> nargin == 3 &amp; flat_tromso
+0149  disp(<span class="string">'Overriding flat file due to flat_tromso keyword.'</span>)
+0150  <span class="keyword">switch</span> filter
+0151   <span class="keyword">case</span> 6730
+0152    flat_field = <span class="string">'flat_oct06_6730.dat'</span>;
+0153   <span class="keyword">case</span> 7320
+0154    flat_field = <span class="string">'flat_dec06_7320.dat'</span>;
+0155   <span class="keyword">case</span> 7774
+0156    flat_field = <span class="string">'flat_dec06_7774.dat'</span>;
+0157   <span class="keyword">case</span> 5620
+0158    flat_field = <span class="string">'flat_dec06_5620.dat'</span>;
+0159   <span class="keyword">case</span> 4278
+0160    flat_field = <span class="string">'flat_4278_feb07.dat'</span>;
+0161   <span class="keyword">otherwise</span>
+0162  <span class="keyword">end</span>
+0163 <span class="keyword">end</span>
+0164 
+0165 <span class="keyword">if</span> isempty(b)
+0166   <span class="keyword">if</span> nargin &gt; 1 &amp; ~isempty(smartdark) &amp; smartdark
+0167     <span class="comment">% this bit for automatic inclusion of the dark field</span>
+0168     [dark_name,dark_short] = <a href="ASK_get_dark_name.html" class="code" title="function [dark_name,dark_short] = ASK_get_dark_name(dpath,BeforeOrAfter)">ASK_get_dark_name</a>(datadir);
+0169     <a href="ASK_enable_datadir.html" class="code" title="function ASK_enable_datadir(datadir,smartdark,flat_tromso)">ASK_enable_datadir</a>(dark_name);
+0170     <a href="ASK_make_askdark.html" class="code" title="function ASK_make_askdark(filename,flat)">ASK_make_askdark</a>(dark_short);
+0171     dark_field = [dark_short,<span class="string">'.dark'</span>];
+0172   <span class="keyword">end</span>
+0173 <span class="keyword">end</span>
+0174 fID = fopen(fullfile(videodir,<span class="string">'/setup/'</span>,description_name),<span class="string">'w'</span>);
+0175 <span class="comment">%fID = fopen(fullfile('/home/bjg1c10',description_name),'w');</span>
+0176 fprintf( fID, <span class="string">'# This is an automatically created event description file\n'</span>);
+0177 fprintf( fID, <span class="string">'%s\n'</span>,cameranum);
+0178 fprintf( fID, <span class="string">'%s\n'</span>,aaa);
+0179 <span class="comment">% Added by Hanna and Dan 11/08/2010:</span>
+0180 <span class="comment">%%%  if exist(fullfile(videodir,+aaa,/DANGLING_SYMLINK) eq 1) then spawn, 'rm '+videodir+'/'+aaa</span>
+0181 <span class="comment">% This test never worked, as videodir is usually specified as &quot;$VIDEODIR/&quot;.</span>
+0182 <span class="comment">% We just end up with loads of recursive soft links in a nasty hall of mirrors</span>
+0183 <span class="comment">% type effect.</span>
+0184 <span class="comment">%if (datadir ne videodir+'/'+aaa) then spawn, 'ln -s '+datadir+' '+videodir+'/'+aaa</span>
+0185 <span class="comment">% So Dan changed it to this, 03/11/2009:</span>
+0186 <span class="comment">%%%  if (file_test(videodir+'/'+aaa) eq 0) then spawn, 'ln -s '+datadir+' '+videodir+'/'+aaa</span>
+0187 <span class="comment">% Not quite exactly what we want, but the best I can think of right now,</span>
+0188 <span class="comment">% and better than the previous test.</span>
+0189 fprintf(fID,<span class="string">'%s\n'</span>,  prefix);
+0190 fprintf(fID,<span class="string">'%4d %02d %02d %02d %02d %02d 000\n'</span>,yr,mo,da,ho,mi,round(se)); <span class="comment">%  form = '(i4.4,5i3.2,i4.3)'</span>
+0191 fprintf(fID,<span class="string">'%d %d\n'</span>,start_num, nstep);       <span class="comment">% start number file-number increment</span>
+0192 fprintf(fID,<span class="string">'%d\n'</span>, stop_num);                 <span class="comment">% stop number</span>
+0193 fprintf(fID,<span class="string">'%f\n'</span>, time_res);
+0194 fprintf(fID,<span class="string">'%s\n'</span>,  filter);
+0195 fprintf(fID,<span class="string">'%f\n'</span>,  latitude);
+0196 fprintf(fID,<span class="string">'%f\n'</span>,  longitude);
+0197 fprintf(fID,<span class="string">'setup/%s\n'</span>,asklut.ask_cnv{num,sta});
+0198 npx = ccdx/asklut.ask_bin(num,sta);
+0199 npy = ccdy/asklut.ask_bin(num,sta);
+0200 fprintf(fID,<span class="string">'%d  %d\n'</span>,  npx,npy);
+0201 fprintf(fID,<span class="string">'%s\n'</span>,  data_type  );
+0202 fprintf(fID,<span class="string">'%s\n'</span>,  dark_field );
+0203 fprintf(fID,<span class="string">'%s\n'</span>,  flat_field );
+0204 fclose( fID );</pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

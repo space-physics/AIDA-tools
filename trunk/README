@@ -1,0 +1,195 @@
+1, GETTING AIDA_TOOLS
+
+
+The program can be found at:
+www.alis.irf.se:/home/bjorn/public-html/AIDA-latest.tbz
+
+OR
+
+"https://aniara.irf.se/svn/AIDA_tools/trunk" 
+This URL always provide the latest revision over svn 
+(no password required, see INSTALLING AIDA_TOOLS for further instructions)
+
+In this new version all files that are needed for Auroral Image Data
+Analysis resides under one directory AIDA_tools (AIDA is short for
+Auroral Image Data Analysis). This includes: ALIS-fits Image handling,
+Camera models and calibrations, tomography, spectral absolute
+calibration and other tools.
+
+2, INSTALLING AIDA_TOOLS
+
+
+To install it all you need to do is to:
+a) Unpack it in the directory where you have your matlab files. (This
+should be different from the matlab installation
+directory. Preferably in a directory "matlab" in your home
+directory.)
+
+> tar -xzvf AIDA-###.tgz
+
+OR (if you want the last svn revision and have a svn client installed)
+
+> svn co "https://aniara.irf.se/svn/AIDA_tools/trunk" AIDA_tools
+
+If you are asked about a self-signed certificate, accept it permanently.
+
+Note. See also A NOTE ABOUT SUBVERSION VERSION CONTROL (svn) at the end
+of this file
+
+b) copy AIDA_startup from AIDA_tools/ to your matlab directory.
+
+c) In the copy of the AIDA_startup.m file, edit the third line:
+
+AIDA_root = fullfile('/home','bjorn','matlab');
+
+For those working in Unix-like OSes you should just change the
+directories to point to where you have your matlab directory (I
+obviously have it in /home/bjorn/matlab/). For those that work under
+non-unix OSes I think that you would have to modify the '/home' part
+above - but I have no such experience, so I cant help out. Then put
+the AIDA_startup.m in your matlab directory, this makes it possible to
+add the necessary path to AIDA_tools from wherever you start matlab,
+be it the home directory, or any data directory.
+
+Further the optical parameters found with starcal are now saved/can
+now be saved in a dedicated directory. This is set in
+typical_pre_proc_ops.m, look for: PO.StarCalResDir in
+typical_pre_proc_ops.m, and adjust.
+
+In order to read ASK-data some additional search paths has to be set
+to the site-relevant paths, since ASK stores the meta-data in separate
+files in the data-directory-tree. In the following functions paths are
+hard-coded:
+
+ASK_enable_datadir.m: '/stp/raid2/ask/data/setup/ask.lut'
+ASK_site_setup.m:     '/stp/raid2/ask/data'
+ASK_site_setup.m:     '/export/data/bjg1c10/ASK/'
+ASK_site_setup.m:     '/stp/raid2/ask/data/setup/ask.lut'
+ASK_overviewmaker:    '/stp/raid2/ask/data/'
+
+The path in ASK_enable_datadir and the videodir and path to ask.lut
+are necessary to change, HDIR might just as well be set to something
+sensible for saving results.
+
+
+
+IMPORTANT NOTE: You should not install or write matlab-files to the
+directories that hold matlab itself (matlabroot). Matlab keeps track
+of which functions needs to be reread, and the files under the
+matlabroot are assumed to be updated only when the matlab version
+changes. Thus you really should have your own matlab directory where
+you have the matlab files related to your own projects.
+
+
+3, "STARTING" AIDA_TOOLS
+
+To run AIDA_tools you will of course need a working matlab installation
+on the computer. Then all paths will be set by running AIDA_startup at
+the matlab prompt:
+
+>> AIDA_startup
+
+This should set all paths without any obnoxious questions or troubles. If it
+works as intended it will also adjust the setup according to which matlab
+version it is running in ( at least 6.X and 7.X) - some function calls are
+modified between those releases.
+
+
+DOCUMENTATION
+
+
+There was the ambition to have an extensive tutorial, more extensive
+than there is at the moment. There is quiet some work to do before
+that ambition is put to rest. However there are a beginning that
+contains some introductions, some worked examples and a complete cross
+referenced source code documentation. Matlab has some way of making
+this kind of html-documentation reachable from within matlab's
+GUI. This documentation is not reachable that way as far as I
+know. The html-browser top-level start point is:
+
+file:///$PATH-to-wherever-AIDA_tools-is/Documentation/index.html
+
+shoud also be on the internet at:
+
+http://www.alis.irf.se/~bjorn/AIDA_tools/Documentation/index.html
+
+Some links are still dead ends, but there should be somethings decently
+working as well.
+
+
+*** Small note on reading files in "unsupported" formats:
+
+AIDA_tools handles images in "ordinary" image-formats (jpg, png, tiff
+etc) in two different ways by default:
+1, for ordinary reading/preprocessing with the inimg.m function it
+   completely skips any attempt to extract observational meta-data and
+   simply returns the (preprocessed) image. Unless the user has
+   explicitly asked for by the user - this is done by setting the
+   skip_dialogs field in the preprocessing options struct (obtained
+   from typical_pre_proc_options.m) to 0.
+2, When doing geometrical calibration with stars (starcal) the
+   skip_dialogs field is automatically set to zero - because this
+   tasks desperately needs the location and date information for the
+   image. 
+
+Otherwise the AIDA_tools image reading function (inimg) automatically
+handles several file formats (fits, sbig, Air Force Research Lab
+formats) and know how to parse meta-data from either the images or the
+image headers. For other file formats there is a simple method to
+extend inimg. By calling inimg with a filename and a pre-processing-
+options struct with a read_data_fcn field set to a function handle and
+either a function handle in the log2obs or the try_to_be_smart_fnc
+field inimg will use those to get the job done. Below is the working 
+procedure explained:
+
+1, Create a pre-processing struct:
+>> PO = typical_pre_proc_ops('none');
+2, Un-set the PO.filetype: 
+>> PO.filetype = '';
+3, Set the PO.read_data_fcn:
+>> PO.read_data_fcn = @(filename) fcn_that_reads_your_format(filename,extra,args)
+Here fcn_that_reads_your_format should be an m-file/function that
+reads your file format and returns the image and a corresponding
+header: [img_header,img_data] = fcn_that_reads_your_format(filename,extra,args)
+Here it is important that the header is the first out-put argument and
+the image the second.
+4, Set the field for either of log2obs or try_to_be_smart to a
+function making a struct with meta-data for the image. If you have a
+function that parses the image (header) to extract information such as
+the observation date and time, exposure time, filter nr/wavelength
+etc. etc. you should set log2obs, if you have a function extracting
+this information from the filename (for example with log-file look-up)
+you should use try_to_be_smart_fnc.
+With a image header parsing function you'd do:
+>> PO.log2obs = @(img_head) your_log2obs_fcn(img_head)
+With a function working with the filename or entire file you'd do:
+>> PO.try_to_be_smart_fnc = @(filename) your_log2obs_fcn(filename,extra,arguments)
+In the above examples the @(x) f(x,y,...) creates an anonymous
+function @(x) with the values of the other variables to f() fixed to
+their current values.
+5, call inimg as usual:
+>> [d,h,o] = inimg(filename,PO);
+
+
+A NOTE ABOUT SUBVERSION VERSION CONTROL (svn)
+
+What is svn? See "http://svnbook.red-bean.com"
+
+How do I get a svn client?
+svn clients for various operating systems can be found here
+"http://subversion.apache.org/packages.html" but are usually installed
+on decent computers.
+
+I changed AIDA_tools and wish to commit my changes?
+
+1. Obtain a username, a password for the svn repository at 
+"https:aniara.irf.se/svn" (contact urban.brandstrom@irf.se)
+You also need at least a very basic knowledge of svn.
+
+2. from the AIDA_tools directory
+> svn commit -m "what you did and why"
+you will be asked for password
+
+should your username be different, try this instead:
+
+> svn --username foo commit -m "what you did and why"

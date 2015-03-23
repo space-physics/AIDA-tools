@@ -1,0 +1,124 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>spc_sort_out_the_bad_ones.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function synopsis</FONT></FONT></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1> [GI1,GI2,GI3,GT,GX,GY,GFilter,BSC_NR,sortindx] = spc_sort_out_the_bad_ones(I_allt,all_t,all_filter,bad_times,sis)                                   </FONT></FONT></P> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function comments</FONT></FONT></P> 
+<pre> 
+% 
+% SPC_SORT_OUT_THE_BAD_ONES  Remove stars that are "bad" 
+% that is either displaced in the image or from times makred as 
+% bad. Resort the identified image intensities, image filters and 
+% star positions, as well as the Bright Star Catalog number 
+% (BSC_NR) for each star 
+% 
+% See also SPEC_CAL_BAD_TIMES, SPEC_CAL_BAD_INTENS 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files that call spc_sort_out_the_bad_ones.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="Spec_cal_jobb_mall.htm">Spec_cal_jobb_mall</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of spc_sort_out_the_bad_ones.m</FONT></FONT></P> 
+<pre> 
+function [GI1,GI2,GI3,GT,GX,GY,GFilter,BSC_NR,sortindx] = spc_sort_out_the_bad_ones(I_allt,all_t,all_filter,bad_times,sis) 
+% [GI1,GI2,GI3,GT,GX,GY,GFilter,BSC_NR,sortindx] = spc_sort_out_the_bad_ones(I_allt,all_t,all_filter,bad_times,sis) 
+% 
+% SPC_SORT_OUT_THE_BAD_ONES  Remove stars that are "bad" 
+% that is either displaced in the image or from times makred as 
+% bad. Resort the identified image intensities, image filters and 
+% star positions, as well as the Bright Star Catalog number 
+% (BSC_NR) for each star 
+% 
+% See also SPEC_CAL_BAD_TIMES, SPEC_CAL_BAD_INTENS 
+ 
+% Copyright Bjorn Gustavsson 20030901 
+ 
+% Brigth star catalog numbers for stars identified 
+BSC_NR = unique(I_allt(:,9)); 
+ 
+%for ii = 1:length(BSC_NR), 
+for ii = sis, 
+  % work with one star at a time 
+  I_this_star = I_allt(I_allt(:,9)==BSC_NR(ii),:); 
+  % the corresponding times 
+  times_t_star = all_t(I_this_star(:,1)); 
+ 
+  % sort out the bad time periods for this star. 
+  good_t_i = []; 
+  for jj = 1:length(times_t_star), 
+    if ~( in_ranges(times_t_star(jj),bad_times(ii,:)) ) 
+      good_t_i = [good_t_i jj]; 
+    end 
+  end 
+  I_this_star = I_this_star(good_t_i,:); 
+  times_t_star = times_t_star(good_t_i); 
+ 
+  % search for star-fits that are far from the overal trajectory 
+  dx = 2; 
+  dy = 2; 
+  jj = spec_cal_good_xy(times_t_star,I_this_star(:,2),I_this_star(:,3),dx,dy); 
+  I_this_star = I_this_star(jj,:); 
+  times_t_star = times_t_star(jj); 
+ 
+  GI1(ii,1:length(times_t_star)) = I_this_star(:,5)'; 
+  GI2(ii,1:length(times_t_star)) = I_this_star(:,6)'; 
+  GI3(ii,1:length(times_t_star)) = I_this_star(:,7)'; 
+  GX(ii,1:length(times_t_star)) = I_this_star(:,2)'; 
+  GY(ii,1:length(times_t_star)) = I_this_star(:,3)'; 
+  GT(ii,1:length(times_t_star)) = times_t_star'; 
+  GFilter(ii,1:length(times_t_star)) = all_filter(I_this_star(:,1)); 
+  %% in med 
+  f0 = find(GFilter(ii,1:length(times_t_star))==0); 
+  f1 = find(GFilter(ii,1:length(times_t_star))==1); 
+  f4 = find(GFilter(ii,1:length(times_t_star))==4); 
+  f5 = find(GFilter(ii,1:length(times_t_star))==5); 
+  m0 = median(GI1(ii,f0)); 
+  if ~length(m0) 
+    m0 = 0; 
+  end 
+  m1 = median(GI1(ii,f1)); 
+  if ~length(m1) 
+    m1 = 0; 
+  end 
+  m4 = median(GI1(ii,f4)); 
+  if ~length(m4) 
+    m4 = 0; 
+  end 
+  m5 = median(GI1(ii,f5)); 
+  if ~length(m5) 
+    m5 = 0; 
+  end 
+  Imedian(ii) = m0+m1+m4+m5; 
+ 
+end 
+ 
+i = find(GX(:)==0); 
+GFilter(i) = -2; 
+ 
+[sorted_Im,sortindx] = sort(-Imedian); 
+ 
+GI1 = GI1(sortindx,:); 
+GI2 = GI2(sortindx,:); 
+GI3 = GI3(sortindx,:); 
+GT = GT(sortindx,:); 
+GX = GX(sortindx,:); 
+GY = GY(sortindx,:); 
+GFilter = GFilter(sortindx,:); 
+BSC_NR = BSC_NR(sortindx); 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 16:26 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

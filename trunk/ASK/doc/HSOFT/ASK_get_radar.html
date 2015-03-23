@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_get_radar</title>
+  <meta name="keywords" content="ASK_get_radar">
+  <meta name="description" content="ASK_GET_RADAR - plot the radar beam onto an image.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_get_radar
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_GET_RADAR - plot the radar beam onto an image.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [u0,v0,r,u,v,dr] = ASK_get_radar(radar_site,az,el,dphi,optpar,imsiz,l,r_Camera,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_GET_RADAR - plot the radar beam onto an image. 
+
+ Calling:
+   [u0,v0,r,u,v,dr] = ASK_get_radar(radar_site,az,el,dphi,optpar,imsiz,l,r_camera)
+ Input:
+  radar_site - Name of radar size [ 'T' | 'E' ] for which default
+               beam parameters exists
+  az         - azimuth angle of radar beam - clock-wise from
+               north, DEGREES! If left empty the default magnetic
+               zenith directions at Ramfjord and ESR is used.
+  el         - elevation angle of radar beam, DEGREES! If left
+               empty the default magnetic zenith directions at
+               Ramfjord and ESR is used.
+  dphi       - Half wifdth of radar beam, DEGREES! If left
+               empty the default magnetic zenith directions at
+               Ramfjord and ESR is used.
+  optpar     - optical parameters of camera - is obtained with: ASK_get_ask_cnv
+  imsiz      - size (pixels) of image to calculate beam projection onto. 
+  l          - altitude of beam pattern to project - for off-site
+               located cameras (km)
+  r_Camera   - camera location relative to radar site [East, North Above](km)
+               Optional, if left out, will be set to [0,0,0]
+               (colocated with radar)
+ Output:
+  u0 - horizontal image coordinate of radar beam center 
+  v0 - vertical image coordinate of radar beam center 
+  r  - approximate radar beam radius in image
+  u  - horizontal image coordinates of beam-projection
+  v  - vertical image coordinates of beam-projection
+  dr - standard deviation of ( (u-u0).^2 + (v-v0).^2 ).^0.5
+
+ If the default beam-directions is to be used, AZ, EL, DPHI can
+ be set to empty (== []).</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_add_int_radar.html" class="code" title="function I_of_T = ASK_add_int_radar(RadarSite,az,el,dphi,indices,Cams,optpar,r_camera)">ASK_add_int_radar</a>	ASK_ADD_INT_RADAR - Image intenisity inside radar beam.</li><li><a href="ASK_draw_radar.html" class="code" title="function [varargout] = ASK_draw_radar(radar_site,az,el,dphi,optpar,imsiz,l,r_Camera,varargin)">ASK_draw_radar</a>	ASK_DRAW_RADAR - plot the radar beam onto an image.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [u0,v0,r,u,v,dr] = ASK_get_radar(radar_site,az,el,dphi,optpar,imsiz,l,r_Camera,varargin)</a>
+0002 <span class="comment">% ASK_GET_RADAR - plot the radar beam onto an image.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   [u0,v0,r,u,v,dr] = ASK_get_radar(radar_site,az,el,dphi,optpar,imsiz,l,r_camera)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  radar_site - Name of radar size [ 'T' | 'E' ] for which default</span>
+0008 <span class="comment">%               beam parameters exists</span>
+0009 <span class="comment">%  az         - azimuth angle of radar beam - clock-wise from</span>
+0010 <span class="comment">%               north, DEGREES! If left empty the default magnetic</span>
+0011 <span class="comment">%               zenith directions at Ramfjord and ESR is used.</span>
+0012 <span class="comment">%  el         - elevation angle of radar beam, DEGREES! If left</span>
+0013 <span class="comment">%               empty the default magnetic zenith directions at</span>
+0014 <span class="comment">%               Ramfjord and ESR is used.</span>
+0015 <span class="comment">%  dphi       - Half wifdth of radar beam, DEGREES! If left</span>
+0016 <span class="comment">%               empty the default magnetic zenith directions at</span>
+0017 <span class="comment">%               Ramfjord and ESR is used.</span>
+0018 <span class="comment">%  optpar     - optical parameters of camera - is obtained with: ASK_get_ask_cnv</span>
+0019 <span class="comment">%  imsiz      - size (pixels) of image to calculate beam projection onto.</span>
+0020 <span class="comment">%  l          - altitude of beam pattern to project - for off-site</span>
+0021 <span class="comment">%               located cameras (km)</span>
+0022 <span class="comment">%  r_Camera   - camera location relative to radar site [East, North Above](km)</span>
+0023 <span class="comment">%               Optional, if left out, will be set to [0,0,0]</span>
+0024 <span class="comment">%               (colocated with radar)</span>
+0025 <span class="comment">% Output:</span>
+0026 <span class="comment">%  u0 - horizontal image coordinate of radar beam center</span>
+0027 <span class="comment">%  v0 - vertical image coordinate of radar beam center</span>
+0028 <span class="comment">%  r  - approximate radar beam radius in image</span>
+0029 <span class="comment">%  u  - horizontal image coordinates of beam-projection</span>
+0030 <span class="comment">%  v  - vertical image coordinates of beam-projection</span>
+0031 <span class="comment">%  dr - standard deviation of ( (u-u0).^2 + (v-v0).^2 ).^0.5</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">% If the default beam-directions is to be used, AZ, EL, DPHI can</span>
+0034 <span class="comment">% be set to empty (== []).</span>
+0035 
+0036 <span class="comment">% Modified from draw_radar.pro</span>
+0037 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0038 <span class="comment">% GPL 3.0 or later applies</span>
+0039 
+0040 
+0041 <span class="comment">% common hities</span>
+0042 <span class="comment">% common vs</span>
+0043 <span class="keyword">global</span> vs
+0044 <span class="keyword">global</span> cnv
+0045 
+0046 
+0047 <span class="keyword">switch</span> radar_site(1)
+0048  <span class="keyword">case</span> <span class="string">'T'</span> <span class="comment">% Tromso</span>
+0049   
+0050   dPhi = 0.3*pi/180;   <span class="comment">%  Half beam width (radius)</span>
+0051   azi = 185.02*pi/180; <span class="comment">%  Azimuth, radians</span>
+0052   ele = 77.5*pi/180;   <span class="comment">%  Elevation, radians</span>
+0053   
+0054  <span class="keyword">case</span> <span class="string">'E'</span> <span class="comment">% ESR</span>
+0055   
+0056   dPhi = 0.45*pi/180; <span class="comment">% Half beam width (radius)</span>
+0057   azi = 181.0*pi/180; <span class="comment">% Azimuth, radians</span>
+0058   ele = 81.6*pi/180;  <span class="comment">% Elevation, radians</span>
+0059 
+0060  <span class="keyword">otherwise</span>
+0061   <span class="comment">% No settings known...</span>
+0062 <span class="keyword">end</span>
+0063 
+0064 <span class="comment">% Overwrite the default values if input is given.</span>
+0065 <span class="keyword">if</span> ~isempty(az)
+0066   azi = az*pi/180;
+0067 <span class="keyword">end</span>
+0068 <span class="keyword">if</span> ~isempty(el)
+0069   ele = el*pi/180;
+0070 <span class="keyword">end</span>
+0071 <span class="keyword">if</span> ~isempty(dphi)
+0072   dPhi = dphi*pi/180;
+0073 <span class="keyword">end</span>
+0074 <span class="keyword">if</span> nargin &lt; 7 || isempty(l)
+0075   l = 100;
+0076 <span class="keyword">end</span>
+0077 <span class="keyword">if</span> nargin &lt; 8 || isempty(r_Camera)
+0078   r_Camera = [0,0,0];
+0079 <span class="keyword">end</span>
+0080 
+0081 <span class="comment">% Center-of-Beam direction</span>
+0082 e_COB = [cos(ele)*sin(azi), cos(ele)*cos(azi), sin(ele)];
+0083 <span class="comment">% Arbitrary direction perpendicular to e_COB.</span>
+0084 e_perpR = cross(e_COB,[0,1,0]);
+0085 <span class="comment">% [0 1 0] is a horizontal direction if radar beam points there no</span>
+0086 <span class="comment">% ionspheric data will be available anyways</span>
+0087 
+0088 <span class="comment">% Rotation matrix around that vector</span>
+0089 rMtr = rot_around_v(e_perpR,dPhi);
+0090 
+0091 <span class="comment">% Line-of-sight unit vector</span>
+0092 e_3dB = (rMtr * e_COB')';
+0093 
+0094 <span class="comment">% Pre-allocate r</span>
+0095 r = zeros(181,3);
+0096 
+0097 <span class="comment">% vector to point at altitude l along e_COB</span>
+0098 r0 = point_on_line([0,0,0],e_COB,l/e_COB(3));
+0099 <span class="comment">% Calculate image coordinates of r0:</span>
+0100 [u0,v0] = project_point(r_Camera,optpar,r0',eye(3),imsiz);
+0101 
+0102 
+0103 <span class="comment">% vector to point at altitude l in direction e_3dB</span>
+0104 r(1,:) = point_on_line([0,0,0],e_3dB,l/e_3dB(3));
+0105 
+0106 <span class="keyword">for</span> i1 = 1:180,
+0107   <span class="comment">% Rotate around the clock, in 2 degree steps</span>
+0108   dPhi = i1*2*pi/180;
+0109   rMtr = rot_around_v(e_COB,dPhi); <span class="comment">% Rotation matrix around the Center-of-Beam direction</span>
+0110   e_3dBp = (rMtr * e_3dB')';       <span class="comment">% Rotate the edge-vector</span>
+0111   <span class="comment">% And fill up r</span>
+0112   r(i1+1,:) = point_on_line([0,0,0],e_3dBp,l/e_3dB(3));
+0113   
+0114 <span class="keyword">end</span>
+0115 
+0116 <span class="comment">% Calculate image coordinates of r:</span>
+0117 [u,v] = project_point(r_Camera,optpar,r',eye(3),imsiz);
+0118 
+0119 <span class="keyword">if</span> exist(<span class="string">'nanmean'</span>)
+0120   r = nanmean( ( (u-u0).^2 + (v-v0).^2 ).^(1/2) );
+0121   dr = nanstd( ( (u-u0).^2 + (v-v0).^2 ).^(1/2) );
+0122 <span class="keyword">else</span>
+0123   r = mean( ( (u-u0).^2 + (v-v0).^2 ).^(1/2) );
+0124   dr = std( ( (u-u0).^2 + (v-v0).^2 ).^(1/2) );
+0125 <span class="keyword">end</span>
+0126</pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

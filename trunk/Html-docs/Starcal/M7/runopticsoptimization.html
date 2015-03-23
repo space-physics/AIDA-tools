@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of runopticsoptimization</title>
+  <meta name="keywords" content="runopticsoptimization">
+  <meta name="description" content="RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Starcal --><!-- menu.html M7 -->
+<h1>runopticsoptimization
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters
+ 
+ Calling:
+   [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>	CAMERA_BASE - determine the coordinate system of the camera</li><li><a href="../../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>	PROJECT_DIRECTIONS - calculates the image positions [UA,WA] from (AZ,ZE)</li><li><a href="../../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>	imgs_smart_caxis - alpha-percentile setting of color-axis,</li><li><a href="../../Skymap/starplot.html" class="code" title="function [pstarsout] = starplot(pstars,SkMp)">starplot</a>	STARPLOT plots the skymap.</li><li><a href="../../Starcal/automat2.html" class="code" title="function [diff] = automat2(optpar,starteauw,mode,optpar2,lock_par,imsiz)">automat2</a>	AUTOMAT2 - total square of deviation between image and catalog position stars</li><li><a href="../../Starcal/errorgui.html" class="code" title="function SkMp = errorgui(SkMp)">errorgui</a>	ERRORGUI - Create the figure and GUI for the errorplots</li><li><a href="../../tools/gridfit.html" class="code" title="function [zgrid,xgrid,ygrid] = gridfit(x,y,z,xnodes,ynodes,varargin)">gridfit</a>	gridfit: estimates a surface on a 2d grid, based on scattered data</li><li><a href="../../tools/unplot.html" class="code" title="function unplot(arg)">unplot</a>	UNPLOT Delete the most recently created graphics object(s).</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin)</a>
+0002 <span class="comment">% RUNOPTICSOPTIMIZATION - does the fitting of optical paramameters</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   [optpar,SkMp] = runopticsoptimization(SkMp,OptF_struct,varargin)</span>
+0006 
+0007 <span class="comment">%   Copyright � 1997 Bjorn Gustavsson&lt;bjorn.gustavsson@irf.se&gt;</span>
+0008 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0009 
+0010 <span class="keyword">if</span> nargin &gt; 2
+0011   batch = varargin{1};
+0012 <span class="keyword">else</span>
+0013   batch = 0;
+0014 <span class="keyword">end</span>
+0015 
+0016 ui7 = OptF_struct.ui7;
+0017 ui7a = OptF_struct.ui7a;
+0018 identstars = SkMp.identstars;
+0019 figoptp = OptF_struct.figopt;
+0020 startpar(3) = str2num(get(ui7(1),<span class="string">'String'</span>));
+0021 startpar(4) = str2num(get(ui7(2),<span class="string">'String'</span>));
+0022 startpar(5) = str2num(get(ui7(3),<span class="string">'String'</span>));
+0023 startpar(1) = str2num(get(ui7(4),<span class="string">'String'</span>));
+0024 startpar(2) = str2num(get(ui7(5),<span class="string">'String'</span>));
+0025 startpar(6) = str2num(get(ui7(6),<span class="string">'String'</span>));
+0026 startpar(7) = str2num(get(ui7(7),<span class="string">'String'</span>));
+0027 startpar(8) = str2num(get(ui7(12),<span class="string">'String'</span>));
+0028 
+0029 
+0030 locked_par(3) = get(ui7a(1),<span class="string">'value'</span>);
+0031 locked_par(4) = get(ui7a(2),<span class="string">'value'</span>);
+0032 locked_par(5) = get(ui7a(3),<span class="string">'value'</span>);
+0033 locked_par(1) = get(ui7a(4),<span class="string">'value'</span>);
+0034 locked_par(2) = get(ui7a(5),<span class="string">'value'</span>);
+0035 locked_par(6) = get(ui7a(6),<span class="string">'value'</span>);
+0036 locked_par(7) = get(ui7a(7),<span class="string">'value'</span>);
+0037 locked_par(8) = get(ui7a(12),<span class="string">'value'</span>);
+0038 
+0039 mode = get(ui7(8),<span class="string">'Value'</span>);
+0040 
+0041 <span class="keyword">if</span> mode == 7
+0042   mode = -1;
+0043 <span class="keyword">end</span>
+0044 <span class="keyword">if</span> mode == 8
+0045   mode = -2;
+0046 <span class="keyword">end</span>
+0047 <span class="keyword">if</span> mode == 9
+0048   mode = 11;
+0049 <span class="keyword">end</span>
+0050 
+0051 set(figoptp,<span class="string">'pointer'</span>,<span class="string">'watch'</span>)
+0052 set(SkMp.figsky,<span class="string">'pointer'</span>,<span class="string">'watch'</span>)
+0053 
+0054 <span class="comment">% For the non-parametric optical transfer functions either ignore</span>
+0055 <span class="comment">% (-1) previous camera rotation estimates or use them (-2). In the</span>
+0056 <span class="comment">% first case just set the unit vectors to something unrotated.</span>
+0057 <span class="keyword">if</span> mode == -1
+0058   optpar.rot = [0 0 0];
+0059 <span class="keyword">elseif</span> mode == -2
+0060   <span class="keyword">try</span>
+0061     optpar.rot = SkMp.optpar(3:5);
+0062   <span class="keyword">catch</span>
+0063     optpar.rot = SkMp.optpar.rot;
+0064   <span class="keyword">end</span>
+0065 <span class="keyword">end</span>
+0066 
+0067 <span class="keyword">if</span> mode &lt; 0
+0068   
+0069   <span class="comment">% Non-parametric optical model based on fiting of smooth surfaces</span>
+0070   <span class="comment">% of the observed [az,ze]-[u,v] (both directions). The actual</span>
+0071   <span class="comment">% fiting is done with gridfit.</span>
+0072   
+0073   <span class="comment">% Get the unit vectors for the assumed camera rotation</span>
+0074   [e1,e2,e3] = <a href="../../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(optpar.rot(1),optpar.rot(2),optpar.rot(3));
+0075   
+0076   <span class="comment">% Extract the azimuth and zenith angles of the identified stars</span>
+0077   az = SkMp.identstars(:,1);
+0078   ze = SkMp.identstars(:,2);
+0079   <span class="comment">% and calculate the corresponding line-of-sight vectors</span>
+0080   es1 = sin(ze).*sin(az);
+0081   es2 = sin(ze).*cos(az);
+0082   es3 = cos(ze);
+0083   <span class="comment">% Projection of l-o-s vector in direction [az,ze] onto e1</span>
+0084   dot_e_e1 = es1*e1(1) + es2*e1(2) + es3*e1(3);
+0085   <span class="comment">% Projection of l-o-s vector in direction [az,ze] onto e2</span>
+0086   dot_e_e2 = es1*e2(1) + es2*e2(2) + es3*e2(3);
+0087   <span class="comment">% Projection of l-o-s vector in direction [az,ze] onto e3</span>
+0088   dot_e_e3 = es1*e3(1) + es2*e3(2) + es3*e3(3);
+0089   
+0090   u  = SkMp.identstars(:,3)/size(SkMp.img,2);
+0091   v  = SkMp.identstars(:,4)/size(SkMp.img,1);
+0092   <span class="comment">% Coordinates for interpolation in the horisontal components of</span>
+0093   <span class="comment">% pixel lines-of-sights (no plural-s on of)</span>
+0094   cosazsinze_i = linspace(-1,1,50); <span class="comment">% cos*sin is confined to the</span>
+0095   sinazsinze_i = linspace(-1,1,50); <span class="comment">% interval [-1 1]</span>
+0096   
+0097   <span class="comment">% ...och en uppskattning av projectionen fraan [u,v] till</span>
+0098   <span class="comment">% horisontella komponenterna:</span>
+0099   <span class="comment">% [sin(ze)*cos(az),sin(ze)*cos(az)] till [u,v]</span>
+0100   
+0101   <span class="comment">% Coordinates for interpolation in the image coordinates</span>
+0102   u_i = linspace(0,1,50); <span class="comment">% u och v are constrained to the</span>
+0103   v_i = linspace(0,1,50); <span class="comment">% interval [0 1]</span>
+0104   
+0105   <span class="comment">% Start with a &quot;large&quot; smoothness factor which should give</span>
+0106   <span class="comment">% smoother surfaces, which will lead to larger spread between</span>
+0107   <span class="comment">% actual stellar position in image and projected. Then reduce as</span>
+0108   <span class="comment">% needed.</span>
+0109   smoothness_factor = (3/2)^8;
+0110   err_too_large = 1;
+0111   max_iter = 10;
+0112   nr_iter = 0;
+0113   <span class="keyword">while</span> err_too_large &amp;&amp; nr_iter &lt; max_iter
+0114     nr_iter = nr_iter +1;
+0115     <span class="comment">% Do approximate projections from</span>
+0116     <span class="comment">%% [sin(ze)*cos(az),sin(ze)*cos(az)] to [u,v]</span>
+0117     <span class="comment">%optpar.u = gridfit(dot_e_e1,dot_e_e2,u,cosazsinze_i,sinazsinze_i,'smooth',smoothness_factor);</span>
+0118     <span class="comment">%optpar.v = gridfit(dot_e_e1,dot_e_e2,v,cosazsinze_i,sinazsinze_i,'smooth',smoothness_factor);</span>
+0119     <span class="comment">%</span>
+0120     <span class="comment">%%% The above was questionable: since we have az clock-wise from</span>
+0121     <span class="comment">% north it is likely to be better the other way around:</span>
+0122     <span class="comment">% [sin(ze)*sin(az),sin(ze)*cos(az)] to [u,v]</span>
+0123     optpar.u = <a href="../../tools/gridfit.html" class="code" title="function [zgrid,xgrid,ygrid] = gridfit(x,y,z,xnodes,ynodes,varargin)">gridfit</a>(dot_e_e1,dot_e_e2,u,sinazsinze_i,cosazsinze_i,<span class="string">'smooth'</span>,smoothness_factor);
+0124     optpar.v = <a href="../../tools/gridfit.html" class="code" title="function [zgrid,xgrid,ygrid] = gridfit(x,y,z,xnodes,ynodes,varargin)">gridfit</a>(dot_e_e1,dot_e_e2,v,sinazsinze_i,cosazsinze_i,<span class="string">'smooth'</span>,smoothness_factor);
+0125     
+0126     <span class="comment">% ...and from [u,v] to the components of the line-of-sight</span>
+0127     <span class="comment">% vectors</span>
+0128     <span class="comment">% Inte cosazsinze, sinazsinze utan dot_e_e1, dot_e_e2, dot_e_e3!</span>
+0129     optpar.sinzesinaz = <a href="../../tools/gridfit.html" class="code" title="function [zgrid,xgrid,ygrid] = gridfit(x,y,z,xnodes,ynodes,varargin)">gridfit</a>(u,v,dot_e_e1,u_i,v_i,<span class="string">'smooth'</span>,smoothness_factor);
+0130     optpar.sinzecosaz = <a href="../../tools/gridfit.html" class="code" title="function [zgrid,xgrid,ygrid] = gridfit(x,y,z,xnodes,ynodes,varargin)">gridfit</a>(u,v,dot_e_e2,u_i,v_i,<span class="string">'smooth'</span>,smoothness_factor);
+0131     optpar.cosze      = min(1,<a href="../../tools/gridfit.html" class="code" title="function [zgrid,xgrid,ygrid] = gridfit(x,y,z,xnodes,ynodes,varargin)">gridfit</a>(u,v,dot_e_e3,u_i,v_i,<span class="string">'smooth'</span>,smoothness_factor));
+0132     
+0133     <span class="comment">% Check the fit of the projections by comparing the spread of</span>
+0134     <span class="comment">% the projection from [u,v]-&gt;[sin(ze)*cos(az),sin(ze)*cos(az)]</span>
+0135     sinzecosaz = interp2(u_i,v_i,optpar.sinzecosaz,u,v); <span class="comment">% se till att faa en  vektor ut!</span>
+0136     sinzesinaz = interp2(u_i,v_i,optpar.sinzesinaz,u,v);
+0137     <span class="comment">% ...and back [sin(ze)*cos(az),sin(ze)*cos(az)]-&gt;[u_a,v_a].</span>
+0138     u_m = interp2(sinazsinze_i,cosazsinze_i,optpar.u,dot_e_e1,dot_e_e2);
+0139     v_m = interp2(sinazsinze_i,cosazsinze_i,optpar.v,dot_e_e1,dot_e_e2);
+0140     
+0141     <span class="comment">% This is done by measuring the std of the difference between</span>
+0142     <span class="comment">% observed image position [u,v] and the projected-projected</span>
+0143     <span class="comment">% approximation [u_a,v_a]:</span>
+0144     <span class="comment">% max(std(u-u_a),std(v-v_a)) which should be less than</span>
+0145     <span class="comment">% &quot;something_statistically_motivated&quot; (\pm 1/5 pixels)</span>
+0146     cax = caxis;
+0147     figure(SkMp.figsky)
+0148     hold on
+0149     plot(u_m*size(SkMp.img,2),v_m*size(SkMp.img,1),<span class="string">'g.'</span>)
+0150     
+0151     <a href="../../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.001,SkMp.img(:))
+0152     pause(1)
+0153     <a href="../../tools/unplot.html" class="code" title="function unplot(arg)">unplot</a>
+0154     
+0155     err = max(std((u-u_m)*size(SkMp.img,2)),std((v-v_m)*size(SkMp.img,1)))
+0156     something_statistically_motivated = 1/2;
+0157     <span class="keyword">if</span> err &lt; something_statistically_motivated
+0158       err_too_large = 0;
+0159     <span class="keyword">else</span>
+0160       
+0161       smoothness_factor = smoothness_factor*2/3;
+0162       
+0163     <span class="keyword">end</span>
+0164     
+0165   <span class="keyword">end</span>
+0166   optpar.mod = mode;
+0167   <span class="keyword">if</span> ~isfield(SkMp,<span class="string">'errorfig'</span>)
+0168     
+0169     SkMp = <a href="../../Starcal/errorgui.html" class="code" title="function SkMp = errorgui(SkMp)">errorgui</a>(SkMp);
+0170     
+0171   <span class="keyword">end</span>
+0172 <span class="keyword">else</span>
+0173   
+0174   sp2 = startpar;
+0175   
+0176   optpar = fminsearch(@(startpar) <a href="../../Starcal/automat2.html" class="code" title="function [diff] = automat2(optpar,starteauw,mode,optpar2,lock_par,imsiz)">automat2</a>(startpar,identstars,mode,sp2,locked_par,size(SkMp.img)),startpar);
+0177   
+0178   <span class="keyword">if</span> length(SkMp.optpar) &gt; 9
+0179     [e1,e2,e3] = <a href="../../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(SkMp.optpar(3),SkMp.optpar(4),SkMp.optpar(5),SkMp.optpar(10));
+0180   <span class="keyword">else</span>
+0181     [e1,e2,e3] = <a href="../../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(SkMp.optpar(3),SkMp.optpar(4),SkMp.optpar(5));
+0182   <span class="keyword">end</span>
+0183   set(SkMp.ui3(4),<span class="string">'value'</span>,180/pi*atan(1/2/mean(abs(optpar(1:2)))));
+0184   set(SkMp.ui3(3),<span class="string">'value'</span>,optpar(3));
+0185   set(SkMp.ui3(1),<span class="string">'value'</span>,-optpar(4));
+0186   set(SkMp.ui3(2),<span class="string">'value'</span>,optpar(5));
+0187   SkMp.oldfov  = 180/pi*atan(1/2/mean(abs(optpar(1:2))));
+0188   SkMp.oldaz0  = optpar(3);
+0189   SkMp.oldze0  = -optpar(4);
+0190   SkMp.oldrot0 = optpar(5);
+0191   
+0192 <span class="keyword">end</span>
+0193 
+0194 SkMp.e1 = e1;
+0195 SkMp.e2 = e2;
+0196 SkMp.e3 = e3;
+0197 
+0198 [u,w] = <a href="../../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(identstars(:,1)',identstars(:,2)',optpar,mode,size(SkMp.img));
+0199 SkMp.uapr = u';
+0200 SkMp.vapr = w';
+0201 SkMp.previous_optpar = SkMp.optpar;
+0202 SkMp.previous_optmod = SkMp.optmod;
+0203 SkMp.optpar = optpar;
+0204 SkMp.optmod = mode;
+0205 
+0206 SkMp.found_optpar = 1;
+0207 SkMp.slider_lock = 1;
+0208 
+0209 set(SkMp.ui3(7), <span class="string">'Value'</span>, 1);
+0210     
+0211 <span class="keyword">if</span> batch ~= 1
+0212     close(figoptp)
+0213     set(SkMp.figsky,<span class="string">'pointer'</span>,<span class="string">'arrow'</span>)
+0214     <a href="../../Skymap/starplot.html" class="code" title="function [pstarsout] = starplot(pstars,SkMp)">starplot</a>(SkMp.plottstars,SkMp);
+0215 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

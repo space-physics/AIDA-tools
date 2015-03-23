@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of img_optflow</title>
+  <meta name="keywords" content="img_optflow">
+  <meta name="description" content="IMG_OPTFLOW - optical-flow displacements with intensity-scaling adjustment">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>img_optflow
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>IMG_OPTFLOW - optical-flow displacements with intensity-scaling adjustment</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function varargout = img_optflow(I1,I2,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> IMG_OPTFLOW - optical-flow displacements with intensity-scaling adjustment
+   
+ Calling:
+   OPS = img_optflow
+   [Xdisplacement,Ydisplacement,Idisplacement] = img_optflow(I1,I2,OPS)
+   AllParameters = img_optflow(I1,I2,OPS)
+ Input:
+   I1  - Image #1, double [ NY x NX]
+   I2  - Image #2, double [ NY x NX]
+   OPS - optional options structure (the default options are
+         returned when IMG_OPTFLOW is called without input arguments)
+ Output:
+   OPS - the default options
+   Xdisplacement - Tranformation matrix for horizontal points in
+                   image 1 (where image points linspace(1,NX,n) in
+                   image 1 should end up in image #2
+   Ydisplacement - Tranformation matrix for vertical points in
+                   image 1 (where image points linspace(1,NY,n) in
+                   image 1 should end up in image #2
+   Idisplacement - intensity scaling matrix.
+   AllParameters - a row-vector build with [Xdisplacement(:)',Ydisplacement(:)',Idisplacement(:)']
+                   that is easier to use for calling
+                   errFcnAuroralFlow
+  
+ The morphing of image I1 is calculated as:
+ 
+    I2p = Iscale.*interp2(I1,X,Y,'*linear');
+
+ Where the X and Y matrices are calculated as:
+
+  X = interp2(xP0,yP0,xP,1:size(I1,2),[1:size(I1,1)]','*linear');
+  Y = interp2(xP0,yP0,yP,1:size(I1,2),[1:size(I1,1)]','*linear');
+  Iscale = interp2(xP0,yP0,Ip,1:size(I1,2),[1:size(I1,1)]','*spline');
+ 
+ Here yP0 and xP0 are simple plaid grids built according to:
+ [xP0,yP0] = meshgrid(linspace(1,size(I1,2),n),linspace(1,size(I1,2),n))</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="errFcnAuroralFlow.html" class="code" title="function varargout = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS)">errFcnAuroralFlow</a>	errFcnAuroralFlow - error function for auroral motion estimate</li><li><a href="parsOnrefinedGrid4AF.html" class="code" title="function varPout = parsOnrefinedGrid4AF(par0,Xp1,Yp1,Xp2,Yp2,OPS)">parsOnrefinedGrid4AF</a>	Copyright Bjorn Gustavsson 20110306</li><li><a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>	FMINSEARCHBND: FMINSEARCH, but with bound constraints by transformation</li><li><a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function varargout = img_optflow(I1,I2,OPS)</a>
+0002 <span class="comment">% IMG_OPTFLOW - optical-flow displacements with intensity-scaling adjustment</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   OPS = img_optflow</span>
+0006 <span class="comment">%   [Xdisplacement,Ydisplacement,Idisplacement] = img_optflow(I1,I2,OPS)</span>
+0007 <span class="comment">%   AllParameters = img_optflow(I1,I2,OPS)</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%   I1  - Image #1, double [ NY x NX]</span>
+0010 <span class="comment">%   I2  - Image #2, double [ NY x NX]</span>
+0011 <span class="comment">%   OPS - optional options structure (the default options are</span>
+0012 <span class="comment">%         returned when IMG_OPTFLOW is called without input arguments)</span>
+0013 <span class="comment">% Output:</span>
+0014 <span class="comment">%   OPS - the default options</span>
+0015 <span class="comment">%   Xdisplacement - Tranformation matrix for horizontal points in</span>
+0016 <span class="comment">%                   image 1 (where image points linspace(1,NX,n) in</span>
+0017 <span class="comment">%                   image 1 should end up in image #2</span>
+0018 <span class="comment">%   Ydisplacement - Tranformation matrix for vertical points in</span>
+0019 <span class="comment">%                   image 1 (where image points linspace(1,NY,n) in</span>
+0020 <span class="comment">%                   image 1 should end up in image #2</span>
+0021 <span class="comment">%   Idisplacement - intensity scaling matrix.</span>
+0022 <span class="comment">%   AllParameters - a row-vector build with [Xdisplacement(:)',Ydisplacement(:)',Idisplacement(:)']</span>
+0023 <span class="comment">%                   that is easier to use for calling</span>
+0024 <span class="comment">%                   errFcnAuroralFlow</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% The morphing of image I1 is calculated as:</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%    I2p = Iscale.*interp2(I1,X,Y,'*linear');</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% Where the X and Y matrices are calculated as:</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%  X = interp2(xP0,yP0,xP,1:size(I1,2),[1:size(I1,1)]','*linear');</span>
+0033 <span class="comment">%  Y = interp2(xP0,yP0,yP,1:size(I1,2),[1:size(I1,1)]','*linear');</span>
+0034 <span class="comment">%  Iscale = interp2(xP0,yP0,Ip,1:size(I1,2),[1:size(I1,1)]','*spline');</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">% Here yP0 and xP0 are simple plaid grids built according to:</span>
+0037 <span class="comment">% [xP0,yP0] = meshgrid(linspace(1,size(I1,2),n),linspace(1,size(I1,2),n))</span>
+0038 
+0039 <span class="comment">%   Copyright � 20110830 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0040 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0041 
+0042 
+0043 
+0044 <span class="comment">% Preform the spatial image transformation and scale the intensities:</span>
+0045 
+0046 <span class="comment">%% First make default options struct:</span>
+0047 dOPS.MaxGridSize = 2^6+1; <span class="comment">% the grid sizes will refine according to</span>
+0048                           <span class="comment">% 2^(n-1) + 1, i.e.: 2,3,5,9,17,33,65...</span>
+0049 i1 = 1:(log2(dOPS.MaxGridSize-1)+1);
+0050 dOPS.TolX = 1./2.^(i1/2+1/2)/2; <span class="comment">% Start with fairly coarse</span>
+0051                                 <span class="comment">% tolerances on the spatial shifts</span>
+0052                                 <span class="comment">% so that the minimization stops</span>
+0053                                 <span class="comment">% reasonably fast.</span>
+0054 dOPS.XYregsize = 20./2.^(i1*2/3-2/3); <span class="comment">% Start searching for best</span>
+0055                                       <span class="comment">% spatial shifts in a</span>
+0056                                       <span class="comment">% 20-by-20 pixel wide region</span>
+0057                                       <span class="comment">% then reduce the size to</span>
+0058                                       <span class="comment">% speed up the optimization</span>
+0059                                       <span class="comment">% 20./2.^(i1/2-1/2);</span>
+0060 dOPS.nrOfTries = 2;   <span class="comment">% The number of times to start fminsearch if</span>
+0061                       <span class="comment">% not reaching a</span>
+0062 <span class="comment">%% If there is no input arguments</span>
+0063 <span class="keyword">if</span> nargin == 0
+0064   <span class="comment">% then simply return the default options:</span>
+0065   varargout = {dOPS};
+0066   <span class="keyword">return</span>
+0067 <span class="keyword">end</span>
+0068 
+0069 <span class="comment">%% If there is a user-supplied options struct merge that one ontop</span>
+0070 <span class="comment">% of the default one:</span>
+0071 <span class="keyword">if</span> nargin &gt; 2
+0072   dOPS = <a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0073 <span class="keyword">end</span>
+0074 
+0075 <span class="comment">% Make the default options for fminsearc/fminsearchbnd:</span>
+0076 fmsOPS = optimset(<span class="string">'fminsearch'</span>);
+0077 
+0078 <span class="comment">% Make the default options for errFcnAuroralFlow</span>
+0079 fOPS = <a href="errFcnAuroralFlow.html" class="code" title="function varargout = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS)">errFcnAuroralFlow</a>;
+0080 fOPS2.outputType = 2;
+0081 
+0082 <span class="comment">% Make the 1-D grids for all the number of gridsizes we need - Ok</span>
+0083 <span class="comment">% it is a bit excessive to do here, but you also know what they say</span>
+0084 <span class="comment">% about premature optimization...</span>
+0085 <span class="keyword">for</span> i1 = (log2(dOPS.MaxGridSize-1)+1):-1:1,
+0086   x{i1} = linspace(1,size(I1,2),2^(i1-1)+1);
+0087   y{i1} = linspace(1,size(I1,1),2^(i1-1)+1);
+0088 <span class="keyword">end</span>
+0089 
+0090 tic
+0091 FS = stoploop({<span class="string">'Stop, stop, it''s good enough'</span>, <span class="string">'some time has elapsed'</span>}) ;
+0092 
+0093 <span class="comment">% Make a first 2-D grid for making</span>
+0094 [X,Y] = meshgrid(x{1},y{1});
+0095 <span class="comment">% the start-guess for the parameters to the optimization:</span>
+0096 vP{1} = [X(:)',Y(:)',ones(size(X(:)'))];
+0097 
+0098 <span class="comment">% loop over finer and finer grids</span>
+0099 <span class="keyword">for</span> i1 = 1:(log2(dOPS.MaxGridSize-1)+1),
+0100   
+0101   <span class="comment">% With possibly changing tolerances on the parameter variations:</span>
+0102   fmsOPS.TolX = dOPS.TolX(i1);
+0103   <span class="comment">% Make upper and lower bounds for the parameter spaces to</span>
+0104   <span class="comment">% optimize over:</span>
+0105   minP = vP{i1};
+0106   maxP = vP{i1};
+0107   minP(1:1:2*length(vP{i1})/3) = minP(1:1:2*length(vP{i1})/3)-dOPS.XYregsize(i1);
+0108   maxP(1:1:2*length(vP{i1})/3) = maxP(1:1:2*length(vP{i1})/3)+dOPS.XYregsize(i1);
+0109   minP((2*length(vP{i1})/3+1):end) = minP((2*length(vP{i1})/3+1):end)*0.3;
+0110   maxP((2*length(vP{i1})/3+1):end) = maxP((2*length(vP{i1})/3+1):end)*3;
+0111   
+0112   exitflag = 0;
+0113   i2 = 1;
+0114   <span class="keyword">while</span> exitflag ~= 1 &amp; i2 &lt;= dOPS.nrOfTries(min(i1,length(dOPS.nrOfTries)))
+0115     <span class="comment">% Run the optimization - until a local minimum is reached</span>
+0116     <span class="comment">% (exitflag == 1) or the number of tries has exceeded its</span>
+0117     <span class="comment">% maximum:</span>
+0118     [vP{i1},fv(i1),exitflag] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(varpars) <a href="errFcnAuroralFlow.html" class="code" title="function varargout = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS)">errFcnAuroralFlow</a>(varpars,1:length(vP{i1}),vP{i1},I1,I2,sqrt(length(vP{i1})/3),fOPS),vP{i1},minP,maxP);
+0119     i2 = i2+1;
+0120   <span class="keyword">end</span>
+0121   [I2p] = <a href="errFcnAuroralFlow.html" class="code" title="function varargout = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS)">errFcnAuroralFlow</a>(vP{i1},1:length(vP{i1}),vP{i1},I1,I2,sqrt(length(vP{i1})/3),fOPS2);
+0122   subplot(2,2,1)
+0123   imagesc(I1)
+0124   subplot(2,2,2)
+0125   imagesc(I2)
+0126   subplot(2,2,4)
+0127   imagesc(I2p)
+0128   subplot(2,2,3)
+0129   imagesc(I2p-I2),caxis([-1 1]*0.2)
+0130   dT(i1) = toc;
+0131   pause(5)
+0132   <span class="keyword">if</span> FS.Stop() 
+0133     <span class="keyword">break</span>;
+0134   <span class="keyword">end</span>
+0135   <span class="comment">% Then make start guess for the next finer grid</span>
+0136   vP{i1+1} = <a href="parsOnrefinedGrid4AF.html" class="code" title="function varPout = parsOnrefinedGrid4AF(par0,Xp1,Yp1,Xp2,Yp2,OPS)">parsOnrefinedGrid4AF</a>(vP{i1},x{i1},y{i1},x{i1+1},y{i1+1}); 
+0137   
+0138 <span class="keyword">end</span>
+0139 
+0140 FS.Clear();                                                        
+0141 clear FS
+0142 
+0143 
+0144 <span class="comment">% $$$ xP0 = linspace(1,size(I1,2),nPoints);</span>
+0145 <span class="comment">% $$$ yP0 = linspace(1,size(I1,1),nPoints);</span>
+0146 <span class="comment">% $$$ % In 2-D &lt;=&gt; corner to corner</span>
+0147 <span class="comment">% $$$ [xP0,yP0] = meshgrid(xP0,yP0);</span>
+0148 <span class="comment">% $$$</span>
+0149 <span class="comment">% $$$ % make matrices for the mapping of [xP0,yP0] into I1</span>
+0150 <span class="comment">% $$$ xP = xP0;</span>
+0151 <span class="comment">% $$$ yP = yP0;</span>
+0152 <span class="comment">% $$$ Ip = xP;</span>
+0153 <span class="comment">% $$$ % And assign the corresponding parameters there</span>
+0154 <span class="comment">% $$$ xP(:) = Par(1:(nPoints^2));</span>
+0155 <span class="comment">% $$$ yP(:) = Par(nPoints^2+[1:(nPoints^2)]);</span>
+0156 <span class="comment">% $$$ Ip(:) = Par(2*nPoints^2+[1:(nPoints^2)]);</span>
+0157 
+0158 
+0159 <span class="keyword">if</span> nargout &gt; 1 
+0160   [Xdisplacement,Ydisplacement] = meshgrid(x{i1},y{i1});
+0161   [X0,Y0] = meshgrid(x{i1},y{i1});
+0162   Idisplacement = Ydisplacement;
+0163   
+0164   Xdisplacement(:) = vP{i1}(1:length(Xdisplacement(:)));
+0165   Ydisplacement(:) = vP{i1}(length(Xdisplacement(:))+[1:length(Xdisplacement(:))]);
+0166   Idisplacement(:) = vP{i1}(2*length(Xdisplacement(:))+[1:length(Xdisplacement(:))]);
+0167   Xdisplacement = Xdisplacement - X0;
+0168   Ydisplacement = Ydisplacement - Y0;
+0169   varargout{1}  = Xdisplacement;
+0170   varargout{2}  = Ydisplacement;
+0171   varargout{3}  = Idisplacement;
+0172   varargout{4}  = X0;
+0173   varargout{5}  = Y0;
+0174   
+0175 <span class="keyword">else</span>
+0176   varargout = vP;
+0177 <span class="keyword">end</span>
+0178 dT</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

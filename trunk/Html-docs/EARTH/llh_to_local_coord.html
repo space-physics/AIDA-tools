@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of llh_to_local_coord</title>
+  <meta name="keywords" content="llh_to_local_coord">
+  <meta name="description" content="LLH_TO_LOCAL_COORD transforms the positions (LAT, LONG, ALT) to (X,Y,Z)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html EARTH -->
+<h1>llh_to_local_coord
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>LLH_TO_LOCAL_COORD transforms the positions (LAT, LONG, ALT) to (X,Y,Z)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [x,y,z] = llh_to_local_coord(lat0,long0,alt0,lat,long,alt) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> LLH_TO_LOCAL_COORD transforms the positions (LAT, LONG, ALT) to (X,Y,Z)
+ in a Cartesian coordinate system x || east , y || north, z ||
+ zenit centered in (lat0,long0) at altitude ALT0 above sea level. 
+ 
+ CALLING:
+ [x,y,z] = llh_to_local_coord(lat0,long0,alt0,lat,long,alt)
+ 
+ INPUT: 
+    LAT0 latitude of reference point (origin of coordinates), in degrees
+    LONG0 longiture,of reference point (origin of coordinates) in degrees
+    ALT0 altitude,  of reference point (origin of coordinates) in km
+    LAT latitude, in degrees
+    LONG longiture, in degrees
+    ALT altitude, in km
+ OUTPUT:
+  X - Horisontal east distance from (lat0,long0,alt0) (km)
+  Y - Horisontal north distance from (lat0,long0,alt0) (km)
+  Z - Horisontal altitude above (lat0,long0,alt0) (km)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="e_local.html" class="code" title="function [e1,e2,e3] = e_local(lat0,long0,alt0)">e_local</a>	E_LOCAL - base vectors for local Cartesian coordinate in the GEO system</li><li><a href="xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>	x = xx( phi, lambda , alt )</li><li><a href="yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>	y = yy( phi, lambda, alt)</li><li><a href="zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>	z = zz( phi, lambda, alt )</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/project_llh2img.html" class="code" title="function [u,v,uG,vG,cG1,cG2] = project_llh2img(longlatalt,long0lat0alt0,optpar,imsiz,gridstyle)">project_llh2img</a>	PROJECT_LLH2IMG - project a point in space LONGLATALT down onto an image</li><li><a href="makenlcpos.html" class="code" title="function [x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt)">makenlcpos</a>	MAKENLCPOS transforms the positions (LAT, LONG, ALT) to (X,Y,Z)</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [x,y,z] = llh_to_local_coord(lat0,long0,alt0,lat,long,alt)</a>
+0002 <span class="comment">% LLH_TO_LOCAL_COORD transforms the positions (LAT, LONG, ALT) to (X,Y,Z)</span>
+0003 <span class="comment">% in a Cartesian coordinate system x || east , y || north, z ||</span>
+0004 <span class="comment">% zenit centered in (lat0,long0) at altitude ALT0 above sea level.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% CALLING:</span>
+0007 <span class="comment">% [x,y,z] = llh_to_local_coord(lat0,long0,alt0,lat,long,alt)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% INPUT:</span>
+0010 <span class="comment">%    LAT0 latitude of reference point (origin of coordinates), in degrees</span>
+0011 <span class="comment">%    LONG0 longiture,of reference point (origin of coordinates) in degrees</span>
+0012 <span class="comment">%    ALT0 altitude,  of reference point (origin of coordinates) in km</span>
+0013 <span class="comment">%    LAT latitude, in degrees</span>
+0014 <span class="comment">%    LONG longiture, in degrees</span>
+0015 <span class="comment">%    ALT altitude, in km</span>
+0016 <span class="comment">% OUTPUT:</span>
+0017 <span class="comment">%  X - Horisontal east distance from (lat0,long0,alt0) (km)</span>
+0018 <span class="comment">%  Y - Horisontal north distance from (lat0,long0,alt0) (km)</span>
+0019 <span class="comment">%  Z - Horisontal altitude above (lat0,long0,alt0) (km)</span>
+0020 
+0021 
+0022 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0023 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0024 f = 1/298.257;
+0025 e = (2*f-f*f).^.5;
+0026 a = 6378.137;
+0027 
+0028 
+0029 phi0 = pi/180*lat0*ones(size(lat));
+0030 lambda0 = pi/180*long0*ones(size(long));
+0031 phi = pi/180*lat;
+0032 lambda = pi/180*long;
+0033 
+0034 
+0035 [e1,e2,e3] = <a href="e_local.html" class="code" title="function [e1,e2,e3] = e_local(lat0,long0,alt0)">e_local</a>(lat0,long0,0);
+0036 
+0037 ro(1,:) = <a href="xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(phi0,lambda0,alt0);
+0038 ro(2,:) = <a href="yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(phi0,lambda0,alt0);
+0039 ro(3,:) = <a href="zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>(phi0,lambda0,alt0);
+0040 
+0041 r(1,:) = <a href="xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(phi,lambda,alt);
+0042 r(2,:) = <a href="yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(phi,lambda,alt);
+0043 r(3,:) = <a href="zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>(phi,lambda,alt);
+0044 
+0045 r_ro = r - ro;
+0046 
+0047 x = dot(r_ro,e1);
+0048 y = dot(r_ro,e2);
+0049 z = dot(r_ro,e3);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

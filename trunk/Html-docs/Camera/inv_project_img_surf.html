@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of inv_project_img_surf</title>
+  <meta name="keywords" content="inv_project_img_surf">
+  <meta name="description" content="INV_PROJECT_IMG_SURF - map IMG_IN - onto an arbitrary surface">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>inv_project_img_surf
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>INV_PROJECT_IMG_SURF - map IMG_IN - onto an arbitrary surface</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [Im_proj] = inv_project_img_surf(img_in,r,optmod,optpar,Xs,Ys,Zs,cmtr) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> INV_PROJECT_IMG_SURF - map IMG_IN - onto an arbitrary surface
+  The image IMG_IN taken from point R with a camera model OPTMOD
+  and rotation and optical transfer function caracterised by
+  OPTPAR onto a surface [XS,YS,ZS]. CMTR is an optional correction
+  rotarion matrix.
+
+ Calling:
+ [Im_proj] = inv_project_img_surf(img_in,r,optmod,optpar,Xs,Ys,Zs,cmtr)
+ 
+ Input:
+  img_in - image used only to get pixel range
+  r      - [1x3] (or [3x1]) array for camera position, 
+  optmod - identifier for optical transfer function [-2,-1,1,2,3,4,5]
+  optpar - parameters for optical model focal widths, camera
+           rotation angles, image coordinates (relative units) for
+           projection point of optical axis, shape factor.
+  Xs     - [NxM], east coordinate of surface to project image to
+  Ys     - [NxM], north coordinate of surface to project image to
+  Zs     - [NxM], vertical coordinate of surface to project image to
+  cmtr   - additional rotation matrix
+
+       See also <a href="inv_project_img.html" class="code" title="function [xx,yy,zz] = inv_project_img(img_in,r,optmod,optpar,e_n,l_0,cmtr)">INV_PROJECT_IMG</a>, <a href="camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">CAMERA_MODEL</a>, CAMERA_INV_MODEL</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>	PROJECT_POINT - project a point in space R down onto an image</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="inv_proj_img_ll.html" class="code" title="function Im_proj = inv_proj_img_ll(img_in,optmod,optpar,lat0,long0,alt0,lat,long,alt,ze_max)">inv_proj_img_ll</a>	INV_PROJ_IMG_LL - map IMG_IN to a latitude-longitude grid LAT, LONG</li><li><a href="../Tomography/ba_rt_error.html" class="code" title="function err = ba_rt_error(Par,stns,OPS,XfI,YfI,ZfI,rstns,tomo_ops)">ba_rt_error</a>	BA_RT_ERROR - Black aurora inversion error function</li><li><a href="../Tomography/tomo_altmaxIscaling.html" class="code" title="function [Vem,stns] = tomo_altmaxIscaling(Vem,stns,tomo_ops,X3,Y3,Z3)">tomo_altmaxIscaling</a>	TOMO_ALTMAXISCALING - tomographic itterative step(s).</li><li><a href="../Tomography/tomo_start_guessGACT.html" class="code" title="function [Vem,I2D] = tomo_start_guessGACT(stns,Energy,Ie2H,Xslice,Yslice,Zslice,M2Dto1D,U,V,I_cuts,iPeaks,X3D,Y3D,Z3D,ops)">tomo_start_guessGACT</a>	tomo_start_guessGACT - makes 3-D distribution of volume emission rates</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Im_proj] = inv_project_img_surf(img_in,r,optmod,optpar,Xs,Ys,Zs,cmtr)</a>
+0002 <span class="comment">% INV_PROJECT_IMG_SURF - map IMG_IN - onto an arbitrary surface</span>
+0003 <span class="comment">%  The image IMG_IN taken from point R with a camera model OPTMOD</span>
+0004 <span class="comment">%  and rotation and optical transfer function caracterised by</span>
+0005 <span class="comment">%  OPTPAR onto a surface [XS,YS,ZS]. CMTR is an optional correction</span>
+0006 <span class="comment">%  rotarion matrix.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">% [Im_proj] = inv_project_img_surf(img_in,r,optmod,optpar,Xs,Ys,Zs,cmtr)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Input:</span>
+0012 <span class="comment">%  img_in - image used only to get pixel range</span>
+0013 <span class="comment">%  r      - [1x3] (or [3x1]) array for camera position,</span>
+0014 <span class="comment">%  optmod - identifier for optical transfer function [-2,-1,1,2,3,4,5]</span>
+0015 <span class="comment">%  optpar - parameters for optical model focal widths, camera</span>
+0016 <span class="comment">%           rotation angles, image coordinates (relative units) for</span>
+0017 <span class="comment">%           projection point of optical axis, shape factor.</span>
+0018 <span class="comment">%  Xs     - [NxM], east coordinate of surface to project image to</span>
+0019 <span class="comment">%  Ys     - [NxM], north coordinate of surface to project image to</span>
+0020 <span class="comment">%  Zs     - [NxM], vertical coordinate of surface to project image to</span>
+0021 <span class="comment">%  cmtr   - additional rotation matrix</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%       See also INV_PROJECT_IMG, CAMERA_MODEL, CAMERA_INV_MODEL</span>
+0024 
+0025 
+0026 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0027 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0028 
+0029 <span class="comment">% £££  bxy = size(img_in);</span>
+0030 <span class="comment">% £££  bx = bxy(2);</span>
+0031 <span class="comment">% £££  by = bxy(1);</span>
+0032 
+0033 <span class="comment">% £££ if optmod &lt; 0</span>
+0034 <span class="comment">% £££   rotmtr = camera_rot(optpar.rot(1),optpar.rot(2),optpar.rot(3));</span>
+0035 <span class="comment">% £££ else</span>
+0036 <span class="comment">% £££   rotmtr = camera_rot(optpar(3),optpar(4),optpar(5));</span>
+0037 <span class="comment">% £££ end</span>
+0038 
+0039 <span class="keyword">if</span> nargin&lt;8
+0040   cmtr = eye(3);
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="comment">% Calculate image coordinates for points on the surface [X,Y,Z]</span>
+0044 [u,v] = <a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(r,optpar,[Xs(:),Ys(:),Zs(:)]',cmtr,size(img_in));
+0045 
+0046 <span class="comment">% Get the image intensities for those points by interpolation</span>
+0047 Im_proj = Xs;
+0048 Im_proj(:) = interp2(img_in,u,v);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

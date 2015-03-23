@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fix_subplots_tomo</title>
+  <meta name="keywords" content="fix_subplots_tomo">
+  <meta name="description" content="FIX_SUBPLOTS_TOMO - determine useful subplot orientation">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>fix_subplots_tomo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>FIX_SUBPLOTS_TOMO - determine useful subplot orientation</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function SP = fix_subplots_tomo(nrimages) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FIX_SUBPLOTS_TOMO - determine useful subplot orientation
+ 
+ Calling:
+  SP = fix_subplots_tomo(nrimages)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="make_tomo_ops.html" class="code" title="function tomo_ops = make_tomo_ops(stns)">make_tomo_ops</a>	MAKE_TOMO_OPS - User interface to set some parameters for the</li><li><a href="tomo_cal0.html" class="code" title="function [CalFactors,stns,calimgs] = tomo_cal0(stns,XfI,YfI,ZfI,OPS)">tomo_cal0</a>	tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</li><li><a href="tomo_inp_images.html" class="code" title="function stns = tomo_inp_images(file_list,stns,img_ops)">tomo_inp_images</a>	TOMO_INP_IMAGES - Preprocessing of images for tomography plus</li><li><a href="tomo_renorm_check.html" class="code" title="function OK = tomo_renorm_check(stns,X,tomo_ops)">tomo_renorm_check</a>	TOMO_RENORM_CHECK - check calibration factor for fastprojection of 3D b-o-b</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function SP = fix_subplots_tomo(nrimages)</a>
+0002 <span class="comment">% FIX_SUBPLOTS_TOMO - determine useful subplot orientation</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  SP = fix_subplots_tomo(nrimages)</span>
+0006 
+0007 <span class="comment">%   Copyright � 1997 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0008 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0009 
+0010 SP = [4,4];
+0011 
+0012 <span class="keyword">if</span> nrimages &lt;=4
+0013   SP = [2,2];
+0014 <span class="keyword">elseif</span> nrimages &lt;=6
+0015   SP = [2,3];
+0016 <span class="keyword">elseif</span> nrimages &lt;=8
+0017   SP = [2,4];
+0018 <span class="keyword">elseif</span> nrimages == 9
+0019   SP = [3,3];
+0020 <span class="keyword">elseif</span> nrimages &lt;=12 <span class="comment">% Well prepared for limited expansion...</span>
+0021   SP = [3,4];
+0022 <span class="keyword">elseif</span> nrimages &lt;=16 <span class="comment">% Well prepared for some expansion...</span>
+0023   SP = [4,4];
+0024 <span class="keyword">elseif</span> nrimages &lt;=20 <span class="comment">% Well prepared for some not so limited expansion...</span>
+0025   SP = [5,4];
+0026 <span class="keyword">elseif</span> nrimages &lt;=25 <span class="comment">% Well prepared for very not limited expansion...</span>
+0027   SP = [5,5];
+0028 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

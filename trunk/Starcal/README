@@ -1,0 +1,181 @@
+STARCAL varsion 1.1
+
+1. Purpose of STARCAL
+
+Geometrical camera calibration is of vital importance for more
+advanced image analysis such as tomographic inversion, stereoscoppic
+triangulation. For these and other methods it is necessary to
+accuratelly know the pixel line-of-sigth of each and every image
+pixel. With the STARCAL function this camera calibration is preformed
+by identifying stars in images and comparing their position with the
+calculated star positions. In this way both the camera rotation and
+the camera model can be determined with high accuracy.
+
+2. Installation
+
+Installation of starcal should be absolutley
+straghtforward on all systems with MATLAB version 5.1 or later.
+
+`Starcal' depends on `Skymap', `Camera' and `Fits_tools'. Further it
+depends on Dr. Erik A. Johnson's <JohnsonE@usc.edu> arrow.m. It also
+loads some data that by default are stored in ~matlab/.data/. Finally
+it benefits from the optimization toolbox and might require the
+image-processing toolbox from Mathworks.
+
+
+For proper working of this tool it is necessary to put all the
+directories listed below into your matlab path:
+
+Camera/
+Fits_tools/
+Starcal/
+Starcal/update/
+Starcal/IOfcns/
+Skymap/
+
+There is for some forgotten reason necessary to put `Starcal' before
+`Skymap' on the path. Otherwise there should be no problems with
+comutating the directories.
+
+3. So whats it all about?
+   Still to be written.
+
+4. Working procedure.
+   
+   1, Load an image where it is possible to identify at least some 5
+      stars. If the sensitivity is to low or the noiselevel to high it
+      have been found that even images from really low-preforming 
+      web-cams can be used in `differential mode' where the difference
+      between two images taken a few minutes appart have been used -
+      in this way the ``fixed pattern noise'' canceled out.
+   2, Give observation possition and observation time. This program
+      uses east as positive longitude.
+   3, adjust intensity scale, try different colourmaps (bone works
+      fine giving close to natural view of the night sky), try some
+      bacground reduction and filtering if it is hard to find stars.
+   4. Identify some stars. Might be difficult might be easy, but if
+      you have made good information on direction of the observations
+      and your guesstimate of the otptical camera model is good the
+      starmap overlayed on the image should give some help. If
+      possible or necessary adjust the mapping of the starchart with
+      the slide-rulers in the main figure.
+   5. Now in pick a star and magnify it for selection,
+      StarCal->Magnify. This brings up the region surrounding the star
+      in the `zoom figure'. There (if necessary center first.) select
+      star->autopick or star->man.pick. This step should determine the
+      ceter position of the star Autopick gives a better estimate by
+      fiting a 2D Gaussian to the image intensity, but for stars with
+      weak intensity or images with high noise level it might not
+      work. Then you have to settle for star->man.pick.
+   6. Connect the imaged star and its point in the image with
+      StarCal->identify. Put the hair-cross as close to the right star
+      in the starmap as possible. The star you selected are marked on
+      the image.  The meaning of the different mouse buttons are shown
+      in the figure title. (After the first identified star a figure
+      for error plots are created.
+   7, Repeat steps 4-5-6 until as many stars as possible or 15-20
+      evenly distributed over the image. Now try to further adjust the
+      mapping of the stars if easy, if not go directly to
+   8, Search for the optical parameters `StarCal->Search optpar'. A
+      new figure with the initial guess of the optical parameters are
+      presented. Input in the text-boxes change the initial guess for
+      the optimisation of the optical parameters. If the push-buttons
+      are selected the corresponding parameter are kept fixed to the
+      value in the text-box. This might be usefull when some
+      parameters have a well known value.
+   9, Search.
+  10, Look at the opimization, is the fit good? Look at the errors,
+      are there any obvious trends? If there seems to be trends in the
+      error or the fit is not good enough repeat step 8,9. 
+  11, If you need a realy convincing determination of the optical
+      parameters search for more stars. This is a tedious work to do
+      manually but `Starcal->Semiautoidentify' maps the stars in the
+      star catalog down to the image plane and searches for starlike
+      intensity maxima near the point of the projection. Since the
+      outcome of this search is uncertain the choice of accepting,
+      declining or repeat the search is left for the user.
+ (XX. Almost all steps above can be replaced by
+      `StarCal->autocalibrate' if a good enough estimate of the
+      optical parameters is given. However, this requires the image to
+      be of very high quality.)
+  12. If you are satisfied with the result, the width of the error
+      scatter should not be largrer than plus-minus a pixel, save the
+      optical parameters. This can be done to the specified .acc
+      format, that keeps information about the time of validity for
+      the calibration the ``station'' of observation, the
+      apparent/header/initially-give direction and the optical model
+      used, or you can access the variable optpar in the matlab
+      workspace. 
+
+5. Tailoring
+
+1. Reading information about observation.
+   a, If you have your images in FITS format you should preferably
+      adjust the function `try_to_be_smart' so that the relevant
+      information needed for the `obs' struct can be retrieved from
+      the header.
+   b, Else You should write a function `your_try_to_be_smart' (taking
+      only the filename as input) that should set up an `obs'-struct.
+   c, Write a function your_guess_optpar or modify
+      guess_allis_optpar. This function is used to obtain an initial
+      start guess for the camera rotations and optical characteristics
+      of the camera.
+
+A lot of the elaborate header handling done is due to the fact that
+this tool was developed for ALIS, a multistation imaging network where
+the cameras where rotated to follow the objects studied. The
+geographical position of the stations are stored in the file
+Skymap/Station/sstationpos.dat and should be modified to suit the need
+of the user.
+
+
+2. Rotation type.
+   For reasons connected with the technical solution of the ALIS
+   camera positioning the rotation matrix used is with the first
+   rotation around the vertical and then around a horizontal axis and
+   finally around a third initially horizontal axis. To modify this to
+   better accomodate camera rotations done in for example
+   azimuth-zenith/elevation-roll the only thing to do is to modify the
+   rotation matrixes in the function `camera_rot' residing in the
+   Camera directory, of course taking due and carefull note of
+   applying the rotations in correct order as allways. this will also
+   affect the rotatins of the `starmap' function so that the same
+   rotation will be used throughout.
+
+3. Camera model.
+   The Camera/Starcal package now provided has efficient support for a
+   small number of camera models:
+   1. pinhole camera model u = f*tan(theta)
+   2. fisheye-type         u = f*sin(theta/2)
+   3. modified pinhole	   u = f*(a*theta + (1-a)*tan(theta))
+   4. nonameasfarasIknow   u = f*theta
+   Here u denotes the radial image distance from the projection of the
+   optical axis in pixels, theta denotes the polar angle from the
+   optical axis; and f and a are focal width and a correction factor
+   respectivelly. One thing to note first is that the current camera
+   models use focal widths in the unit ``1-image-size''. At first this
+   might appear akward but there is good reason for this
+   choise. Current experience show that the most common operation
+   prior to further analysis is to change the resolution (=re-binning)
+   of the full image; by using the relative units for focal widths it
+   is possible to use the same values for the optical parameters
+   without any scaling.
+   
+   Extending the camera_model functin should be fairly
+   straig thforward. Just add the few lines of m-kode that models the
+   relation between the polar angles (phi,theta) and image
+   coordinates (u,v) in the function camera_model and if possible the
+   inverse relation in the function camera_inv_model. To allow for 
+   GUI input of values for optical parameters it might be necessary to
+   modify the functions `updautomat' and `runopticsoptimization'. One
+   last word of caution is that the optical parameters are stored as
+   an matlab array (optpar), where optpar([3 4 5]) are used for camera
+   rotations and to avoid a large number of modificatins in a number
+   of functins it is my firm advice that you should keep it that
+   way. optpar([1 2]) are currently used for the horizontal and
+   vertical focal width, optpar([6 7]) are used to describe the
+   displacement of the optical axis and optpar(8) if used for an
+   additional correction parameter, all these parameters could be used
+   and in any way in a new camera model without any problems others
+   could be added but unfortunatelly 3 to 5 are reserved for rotations.
+

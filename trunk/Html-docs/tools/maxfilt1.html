@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of maxfilt1</title>
+  <meta name="keywords" content="maxfilt1">
+  <meta name="description" content="maxfilt1 - one dimensional sliding max-filter">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>maxfilt1
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>maxfilt1 - one dimensional sliding max-filter</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function Iout = maxfilt1(Iin,reg) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> maxfilt1 - one dimensional sliding max-filter
+ 
+ Calling:
+   Iout = maxfilt1(Iin,reg)
+ Input:
+   Iin - input array (N1 x N2), any type max can handle
+   reg - size of neighbourhood to take the sliding maximum value
+         from
+ Output:
+   Iout - output array (N1 x N2) where Iout(i1,i2) is the maximum
+          value of Iin(i1+(-floor(reg/2+1):floor(reg/2+1)),i2)
+
+ Not much error checking is done, function also does not allow for
+ taking the maximum filter along dimension 2.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/ALIS_auto_overview.html" class="code" title="function dOPS = ALIS_auto_overview(ops4AAO)">ALIS_auto_overview</a>	ALIS_AUTO_OVERVIEW - automated fits data to png image conversion</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function Iout = maxfilt1(Iin,reg)</a>
+0002 <span class="comment">% maxfilt1 - one dimensional sliding max-filter</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   Iout = maxfilt1(Iin,reg)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%   Iin - input array (N1 x N2), any type max can handle</span>
+0008 <span class="comment">%   reg - size of neighbourhood to take the sliding maximum value</span>
+0009 <span class="comment">%         from</span>
+0010 <span class="comment">% Output:</span>
+0011 <span class="comment">%   Iout - output array (N1 x N2) where Iout(i1,i2) is the maximum</span>
+0012 <span class="comment">%          value of Iin(i1+(-floor(reg/2+1):floor(reg/2+1)),i2)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Not much error checking is done, function also does not allow for</span>
+0015 <span class="comment">% taking the maximum filter along dimension 2.</span>
+0016 
+0017 regSize = floor((reg+1)/2);
+0018 
+0019 Iout = Iin;
+0020 <span class="keyword">for</span> i1 = size(Iin,1):-1:1,
+0021   Iout(i1,:) = max(Iin(max(1,i1-regSize):min(size(Iin,1),i1+regSize),:));
+0022 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of updfindstar</title>
+  <meta name="keywords" content="updfindstar">
+  <meta name="description" content="UPDFINDSTAR -">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Starcal --><!-- menu.html update -->
+<h1>updfindstar
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>UPDFINDSTAR -</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [SkMp,starpar] = updfindstar(starpar,SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> UPDFINDSTAR -</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Skymap/findneareststarxy.html" class="code" title="function [staz,stze,stind,stmagn] = findneareststarxy(x0,y0,SkMp)">findneareststarxy</a>	FINDNEARESTSTARXY is a function that find the star among PSTARS that</li><li><a href="../../Starcal/errorgui.html" class="code" title="function SkMp = errorgui(SkMp)">errorgui</a>	ERRORGUI - Create the figure and GUI for the errorplots</li><li><a href="../../Starcal/findneareststarxy.html" class="code" title="function [staz,stze,stind,stmagn] = findneareststarxy(x0,y0,SkMp)">findneareststarxy</a>	FINDNEARESTSTARXY - find the star among PSTARS closest to X0, Y0</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [SkMp,starpar] = updfindstar(starpar,SkMp)</a>
+0002 <span class="comment">% UPDFINDSTAR -</span>
+0003 <span class="comment">%</span>
+0004 
+0005 <span class="comment">%   Copyright © 2011 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0006 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0007 
+0008 button = 1;
+0009 
+0010 figure( SkMp.figsky )
+0011 
+0012 <span class="keyword">while</span> ( button == 1 | lower(char(button)) == <span class="string">'l'</span>)
+0013   
+0014   [x0,y0,button] = ginput(1);
+0015   
+0016   [staraz,starze,starid,starmagn] = <a href="../../Skymap/findneareststarxy.html" class="code" title="function [staz,stze,stind,stmagn] = findneareststarxy(x0,y0,SkMp)">findneareststarxy</a>(x0,y0,SkMp);
+0017   title(<span class="string">'Retry (l) | Quit (m) | Accept (r)'</span>)
+0018   
+0019   [x0,y0,button] = ginput(1);
+0020   
+0021   <span class="keyword">if</span> ( button == 3 | lower(char(button)) == <span class="string">'r'</span> )
+0022     
+0023     <span class="keyword">if</span> ( ~isempty(starpar) &amp; exist(<span class="string">'staraz'</span>) )
+0024       
+0025       i1 = size(SkMp.identstars,1)+1;
+0026       
+0027       SkMp.identstars(i1,1) = staraz;
+0028       SkMp.identstars(i1,2) = starze;
+0029       SkMp.identstars(i1,3) = starpar(1);
+0030       SkMp.identstars(i1,4) = starpar(2);
+0031       
+0032       SkMp.identstars(i1,5) = starpar(3);
+0033       SkMp.identstars(i1,6) = starpar(4);
+0034       SkMp.identstars(i1,7) = starpar(5);
+0035       SkMp.identstars(i1,8) = starpar(6);
+0036       
+0037       SkMp.identstars(i1,9) = starid;
+0038       SkMp.identstars(i1,10) = starmagn;
+0039       
+0040       starpar = [];
+0041       
+0042     <span class="keyword">elseif</span> ( isempty(starpar) )
+0043       
+0044       information = [<span class="string">'No current star to identify                 '</span>;
+0045              <span class="string">'Zoom in on a star in FIG 1                  '</span>;
+0046              <span class="string">'Determine the current starpossition in FIG 4'</span>];
+0047       disp(information)
+0048       
+0049     <span class="keyword">end</span>
+0050     
+0051   <span class="keyword">end</span>
+0052   
+0053 <span class="keyword">end</span>
+0054 hold off
+0055 zoom on
+0056 set(gcf,<span class="string">'pointer'</span>,<span class="string">'arrow'</span>)
+0057 title(<span class="string">''</span>)
+0058 <span class="keyword">try</span>
+0059   delete(SkMp.currStarpoint)
+0060 <span class="keyword">catch</span>
+0061   disp(<span class="string">'Oops, shouldn''t get here...'</span>)
+0062 <span class="keyword">end</span>
+0063 <span class="keyword">if</span> ~isfield(SkMp,<span class="string">'errorfig'</span>)
+0064   
+0065   SkMp = <a href="../../Starcal/errorgui.html" class="code" title="function SkMp = errorgui(SkMp)">errorgui</a>(SkMp);
+0066   
+0067 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

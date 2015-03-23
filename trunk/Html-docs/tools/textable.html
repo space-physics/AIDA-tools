@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of textable</title>
+  <meta name="keywords" content="textable">
+  <meta name="description" content="TEXTABLE  writes a TeX formatted table to file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>textable
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TEXTABLE  writes a TeX formatted table to file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function textable(FileName, Matrix, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TEXTABLE  writes a TeX formatted table to file.
+   TEXTABLE(FILENAME, MATRIX) writes MATRIX in TeX tabular formatted style 
+       to the file &quot;FILENAME.tbl&quot;
+
+   TEXTABLE(..., OPTIONAL ARGUMENTS)
+      'folder','FOLDERNAME' outputfile is saved in FOLDERNAME\FILENAME.tbl
+
+      'line','LINECOMMAND' optional line argument that is placed in
+       between two lines of numbers. Standard is no line.
+
+      Example: TEXTABLE(...,'line','\hline')      --&gt; puts &quot;\hline&quot; between 
+       every line of numbers.
+
+      'format', 'FORMATARGUMENT' optional argument to change float format
+       to e.g. exponential or integer format. Can be one argument, or one
+       continuous string for single columns. The format 'e' is translated 
+       into TeX code as &quot;number\cdot 10^{exponential}&quot;
+
+      Example 1: TEXTABLE(...,'format', 'i')      --&gt; all columns will  
+       be integer format
+      Example 2: TEXTABLE(...,'format', 'iefff')  --&gt; for every single  
+       column the format is defined.
+
+      'floatformat', [floatformat] is used to point the function how many
+       digits should be used. This works only in combination with 'format'
+       set to float, exponential or no setting (float 3.2 (###.##) is default).
+
+      Example 1: TEXTABLE(...,'floatformat', 1.4)        
+      Example 2: TEXTABLE(...,'floatformat', [1.4 3.2 4.5]) digits defined per
+       column
+
+      'environment', 'ENV' optional argument to point in what TeX environment
+       the table is to be placed: text (TXT) or math (MATH) environment. 
+       Default is 'TXT'. This has an effect on the placement of '$' around 
+       each element.
+
+      Example: TEXTABLE(...,'environment','MATH')
+       
+
+   [JdB] February 27, 2007</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function textable(FileName, Matrix, varargin)</a>
+0002 <span class="comment">% TEXTABLE  writes a TeX formatted table to file.</span>
+0003 <span class="comment">%   TEXTABLE(FILENAME, MATRIX) writes MATRIX in TeX tabular formatted style</span>
+0004 <span class="comment">%       to the file &quot;FILENAME.tbl&quot;</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   TEXTABLE(..., OPTIONAL ARGUMENTS)</span>
+0007 <span class="comment">%      'folder','FOLDERNAME' outputfile is saved in FOLDERNAME\FILENAME.tbl</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%      'line','LINECOMMAND' optional line argument that is placed in</span>
+0010 <span class="comment">%       between two lines of numbers. Standard is no line.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%      Example: TEXTABLE(...,'line','\hline')      --&gt; puts &quot;\hline&quot; between</span>
+0013 <span class="comment">%       every line of numbers.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%      'format', 'FORMATARGUMENT' optional argument to change float format</span>
+0016 <span class="comment">%       to e.g. exponential or integer format. Can be one argument, or one</span>
+0017 <span class="comment">%       continuous string for single columns. The format 'e' is translated</span>
+0018 <span class="comment">%       into TeX code as &quot;number\cdot 10^{exponential}&quot;</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%      Example 1: TEXTABLE(...,'format', 'i')      --&gt; all columns will</span>
+0021 <span class="comment">%       be integer format</span>
+0022 <span class="comment">%      Example 2: TEXTABLE(...,'format', 'iefff')  --&gt; for every single</span>
+0023 <span class="comment">%       column the format is defined.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%      'floatformat', [floatformat] is used to point the function how many</span>
+0026 <span class="comment">%       digits should be used. This works only in combination with 'format'</span>
+0027 <span class="comment">%       set to float, exponential or no setting (float 3.2 (###.##) is default).</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%      Example 1: TEXTABLE(...,'floatformat', 1.4)</span>
+0030 <span class="comment">%      Example 2: TEXTABLE(...,'floatformat', [1.4 3.2 4.5]) digits defined per</span>
+0031 <span class="comment">%       column</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%      'environment', 'ENV' optional argument to point in what TeX environment</span>
+0034 <span class="comment">%       the table is to be placed: text (TXT) or math (MATH) environment.</span>
+0035 <span class="comment">%       Default is 'TXT'. This has an effect on the placement of '$' around</span>
+0036 <span class="comment">%       each element.</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%      Example: TEXTABLE(...,'environment','MATH')</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%   [JdB] February 27, 2007</span>
+0042 <span class="comment">%</span>
+0043 
+0044 <span class="comment">%   [JdB]            October  16, 2006 - first version</span>
+0045 <span class="comment">%   [JdB]            October  20, 2006 - exponential notation 'LaTeX style'</span>
+0046 <span class="comment">%                                      - 'line' argument bug fixed</span>
+0047 <span class="comment">%   [MarkDuppe]      November  3, 2006 - 'line' argument backslash bug fixed</span>
+0048 <span class="comment">%   [JdB]            November 24, 2006 - 'floatformat' also works for scientific</span>
+0049 <span class="comment">%                                        (exponential) notation.</span>
+0050 <span class="comment">%                                      - minor improvements (commenting)</span>
+0051 <span class="comment">%   [BartekGrychtol] December 10, 2006 - exponential notation algorithm</span>
+0052 <span class="comment">%                                        improved</span>
+0053 <span class="comment">%   [JdB]            February 27, 2007 - 'environment' option added -</span>
+0054 <span class="comment">%                                        enables the generated tables to be</span>
+0055 <span class="comment">%                                        used within math environment</span>
+0056 
+0057 
+0058 <span class="comment">% Define standard options -------------------------------------------------</span>
+0059 Folder           = <span class="string">''</span>;
+0060 Argument         = <span class="string">''</span>;
+0061 FileAndExtension = [FileName, <span class="string">'.tbl'</span>];                                     <span class="comment">% .tbl extension is added</span>
+0062 WidthMatrix      = size(Matrix,2);
+0063 HeightMatrix     = size(Matrix,1);
+0064 Format           = <span class="string">'f'</span>;                                                    <span class="comment">% standard format is float ('f')</span>
+0065 FloatFormat      = 3.2;
+0066 Environment      = <span class="string">'TXT'</span>;
+0067 
+0068 <span class="comment">% Analyse optional input --------------------------------------------------</span>
+0069 ExtraInput  = (nargin-3);
+0070 <span class="keyword">if</span>(ExtraInput&gt;0)                <span class="comment">% loop through all optional arguments</span>
+0071     <span class="keyword">for</span> j = 1:2:ExtraInput
+0072         <span class="keyword">switch</span> lower(varargin{j})
+0073             <span class="keyword">case</span> <span class="string">'folder'</span>       <span class="comment">% folder is specified</span>
+0074                 Folder = varargin{j+1};
+0075                 FileAndExtension = [Folder,<span class="string">'/'</span>,FileAndExtension];
+0076             <span class="keyword">case</span> <span class="string">'line'</span>         <span class="comment">% there is a between line argument specified</span>
+0077                 Argument = varargin{j+1};
+0078             <span class="keyword">case</span> <span class="string">'format'</span>       <span class="comment">% format is specified for:</span>
+0079                 <span class="keyword">switch</span> length(varargin{j+1}) <span class="comment">% all columns</span>
+0080                     <span class="keyword">case</span> 1
+0081                        Format = varargin{j+1};
+0082                        <span class="keyword">for</span> k=2:WidthMatrix
+0083                             Format = [Format, varargin{j+1}];
+0084                        <span class="keyword">end</span>
+0085                     <span class="keyword">otherwise</span>   <span class="comment">% each column specified</span>
+0086                         Format = varargin{j+1};
+0087                 <span class="keyword">end</span>
+0088             <span class="keyword">case</span> <span class="string">'floatformat'</span>  <span class="comment">% numeric format is specified</span>
+0089                  FloatFormat = varargin{j+1};
+0090             <span class="keyword">case</span> <span class="string">'environment'</span>  <span class="comment">% environment is specified</span>
+0091                  Environment = varargin{j+1};
+0092         <span class="keyword">end</span>
+0093                 
+0094     <span class="keyword">end</span>
+0095 <span class="keyword">end</span>
+0096 
+0097 <span class="comment">% Process optional input --------------------------------------------------</span>
+0098 <span class="keyword">switch</span>(Environment)
+0099     <span class="keyword">case</span> <span class="string">'TXT'</span>                  <span class="comment">% when TeX text environment, a $ is placed</span>
+0100         EnvOp = <span class="string">'$'</span>;            <span class="comment">% around each table entry</span>
+0101     <span class="keyword">case</span> <span class="string">'MATH'</span>                 <span class="comment">% when TeX math environment, this $ is</span>
+0102         EnvOp = <span class="string">''</span>;             <span class="comment">% omitted</span>
+0103 <span class="keyword">end</span>
+0104 
+0105 <span class="keyword">if</span>(WidthMatrix&gt;1)
+0106     <span class="keyword">if</span>(length(Format)==1)       <span class="comment">% if format scalar,</span>
+0107        <span class="keyword">for</span> k=2:WidthMatrix      <span class="comment">% then make array of that scalar (width = columnwidth)</span>
+0108             Format = [Format, Format];
+0109        <span class="keyword">end</span> 
+0110     <span class="keyword">end</span>
+0111     <span class="keyword">if</span>(length(FloatFormat)==1)  <span class="comment">% if floatformat scalar,</span>
+0112         FloatFormat = FloatFormat * ones(1, WidthMatrix); <span class="comment">% then make array for every column</span>
+0113     <span class="keyword">end</span>
+0114 <span class="keyword">end</span>
+0115 
+0116 <span class="comment">%--------------------------------------------------------------------------</span>
+0117 <span class="comment">% Module to enable exponential notation in TeX</span>
+0118 <span class="comment">%--------------------------------------------------------------------------</span>
+0119 WriteMatrix         = Matrix;
+0120 WriteFloatFormat    = FloatFormat;
+0121 WriteFormat         = Format;
+0122 WriteWidthMatrix    = WidthMatrix;
+0123 place               = 0;
+0124 <span class="keyword">for</span> n = 1 : WidthMatrix                                                    <span class="comment">% loop to insert exponential notation</span>
+0125     place = place+1;
+0126     <span class="keyword">if</span>(Format(n)==<span class="string">'e'</span>)
+0127         <span class="keyword">for</span> m=1:HeightMatrix
+0128             ExponentialString = sprintf(<span class="string">'%e'</span>,Matrix(m,n));                 <span class="comment">% first let matlab put the column in exponential notation</span>
+0129             pos = strfind(ExponentialString,<span class="string">'e'</span>);                          <span class="comment">% find position of 'e'</span>
+0130             Exp = str2double(ExponentialString((pos+1):end));              <span class="comment">% extract exponential from this string</span>
+0131             Flo = str2double(ExponentialString(1:pos-1));                  <span class="comment">% extract float from this string</span>
+0132             ColumnFloatExponential(m,:) = [Flo, Exp];                      <span class="comment">% element in the matrix is now split into float and exponential</span>
+0133         <span class="keyword">end</span>
+0134         Etakeout = ColumnFloatExponential;                                 <span class="comment">% Etakeout is now a 2 column vector containing</span>
+0135                                                                            <span class="comment">% on the left side the float and on the right side</span>
+0136                                                                            <span class="comment">% exponential number.</span>
+0137         <span class="comment">% place extra columns</span>
+0138         <span class="keyword">if</span>(place&gt;1)                                 
+0139             <span class="keyword">if</span>(place &lt; WriteWidthMatrix)
+0140                 WriteMatrix         = [ WriteMatrix(:,1:place-1),      Etakeout, WriteMatrix(:, place+1:WriteWidthMatrix)       ];
+0141                 WriteFloatFormat    = [ WriteFloatFormat(:,1:place),   1,        WriteFloatFormat(:, place+1:WriteWidthMatrix)  ];
+0142                 WriteFormat         = [ WriteFormat(:,1:place-1),      <span class="string">'bx'</span>,     WriteFormat(:, place+1:WriteWidthMatrix)       ];
+0143             <span class="keyword">else</span>
+0144                 WriteMatrix         = [ WriteMatrix(:,1:place-1),      Etakeout  ];
+0145                 WriteFloatFormat    = [ WriteFloatFormat(:,1:place),   1         ];
+0146                 WriteFormat         = [ WriteFormat(:,1:place-1),      <span class="string">'bx'</span>      ];
+0147             <span class="keyword">end</span>
+0148         <span class="keyword">else</span>
+0149             <span class="keyword">if</span>(place &lt; WriteWidthMatrix)
+0150                 WriteMatrix         = [Etakeout,                        WriteMatrix(:,place+1:WriteWidthMatrix)     ];
+0151                 WriteFloatFormat    = [WriteFloatFormat(:,place), 1,    WriteFloatFormat(:,place+1:WriteWidthMatrix)];
+0152                 WriteFormat         = [<span class="string">'bx'</span>,                            WriteFormat(:,place+1:WriteWidthMatrix)     ];
+0153             <span class="keyword">else</span>
+0154                 WriteMatrix         = Etakeout;
+0155                 WriteFloatFormat    = [WriteFloatFormat(:,place), 1];
+0156                 WriteFormat         = <span class="string">'bx'</span>;
+0157             <span class="keyword">end</span>
+0158         <span class="keyword">end</span>
+0159         WriteWidthMatrix = size(WriteMatrix,2);
+0160         place = place + 1;
+0161     <span class="keyword">end</span>  
+0162 <span class="keyword">end</span>                                         
+0163 
+0164 
+0165 <span class="comment">%--------------------------------------------------------------------------</span>
+0166 <span class="comment">%  Create String that writes the matrix in the table file</span>
+0167 <span class="comment">%--------------------------------------------------------------------------</span>
+0168 <span class="keyword">switch</span>(WriteFormat(1))                                                     <span class="comment">% first element of WriteFormat</span>
+0169     <span class="keyword">case</span> <span class="string">'b'</span>
+0170         PrintFormat = [ EnvOp, <span class="string">'%'</span>, num2str(WriteFloatFormat(1)), <span class="string">'f'</span>                   ];
+0171     <span class="keyword">otherwise</span>
+0172         PrintFormat = [ EnvOp, <span class="string">'%'</span>, num2str(WriteFloatFormat(1)), WriteFormat(1), EnvOp ];
+0173 <span class="keyword">end</span>
+0174 <span class="keyword">if</span>(WriteWidthMatrix&gt;1)
+0175     <span class="keyword">for</span> i=2:WriteWidthMatrix                                               <span class="comment">% rest of elements of WriteFormat</span>
+0176         <span class="keyword">switch</span>(WriteFormat(i))
+0177             <span class="keyword">case</span> <span class="string">'b'</span>  <span class="comment">% float of exponential</span>
+0178                 PrintFormat = [PrintFormat, <span class="string">' &amp; '</span>, EnvOp, <span class="string">'%'</span>, num2str(WriteFloatFormat(i)), <span class="string">'f'</span>                 ];            
+0179             <span class="keyword">case</span> <span class="string">'x'</span>  <span class="comment">% exponential number</span>
+0180                 PrintFormat = [PrintFormat, <span class="string">'\\cdot 10^{%i}'</span>, EnvOp                                              ];
+0181             <span class="keyword">otherwise</span> <span class="comment">% other format</span>
+0182                 PrintFormat = [PrintFormat, <span class="string">' &amp; '</span>, EnvOp, <span class="string">'%'</span>,num2str(WriteFloatFormat(i)), WriteFormat(i), EnvOp];
+0183         <span class="keyword">end</span>
+0184     <span class="keyword">end</span>
+0185 <span class="keyword">end</span>
+0186 
+0187 <span class="comment">%------------------------- Include optional argument &amp; finish 'PrintFormat'</span>
+0188 <span class="keyword">if</span>(isempty(Argument)==0)                                                   <span class="comment">% argument not empty</span>
+0189     tw=1;
+0190     <span class="keyword">for</span> t=1:length(Argument)                                               <span class="comment">% loop through Argument string</span>
+0191         <span class="keyword">if</span>(Argument(t)==<span class="string">'\'</span>)
+0192             WriteArgument(tw:tw+1)=<span class="string">'\\'</span>;                                   <span class="comment">% replace single backslash with double since</span>
+0193             tw=tw+1;                                                       <span class="comment">% matlab fprintf needs that</span>
+0194         <span class="keyword">else</span>
+0195             WriteArgument(tw) = Argument(t);
+0196         <span class="keyword">end</span>
+0197         tw=tw+1;
+0198     <span class="keyword">end</span>
+0199     PrintFormat = [PrintFormat,<span class="string">' \\\\'</span>,WriteArgument, <span class="string">'\n'</span>];               <span class="comment">% finish format line with \n nextline command</span>
+0200 <span class="keyword">else</span>                                                                       <span class="comment">% argument empty</span>
+0201     PrintFormat = [PrintFormat,<span class="string">' \\\\\n'</span>];
+0202 <span class="keyword">end</span>
+0203 
+0204 
+0205 
+0206 <span class="comment">%--------------------------------------------------------------------------</span>
+0207 <span class="comment">%  Write to file</span>
+0208 <span class="comment">%--------------------------------------------------------------------------</span>
+0209 <span class="keyword">try</span>
+0210    fid = fopen(FileAndExtension,<span class="string">'wt'</span>);                                     <span class="comment">% open file</span>
+0211    fprintf (fid, PrintFormat, WriteMatrix.');                              <span class="comment">% write to file</span>
+0212    fclose(fid);                                                            <span class="comment">% close file</span>
+0213 <span class="keyword">catch</span>                                   
+0214    disp <span class="string">'Error while writing to file:'</span>
+0215    disp <span class="string">'Folder could be nonexisting or file specified could be write-protected'</span>
+0216 <span class="keyword">end</span>
+0217</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,13 @@
+AVOK - ALIS View Overview Keograms
+
+The tools for producing and viewing the ALIS overview keograms.
+
+This was a toold built 2005 for making a keogram data-base of all ALIS
+data taken. A data-base was made, the tools worked. One problem was
+that the displays worked poorly for events with sparse data and data
+with low or no signal.
+
+To my knowledge the data-base have not been updated since 2005.
+
+On the ALIS computer the data-base was located at /alis/overviews or
+something similar.

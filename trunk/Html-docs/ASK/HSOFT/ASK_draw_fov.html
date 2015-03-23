@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_draw_fov</title>
+  <meta name="keywords" content="ASK_draw_fov">
+  <meta name="description" content="ASK_DRAW_FOV - Draw one cameras field-of-view in another cameras f-o-v">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_draw_fov
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_DRAW_FOV - Draw one cameras field-of-view in another cameras f-o-v</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [varargout] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_DRAW_FOV - Draw one cameras field-of-view in another cameras f-o-v
+            or just calculate the camera f-o-v edge
+ 
+ Calling:
+   [ph] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)
+   [u,v] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)
+   [u,v,ph] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)
+ Input:
+   imsiz1   - Size of image #1
+   optpar1  - Optical parameters of camera #1
+   imsiz2   - Size of image #2
+   optpar2  - Optical parameters of camera #2
+   r1       - location of camera #1 [x1,y1,z1] (km), optional
+   r2       - location of camera #1 [x2,y2,z2] (km), optional
+   alt      - altitude for which to calculate f-o-v
+   cmtr     - rotation matrix for transformation from local
+              horizontal coordinate systems at r1 and r2, If left
+              empty defaults to eye(3)
+   varargin - cell-array with property-value pairs sent forward to
+              plot function, see PLOT for details. Ex {'r--','linewidth',2}
+ Output:
+   ph - plot-handle to plotted lines
+   u  - horizontal image coordinates of f-o-v of camera #1 in
+        images from camera #2
+   v  - vertical image coordinates of f-o-v of camera #1 in
+        images from camera #2
+
+ If function is called with 2 output arguments only U and V is
+ calculated and no plotting is done, with other number of output
+ arguments plotting is done</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Camera/inv_project_img.html" class="code" title="function [xx,yy,zz] = inv_project_img(img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_img</a>	INV_PROJECT_IMG - maps an image IMG_IN to a plane.</li><li><a href="../../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>	PROJECT_POINT - project a point in space R down onto an image</li><li><a href="../../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>	x = xx( phi, lambda , alt )</li><li><a href="../../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>	y = yy( phi, lambda, alt)</li><li><a href="../../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>	z = zz( phi, lambda, alt )</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [varargout] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)</a>
+0002 <span class="comment">% ASK_DRAW_FOV - Draw one cameras field-of-view in another cameras f-o-v</span>
+0003 <span class="comment">%            or just calculate the camera f-o-v edge</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%   [ph] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)</span>
+0007 <span class="comment">%   [u,v] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)</span>
+0008 <span class="comment">%   [u,v,ph] = ASK_draw_fov(imsiz1,optpar1,imsiz2,optpar2,r1,r2,alt,cmtr,varargin)</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%   imsiz1   - Size of image #1</span>
+0011 <span class="comment">%   optpar1  - Optical parameters of camera #1</span>
+0012 <span class="comment">%   imsiz2   - Size of image #2</span>
+0013 <span class="comment">%   optpar2  - Optical parameters of camera #2</span>
+0014 <span class="comment">%   r1       - location of camera #1 [x1,y1,z1] (km), optional</span>
+0015 <span class="comment">%   r2       - location of camera #1 [x2,y2,z2] (km), optional</span>
+0016 <span class="comment">%   alt      - altitude for which to calculate f-o-v</span>
+0017 <span class="comment">%   cmtr     - rotation matrix for transformation from local</span>
+0018 <span class="comment">%              horizontal coordinate systems at r1 and r2, If left</span>
+0019 <span class="comment">%              empty defaults to eye(3)</span>
+0020 <span class="comment">%   varargin - cell-array with property-value pairs sent forward to</span>
+0021 <span class="comment">%              plot function, see PLOT for details. Ex {'r--','linewidth',2}</span>
+0022 <span class="comment">% Output:</span>
+0023 <span class="comment">%   ph - plot-handle to plotted lines</span>
+0024 <span class="comment">%   u  - horizontal image coordinates of f-o-v of camera #1 in</span>
+0025 <span class="comment">%        images from camera #2</span>
+0026 <span class="comment">%   v  - vertical image coordinates of f-o-v of camera #1 in</span>
+0027 <span class="comment">%        images from camera #2</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">% If function is called with 2 output arguments only U and V is</span>
+0030 <span class="comment">% calculated and no plotting is done, with other number of output</span>
+0031 <span class="comment">% arguments plotting is done</span>
+0032 
+0033 <span class="comment">% Modified from draw_fov.pro</span>
+0034 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0035 <span class="comment">% GPL 3.0 or later applies</span>
+0036 
+0037 <span class="keyword">if</span> nargin &lt; 7 
+0038   <span class="comment">% Then cameras assumed at same location...</span>
+0039   r1 = [0,0,0]; <span class="comment">% YUP that's right even</span>
+0040   r2 = [0,0,0]; <span class="comment">% if there are bot an r1 &amp; r2</span>
+0041   alt = 100;    <span class="comment">% but alt is missing then scrappit! Folk's that</span>
+0042                 <span class="comment">% don't understand that can go commit undescribable</span>
+0043                 <span class="comment">% acts on themself. BG 20110731</span>
+0044 <span class="keyword">end</span>
+0045 
+0046 <span class="keyword">if</span> nargin &lt; 8 | isempty(cmtr)
+0047   cmtr = eye(3);
+0048 <span class="keyword">end</span>
+0049 <span class="comment">% Calculate projection of camera #1 field-of-view at desired</span>
+0050 <span class="comment">% altitude - if cameras co-located any altitude will do, for</span>
+0051 <span class="comment">% example the default.</span>
+0052 [<a href="../../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>,<a href="../../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>,<a href="../../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>] = <a href="../../Camera/inv_project_img.html" class="code" title="function [xx,yy,zz] = inv_project_img(img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_img</a>(ones(imsiz1),r1,optpar1(9),optpar1,[0 0 1],alt,cmtr);
+0053 <span class="comment">% Pack the edges into an array. This should make up a square in 3-D</span>
+0054 r = [ [<a href="../../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(:,1);<a href="../../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(<span class="keyword">end</span>,:)';<a href="../../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(end:-1:1,end);<a href="../../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>(1,end:-1:1)'],<span class="keyword">...</span>
+0055       [<a href="../../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(:,1);<a href="../../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(<span class="keyword">end</span>,:)';<a href="../../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(end:-1:1,end);<a href="../../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>(1,end:-1:1)'],<span class="keyword">...</span>
+0056       [<a href="../../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>(:,1);<a href="../../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>(<span class="keyword">end</span>,:)';<a href="../../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>(end:-1:1,end);<a href="../../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>(1,end:-1:1)'] ];
+0057 
+0058 <span class="comment">% Calculate the image coordinates of this array in camera #2 images</span>
+0059 [u,v] = <a href="../../Camera/project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(r2,optpar2,r',eye(3),imsiz2);
+0060 
+0061 <span class="comment">% If no output argument is requeste</span>
+0062 <span class="keyword">if</span> ( nargout ~= 2 )
+0063   isholdon = ishold;
+0064   hold on
+0065   ph = plot(u,v,varargin{:});
+0066   <span class="keyword">if</span> ~isholdon
+0067     hold off
+0068   <span class="keyword">end</span>
+0069 <span class="keyword">end</span>
+0070 
+0071 <span class="keyword">if</span> nargout == 1
+0072   
+0073   varargout{1} = ph;
+0074   
+0075 <span class="keyword">elseif</span> nargout == 2
+0076   
+0077   varargout{1} = u;
+0078   varargout{2} = v;
+0079   
+0080 <span class="keyword">elseif</span> nargout == 3
+0081   
+0082   varargout{1} = u;
+0083   varargout{2} = v;
+0084   varargout{3} = ph;
+0085   
+0086 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

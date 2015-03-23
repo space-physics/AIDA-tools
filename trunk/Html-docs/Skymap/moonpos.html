@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of moonpos</title>
+  <meta name="keywords" content="moonpos">
+  <meta name="description" content="MOONPOS calculates lunar azimuth, zenith and apparent zenith angles">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>moonpos
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>MOONPOS calculates lunar azimuth, zenith and apparent zenith angles</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [az,ze,apze] = moonpos(date,utc,lat,long) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MOONPOS calculates lunar azimuth, zenith and apparent zenith angles
+  Is a wrapper to LunarAzEl that does the actual calculations of
+  the moon position.
+ 
+ Calling:
+ [az,ze,apze] = moonpos(date,utc,lat,long)
+ Input:
+  date - date for the observation. Date = [year month day]
+  utc  - utc time for the observation. UTC = [hour minute second]
+  lat  - latitude of the observer in degres
+  long - longitude of the observer
+ 
+ Output: 
+  az   - azimuth angle clockwise from north in radians
+  ze   - zenith angle in radians
+  apze - apparent zenith angle in radians</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="refrcorr.html" class="code" title="function [apze] = refrcorr(ze)">refrcorr</a>	REFRCORR - From true zenith angle to apparent zenith correcting</li><li><a href="../tools/LunarAzEl.html" class="code" title="function [Az h] = LunarAzEl(UTC,Lat,Lon,Alt)">LunarAzEl</a>	Programed by Darin C. Koblick 2/14/2009</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [az,ze,apze] = moonpos(date,utc,lat,long)</a>
+0002 <span class="comment">% MOONPOS calculates lunar azimuth, zenith and apparent zenith angles</span>
+0003 <span class="comment">%  Is a wrapper to LunarAzEl that does the actual calculations of</span>
+0004 <span class="comment">%  the moon position.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% [az,ze,apze] = moonpos(date,utc,lat,long)</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%  date - date for the observation. Date = [year month day]</span>
+0010 <span class="comment">%  utc  - utc time for the observation. UTC = [hour minute second]</span>
+0011 <span class="comment">%  lat  - latitude of the observer in degres</span>
+0012 <span class="comment">%  long - longitude of the observer</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Output:</span>
+0015 <span class="comment">%  az   - azimuth angle clockwise from north in radians</span>
+0016 <span class="comment">%  ze   - zenith angle in radians</span>
+0017 <span class="comment">%  apze - apparent zenith angle in radians</span>
+0018 
+0019 <span class="comment">%   Copyright � 1999 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0020 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0021 
+0022 timestring = datestr([date, utc],<span class="string">'yyyy/mm/dd HH:MM:SS'</span>);
+0023 
+0024 [Az,El] = <a href="../tools/LunarAzEl.html" class="code" title="function [Az h] = LunarAzEl(UTC,Lat,Lon,Alt)">LunarAzEl</a>(timestring,lat,lon,0);
+0025 
+0026 az = Az*pi/180;
+0027 ze = (90-el)*pi/180;
+0028 apze = <a href="refrcorr.html" class="code" title="function [apze] = refrcorr(ze)">refrcorr</a>(ze);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

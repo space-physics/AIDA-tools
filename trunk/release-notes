@@ -1,0 +1,24 @@
+AIDA-tools-gamma (20121204)
+
+This release of AIDA-tools is a gamma-version, where most
+functionalities have been tested by me at some stage. A rather large
+number of smaller and larger changes and new features have been
+made. However, there still remains a couple of things to fix. But to
+get the new versions, improvements and functions tested and used it is
+just as well to make this release now rather than later.
+
+The main known shortcommings here is the documentation - the
+cross-referenced html-source-code documentation has not yet been
+updated and is a bit our of date. Some functions in the Tomography
+directory is not completely tested. Further a number of files with
+obsolete functions that should be removed are still lingering around
+due to my lack of SVN-adeptness.
+
+AIDA-tools-beta (20100321)
+
+This is a beta-release where some functions have not gone through a
+thorough testing. Some ALIS-related scripts for plotting the
+pre-determined ALIS observation positions in the AIDA_tools
+directory is known to be not working - due to not being upgraded to
+the new version of aida_visiblevol.m
+

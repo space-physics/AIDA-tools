@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_auto_range</title>
+  <meta name="keywords" content="ASK_auto_range">
+  <meta name="description" content="ASK_AUTO_RANGE - returns an array of automatic range">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_auto_range
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_AUTO_RANGE - returns an array of automatic range</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function auto_range = ASK_auto_range(z,alpha,log_it,low,high) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_AUTO_RANGE - returns an array of automatic range 
+ for the intensity calibration
+ 
+ keyword discard sets the range to be discarded (the extremes)
+  i.e. If discard is set to 0.1, the top 10% and bottom 10% will be
+       discarded before calculating the range. Default is 0.2.
+ keyword low causes the low values to be emphasized
+ keyword high causes the high values to be emphasized
+ 
+ Input is z (the data array)
+ 
+ Calling:
+   a_range = ASK_auto_range(z,alpha,log_it,low,high)
+ Input:
+   z - data array. Real.
+   alpha - fraction to trim away from each end of the intensity
+           histogram. 
+   log_it  - limit the intensity range to be between [1/1e3 1]*highval
+             (optional flag)
+   low     - flag, if set to 1 then min(z(:)) is returned as lower
+             end of a_range
+   high    - flag, if set to 1 then max(z(:)) is returned as upper
+             end of a_range</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_image_sequence.html" class="code" title="function varargout = ASK_image_sequence(indices2show,Cams,OPS)">ASK_image_sequence</a>	IMAGE_SWQUENCE - to display an ASK image sequence as movie, and</li><li><a href="ASK_keogram_overlayed.html" class="code" title="function [keo,imstack] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function auto_range = ASK_auto_range(z,alpha,log_it,low,high)</a>
+0002 <span class="comment">% ASK_AUTO_RANGE - returns an array of automatic range</span>
+0003 <span class="comment">% for the intensity calibration</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% keyword discard sets the range to be discarded (the extremes)</span>
+0006 <span class="comment">%  i.e. If discard is set to 0.1, the top 10% and bottom 10% will be</span>
+0007 <span class="comment">%       discarded before calculating the range. Default is 0.2.</span>
+0008 <span class="comment">% keyword low causes the low values to be emphasized</span>
+0009 <span class="comment">% keyword high causes the high values to be emphasized</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Input is z (the data array)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Calling:</span>
+0014 <span class="comment">%   a_range = ASK_auto_range(z,alpha,log_it,low,high)</span>
+0015 <span class="comment">% Input:</span>
+0016 <span class="comment">%   z - data array. Real.</span>
+0017 <span class="comment">%   alpha - fraction to trim away from each end of the intensity</span>
+0018 <span class="comment">%           histogram.</span>
+0019 <span class="comment">%   log_it  - limit the intensity range to be between [1/1e3 1]*highval</span>
+0020 <span class="comment">%             (optional flag)</span>
+0021 <span class="comment">%   low     - flag, if set to 1 then min(z(:)) is returned as lower</span>
+0022 <span class="comment">%             end of a_range</span>
+0023 <span class="comment">%   high    - flag, if set to 1 then max(z(:)) is returned as upper</span>
+0024 <span class="comment">%             end of a_range</span>
+0025 
+0026 
+0027 <span class="comment">% Modified from auto_range.pro</span>
+0028 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0029 <span class="comment">% GPL 3.0 or later applies</span>
+0030 
+0031 <span class="keyword">if</span> nargin == 1 | isempty(alpha)
+0032   alpha = 0.2;
+0033 <span class="keyword">else</span>
+0034   alpha = min(1/2,max(0,alpha));
+0035 <span class="keyword">end</span>
+0036 <span class="keyword">if</span> alpha == 1/2
+0037   auto_range=median(z(:))*[1,1];
+0038 <span class="keyword">else</span>
+0039   
+0040   D = sort(z(z(:)&gt;-1e29));
+0041   n = length(D);
+0042   highval = D(round(end-n*alpha));
+0043   lowval = D(round(n*alpha));
+0044   
+0045   <span class="keyword">if</span> nargin &gt; 3 &amp; ~isempty(low) &amp; low
+0046     lowval = D(1);
+0047   <span class="keyword">end</span>
+0048   <span class="keyword">if</span> nargin &gt; 4 &amp; ~isempty(high) &amp; high
+0049     highval = D(end);
+0050   <span class="keyword">end</span>
+0051   <span class="keyword">if</span> nargin &gt; 2 &amp; ~isempty(log_it) &amp; log_it &amp; (lowval &lt;= 0)
+0052     lowval = highval/1e3;
+0053   <span class="keyword">end</span>
+0054   auto_range=[lowval, highval];
+0055 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

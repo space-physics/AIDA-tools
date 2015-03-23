@@ -1,0 +1,273 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of trackemdown</title>
+  <meta name="keywords" content="trackemdown">
+  <meta name="description" content="TRACKEMDOWN - makes an automatic starcalibration.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Starcal --><!-- menu.html M6 -->
+<h1>trackemdown
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>TRACKEMDOWN - makes an automatic starcalibration.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [SkMp,identstars,optpar] = trackemdown(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TRACKEMDOWN - makes an automatic starcalibration.
+ Automatic meaning that it automatically finds possible or likelly
+ stars in the image, sort them into intensity order, identifies
+ (connects) them with stars from the star catalog and searches for
+ an optimal set of optical parameters. TRACKEMDOWN needs a good
+ starting guess for the optical parameters. SkM_STRUCT is a struct
+ as optut from STARCAL. INFOVSTARS are a matrix with stars as
+ output from STARCAL.
+
+ Calling
+  [identstars,optpar] = trackemdown(SkMp,infovstars)
+ 
+ Notice: This function does not work (does not do anything useful)
+ for the non-parametric optical models.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>	PROJECT_DIRECTIONS - calculates the image positions [UA,WA] from (AZ,ZE)</li><li><a href="../../Skymap/plottablestars2.html" class="code" title="function [plstars] = plottablestars2(infovstars,magn)">plottablestars2</a>	PLOTTABLESTARS2 - Selects stars in INFOVSTARS brighter than MAGN</li><li><a href="../../Starcal/errorgui.html" class="code" title="function SkMp = errorgui(SkMp)">errorgui</a>	ERRORGUI - Create the figure and GUI for the errorplots</li><li><a href="../../Starcal/find_the_stars.html" class="code" title="function [out_i,out_j,out_I] = find_the_stars(img_in)">find_the_stars</a>	FIND_THE_STARS - finds stars in images.</li><li><a href="../../Starcal/starplot2.html" class="code" title="function [pstarsout] = starplot2(pstars,SkMp)">starplot2</a>	STARPLOT2 plots the skymap.</li><li><a href="../../Starcal/starsinimg.html" class="code" title="function [pstarsout,uk,wk] = starsinimg(pstars,optpar,optmod, imsiz)">starsinimg</a>	STARSINIMG is a function that plot the stars over the image.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [kstars,uk,wk] = set_up_stars(infovstars,tmpopt,mode)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [SkMp,identstars,optpar] = trackemdown(SkMp)</a>
+0002 <span class="comment">% TRACKEMDOWN - makes an automatic starcalibration.</span>
+0003 <span class="comment">% Automatic meaning that it automatically finds possible or likelly</span>
+0004 <span class="comment">% stars in the image, sort them into intensity order, identifies</span>
+0005 <span class="comment">% (connects) them with stars from the star catalog and searches for</span>
+0006 <span class="comment">% an optimal set of optical parameters. TRACKEMDOWN needs a good</span>
+0007 <span class="comment">% starting guess for the optical parameters. SkM_STRUCT is a struct</span>
+0008 <span class="comment">% as optut from STARCAL. INFOVSTARS are a matrix with stars as</span>
+0009 <span class="comment">% output from STARCAL.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Calling</span>
+0012 <span class="comment">%  [identstars,optpar] = trackemdown(SkMp,infovstars)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Notice: This function does not work (does not do anything useful)</span>
+0015 <span class="comment">% for the non-parametric optical models.</span>
+0016 <span class="comment">%</span>
+0017 
+0018 <span class="comment">%   Copyright � 2001-11-05 Bjorn Gustavsson&lt;bjorn.gustavsson@irf.se&gt;</span>
+0019 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0020 
+0021 <span class="keyword">global</span> s_prefs
+0022 
+0023 warning off
+0024 
+0025 <span class="keyword">if</span> SkMp.optmod &lt; 0
+0026   identstars = SkMp.identstars;
+0027   optpar = SkMp.optpar;
+0028   <span class="keyword">return</span>
+0029 <span class="keyword">end</span>
+0030 s_prefs = SkMp.prefs;
+0031 
+0032 mode = 3;
+0033 <span class="comment">% bxy = size(SkMp.img);</span>
+0034 <span class="comment">% bx = bxy(2);</span>
+0035 <span class="comment">% by = bxy(1);</span>
+0036 
+0037 set(SkMp.figsky,<span class="string">'pointer'</span>,<span class="string">'watch'</span>)
+0038 set(SkMp.figzoom,<span class="string">'pointer'</span>,<span class="string">'watch'</span>)
+0039 
+0040 [out_i,out_j,out_I] = <a href="../../Starcal/find_the_stars.html" class="code" title="function [out_i,out_j,out_I] = find_the_stars(img_in)">find_the_stars</a>(SkMp.img);
+0041 <span class="comment">% Saa daer ja, nu har vi hittat moejliga stjaernor i bilden</span>
+0042 <span class="comment">% och sorterat dem efter hur intensiva de synes vara.</span>
+0043 
+0044 <span class="comment">% Nu aaterstaar att saetta ihop dem med stjaernor fraan</span>
+0045 <span class="comment">% katalogen.</span>
+0046 <span class="comment">% Max antal stjaernor at gissa i foersta foersoeket</span>
+0047 max_nrstars = 5;
+0048 <span class="comment">% fraan bilden:              out_i, out_j &amp; out_I</span>
+0049 <span class="comment">% fraan katalog och tmpopt:  kstars, uk &amp; wk</span>
+0050 tmpopt = SkMp.optpar(1:8);
+0051 
+0052 infovstars = SkMp.plottstars;
+0053 [kstars,uk,wk] = <a href="#_sub1" class="code" title="subfunction [kstars,uk,wk] = set_up_stars(infovstars,tmpopt,mode)">set_up_stars</a>(infovstars,SkMp.optpar,SkMp.optmod);
+0054 <span class="comment">%Para ihop stjaernor med lokala maxima i bilden</span>
+0055 I_tmp = out_I;
+0056 i_tmp = out_i;
+0057 j_tmp = out_j;
+0058 
+0059 <span class="keyword">for</span> ii = 1:min(max(size(out_I)),max_nrstars),
+0060   
+0061   [qw,indx] = min((i_tmp(1:min(ii+4,length(out_j)))-uk(ii)).^2+ <span class="keyword">...</span>
+0062           (j_tmp(1:min(ii+4,length(out_j)))-wk(ii)).^2);
+0063   
+0064   ids(ii) = indx;
+0065   i_tmp(ids(ii)) = -1000;
+0066   j_tmp(ids(ii)) = -1000;
+0067   
+0068 <span class="keyword">end</span>
+0069 
+0070 clear identstars
+0071 
+0072 identstars(:,1) = kstars(1:max_nrstars,1);
+0073 identstars(:,2) = kstars(1:max_nrstars,2);
+0074 identstars(:,3) = out_i(ids);         <span class="comment">%starpos in image(x)</span>
+0075 identstars(:,4) = out_j(ids);         <span class="comment">%starpos in image(y)</span>
+0076 identstars(:,5) = out_I(ids);         <span class="comment">%max count from star</span>
+0077 identstars(:,6) = 0;             <span class="comment">%total counts from star</span>
+0078 identstars(:,7) = 1;             <span class="comment">%good gaussian fit</span>
+0079 identstars(:,8) = 0;             <span class="comment">%wide circular gausian</span>
+0080 
+0081 lockpar = [1e3 1e3 0 0 0 1e3 1e3 1e4];
+0082 startvec = tmpopt(1:8);
+0083 <span class="keyword">if</span> exist(<span class="string">'fminunc'</span>)==2
+0084   optpar0 = fminunc(<span class="string">'automat4'</span>,<span class="keyword">...</span>
+0085             tmpopt(1:8),[0,1e-4],[],<span class="keyword">...</span>
+0086             identstars,mode,tmpopt(1:8),lockpar);
+0087 <span class="keyword">else</span>
+0088   optpar0 = fminsearch(<span class="string">'automat4'</span>,<span class="keyword">...</span>
+0089                tmpopt(1:8),[0,1e-4],[],<span class="keyword">...</span>
+0090                identstars,mode,tmpopt(1:8),lockpar);
+0091 <span class="keyword">end</span>
+0092 
+0093 max_nrstars = 30;
+0094 
+0095 
+0096 [kstars,uk,wk] = <a href="#_sub1" class="code" title="subfunction [kstars,uk,wk] = set_up_stars(infovstars,tmpopt,mode)">set_up_stars</a>(infovstars,SkMp.optpar(1:8),SkMp.optmod);
+0097 <span class="comment">%Para ihop stjaernor med lokala maxima i bilden</span>
+0098 <span class="keyword">for</span> ii = 1:min(max(size(out_I)),max_nrstars),
+0099   
+0100   [qw,indx] = min((out_i(ii)-uk(1:min(length(uk),30))).^2+(out_j(ii)-wk(1:min(length(uk),30))).^2);
+0101   ids(ii) = indx;
+0102   
+0103 <span class="keyword">end</span>
+0104 
+0105 clear identstars
+0106 identstars(:,1) = kstars(ids,1);
+0107 identstars(:,2) = kstars(ids,2);
+0108 identstars(:,3) = out_i(1:length(ids));    <span class="comment">%starpos in image(x)</span>
+0109 identstars(:,4) = out_j(1:length(ids));    <span class="comment">%starpos in image(y)</span>
+0110 identstars(:,5) = out_I(1:length(ids));    <span class="comment">%max count from star</span>
+0111 identstars(:,6) = 0;             <span class="comment">%total counts from star</span>
+0112 identstars(:,7) = 1;             <span class="comment">%good gaussian fit</span>
+0113 identstars(:,8) = 0;             <span class="comment">%wide circular gausian</span>
+0114 
+0115 [uuaa,wwaa] = <a href="../../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(identstars(:,1)',identstars(:,2)',optpar0,mode);
+0116 
+0117 uubb = identstars(:,3);
+0118 wwbb = identstars(:,4);
+0119 mindx = find(((uubb-uuaa').^2+(wwbb-wwaa').^2).^.5&lt;40);
+0120 mids = identstars(mindx,:);
+0121 
+0122 <span class="keyword">if</span> exist(<span class="string">'fminunc'</span>)==2
+0123   optpar0 = fminunc(<span class="string">'automat4'</span>,<span class="keyword">...</span>
+0124             tmpopt(1:8),[0,1e-4],[],<span class="keyword">...</span>
+0125             identstars,mode,tmpopt(1:8),lockpar);
+0126 <span class="keyword">else</span>
+0127   optpar0 = fminsearch(<span class="string">'automat4'</span>,<span class="keyword">...</span>
+0128                tmpopt(1:8),[0,1e-4],[],<span class="keyword">...</span>
+0129                identstars,mode,tmpopt(1:8),lockpar);
+0130 <span class="keyword">end</span>
+0131 
+0132 clear plstars uk wk kstars identstars ids
+0133 [plstars] = <a href="../../Skymap/plottablestars2.html" class="code" title="function [plstars] = plottablestars2(infovstars,magn)">plottablestars2</a>(infovstars,6);
+0134 [plstars,uk,wk] = <a href="../../Starcal/starsinimg.html" class="code" title="function [pstarsout,uk,wk] = starsinimg(pstars,optpar,optmod, imsiz)">starsinimg</a>(plstars,optpar0,mode);
+0135 [smagn,indx] = sort(plstars(:,4));
+0136 
+0137 kstars(:,10) = plstars(indx,4);
+0138 kstars(:,9) = plstars(indx,3);
+0139 kstars(:,2) = plstars(indx,2);
+0140 kstars(:,1) = plstars(indx,1);
+0141 uk = uk(indx);
+0142 wk = wk(indx);
+0143 
+0144 iii = 1;
+0145 <span class="keyword">for</span> ii = 1:max(size(out_I)),
+0146   
+0147   rrr = min((out_i(ii)-uk).^2+(out_j(ii)-wk).^2);
+0148   <span class="keyword">if</span> ( rrr &lt; 25 )
+0149     
+0150     [qw,indx] = min((out_i(ii)-uk).^2+(out_j(ii)-wk).^2);
+0151     ids(iii) = indx;
+0152     iindids(iii) = ii;
+0153     iii = iii+1;
+0154     
+0155   <span class="keyword">end</span>
+0156   
+0157 <span class="keyword">end</span>
+0158 
+0159 identstars(:,1) = kstars(ids,1);
+0160 identstars(:,2) = kstars(ids,2);
+0161 identstars(:,3) = out_i(iindids);     <span class="comment">%starpos in image(x)</span>
+0162 identstars(:,4) = out_j(iindids);     <span class="comment">%starpos in image(y)</span>
+0163 identstars(:,5) = out_I(iindids);     <span class="comment">%max count from star</span>
+0164 identstars(:,6) = 0;             <span class="comment">%total counts from star</span>
+0165 identstars(:,7) = 1;             <span class="comment">%good gaussian fit</span>
+0166 identstars(:,8) = 0;             <span class="comment">%wide circular gausian</span>
+0167 
+0168 <span class="keyword">if</span> exist(<span class="string">'fminunc'</span>)==2
+0169   optpar0 = fminunc(<span class="string">'automat4'</span>,<span class="keyword">...</span>
+0170             tmpopt(1:8),[0,1e-4],[],<span class="keyword">...</span>
+0171             identstars,mode,tmpopt(1:8),lockpar);
+0172 <span class="keyword">else</span>
+0173   optpar0 = fminsearch(<span class="string">'automat4'</span>,<span class="keyword">...</span>
+0174                tmpopt(1:8),[0,1e-4],[],<span class="keyword">...</span>
+0175                identstars,mode,tmpopt(1:8),lockpar);
+0176 <span class="keyword">end</span>
+0177 
+0178 [uuaa,wwaa] = <a href="../../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(identstars(:,1)',identstars(:,2)',optpar0,mode);
+0179 <a href="../../Starcal/starplot2.html" class="code" title="function [pstarsout] = starplot2(pstars,SkMp)">starplot2</a>(infovstars,SkMp);
+0180 hold on,
+0181 plot(identstars(:,3),identstars(:,4),<span class="string">'r.'</span>,<span class="string">'markersize'</span>,12),hold off
+0182 drawnow
+0183 
+0184 uubb = identstars(:,3);
+0185 wwbb = identstars(:,4);
+0186 mindx = find(((uubb-uuaa').^2+(wwbb-wwaa').^2).^.5&lt;5);
+0187 mids = identstars(mindx,:);
+0188 
+0189 identstars = mids;
+0190 
+0191 optpar = optpar0;
+0192 
+0193 set(SkMp.figsky,<span class="string">'pointer'</span>,<span class="string">'arrow'</span>)
+0194 set(SkMp.figzoom,<span class="string">'pointer'</span>,<span class="string">'arrow'</span>)
+0195 
+0196 <span class="keyword">if</span> ~isfield(SkMp,<span class="string">'errorfig'</span>)
+0197   
+0198   SkMp = <a href="../../Starcal/errorgui.html" class="code" title="function SkMp = errorgui(SkMp)">errorgui</a>(SkMp);
+0199   
+0200 <span class="keyword">end</span>
+0201 
+0202 
+0203 <a name="_sub1" href="#_subfunctions" class="code">function [kstars,uk,wk] = set_up_stars(infovstars,tmpopt,mode)</a>
+0204 
+0205 [plstars] = <a href="../../Skymap/plottablestars2.html" class="code" title="function [plstars] = plottablestars2(infovstars,magn)">plottablestars2</a>(infovstars,6);
+0206 [plstars,uk,wk] = <a href="../../Starcal/starsinimg.html" class="code" title="function [pstarsout,uk,wk] = starsinimg(pstars,optpar,optmod, imsiz)">starsinimg</a>(plstars,tmpopt,mode);
+0207 <span class="comment">% sortera dem map magn.</span>
+0208 [smagn,indx] = sort(plstars(:,4));
+0209 
+0210 <span class="comment">% Haer ska jag boerja fixa till lite med identstars..</span>
+0211 kstars(:,10) = plstars(indx,4);
+0212 kstars(:,9) = plstars(indx,3);
+0213 kstars(:,2) = plstars(indx,2);
+0214 kstars(:,1) = plstars(indx,1);
+0215 uk = uk(indx);
+0216 wk = wk(indx);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

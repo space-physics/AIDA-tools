@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of alis_imgs_movie_r</title>
+  <meta name="keywords" content="alis_imgs_movie_r">
+  <meta name="description" content="ALIS_IMGS_MOVIE_R - produce a matlab movie M from a series of image files.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>alis_imgs_movie_r
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ALIS_IMGS_MOVIE_R - produce a matlab movie M from a series of image files.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [M,Tstrs,caxout,exptimes,wl] = alis_imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,rgbFilters) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ALIS_IMGS_MOVIE_R - produce a matlab movie M from a series of image files.
+   Additional output is TSTRS - observation times of the images - as
+   best it can, CAXOUT result from caxis for each image, EXPTIMES -
+   exposuretimes for the images. 
+   
+ Calling:
+ [M,Tstrs,caxout,exptimes,wl] = alis_imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,rgbFilters)
+ 
+   INPUT parameters: 
+   FILES - char array of image files, full or relative path, readable 
+   REG   - image region to display [xmin xmax ymin ymax], if empty
+           whole image is used.
+   CAX   - caxis to set either [cmin cmax] or 'auto'
+   OPPTP - optpar, see STARCAL, CAMERA
+   PREPOC_OPS - image pre_proc_ops see TYPICAL_PRE_PROC_OPS
+   rgbFilters - either 'E0', which produces images that are an
+                estimate of the characteristic energy of the
+                primary electrons using the ratios I_6300/I_4278
+                and I_8446/I_4278 (Strickland 19XX); or a 1x3
+                vector [nr_R, nr_G, nr_B] that maps images with
+                obs.filter = nr_X to respectively the red, green
+                and blue layer in a true-truecolor image.
+ 
+   Very little or no argument checking is preformed
+
+  See also: STARCAL, CAMERA, TYPICAL_PRE_PROC_OPS, INIMG</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="alis_img2rgb.html" class="code" title="function [img,clrs] = alis_img2rgb(img_in,filter,I_lims)">alis_img2rgb</a>	ALIS_IMG2RGB - convert intensity image to rgb image</li><li><a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>	FFS_CORRECTION2 - flat-field variation for optical transfer</li><li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>	imgs_smart_caxis - alpha-percentile setting of color-axis,</li><li><a href="../Imgtools/imgs_spec_ratio2E0fO.html" class="code" title="function [img_E0,img_fO] = imgs_spec_ratio2E0fO(img4278,img6300,img8446,img4278b)">imgs_spec_ratio2E0fO</a>	imgs_spec_ratio2E0fO - estimate characteristic e^- energy and depletion of O</li><li><a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>	ISCHAR - return true if STR is a char-array</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [M,Tstrs,caxout,exptimes,wl] = alis_imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,rgbFilters)</a>
+0002 <span class="comment">% ALIS_IMGS_MOVIE_R - produce a matlab movie M from a series of image files.</span>
+0003 <span class="comment">%   Additional output is TSTRS - observation times of the images - as</span>
+0004 <span class="comment">%   best it can, CAXOUT result from caxis for each image, EXPTIMES -</span>
+0005 <span class="comment">%   exposuretimes for the images.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">% [M,Tstrs,caxout,exptimes,wl] = alis_imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,rgbFilters)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   INPUT parameters:</span>
+0011 <span class="comment">%   FILES - char array of image files, full or relative path, readable</span>
+0012 <span class="comment">%   REG   - image region to display [xmin xmax ymin ymax], if empty</span>
+0013 <span class="comment">%           whole image is used.</span>
+0014 <span class="comment">%   CAX   - caxis to set either [cmin cmax] or 'auto'</span>
+0015 <span class="comment">%   OPPTP - optpar, see STARCAL, CAMERA</span>
+0016 <span class="comment">%   PREPOC_OPS - image pre_proc_ops see TYPICAL_PRE_PROC_OPS</span>
+0017 <span class="comment">%   rgbFilters - either 'E0', which produces images that are an</span>
+0018 <span class="comment">%                estimate of the characteristic energy of the</span>
+0019 <span class="comment">%                primary electrons using the ratios I_6300/I_4278</span>
+0020 <span class="comment">%                and I_8446/I_4278 (Strickland 19XX); or a 1x3</span>
+0021 <span class="comment">%                vector [nr_R, nr_G, nr_B] that maps images with</span>
+0022 <span class="comment">%                obs.filter = nr_X to respectively the red, green</span>
+0023 <span class="comment">%                and blue layer in a true-truecolor image.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%   Very little or no argument checking is preformed</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%  See also: STARCAL, CAMERA, TYPICAL_PRE_PROC_OPS, INIMG</span>
+0028 
+0029 
+0030 <span class="comment">%   Copyright © 20050109 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0031 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0032 
+0033 <span class="keyword">if</span> isequal(get(gcf,<span class="string">'visible'</span>),<span class="string">'on'</span>)
+0034   
+0035   M = moviein(size(files,1),gcf);
+0036   startindx = size(files,1);
+0037   stopindx = 1;
+0038   stepdir = -1;
+0039   
+0040 <span class="keyword">else</span>
+0041   
+0042   tmpname = [<span class="string">'/tmp/alis_mov'</span>,num2str(rand(1),<span class="string">'%8f'</span>),<span class="string">'.avi'</span>];
+0043   M = avifile(tmpname);
+0044   startindx = 1;
+0045   stopindx = size(files,1);
+0046   stepdir = 1;
+0047   
+0048 <span class="keyword">end</span>
+0049 
+0050 Tstrs = <span class="string">''</span>;
+0051 <span class="keyword">if</span> nargin &gt;= 4 &amp; length(opptp) &gt; 8
+0052   ff = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>([PREPROC_OPS.outimgsize].*[1 1],opptp,opptp(9));
+0053 <span class="keyword">else</span>
+0054   ff = 1;
+0055 <span class="keyword">end</span>
+0056 <span class="keyword">if</span> <a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(files)
+0057   [data1,head1,obs1] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(1,:),PREPROC_OPS);
+0058 <span class="keyword">else</span>
+0059   [data1,head1,obs1] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(1).name,PREPROC_OPS);
+0060 <span class="keyword">end</span>
+0061 img = zeros([size(d) 3]);
+0062 
+0063 <span class="keyword">for</span> i = startindx:stepdir:stopindx,
+0064   
+0065   <span class="keyword">if</span> <a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(files)
+0066     [data1,head1,obs1] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(i,:),PREPROC_OPS);
+0067   <span class="keyword">else</span>
+0068     [data1,head1,obs1] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(files(i).name,PREPROC_OPS);
+0069   <span class="keyword">end</span>
+0070 <span class="comment">% $$$   deltah = mean(data1(end/2,:)-data1(end/2+1,:));</span>
+0071 <span class="comment">% $$$   data1(1:end/2,:) = data1(1:end/2,:) - deltah/2;</span>
+0072 <span class="comment">% $$$   data1((1+end/2):end,:) = data1((end/2+1):end,:) + deltah/2;</span>
+0073 <span class="comment">% $$$</span>
+0074 <span class="comment">% $$$   deltav = mean( data1(:,end/2) - data1(:,end/2+1));</span>
+0075 <span class="comment">% $$$   data1(:,1:end/2) = data1(:,1:end/2) - deltav/2;</span>
+0076 <span class="comment">% $$$   data1(:,(1+end/2):end) = data1(:,(end/2+1):end) + deltav/2;</span>
+0077   
+0078   titlestr = sprintf(<span class="string">'%.4d-%.2d-%.2dT%.2d:%.2d:%.2d'</span>,obs1.time);
+0079   Tstrs = str2mat(Tstrs,titlestr);
+0080   
+0081   efact = 1;
+0082   <span class="keyword">if</span> obs1.exptime&lt;100
+0083     efact = 1000;
+0084   <span class="keyword">end</span>
+0085   exptimes(i) =  obs1.exptime*efact;
+0086   <span class="keyword">if</span> ~isempty(obs1.filter)
+0087     wl(i) = obs1.filter;
+0088   <span class="keyword">else</span>
+0089     wl(i) = [nan];
+0090   <span class="keyword">end</span>    
+0091   data1 = 1000*data1./ff/exptimes(i);
+0092   
+0093   <span class="keyword">if</span> ~isstr(rgbFilters)
+0094     <span class="keyword">switch</span> obs1.filter
+0095      <span class="keyword">case</span> rgbFilters(1)
+0096       img(:,:,1) = 0;
+0097       rgbf = 6300;
+0098      <span class="keyword">case</span> rgbFilters(2)
+0099       img(:,:,2) = 0;
+0100       rgbf = 5577;
+0101      <span class="keyword">case</span> rgbFilters(3)
+0102       img(:,:,3) = 0;
+0103       rgbf = 4278;
+0104      <span class="keyword">otherwise</span>
+0105     <span class="keyword">end</span>
+0106     img = img + <a href="alis_img2rgb.html" class="code" title="function [img,clrs] = alis_img2rgb(img_in,filter,I_lims)">alis_img2rgb</a>(data1,rgbf);
+0107     <span class="comment">% if length(reg)</span>
+0108     <span class="keyword">if</span> ~isempty(reg)
+0109       imagesc(reg(1):reg(2),reg(3):reg(4),img(reg(3):reg(4),reg(1):reg(2),:)),axis xy,axis(reg)
+0110       data1 = data1(reg(3):reg(4),reg(1):reg(2));
+0111     <span class="keyword">else</span>
+0112       imagesc(img),axis xy
+0113     <span class="keyword">end</span>
+0114   <span class="keyword">elseif</span> strcmp(rgbFilters,<span class="string">'E0'</span>)
+0115     <span class="keyword">switch</span> obs1.filter
+0116      <span class="keyword">case</span> 8446
+0117       img(:,:,1) =data1;
+0118      <span class="keyword">case</span> 6300
+0119       img(:,:,2) = data1;
+0120      <span class="keyword">case</span> 4278
+0121       img(:,:,3) = data1;
+0122      <span class="keyword">otherwise</span>
+0123     <span class="keyword">end</span>
+0124     [imgE0] = <a href="../Imgtools/imgs_spec_ratio2E0fO.html" class="code" title="function [img_E0,img_fO] = imgs_spec_ratio2E0fO(img4278,img6300,img8446,img4278b)">imgs_spec_ratio2E0fO</a>(img(:,:,3),img(:,:,2),img(:,:,1));
+0125     <span class="keyword">if</span> ~isempty(reg)
+0126       imagesc(reg(1):reg(2),reg(3):reg(4),imgE0(reg(3):reg(4),reg(1):reg(2))),axis xy,axis(reg)
+0127       data1 = imgE0(reg(3):reg(4),reg(1):reg(2));
+0128     <span class="keyword">else</span>
+0129       imagesc(img),axis xy
+0130     <span class="keyword">end</span>
+0131   <span class="keyword">end</span>
+0132   caxout(i,:) = caxis;
+0133   
+0134   tstrs = sprintf(<span class="string">'%.2d:%.2d:%.2d'</span>,obs1.time(4:6));
+0135   <span class="keyword">if</span> length(cax)==1
+0136     <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(cax,data1);
+0137     caxout(i,:) = caxis;
+0138     title(tstrs,<span class="string">'fontsize'</span>,18)
+0139   <span class="keyword">else</span>
+0140     caxis(cax),title(tstrs,<span class="string">'fontsize'</span>,18)
+0141   <span class="keyword">end</span>
+0142   drawnow
+0143   <span class="keyword">if</span> isequal(get(gcf,<span class="string">'visible'</span>),<span class="string">'on'</span>)
+0144     
+0145     M(:,i) = getframe(gcf);
+0146     
+0147   <span class="keyword">else</span>
+0148     
+0149     M = addframe(M,gcf);
+0150     
+0151   <span class="keyword">end</span>
+0152   
+0153 <span class="keyword">end</span>
+0154 
+0155 <span class="keyword">if</span> isequal(get(gcf,<span class="string">'visible'</span>),<span class="string">'off'</span>)
+0156   
+0157   M = close(M);
+0158   whos M
+0159   M = aviread(tmpname);
+0160   whos M
+0161   unix([<span class="string">'ls -l '</span>,tmpname,<span class="string">';rm '</span>,tmpname]);
+0162   
+0163 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,48 @@
+#! /bin/sh
+#
+# addlatin [PostScript file name]
+#
+# Version 3.2b, 10 March 1997
+# Part of the Styled Text Toolbox for MATLAB
+# Copyright 1995-1997 by Douglas M. Schwarz.  All rights reserved.
+# schwarz@kodak.com
+
+if [ $# -lt 1 ]; then
+
+echo "  addlatin [PostScript file name]"
+echo " "
+echo "  will insert the ISOLatin1Encoding definition into the specified"
+echo "  MATLAB-created PostScript file."
+
+else
+
+\sed -e '
+/currentdict end def/i\
+/ISOLatin1Encoding 256 array def\
+/NUL/SOH/STX/ETX/EOT/ENQ/ACK/BEL/BS/HT/LF/VT/FF/CR/SO/SI\
+/DLE/DC1/DC2/DC3/DC4/NAK/SYN/ETB/CAN/EM/SUB/ESC/FS/GS/RS/US\
+ISOLatin1Encoding 0 32 getinterval astore pop\
+ISOLatin1Encoding 32/Times-Roman findfont/Encoding get\
+32 96 getinterval putinterval ISOLatin1Encoding dup dup 39/quoteright put 45/minus put 96/quoteleft put\
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef\
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef\
+/dotlessi/grave/acute/circumflex/tilde/macron/breve/dotaccent\
+/dieresis/.notdef/ring/cedille/.notdef/hungarumlaut/ogonek/caron\
+/space/exclamdown/cent/sterling/currency/yen/brokenbar/section\
+/dieresis/copyright/ordfeminine/guillemotleft/logicalnot/hyphen/registered/macron\
+/degree/plusminus/twosuperior/threesuperior/acute/mu/paragraph/periodcentered\
+/cedille/onesuperior/ordmasculine/guillemotright/onequarter/onehalf/threequarters/questiondown\
+/Agrave/Aacute/Acircumflex/Atilde/Adieresis/Aring/AE/Ccedille\
+/Egrave/Eacute/Ecircumflex/Edieresis/Igrave/Iacute/Icircumflex/Idieresis\
+/Eth/Ntilde/Ograve/Oacute/Ocircumflex/Otilde/Odieresis/multiply\
+/Oslash/Ugrave/Uacute/Ucircumflex/Udieresis/Yacute/Thorn/germandbls\
+/agrave/aacute/acircumflex/atilde/adieresis/aring/ae/ccedille\
+/egrave/eacute/ecircumflex/edieresis/igrave/iacute/icircumflex/idieresis\
+/eth/ntilde/ograve/oacute/ocircumflex/otilde/odieresis/divide\
+/oslash/ugrave/uacute/ucircumflex/udieresis/yacute/thorn/ydieresis\
+ISOLatin1Encoding 128 128 getinterval astore pop\
+
+' $1 > temp.ps.$$
+\mv temp.ps.$$ $1
+
+fi

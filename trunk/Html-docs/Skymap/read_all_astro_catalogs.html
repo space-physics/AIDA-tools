@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of read_all_astro_catalogs</title>
+  <meta name="keywords" content="read_all_astro_catalogs">
+  <meta name="description" content="READ_ALL_ASTRO_CATALOGS - generic astronomic catalog reader function">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>read_all_astro_catalogs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>READ_ALL_ASTRO_CATALOGS - generic astronomic catalog reader function</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function star_list = read_all_astro_catalogs(catalog_file_nm,readme_file_nm,get_these_fields,nr_lines) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> READ_ALL_ASTRO_CATALOGS - generic astronomic catalog reader function
+   CATALOG_FILE_NM - full filename of the astronomic
+   catalog. README_FILE_NM is the full file name of the
+   READEME file for the astronomic catalog.
+
+ Function not yet ready-to-run. It works by slowly and with errors
+ and crashes.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>	ISCHAR - return true if STR is a char-array</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Spectral_cal/check_scan_for_stars.html" class="code" title="function [ok] = check_scan_for_stars(files,pos,optpar,IDENTSTARS,STARPARS,PO,OPS)">check_scan_for_stars</a>	CHECK_SCAN_FOR_STARS  Check the result of spc_scan_for_stars.</li><li><a href="../Spectral_cal/spc_scan_for_stars.html" class="code" title="function [IDSTARS,STARPARS,filtnr,Stime,extime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops)">spc_scan_for_stars</a>	SPC_SCAN_FOR_STARS - Scan images for stars in the Pulkovo</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function star_list = read_all_astro_catalogs(catalog_file_nm,readme_file_nm,get_these_fields,nr_lines)</a>
+0002 <span class="comment">% READ_ALL_ASTRO_CATALOGS - generic astronomic catalog reader function</span>
+0003 <span class="comment">%   CATALOG_FILE_NM - full filename of the astronomic</span>
+0004 <span class="comment">%   catalog. README_FILE_NM is the full file name of the</span>
+0005 <span class="comment">%   READEME file for the astronomic catalog.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Function not yet ready-to-run. It works by slowly and with errors</span>
+0008 <span class="comment">% and crashes.</span>
+0009 <span class="comment">%</span>
+0010 
+0011 <span class="comment">%   Copyright � 2001 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0012 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0013 
+0014 tic
+0015 readme_fp = fopen(readme_file_nm,<span class="string">'r'</span>);
+0016 readme_l = 1;
+0017 <span class="keyword">while</span> 1
+0018   line = fgetl(readme_fp); 
+0019   <span class="keyword">if</span> ~<a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(line),
+0020     <span class="keyword">break</span>,
+0021   <span class="keyword">end</span>
+0022   <span class="keyword">if</span> ~isempty(line)
+0023     readme(readme_l,1:length(line)) = line;
+0024   <span class="keyword">end</span>
+0025   readme_l = readme_l+1;
+0026 <span class="keyword">end</span>
+0027 fclose(readme_fp);
+0028 
+0029 bbb_i = strmatch(<span class="string">'Byte-by-byte'</span>,readme);
+0030 <span class="keyword">if</span> isempty(bbb_i)
+0031   error([<span class="string">'The file: '</span>,readme_file_nm,<span class="string">' does not appear to be a ''proper'' README file'</span>])
+0032 <span class="keyword">end</span>
+0033 
+0034 bbb_i = bbb_i(1)+4;
+0035 field_i = 1;
+0036 <span class="keyword">while</span> bbb_i &lt; size(readme,1) &amp; ~all(readme(bbb_i,1:5)==<span class="string">'-'</span>) 
+0037   
+0038   <span class="keyword">if</span> isempty(deblank(readme(bbb_i,1:8)))
+0039     bbb_i = bbb_i+1; <span class="comment">% short cut for run-on-lines</span>
+0040   <span class="keyword">else</span>
+0041     [q,w] = strtok(readme(bbb_i,1:8),<span class="string">' -'</span>);
+0042     field_pos(field_i,1) = str2num(q);
+0043     <span class="keyword">if</span> ~isempty(deblank(w))
+0044       field_pos(field_i,2) = str2num(strtok(w,<span class="string">' -'</span>));
+0045     <span class="keyword">else</span>
+0046       field_pos(field_i,2) = field_pos(field_i,1);
+0047     <span class="keyword">end</span>
+0048     field_type(field_i) = readme(bbb_i,11);
+0049     [q,w] = strtok(readme(bbb_i,15:end),<span class="string">' '</span>);
+0050     fn = strtok(w,<span class="string">' '</span>);
+0051     field_name(field_i,1:length(fn)) = fn;
+0052     field_i = field_i+1;
+0053     bbb_i = bbb_i+1;
+0054     
+0055   <span class="keyword">end</span>
+0056 <span class="keyword">end</span>
+0057 <span class="comment">%ii = find(field_name(:) == '-');</span>
+0058 <span class="comment">%field_name(ii) = '_';</span>
+0059 <span class="comment">%ii = find(field_name(:) == '+');</span>
+0060 <span class="comment">%field_name(ii) = '_';</span>
+0061 <span class="comment">%ii = find(field_name(:) == '/');</span>
+0062 <span class="comment">%field_name(ii) = '_';</span>
+0063 <span class="comment">%ii = find(field_name(:) == '*');</span>
+0064 <span class="comment">%field_name(ii) = '_';</span>
+0065 <span class="comment">%ii = find(field_name(:) == '(');</span>
+0066 <span class="comment">%field_name(ii) = '_';</span>
+0067 <span class="comment">%ii = find(field_name(:) == ')');</span>
+0068 <span class="comment">%field_name(ii) = '_';</span>
+0069 <span class="comment">%ii = find(field_name(:) == '[');</span>
+0070 <span class="comment">%field_name(ii) = '_';</span>
+0071 <span class="comment">%ii = find(field_name(:) == ']');</span>
+0072 <span class="comment">%field_name(ii) = '_';</span>
+0073 <span class="comment">%ii = find(field_name(:) == '{');</span>
+0074 <span class="comment">%field_name(ii) = '_';</span>
+0075 <span class="comment">%ii = find(field_name(:) == '}');</span>
+0076 <span class="comment">%field_name(ii) = '_';</span>
+0077 
+0078 field_name(field_name(:) == <span class="string">'-'</span>) = <span class="string">'_'</span>;
+0079 field_name(field_name(:) == <span class="string">'+'</span>) = <span class="string">'_'</span>;
+0080 field_name(field_name(:) == <span class="string">'/'</span>) = <span class="string">'_'</span>;
+0081 field_name(field_name(:) == <span class="string">'*'</span>) = <span class="string">'_'</span>;
+0082 field_name(field_name(:) == <span class="string">'('</span>) = <span class="string">'_'</span>;
+0083 field_name(field_name(:) == <span class="string">')'</span>) = <span class="string">'_'</span>;
+0084 field_name(field_name(:) == <span class="string">'['</span>) = <span class="string">'_'</span>;
+0085 field_name(field_name(:) == <span class="string">']'</span>) = <span class="string">'_'</span>;
+0086 field_name(field_name(:) == <span class="string">'{'</span>) = <span class="string">'_'</span>;
+0087 field_name(field_name(:) == <span class="string">'}'</span>) = <span class="string">'_'</span>;
+0088 
+0089 cl = 1;
+0090 catalog_fp = fopen(catalog_file_nm,<span class="string">'r'</span>);
+0091 
+0092 <span class="keyword">if</span> nargin ~= 4
+0093   Nr_lines = inf;
+0094 <span class="keyword">else</span>
+0095   Nr_lines = nr_lines;
+0096 <span class="keyword">end</span>
+0097 <span class="comment">% $$$ while ( cl &lt; Nr_lines+1 )</span>
+0098 <span class="comment">% $$$   line = fgetl(catalog_fp);</span>
+0099 <span class="comment">% $$$   if ~isstr(line),</span>
+0100 <span class="comment">% $$$     break,</span>
+0101 <span class="comment">% $$$   end</span>
+0102 <span class="comment">% $$$   catalog(cl,1:length(line)) = line;</span>
+0103 <span class="comment">% $$$   catalog(cl,end+1) = ' ';</span>
+0104 <span class="comment">% $$$   cl = cl+1;</span>
+0105 <span class="comment">% $$$ end</span>
+0106 <span class="comment">% quick reading of the star catalog(s)</span>
+0107 catalog = fread(catalog_fp);
+0108 fclose(catalog_fp);
+0109 
+0110 <span class="comment">% transforming the catalog to characters</span>
+0111 catalog = char(catalog');
+0112 <span class="comment">% find the linebreaks</span>
+0113 nlstr = sprintf(<span class="string">'\n'</span>);
+0114 nl_indx = [0 findstr(catalog,nlstr)];
+0115 
+0116 
+0117 <span class="keyword">if</span> nargin &lt; 3 | ~length(get_these_fields)
+0118   get_these_fields = 1:length(field_type);
+0119 <span class="keyword">end</span>
+0120 <span class="keyword">if</span> ( nargin ~= 4 )
+0121   <span class="comment">%nr_lines = size(catalog,1);</span>
+0122   nr_lines = length(nl_indx)-1;
+0123 <span class="keyword">end</span>
+0124 <span class="comment">%star_list = [];</span>
+0125 
+0126 <span class="comment">%for ii = nr_lines:-1:1,</span>
+0127 
+0128 <span class="keyword">for</span> ii = nr_lines:-1:2,
+0129   <span class="comment">%for ii = 1:nr_lines,</span>
+0130   catalogl(1:(nl_indx(ii)-nl_indx(ii-1))) = catalog(nl_indx(ii-1)+1:nl_indx(ii));
+0131   <span class="keyword">for</span> fi = get_these_fields,
+0132     <span class="comment">%pause</span>
+0133     <span class="comment">%disp([fi field_pos(fi,1) field_pos(fi,2)])</span>
+0134     <span class="keyword">switch</span> field_type(fi)
+0135      <span class="keyword">case</span> <span class="string">'A'</span>
+0136       <span class="comment">%str_ini = ['star_list(ii).',deblank(field_name(fi,:)),' = catalog(ii,field_pos(fi,1):field_pos(fi,2));'];</span>
+0137       <span class="comment">%eval(str_ini)</span>
+0138       str_ini = [<span class="string">'star_list(ii).'</span>,deblank(field_name(fi,:)),<span class="string">' = catalogl(field_pos(fi,1):field_pos(fi,2));'</span>];
+0139       eval(str_ini)
+0140      <span class="keyword">case</span> <span class="string">'I'</span>
+0141       <span class="comment">%str_ini = ['star_list(ii).',deblank(field_name(fi,:)),' = str2num(catalog(ii,field_pos(fi,1):field_pos(fi,2)));'];</span>
+0142       <span class="comment">%eval(str_ini)</span>
+0143       str_ini = [<span class="string">'star_list(ii).'</span>,deblank(field_name(fi,:)),<span class="string">' = str2num(catalogl(field_pos(fi,1):field_pos(fi,2)));'</span>];
+0144       eval(str_ini)
+0145      <span class="keyword">case</span> <span class="string">'F'</span>
+0146       <span class="comment">%str_ini = ['star_list(ii).',deblank(field_name(fi,:)),' = str2num(catalog(ii,field_pos(fi,1):field_pos(fi,2)));'];</span>
+0147       <span class="comment">%eval(str_ini)</span>
+0148       str_ini = [<span class="string">'star_list(ii).'</span>,deblank(field_name(fi,:)),<span class="string">' = str2num(catalogl(field_pos(fi,1):field_pos(fi,2)));'</span>];
+0149       eval(str_ini)
+0150      <span class="keyword">otherwise</span>
+0151     <span class="keyword">end</span>
+0152 <span class="comment">% $$$     disp(catalogl)</span>
+0153 <span class="comment">% $$$     disp([field_pos(fi,1) field_pos(fi,2)])</span>
+0154 <span class="comment">% $$$     disp(field_type(fi))</span>
+0155 <span class="comment">% $$$     star_list(ii)</span>
+0156   <span class="keyword">end</span>
+0157   <span class="comment">%disp(ii)</span>
+0158   <span class="comment">%keyboard</span>
+0159 <span class="keyword">end</span>
+0160 <span class="comment">% $$$   for fi = get_these_fields,</span>
+0161 <span class="comment">% $$$     switch field_type(fi)</span>
+0162 <span class="comment">% $$$      case 'A'</span>
+0163 <span class="comment">% $$$       star_list(ii) = setfield(star_list(ii),...</span>
+0164 <span class="comment">% $$$                                {ii},...</span>
+0165 <span class="comment">% $$$                                deblank(field_name(fi,:)),...</span>
+0166 <span class="comment">% $$$                                catalog(ii,field_pos(fi,1):field_pos(fi,2)));</span>
+0167 <span class="comment">% $$$       %disp([deblank(field_name(fi,:)),' ',field_type(fi),' ',catalog(ii,field_pos(fi,1):field_pos(fi,2))])</span>
+0168 <span class="comment">% $$$       %disp([field_pos(fi,1) field_pos(fi,2)])</span>
+0169 <span class="comment">% $$$      case 'I'</span>
+0170 <span class="comment">% $$$       star_list(ii) = setfield(star_list(ii),...</span>
+0171 <span class="comment">% $$$                                {ii},...</span>
+0172 <span class="comment">% $$$                                deblank(field_name(fi,:)),...</span>
+0173 <span class="comment">% $$$                                str2num(catalog(ii,field_pos(fi,1):field_pos(fi,2))));</span>
+0174 <span class="comment">% $$$       %disp([deblank(field_name(fi,:)),' ',field_type(fi),' ',catalog(ii,field_pos(fi,1):field_pos(fi,2))])</span>
+0175 <span class="comment">% $$$       %disp([field_pos(fi,1) field_pos(fi,2)])</span>
+0176 <span class="comment">% $$$      case 'F'</span>
+0177 <span class="comment">% $$$       star_list(ii) = setfield(star_list(ii),...</span>
+0178 <span class="comment">% $$$                                {ii},...</span>
+0179 <span class="comment">% $$$                                deblank(field_name(fi,:)),...</span>
+0180 <span class="comment">% $$$                                str2num(catalog(ii,field_pos(fi,1):field_pos(fi,2))));</span>
+0181 <span class="comment">% $$$       %disp([deblank(field_name(fi,:)),' ',field_type(fi),' ',catalog(ii,field_pos(fi,1):field_pos(fi,2))])</span>
+0182 <span class="comment">% $$$       %disp([field_pos(fi,1) field_pos(fi,2)])</span>
+0183 <span class="comment">% $$$      otherwise</span>
+0184 <span class="comment">% $$$     end</span>
+0185 <span class="comment">% $$$   end</span>
+0186 toc</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

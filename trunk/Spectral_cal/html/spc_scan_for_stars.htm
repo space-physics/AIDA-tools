@@ -1,0 +1,143 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>spc_scan_for_stars.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function synopsis</FONT></FONT></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1> [IDSTARS,STARPARS,filtnr,Stime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops)                                                             </FONT></FONT></P> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function comments</FONT></FONT></P> 
+<pre> 
+% 
+% SPC_SCAN_FOR_STARS  Scan image files for stars with known spectras 
+% FILES is a strmat of images, POS is [lat, long] of the 
+% observing point, OPTPAR is an array of optical parameters (see 
+% CAMERA). PO is the image pre-processing options - see INIMG for 
+% details. OPTS is the options related to this function: 
+%  OPTS.Mag_limit - limiting faintest magnitude of stars to') 
+%                   search among') 
+%  OPTS.regsize   - Size of the region surrounding the star') 
+%  OPTS.bgtype    - Type of background subtraction used,') 
+%                   ''compicated'' or ''simple''.') 
+% 
+% 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files called by spc_scan_for_stars.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="star_int_search.htm">star_int_search</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files that call spc_scan_for_stars.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="Spec_cal_jobb_mall.htm">Spec_cal_jobb_mall</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of spc_scan_for_stars.m</FONT></FONT></P> 
+<pre> 
+function [IDSTARS,STARPARS,filtnr,Stime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops) 
+% [IDSTARS,STARPARS,filtnr,Stime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops) 
+% 
+% SPC_SCAN_FOR_STARS  Scan image files for stars with known spectras 
+% FILES is a strmat of images, POS is [lat, long] of the 
+% observing point, OPTPAR is an array of optical parameters (see 
+% CAMERA). PO is the image pre-processing options - see INIMG for 
+% details. OPTS is the options related to this function: 
+%  OPTS.Mag_limit - limiting faintest magnitude of stars to') 
+%                   search among') 
+%  OPTS.regsize   - Size of the region surrounding the star') 
+%  OPTS.bgtype    - Type of background subtraction used,') 
+%                   ''compicated'' or ''simple''.') 
+% 
+% 
+ 
+% Copyright Bjorn Gustavsson 20030901 
+ 
+global stardir bx by 
+ 
+if nargin==0 
+  disp('OPTS should be a structure with the following optional fields: ') 
+  disp('   OPTS.Mag_limit - limiting faintest magnitude of stars to') 
+  disp('                    search among') 
+  disp('   OPTS.regsize   - Size of the region surrounding the star') 
+  disp('   OPTS.bgtype    - Type of background subtraction used,') 
+  disp('                    ''compicated'' or ''simple''.') 
+end 
+ 
+% default display option 
+if nargin<6 
+  disp_ops = 'off'; 
+end 
+ 
+ 
+% $$$ stardir = '/home/bjorn/matlab/Skymap'; 
+stardir = fileparts(eval('which(''skymap'')')); 
+%%%%%%% du maaste testa read_all_catalogs 
+readme_file = [stardir,'/stars/README.spectra']; 
+catalog_file = [stardir,'/stars/stars.dat']; 
+get_these_fields = [1 4 7 8 9 10 11 12 14 16]; 
+star_list = read_all_astro_catalogs(catalog_file,readme_file,get_these_fields); 
+star_list = star_list(2:end); 
+star_list = fix_ra_decl(star_list); 
+ 
+if nargin >= 5 &  isfield(OPTS,'Mag_limit') 
+ 
+  i = find([star_list(:).Vmag] <= OPTS.Mag_limit); 
+  star_list = star_list(i); 
+ 
+end 
+ 
+ra = [star_list(:).ra]'; 
+decl = [star_list(:).decl]'; 
+ 
+% image preprocessing options 
+if isempty(PO) 
+  PO = typical_pre_proc_ops; 
+  PO.outimgsize = 256; 
+  PO.LE = 1; 
+  PO.medianfilter = 0; 
+end 
+ 
+IDSTARS = []; 
+STARPARS = []; 
+ 
+for i = 1:size(files(1:end,:),1), 
+  disp([i i/size(files(1:end,:),1)]) 
+  [data,header,obs] = inimg(files(i,:),PO); 
+  [stars_azze(:,1),stars_azze(:,2)] = starpos2( ra,... 
+                                                decl,... 
+                                                obs.time(1:3),... 
+                                                obs.time(4:6),... 
+                                                obs.pos(2),... 
+                                                obs.pos(1)); 
+  %stars_azze = stars_azze; 
+  stars_azze(:,3) = [star_list(:).HR]'; 
+  stars_azze(:,4) = [star_list(:).Vmag]'; 
+ 
+  Stars_azze = stars_azze(stars_azze(:,2)&LT;pi/2,:); 
+  [idstars,stars_par] = <A HREF ="star_int_search.htm">star_int_search</A>(data,optpar,optpar(9),Stars_azze,OPTS); 
+ 
+% $$$   findx = fitsfindinheader(header,'FILTER  ='); 
+% $$$   filtnr(i) = str2num(strtok(header(findx,12:end))); 
+  filtnr(i) = obs.filter; 
+  idstars(:,1) = i; 
+  IDSTARS = [IDSTARS;idstars]; 
+  STARPARS = [STARPARS;stars_par]; 
+  Stime(i,:) = obs.time(4:6); 
+ 
+  if strncmp(disp_ops,'iter',4) 
+    disp([i i/length(files(1:end,:))]) 
+  end 
+end 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 16:26 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

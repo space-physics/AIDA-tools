@@ -1,0 +1,110 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>spc_spectral_int_conv.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function synopsis</FONT></FONT></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1> [I,dI] = spc_spectral_int_conv(wl_center,delta_wl,BSCNR,dispOPS)                                                                                    </FONT></FONT></P> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function comments</FONT></FONT></P> 
+<pre> 
+% 
+% SPC_SPECTRAL_INT_CONV - convert stellar intensity to 1e6#/m^2/s/fw 
+% 
+% 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files that call spc_spectral_int_conv.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="Spec_cal_jobb_mall.htm">Spec_cal_jobb_mall</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of spc_spectral_int_conv.m</FONT></FONT></P> 
+<pre> 
+function [I,dI] = spc_spectral_int_conv(wl_center,delta_wl,BSCNR,dispOPS) 
+% [I,dI] = spc_spectral_int_conv(wl_center,delta_wl,BSCNR,dispOPS) 
+% 
+% SPC_SPECTRAL_INT_CONV - convert stellar intensity to 1e6#/m^2/s/fw 
+% 
+% 
+ 
+% Copyright Bjorn Gustavsson 20030901 
+ 
+ 
+global c0;		% Speed of light [m/s] 
+global h;		% Plank's constant [Js] 
+global kB;		% Boltzmann constant [J/K] 
+global m_e;             % electron rest mass 
+global q_e;             % elementary charge 
+ 
+c0      = 2.99792458e8;	            % Speed of light [m/s] 
+h       = 6.62618e-34;              % Plank's constant [Js] 
+kB      = 1.380662e-23;             % Boltzmann constant [J/K] 
+m_e     = 9.10939e-31;              % electron rest mass [kg] 
+q_e     = 1.6021773e-19;            % elementary charge [C] 
+ 
+ 
+Catalog2photons_s_cm2_nm = wl_center*1e-9*1e-4/h/c0*1e-9; 
+ 
+disptrue = 0; 
+plottrue = 0; 
+if nargin >= 4 & isfield(OPS,'disp_things') 
+ 
+  disp(wl_center) 
+  disptrue = 1; 
+ 
+end 
+if nargin >= 4 & isfield(OPS,'plot_things') 
+ 
+  plottrue = 1; 
+ 
+end 
+ 
+for i = 1:length(wls0), 
+ 
+  wls_filter(i,:) = linspace(wls0(i)-delta_wls(i/2),wls0(i)+delta_wls(i/2),15); 
+ 
+end 
+ 
+for si = 1:length(BSCNR), 
+ 
+  b_s_nr = BSC_NR(si); 
+  [wls,I_e] = getspec(b_s_nr); 
+  qwei = find(gradient(wls)<0); 
+  if length(qwei) 
+    wls = wls(1:qwei); 
+    I_e = I_e(1:qwei); 
+  end 
+ 
+  I_filter = interp1(wls,I_e,wls_filter); 
+ 
+  I_filter = I_filter.*Catalog2photons_s_cm2_nm; 
+ 
+  I(si,:) = [sum(I_filter.*gradient(wls_filter),2)]'; 
+  dI(si,:) = [ ( I_filter(:,1) - I_filter(:,1) )./( wls_filter(:,1) - wls_filter(:,end) )]'; 
+ 
+  if disptrue 
+    disp([I_filter]) 
+  end 
+  if plottrue 
+    clf 
+    plot(wls,I_e) 
+    hold on 
+    title(['sis = ',num2str(si),' bsc_nr = ',num2str(b_s_nr)]) 
+    plot(wls_filter',I_filter','o') 
+    drawnow 
+  end 
+ 
+end 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 16:26 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plot_map</title>
+  <meta name="keywords" content="plot_map">
+  <meta name="description" content="plot_map">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>plot_map
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>plot_map</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> plot_map
+ By: Sahar Sodoudi</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% plot_map</span>
+0002 <span class="comment">% By: Sahar Sodoudi</span>
+0003 
+0004 <span class="comment">% This program plots the landareas as well as the political boundary of</span>
+0005 <span class="comment">% countries.</span>
+0006 <span class="comment">% file worldlo.mat is required!!!!</span>
+0007 <span class="comment">% usage: before starting plot_map, the map axes have to be defined with worldmap</span>
+0008 <span class="comment">% example:</span>
+0009 <span class="comment">% worldmap('europe')</span>
+0010 <span class="comment">% plot_map</span>
+0011 
+0012 
+0013 land=shaperead(<span class="string">'landareas'</span>,<span class="string">'UseGeocoords'</span>,true)
+0014 setm(gca,<span class="string">'ffacecolor'</span>,<span class="string">'b'</span>)   <span class="comment">%using this line the seas are colored in blue</span>
+0015 geoshow(land,<span class="string">'facecolor'</span>,<span class="string">'w'</span>)
+0016 
+0017 load worldlo.mat;
+0018 a=POline(1);
+0019 latg=a.lat;
+0020 longg=a.long;
+0021 
+0022 h=plotm(latg,longg,<span class="string">'k-'</span>)
+0023 set(h,<span class="string">'linewidth'</span>,1)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

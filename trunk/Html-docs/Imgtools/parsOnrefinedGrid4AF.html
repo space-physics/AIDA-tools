@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of parsOnrefinedGrid4AF</title>
+  <meta name="keywords" content="parsOnrefinedGrid4AF">
+  <meta name="description" content="Copyright Bjorn Gustavsson 20110306">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>parsOnrefinedGrid4AF
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Copyright Bjorn Gustavsson 20110306</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function varPout = parsOnrefinedGrid4AF(par0,Xp1,Yp1,Xp2,Yp2,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Copyright Bjorn Gustavsson 20110306
+ GNU copyleft 3.0 or later applies</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="img_optflow.html" class="code" title="function varargout = img_optflow(I1,I2,OPS)">img_optflow</a>	IMG_OPTFLOW - optical-flow displacements with intensity-scaling adjustment</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function varPout = parsOnrefinedGrid4AF(par0,Xp1,Yp1,Xp2,Yp2,OPS)</a>
+0002 
+0003 <span class="comment">% Copyright Bjorn Gustavsson 20110306</span>
+0004 <span class="comment">% GNU copyleft 3.0 or later applies</span>
+0005 
+0006 <span class="comment">% In 2-D &lt;=&gt; corner to corner</span>
+0007 [xP1,yP1] = meshgrid(Xp1,Yp1);
+0008 [xP2,yP2] = meshgrid(Xp2,Yp2);
+0009 
+0010 <span class="comment">% make matrices for the mapping of [xP0,yP0] into I1</span>
+0011 xP = xP1;
+0012 yP = yP1;
+0013 Ip = xP;
+0014 
+0015 nPoints = length(xP1(:));
+0016 
+0017 <span class="comment">% And assign the corresponding parameters there</span>
+0018 xP(:) = par0(1:(nPoints));
+0019 yP(:) = par0(nPoints+[1:(nPoints)]);
+0020 Ip(:) = par0(2*nPoints+[1:(nPoints)]);
+0021 
+0022 <span class="comment">% $$$ % Interpolate these mappings to full image size:</span>
+0023 <span class="comment">% $$$ X = interp2(xP1,yP1,xP,Xp2,Yp2,'*linear');</span>
+0024 <span class="comment">% $$$ Y = interp2(xP1,yP1,yP,Xp2,Yp2,'*linear');</span>
+0025 <span class="comment">% $$$ % Do the same for the intensity scaling</span>
+0026 <span class="comment">% $$$ Iscale = interp2(xP1,yP1,Ip,Xp2,Yp2,'*spline');</span>
+0027 
+0028 <span class="comment">% Interpolate these mappings to full image size:</span>
+0029 X = interp2(xP1,yP1,xP,xP2,yP2,<span class="string">'*linear'</span>);
+0030 Y = interp2(xP1,yP1,yP,xP2,yP2,<span class="string">'*linear'</span>);
+0031 <span class="comment">% Do the same for the intensity scaling</span>
+0032 Iscale = interp2(xP1,yP1,Ip,xP2,yP2,<span class="string">'*spline'</span>);
+0033 
+0034 varPout = [X(:);Y(:);Iscale(:)];</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

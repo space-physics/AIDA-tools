@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of setUpOfIe2H</title>
+  <meta name="keywords" content="setUpOfIe2H">
+  <meta name="description" content="% Set up script for producing the excitation profile matrices">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Aurora -->
+<h1>setUpOfIe2H
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Set up script for producing the excitation profile matrices</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Set up script for producing the excitation profile matrices
+ 
+ The production profiles are fairly simple to get from
+ ion-chemistry output files. 
+ ## identify the setup-files on lora.
+ ## make a function extracting the relevant production profile
+    matrices 
+ A1 &amp; A2 - ganska enkelt, bara en fraaga om skalning.
+ E enkelt!
+ Laes ihop fraan /stp/raid2/ion_chem/20110808001547 eller
+ Modeling4Excitation-profiles-2006121502
+ Now saved in Excitation-profiles-20061215.mat E z_trans A_O2p1stNeg A_O7774</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="runner4FlamingRays0.html" class="code" title="">runner4FlamingRays0</a>	% Example script: how to estimate electron energies in flaming rays</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Set up script for producing the excitation profile matrices</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">% The production profiles are fairly simple to get from</span>
+0004 <span class="comment">% ion-chemistry output files.</span>
+0005 <span class="comment">% ## identify the setup-files on lora.</span>
+0006 <span class="comment">% ## make a function extracting the relevant production profile</span>
+0007 <span class="comment">%    matrices</span>
+0008 <span class="comment">% A1 &amp; A2 - ganska enkelt, bara en fraaga om skalning.</span>
+0009 <span class="comment">% E enkelt!</span>
+0010 <span class="comment">% Laes ihop fraan /stp/raid2/ion_chem/20110808001547 eller</span>
+0011 <span class="comment">% Modeling4Excitation-profiles-2006121502</span>
+0012 <span class="comment">% Now saved in Excitation-profiles-20061215.mat E z_trans A_O2p1stNeg A_O7774</span>
+0013 
+0014 <span class="comment">% load Excitation-profiles-20061215.mat E z_trans A_O2p1stNeg A_O7774</span>
+0015 load Excitation-profiles-20120124.mat E z_trans a_N26730 a_O7774
+0016 C_filter7774 = 0.7;
+0017 C_filter6370 = 0.76;
+0018 C_filter5620 = 0.0633;
+0019 A1Z = interp1(z_trans(2:end)/1e5, C_filter6370*a_N26730, squeeze(ZfI(1,1,:)));
+0020 A2Z = interp1(z_trans(2:end)/1e5, C_filter7774*a_O7774,  squeeze(ZfI(1,1,:)));
+0021 A1Z(~isfinite(A1Z)) = 0;
+0022 A2Z(~isfinite(A2Z)) = 0;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

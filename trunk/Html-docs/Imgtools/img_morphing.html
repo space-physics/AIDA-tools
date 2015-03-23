@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of img_morphing</title>
+  <meta name="keywords" content="img_morphing">
+  <meta name="description" content="IMG_MORPHING - Intensity and spatial morphing of image">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>img_morphing
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>IMG_MORPHING - Intensity and spatial morphing of image</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function Iout = img_morphing(Iin,morphVector,delta) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> IMG_MORPHING - Intensity and spatial morphing of image
+   
+ Calling:
+   Iout = img_morphing(Iin,morphVector,delta)
+ Input:
+  Iin         - Image to be transformed.
+  morphVector - Spatial-n-intensity transformation vector. The
+                components are ordered [x,y,Iscale], where x and y
+                are the displacements of the n-by-n pixels
+                meshgrid(linspace(1,size(I1,2),n),linspace(1,size(I1,2),n))
+                in I1, that is I1 will be spatiall;y wrapped
+                according to: interp2(I1,X,Y) where X and Y is
+                created as interp2(xP0,yP0,xP,1:size(I1,2),[1:size(I1,1)]','*linear');
+                respectively. Iscale is produced the same way.
+  delta       - (Fractional) length of the morphing transform to
+                do. Usefull for making morphing interpolation,
+                when the morphVector is produced for a start and a
+                stop image and one wants an estimate of an image
+                in the interval inbetween. Could also be used for
+                morphing extrapolation...
+
+ SEE also: <a href="errFcnAuroralFlow.html" class="code" title="function varargout = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS)">errFcnAuroralFlow</a>, <a href="img_optflow.html" class="code" title="function varargout = img_optflow(I1,I2,OPS)">img_optflow</a>, <a href="parsOnrefinedGrid4AF.html" class="code" title="function varPout = parsOnrefinedGrid4AF(par0,Xp1,Yp1,Xp2,Yp2,OPS)">parsOnrefinedGrid4AF</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="errFcnAuroralFlow.html" class="code" title="function varargout = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS)">errFcnAuroralFlow</a>	errFcnAuroralFlow - error function for auroral motion estimate</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function Iout = img_morphing(Iin,morphVector,delta)</a>
+0002 <span class="comment">% IMG_MORPHING - Intensity and spatial morphing of image</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   Iout = img_morphing(Iin,morphVector,delta)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  Iin         - Image to be transformed.</span>
+0008 <span class="comment">%  morphVector - Spatial-n-intensity transformation vector. The</span>
+0009 <span class="comment">%                components are ordered [x,y,Iscale], where x and y</span>
+0010 <span class="comment">%                are the displacements of the n-by-n pixels</span>
+0011 <span class="comment">%                meshgrid(linspace(1,size(I1,2),n),linspace(1,size(I1,2),n))</span>
+0012 <span class="comment">%                in I1, that is I1 will be spatiall;y wrapped</span>
+0013 <span class="comment">%                according to: interp2(I1,X,Y) where X and Y is</span>
+0014 <span class="comment">%                created as interp2(xP0,yP0,xP,1:size(I1,2),[1:size(I1,1)]','*linear');</span>
+0015 <span class="comment">%                respectively. Iscale is produced the same way.</span>
+0016 <span class="comment">%  delta       - (Fractional) length of the morphing transform to</span>
+0017 <span class="comment">%                do. Usefull for making morphing interpolation,</span>
+0018 <span class="comment">%                when the morphVector is produced for a start and a</span>
+0019 <span class="comment">%                stop image and one wants an estimate of an image</span>
+0020 <span class="comment">%                in the interval inbetween. Could also be used for</span>
+0021 <span class="comment">%                morphing extrapolation...</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% SEE also: errFcnAuroralFlow, img_optflow, parsOnrefinedGrid4AF</span>
+0024 
+0025 <span class="comment">%   Copyright � 20110830 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0026 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0027 
+0028 nPoints = (length(morphVector)/3)^(1/2);
+0029 
+0030 xP0 = linspace(1,size(Iin,2),nPoints);
+0031 yP0 = linspace(1,size(Iin,1),nPoints);
+0032 [xP0,yP0] = meshgrid(xP0,yP0);
+0033 
+0034 vP0 = [xP0(:)',yP0(:)',ones(size(xP0(:)'))];
+0035 vPdelta = vP0' + delta*(morphVector - vP0');
+0036 
+0037 efAFops = <a href="errFcnAuroralFlow.html" class="code" title="function varargout = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS)">errFcnAuroralFlow</a>;
+0038 efAFops.outputType = 2;
+0039 
+0040 Iout = <a href="errFcnAuroralFlow.html" class="code" title="function varargout = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS)">errFcnAuroralFlow</a>(vPdelta,1:length(vPdelta),vPdelta, <span class="keyword">...</span>
+0041                               Iin,Iin,nPoints,efAFops);
+0042</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

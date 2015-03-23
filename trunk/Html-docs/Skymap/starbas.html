@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of starbas</title>
+  <meta name="keywords" content="starbas">
+  <meta name="description" content="STARBAS calculates untit vectors of a rotated coordinate system.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>starbas
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STARBAS calculates untit vectors of a rotated coordinate system.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [e1,e2,e3] = starbas(az,el,roll) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STARBAS calculates untit vectors of a rotated coordinate system.
+ ( e2 as the optical axes )
+
+ Calling:
+ [e1,e2,e3] = starbas(az,el,roll)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>	CAMERA_ROT - determines the coordinate system of the camera</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="infov2.html" class="code" title="function [infovstars,SkMp] = infov2(possiblestars,az0,ze0,rot0,fov,SkMp)">infov2</a>	INFOV2 finds stars inside a specified field of view</li><li><a href="plotgrid.html" class="code" title="function [ok] = plotgrid(az0,ze0,rot0,date,utc,lat,long,radecl_or_azze)">plotgrid</a>	PLOTGRID - plots Azimuth-Zenith or Rect acsention-Declination grid.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [e1,e2,e3] = starbas(az,el,roll)</a>
+0002 <span class="comment">% STARBAS calculates untit vectors of a rotated coordinate system.</span>
+0003 <span class="comment">% ( e2 as the optical axes )</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">% [e1,e2,e3] = starbas(az,el,roll)</span>
+0007 
+0008 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0009 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0010 
+0011 <span class="comment">%raz = az*pi/180;</span>
+0012 <span class="comment">%rel = el*pi/180;</span>
+0013 <span class="comment">%rroll = roll*pi/180;</span>
+0014 
+0015 x(1) = 1;
+0016 x(2) = 0;
+0017 x(3) = 0;
+0018 
+0019 y(1) = 0;
+0020 y(2) = 1;
+0021 y(3) = 0;
+0022 
+0023 z(1) = 0;
+0024 z(2) = 0;
+0025 z(3) = 1;
+0026 
+0027 <span class="comment">%rmat = abrota2(az,-el,roll);</span>
+0028 rmat = <a href="../Camera/camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>(az,-el,roll);
+0029 
+0030 e1 = rmat*x';
+0031 e2 = rmat*y';
+0032 e3 = rmat*z';</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

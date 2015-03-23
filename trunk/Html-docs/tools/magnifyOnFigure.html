@@ -1,0 +1,2377 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of magnifyOnFigure</title>
+  <meta name="keywords" content="magnifyOnFigure">
+  <meta name="description" content="magnifyOnFigure - interactive zooming in inset subaxes">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>magnifyOnFigure
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>magnifyOnFigure - interactive zooming in inset subaxes</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function magnifyOnFigure( varargin ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> magnifyOnFigure - interactive zooming in inset subaxes
+ NAME: magnifyOnFigure
+ 
+ AUTHOR: David Fernandez Prim (david.fernandez.prim@gmail.com)
+
+ PURPOSE: Shows a functional zoom tool, suitable for publishing of zoomed
+ images and 2D plots
+ 
+ INPUT ARGUMENTS:
+                   figureHandle [double 1x1]: graphic handle of the target figure
+                   axesHandle [double 1x1]: graphic handle of the target axes.
+
+ OUTPUT ARGUMENTS: 
+                   none
+                   
+ SINTAX:
+           1)  magnifyOnFigure;
+               $ Adds magnifier on the first axes of the current figure, with
+               default behavior.
+
+           2)  magnifyOnFigure( figureHandle );
+               $ Adds magnifier on the first axes of the figure with handle
+               'figureHandle', with default behavior. 
+
+           3)  magnifyOnFigure( figureHandle, 'property1', value1,... );
+               $ Adds magnifier on the first axes of the figure with handle
+               'figureHandle', with modified behavior. 
+
+           4)  magnifyOnFigure( axesHandle );
+               $ Adds magnifier on the axes with handle 'axesHandle', with
+               default behavior. 
+
+           5)  magnifyOnFigure( axesHandle, 'property1', value1,... );
+               $ Adds magnifier on the axes with handle 'axesHandle', with
+               modified behavior. 
+
+           6)  Consecutive calls to this function (in any of the syntaxes
+               exposed above) produce multiple selectable magnifiers on the target axes.
+
+ USAGE EXAMPLES: see script 'magnifyOnFigure_examples.m'
+                 
+ PROPERTIES: 
+        'magnifierShape':  'Shape of the magnifier ('rectangle' or 'ellipse' allowed, 'rectangle' as default)
+        'secondaryAxesFaceColor':  ColorSpec
+        'edgeWidth'                Color of the box surrounding the secondary 
+                                   axes, magnifier and link. Default 1
+        'edgeColor':               Color of the box surrounding the secondary 
+                                   axes, magnifier and link. Default 'black'
+        'displayLinkStyle':        Style of the link. 'none', 'straight' or
+                                   'edges', with 'straight' as default.
+        'mode':                    'manual' or 'interactive' (allowing
+                                   adjustments through mouse/keyboard). Default
+                                   'interactive'.                                
+        'units'                    Units in which the position vectors are
+                                   given. Only 'pixels' currently supported
+        'initialPositionSecondaryAxes':    Initial position vector ([left bottom width height])
+                                           of secondary axes, in pixels 
+        'initialPositionMagnifier':        Initial position vector ([left bottom width height])
+                                           of magnifier, in pixels 
+        'secondaryAxesXLim':       Initial XLim value of the secondary axes
+        'secondaryAxesYLim':       Initial YLim value of the secondary axes
+        'frozenZoomAspectRatio':   Specially useful for images, forces the use of the same zoom 
+                                   factor on both X and Y axes, in order to keep the aspect ratio 
+                                   ('on' or 'off' allowed, 'off' by default 
+ 
+ HOT KEYS (active if 'mode' set to 'interactive')
+
+ -In a figure with multiple tool instances
+       'Tab':                  Switch the focus from one magnifier instance 
+                               to the next one on the current figure.
+       'Mouse pointer on secondary axes or magnifier of a tool+double left click'    
+                                                       Regain focus
+
+ -On the focused magnifier instance
+       'up arrow':             Moves magnifier 1 pixel upwards
+       'down arrow':           Moves magnifier 1 pixel downwards
+       'left arrow':           Moves magnifier 1 pixel to the left
+       'right arrow':          Moves magnifier 1 pixel to the right
+       'Shift+up arrow':       Expands magnifier 10% on the Y-axis
+       'Shift+down arrow':     Compress magnifier 10% on the Y-axis
+       'Shift+left arrow':     Compress magnifier 10% on the X-axis
+       'Shift+right arrow':    Expands magnifier 10% on the X-axis
+       'Control+up arrow':     Moves secondary axes 1 pixel upwards
+       'Control+down arrow':   Moves secondary axes 1 pixel downwards
+       'Control+left arrow':   Moves secondary axes 1 pixel to the left
+       'Control+right arrow':  Moves secondary axes 1 pixel to the right
+       'Alt+up arrow':         Expands secondary axes 10% on the Y-axis
+       'Alt+down arrow':       Compress secondary axes 10% on the Y-axis
+       'Alt+left arrow':       Compress secondary axes 10% on the X-axis
+       'Alt+right arrow':      Expands secondary axes 10% on the X-axis
+       'PageUp':               Increase additional zooming factor on X-axis
+       'PageDown':             Decrease additional zooming factor on X-axis
+       'Shift+PageUp':         Increase additional zooming factor on Y-axis
+       'Shift+PageDown':       Decrease additional zooming factor on Y-axis
+       'Control+Q':            Resets the additional zooming factors to 0
+       'Control+A':            Displays position of secondary axes and
+                               magnifier in the command window
+       'Control+D':            Deletes the focused tool
+       'Mouse pointer on magnifier+left click'         Drag magnifier to any
+                                                       direction
+       'Mouse pointer on secondary axes+left click'    Drag secondary axes in any
+                                                       direction
+
+ TODO:
+   - Use another axes copy as magnifier instead of rectangle (no ticks).
+   - Adapt to work on 3D plots.
+   - Add tip tool with interface description?.
+
+ KNOWN ISSUES:
+   - Degraded performance for big data sets or big window sizes.
+   - The size and position of the magnifier are modified for
+   'PaperPositionMode' equal to 'auto', when the figure is printed to file
+   through 'print'
+
+ CHANGE HISTORY:
+ 
+   Version     |       Date    |   Author          |   Description
+---------------|---------------|-------------------|---------------------------------------
+   1.0         |   28/11/2009  |   D. Fernandez    |   First version   
+   1.1         |   29/11/2009  |   D. Fernandez    |   Added link from magnifier to secondary axes   
+   1.2         |   30/11/2009  |   D. Fernandez    |   Keyboard support added   
+   1.3         |   01/12/2009  |   D. Fernandez    |   Properties added
+   1.4         |   02/12/2009  |   D. Fernandez    |   Manual mode supported
+   1.5         |   03/12/2009  |   D. Fernandez    |   New link style added ('edges')
+   1.6         |   03/12/2009  |   D. Fernandez    |   Bug solved in display of link style 'edges'
+   1.7         |   04/12/2009  |   D. Fernandez    |   Target axes selection added
+   1.8         |   07/12/2009  |   D. Fernandez    |   Solved bug when any of the axes are reversed.
+   1.9         |   08/12/2009  |   D. Fernandez    |   Adapted to work under all axes modes (tight, square, image, ...)
+   1.10        |   08/12/2009  |   D. Fernandez    |   Added frozenZoomAspectRatio zoom mode, useful for images
+   1.11        |   08/12/2009  |   D. Fernandez    |   Solved bug when axes contain other than 'line' or 'image' objects
+   1.12        |   05/01/2010  |   D. Fernandez    |   Added support to multiple instances
+   1.13        |   05/01/2010  |   D. Fernandez    |   Added 'delete' functionality
+   1.14        |   05/01/2010  |   D. Fernandez    |   Solved bug when initial positions for secondary axes and/or magnifier are specified
+   1.15        |   07/01/2010  |   D. Fernandez    |   Solved bug when resizing window
+   1.16        |   07/01/2010  |   D. Fernandez    |   Improved documentation</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>	ISCHAR - return true if STR is a char-array</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function refreshSecondaryAxisLimits()</a></li><li><a href="#_sub2" class="code">function span = determineSpan( v1, v2 )</a></li><li><a href="#_sub3" class="code">function ResizeCallback(src,eventdata)</a></li><li><a href="#_sub4" class="code">function KeyPressCallback(src,eventdata)</a></li><li><a href="#_sub5" class="code">function ButtonMotionCallback(src,eventdata)</a></li><li><a href="#_sub6" class="code">function ButtonDownCallback(src,eventdata)</a></li><li><a href="#_sub7" class="code">function ButtonUpCallback(src,eventdata)</a></li><li><a href="#_sub8" class="code">function DeleteCallback(src,eventdata)</a></li><li><a href="#_sub9" class="code">function pointerPositionOnFigureFrame = getPointerPositionOnFigureFrame()</a></li><li><a href="#_sub10" class="code">function getPointerArea()</a></li><li><a href="#_sub11" class="code">function position = getFigurePositionInPixels()</a></li><li><a href="#_sub12" class="code">function position = getMainAxesPositionInPixels()</a></li><li><a href="#_sub13" class="code">function position = getMagnifierPositionInPixels()</a></li><li><a href="#_sub14" class="code">function position = getSecondaryAxesPositionInPixels()</a></li><li><a href="#_sub15" class="code">function setSecondaryAxesPositionInPixels( position )</a></li><li><a href="#_sub16" class="code">function setMagnifierPositionInPixels( position )</a></li><li><a href="#_sub17" class="code">function refreshMagnifierToSecondaryAxesLink()</a></li><li><a href="#_sub18" class="code">function intersectionPoint = intersectionPointInPixels( line1, line2)</a></li><li><a href="#_sub19" class="code">function defaultPosition = computeSecondaryAxesDefaultPosition()</a></li><li><a href="#_sub20" class="code">function defaultPosition = computeMagnifierDefaultPosition()</a></li><li><a href="#_sub21" class="code">function obj = initializeToolStruct(varargin)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% magnifyOnFigure - interactive zooming in inset subaxes</span>
+0002 <span class="comment">% NAME: magnifyOnFigure</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% AUTHOR: David Fernandez Prim (david.fernandez.prim@gmail.com)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% PURPOSE: Shows a functional zoom tool, suitable for publishing of zoomed</span>
+0007 <span class="comment">% images and 2D plots</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% INPUT ARGUMENTS:</span>
+0010 <span class="comment">%                   figureHandle [double 1x1]: graphic handle of the target figure</span>
+0011 <span class="comment">%                   axesHandle [double 1x1]: graphic handle of the target axes.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% OUTPUT ARGUMENTS:</span>
+0014 <span class="comment">%                   none</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% SINTAX:</span>
+0017 <span class="comment">%           1)  magnifyOnFigure;</span>
+0018 <span class="comment">%               $ Adds magnifier on the first axes of the current figure, with</span>
+0019 <span class="comment">%               default behavior.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%           2)  magnifyOnFigure( figureHandle );</span>
+0022 <span class="comment">%               $ Adds magnifier on the first axes of the figure with handle</span>
+0023 <span class="comment">%               'figureHandle', with default behavior.</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%           3)  magnifyOnFigure( figureHandle, 'property1', value1,... );</span>
+0026 <span class="comment">%               $ Adds magnifier on the first axes of the figure with handle</span>
+0027 <span class="comment">%               'figureHandle', with modified behavior.</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%           4)  magnifyOnFigure( axesHandle );</span>
+0030 <span class="comment">%               $ Adds magnifier on the axes with handle 'axesHandle', with</span>
+0031 <span class="comment">%               default behavior.</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%           5)  magnifyOnFigure( axesHandle, 'property1', value1,... );</span>
+0034 <span class="comment">%               $ Adds magnifier on the axes with handle 'axesHandle', with</span>
+0035 <span class="comment">%               modified behavior.</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%           6)  Consecutive calls to this function (in any of the syntaxes</span>
+0038 <span class="comment">%               exposed above) produce multiple selectable magnifiers on the target axes.</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">% USAGE EXAMPLES: see script 'magnifyOnFigure_examples.m'</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% PROPERTIES:</span>
+0043 <span class="comment">%        'magnifierShape':  'Shape of the magnifier ('rectangle' or 'ellipse' allowed, 'rectangle' as default)</span>
+0044 <span class="comment">%        'secondaryAxesFaceColor':  ColorSpec</span>
+0045 <span class="comment">%        'edgeWidth'                Color of the box surrounding the secondary</span>
+0046 <span class="comment">%                                   axes, magnifier and link. Default 1</span>
+0047 <span class="comment">%        'edgeColor':               Color of the box surrounding the secondary</span>
+0048 <span class="comment">%                                   axes, magnifier and link. Default 'black'</span>
+0049 <span class="comment">%        'displayLinkStyle':        Style of the link. 'none', 'straight' or</span>
+0050 <span class="comment">%                                   'edges', with 'straight' as default.</span>
+0051 <span class="comment">%        'mode':                    'manual' or 'interactive' (allowing</span>
+0052 <span class="comment">%                                   adjustments through mouse/keyboard). Default</span>
+0053 <span class="comment">%                                   'interactive'.</span>
+0054 <span class="comment">%        'units'                    Units in which the position vectors are</span>
+0055 <span class="comment">%                                   given. Only 'pixels' currently supported</span>
+0056 <span class="comment">%        'initialPositionSecondaryAxes':    Initial position vector ([left bottom width height])</span>
+0057 <span class="comment">%                                           of secondary axes, in pixels</span>
+0058 <span class="comment">%        'initialPositionMagnifier':        Initial position vector ([left bottom width height])</span>
+0059 <span class="comment">%                                           of magnifier, in pixels</span>
+0060 <span class="comment">%        'secondaryAxesXLim':       Initial XLim value of the secondary axes</span>
+0061 <span class="comment">%        'secondaryAxesYLim':       Initial YLim value of the secondary axes</span>
+0062 <span class="comment">%        'frozenZoomAspectRatio':   Specially useful for images, forces the use of the same zoom</span>
+0063 <span class="comment">%                                   factor on both X and Y axes, in order to keep the aspect ratio</span>
+0064 <span class="comment">%                                   ('on' or 'off' allowed, 'off' by default</span>
+0065 <span class="comment">%</span>
+0066 <span class="comment">% HOT KEYS (active if 'mode' set to 'interactive')</span>
+0067 <span class="comment">%</span>
+0068 <span class="comment">% -In a figure with multiple tool instances</span>
+0069 <span class="comment">%       'Tab':                  Switch the focus from one magnifier instance</span>
+0070 <span class="comment">%                               to the next one on the current figure.</span>
+0071 <span class="comment">%       'Mouse pointer on secondary axes or magnifier of a tool+double left click'</span>
+0072 <span class="comment">%                                                       Regain focus</span>
+0073 <span class="comment">%</span>
+0074 <span class="comment">% -On the focused magnifier instance</span>
+0075 <span class="comment">%       'up arrow':             Moves magnifier 1 pixel upwards</span>
+0076 <span class="comment">%       'down arrow':           Moves magnifier 1 pixel downwards</span>
+0077 <span class="comment">%       'left arrow':           Moves magnifier 1 pixel to the left</span>
+0078 <span class="comment">%       'right arrow':          Moves magnifier 1 pixel to the right</span>
+0079 <span class="comment">%       'Shift+up arrow':       Expands magnifier 10% on the Y-axis</span>
+0080 <span class="comment">%       'Shift+down arrow':     Compress magnifier 10% on the Y-axis</span>
+0081 <span class="comment">%       'Shift+left arrow':     Compress magnifier 10% on the X-axis</span>
+0082 <span class="comment">%       'Shift+right arrow':    Expands magnifier 10% on the X-axis</span>
+0083 <span class="comment">%       'Control+up arrow':     Moves secondary axes 1 pixel upwards</span>
+0084 <span class="comment">%       'Control+down arrow':   Moves secondary axes 1 pixel downwards</span>
+0085 <span class="comment">%       'Control+left arrow':   Moves secondary axes 1 pixel to the left</span>
+0086 <span class="comment">%       'Control+right arrow':  Moves secondary axes 1 pixel to the right</span>
+0087 <span class="comment">%       'Alt+up arrow':         Expands secondary axes 10% on the Y-axis</span>
+0088 <span class="comment">%       'Alt+down arrow':       Compress secondary axes 10% on the Y-axis</span>
+0089 <span class="comment">%       'Alt+left arrow':       Compress secondary axes 10% on the X-axis</span>
+0090 <span class="comment">%       'Alt+right arrow':      Expands secondary axes 10% on the X-axis</span>
+0091 <span class="comment">%       'PageUp':               Increase additional zooming factor on X-axis</span>
+0092 <span class="comment">%       'PageDown':             Decrease additional zooming factor on X-axis</span>
+0093 <span class="comment">%       'Shift+PageUp':         Increase additional zooming factor on Y-axis</span>
+0094 <span class="comment">%       'Shift+PageDown':       Decrease additional zooming factor on Y-axis</span>
+0095 <span class="comment">%       'Control+Q':            Resets the additional zooming factors to 0</span>
+0096 <span class="comment">%       'Control+A':            Displays position of secondary axes and</span>
+0097 <span class="comment">%                               magnifier in the command window</span>
+0098 <span class="comment">%       'Control+D':            Deletes the focused tool</span>
+0099 <span class="comment">%       'Mouse pointer on magnifier+left click'         Drag magnifier to any</span>
+0100 <span class="comment">%                                                       direction</span>
+0101 <span class="comment">%       'Mouse pointer on secondary axes+left click'    Drag secondary axes in any</span>
+0102 <span class="comment">%                                                       direction</span>
+0103 <span class="comment">%</span>
+0104 <span class="comment">% TODO:</span>
+0105 <span class="comment">%   - Use another axes copy as magnifier instead of rectangle (no ticks).</span>
+0106 <span class="comment">%   - Adapt to work on 3D plots.</span>
+0107 <span class="comment">%   - Add tip tool with interface description?.</span>
+0108 <span class="comment">%</span>
+0109 <span class="comment">% KNOWN ISSUES:</span>
+0110 <span class="comment">%   - Degraded performance for big data sets or big window sizes.</span>
+0111 <span class="comment">%   - The size and position of the magnifier are modified for</span>
+0112 <span class="comment">%   'PaperPositionMode' equal to 'auto', when the figure is printed to file</span>
+0113 <span class="comment">%   through 'print'</span>
+0114 <span class="comment">%</span>
+0115 <span class="comment">% CHANGE HISTORY:</span>
+0116 <span class="comment">%</span>
+0117 <span class="comment">%   Version     |       Date    |   Author          |   Description</span>
+0118 <span class="comment">%---------------|---------------|-------------------|---------------------------------------</span>
+0119 <span class="comment">%   1.0         |   28/11/2009  |   D. Fernandez    |   First version</span>
+0120 <span class="comment">%   1.1         |   29/11/2009  |   D. Fernandez    |   Added link from magnifier to secondary axes</span>
+0121 <span class="comment">%   1.2         |   30/11/2009  |   D. Fernandez    |   Keyboard support added</span>
+0122 <span class="comment">%   1.3         |   01/12/2009  |   D. Fernandez    |   Properties added</span>
+0123 <span class="comment">%   1.4         |   02/12/2009  |   D. Fernandez    |   Manual mode supported</span>
+0124 <span class="comment">%   1.5         |   03/12/2009  |   D. Fernandez    |   New link style added ('edges')</span>
+0125 <span class="comment">%   1.6         |   03/12/2009  |   D. Fernandez    |   Bug solved in display of link style 'edges'</span>
+0126 <span class="comment">%   1.7         |   04/12/2009  |   D. Fernandez    |   Target axes selection added</span>
+0127 <span class="comment">%   1.8         |   07/12/2009  |   D. Fernandez    |   Solved bug when any of the axes are reversed.</span>
+0128 <span class="comment">%   1.9         |   08/12/2009  |   D. Fernandez    |   Adapted to work under all axes modes (tight, square, image, ...)</span>
+0129 <span class="comment">%   1.10        |   08/12/2009  |   D. Fernandez    |   Added frozenZoomAspectRatio zoom mode, useful for images</span>
+0130 <span class="comment">%   1.11        |   08/12/2009  |   D. Fernandez    |   Solved bug when axes contain other than 'line' or 'image' objects</span>
+0131 <span class="comment">%   1.12        |   05/01/2010  |   D. Fernandez    |   Added support to multiple instances</span>
+0132 <span class="comment">%   1.13        |   05/01/2010  |   D. Fernandez    |   Added 'delete' functionality</span>
+0133 <span class="comment">%   1.14        |   05/01/2010  |   D. Fernandez    |   Solved bug when initial positions for secondary axes and/or magnifier are specified</span>
+0134 <span class="comment">%   1.15        |   07/01/2010  |   D. Fernandez    |   Solved bug when resizing window</span>
+0135 <span class="comment">%   1.16        |   07/01/2010  |   D. Fernandez    |   Improved documentation</span>
+0136 <span class="comment">%</span>
+0137 
+0138 <a name="_sub0" href="#_subfunctions" class="code">function magnifyOnFigure( varargin )</a>
+0139 
+0140 clear <span class="keyword">global</span> appDataStruct
+0141 <span class="keyword">global</span> appDataStruct
+0142 
+0143 
+0144 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0145 <span class="comment">%CHECK OUTPUT ARGUMENTS</span>
+0146 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0147 <span class="keyword">switch</span> nargout
+0148     
+0149     <span class="keyword">case</span> 0
+0150         <span class="comment">%Correct</span>
+0151         outputObjectExpected = false;
+0152         
+0153     <span class="keyword">case</span> 1
+0154         <span class="comment">%tool object expected at the output</span>
+0155         outputObjectExpected = false;
+0156         
+0157     <span class="keyword">otherwise</span>
+0158         error(<span class="string">'Number of output arguments not supported.'</span>);
+0159 <span class="keyword">end</span>
+0160 
+0161 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0162 <span class="comment">%CHECK INPUT ARGUMENTS</span>
+0163 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0164 <span class="keyword">if</span> nargin == 0 
+0165     <span class="comment">%Initialize 'appDataStructuct' with default values</span>
+0166     appDataStruct = <a href="#_sub21" class="code" title="subfunction obj = initializeToolStruct(varargin)">initializeToolStruct</a>();
+0167     <span class="comment">%Set figure handle</span>
+0168     appDataStruct.figureHandle = gcf;
+0169     <span class="comment">% Get number of axes in the same figure</span>
+0170     childHandle = get(appDataStruct.figureHandle, <span class="string">'Children'</span>);
+0171     iAxes = find(strcmpi(get(childHandle, <span class="string">'Type'</span>), <span class="string">'axes'</span>));
+0172     <span class="comment">% If no target axes specified, select the first found as mainAxes</span>
+0173     appDataStruct.mainAxesHandle = childHandle( iAxes(end) );
+0174 <span class="keyword">elseif</span> nargin &gt; 0
+0175 
+0176     <span class="keyword">if</span> isstruct(varargin{1})
+0177         <span class="comment">%Initialize 'appDataStructuct' with existent structure</span>
+0178         appDataStruct = <a href="#_sub21" class="code" title="subfunction obj = initializeToolStruct(varargin)">initializeToolStruct</a>( varargin{1} );               
+0179         
+0180     <span class="keyword">elseif</span> ishandle(varargin{1}) &amp;&amp; strcmpi(get(varargin{1}, <span class="string">'Type'</span>), <span class="string">'figure'</span>)
+0181         <span class="comment">%Initialize 'appDataStructuct' with default values</span>
+0182         appDataStruct = <a href="#_sub21" class="code" title="subfunction obj = initializeToolStruct(varargin)">initializeToolStruct</a>();
+0183         <span class="comment">%Set figure handle</span>
+0184         appDataStruct.figureHandle = varargin{1};
+0185         <span class="comment">% Get number of axes in the same figure</span>
+0186         childHandle = get(appDataStruct.figureHandle, <span class="string">'Children'</span>);
+0187         iAxes = find(strcmpi(get(childHandle, <span class="string">'Type'</span>), <span class="string">'axes'</span>));
+0188         <span class="comment">% If no target axes specified, select the first found as mainAxes</span>
+0189         appDataStruct.mainAxesHandle = childHandle( iAxes(end) );
+0190                 
+0191     <span class="keyword">elseif</span> ishandle(varargin{1}) &amp;&amp; strcmpi(get(varargin{1}, <span class="string">'Type'</span>), <span class="string">'axes'</span>)
+0192         <span class="comment">%Initialize 'appDataStructuct' with default values</span>
+0193         appDataStruct = <a href="#_sub21" class="code" title="subfunction obj = initializeToolStruct(varargin)">initializeToolStruct</a>();
+0194         appDataStruct.mainAxesHandle = varargin{1};  
+0195         <span class="comment">% Get figure handle</span>
+0196         parentHandle = get(varargin{1}, <span class="string">'Parent'</span>);
+0197         iHandle = find(strcmpi(get(parentHandle, <span class="string">'Type'</span>), <span class="string">'figure'</span>));
+0198         <span class="comment">% Figure is the parent of the axes</span>
+0199         appDataStruct.figureHandle = parentHandle( iHandle(1) );  
+0200         
+0201     <span class="keyword">else</span>
+0202         <span class="keyword">if</span> ishandle(varargin{1})
+0203             warning(<span class="string">'Wrong figure/axes handle specified. The magnifier will be applied on the current figure.'</span>);
+0204         <span class="keyword">elseif</span> isobject(varargin{1})
+0205             error(<span class="string">'Wrong object specified.'</span>);
+0206         <span class="keyword">else</span>        
+0207             error(<span class="string">'Wrong input class specified.'</span>);
+0208         <span class="keyword">end</span>                
+0209         
+0210     <span class="keyword">end</span>
+0211 
+0212     <span class="keyword">if</span> mod(nargin-1, 2) == 0
+0213                        
+0214         <span class="comment">%Check input properties</span>
+0215         <span class="keyword">for</span> i = 2:2:nargin 
+0216             <span class="keyword">if</span>  ~strcmpi( varargin{i}, <span class="string">'frozenZoomAspectRatio'</span> ) &amp;&amp;<span class="keyword">...</span>
+0217                 ~strcmpi( varargin{i}, <span class="string">'magnifierShape'</span> ) &amp;&amp;<span class="keyword">...</span>
+0218                 ~strcmpi( varargin{i}, <span class="string">'secondaryaxesxlim'</span> ) &amp;&amp;<span class="keyword">...</span>
+0219                 ~strcmpi( varargin{i}, <span class="string">'secondaryaxesylim'</span> ) &amp;&amp;<span class="keyword">...</span><span class="comment">    </span>
+0220                 ~strcmpi( varargin{i}, <span class="string">'secondaryaxesfacecolor'</span> ) &amp;&amp;<span class="keyword">...</span>
+0221                 ~strcmpi( varargin{i}, <span class="string">'edgewidth'</span> ) &amp;&amp;<span class="keyword">...</span>
+0222                 ~strcmpi( varargin{i}, <span class="string">'edgecolor'</span> ) &amp;&amp;<span class="keyword">...</span>
+0223                 ~strcmpi( varargin{i}, <span class="string">'displayLinkStyle'</span> ) &amp;&amp;<span class="keyword">...</span>
+0224                 ~strcmpi( varargin{i}, <span class="string">'mode'</span> ) &amp;&amp;<span class="keyword">...</span>
+0225                 ~strcmpi( varargin{i}, <span class="string">'units'</span> ) &amp;&amp;<span class="keyword">...</span>
+0226                 ~strcmpi( varargin{i}, <span class="string">'initialpositionsecondaryaxes'</span> ) &amp;&amp;<span class="keyword">...</span>
+0227                 ~strcmpi( varargin{i}, <span class="string">'initialpositionmagnifier'</span> )
+0228                 error(<span class="string">'Illegal property specified. Please check.'</span>);
+0229             <span class="keyword">end</span>
+0230             <span class="keyword">if</span> strcmpi( varargin{i}, <span class="string">'frozenZoomAspectRatio'</span> )
+0231                 <span class="keyword">if</span> <a href="ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(varargin{i+1}) &amp;&amp;<span class="keyword">...</span>
+0232                    ( strcmpi(varargin{i+1}, <span class="string">'on'</span>) || strcmpi(varargin{i+1}, <span class="string">'off'</span>) )
+0233                     appDataStruct.globalZoomMode = lower(varargin{i+1});
+0234                 <span class="keyword">else</span>
+0235                     warning(sprintf(<span class="string">'Specified zoom mode not supported. Default values will be applied [%s].'</span>, appDataStruct.globalZoomMode));
+0236                 <span class="keyword">end</span>
+0237             <span class="keyword">end</span>
+0238             <span class="keyword">if</span> strcmpi( varargin{i}, <span class="string">'mode'</span> )
+0239                 <span class="keyword">if</span> <a href="ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(varargin{i+1}) &amp;&amp;<span class="keyword">...</span>
+0240                    ( strcmpi(varargin{i+1}, <span class="string">'manual'</span>) || strcmpi(varargin{i+1}, <span class="string">'interactive'</span>) )
+0241                     appDataStruct.globalMode = lower(varargin{i+1});
+0242                 <span class="keyword">else</span>
+0243                     warning(sprintf(<span class="string">'Specified mode descriptor not supported. Default values will be applied [%s].'</span>, appDataStruct.globalMode));
+0244                 <span class="keyword">end</span>
+0245             <span class="keyword">end</span>
+0246             <span class="keyword">if</span> strcmpi( varargin{i}, <span class="string">'magnifierShape'</span> )
+0247                 <span class="keyword">if</span> <a href="ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(varargin{i+1}) &amp;&amp;<span class="keyword">...</span>
+0248                    ( strcmpi(varargin{i+1}, <span class="string">'rectangle'</span>) || strcmpi(varargin{i+1}, <span class="string">'ellipse'</span>) )
+0249                     appDataStruct.magnifierShape = lower(varargin{i+1});
+0250                 <span class="keyword">else</span>
+0251                     warning(sprintf(<span class="string">'Specified magnifier shape not supported. Default values will be applied [%s].'</span>, appDataStruct.magnifierShape));
+0252                 <span class="keyword">end</span>
+0253             <span class="keyword">end</span>
+0254             <span class="keyword">if</span> strcmpi( varargin{i}, <span class="string">'displayLinkStyle'</span> )
+0255                 <span class="keyword">if</span> <a href="ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(varargin{i+1}) &amp;&amp;<span class="keyword">...</span>
+0256                    ( strcmpi(varargin{i+1}, <span class="string">'straight'</span>) || strcmpi(varargin{i+1}, <span class="string">'none'</span>) || strcmpi(varargin{i+1}, <span class="string">'edges'</span>) )
+0257                     <span class="keyword">if</span> ~strcmpi(appDataStruct.magnifierShape, <span class="string">'rectangle'</span>) &amp;&amp; strcmpi(varargin{i+1}, <span class="string">'edges'</span>)
+0258                         warning(sprintf(<span class="string">'Specified link style not supported. Default values will be applied for ''displayLinkStyle''[%s].'</span>, appDataStruct.linkDisplayStyle));
+0259                     <span class="keyword">else</span>
+0260                         appDataStruct.linkDisplayStyle = lower(varargin{i+1});
+0261                     <span class="keyword">end</span>
+0262                 <span class="keyword">else</span>
+0263                     warning(sprintf(<span class="string">'Specified descriptor not supported. Default values will be applied for ''displayLink''[%s].'</span>, appDataStruct.linkDisplayStyle));
+0264                 <span class="keyword">end</span>
+0265             <span class="keyword">end</span>
+0266             <span class="keyword">if</span> strcmpi( varargin{i}, <span class="string">'units'</span> )
+0267                 <span class="keyword">if</span> <a href="ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(varargin{i+1}) &amp;&amp; strcmpi(varargin{i+1}, <span class="string">'pixels'</span>)
+0268                     appDataStruct.globalUnits = lower(varargin{i+1});
+0269                 <span class="keyword">else</span>
+0270                     warning(sprintf(<span class="string">'Specified units descriptor not supported. Default values will be applied [%s].'</span>, appDataStruct.globalUnits));
+0271                 <span class="keyword">end</span>
+0272             <span class="keyword">end</span>
+0273             <span class="keyword">if</span> strcmpi( varargin{i}, <span class="string">'edgewidth'</span> )
+0274                 <span class="keyword">if</span> length(varargin{i+1})==1 &amp;&amp; isnumeric(varargin{i+1})
+0275                     appDataStruct.globalEdgeWidth = varargin{i+1};
+0276                 <span class="keyword">else</span>
+0277                     warning(sprintf(<span class="string">'Incorrect edge width value. Default value will be applied [%g].'</span>, appDataStruct.globalEdgeWidth ))
+0278                 <span class="keyword">end</span>
+0279             <span class="keyword">end</span>
+0280             <span class="keyword">if</span> strcmpi( varargin{i}, <span class="string">'edgecolor'</span> )
+0281                 <span class="keyword">if</span> ( length(varargin{i+1})==3 &amp;&amp; isnumeric(varargin{i+1}) ) ||<span class="keyword">...</span>
+0282                    ( <a href="ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(varargin{i+1}) )     
+0283                     appDataStruct.globalEdgeColor = varargin{i+1};
+0284                 <span class="keyword">else</span>
+0285                     warning(<span class="string">'Incorrect edge color value. Default black will be applied.'</span>);
+0286                 <span class="keyword">end</span>
+0287             <span class="keyword">end</span>                      
+0288             <span class="keyword">if</span> strcmpi( varargin{i}, <span class="string">'secondaryaxesfacecolor'</span> )
+0289                 <span class="keyword">if</span> ( length(varargin{i+1})==3 &amp;&amp; isnumeric(varargin{i+1}) ) ||<span class="keyword">...</span>
+0290                    ( <a href="ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(varargin{i+1}) )     
+0291                     appDataStruct.secondaryAxesFaceColor = varargin{i+1};
+0292                 <span class="keyword">else</span>
+0293                     warning(<span class="string">'Incorrect secondary axes face color value. Default white will be applied.'</span>);
+0294                 <span class="keyword">end</span>
+0295             <span class="keyword">end</span> 
+0296             
+0297             <span class="keyword">if</span> strcmpi( varargin{i}, <span class="string">'secondaryaxesxlim'</span> )
+0298                 <span class="keyword">if</span> ( length(varargin{i+1})==2 &amp;&amp; isnumeric(varargin{i+1}) )
+0299                     appDataStruct.secondaryAxesXLim = varargin{i+1};
+0300                 <span class="keyword">else</span>
+0301                     warning(<span class="string">'Incorrect secondary axes XLim value. Default white will be applied.'</span>);
+0302                 <span class="keyword">end</span>
+0303             <span class="keyword">end</span> 
+0304             
+0305             <span class="keyword">if</span> strcmpi( varargin{i}, <span class="string">'secondaryaxesylim'</span> )
+0306                 <span class="keyword">if</span> ( length(varargin{i+1})==2 &amp;&amp; isnumeric(varargin{i+1}) )
+0307                     appDataStruct.secondaryAxesYLim = varargin{i+1};
+0308                 <span class="keyword">else</span>
+0309                     warning(<span class="string">'Incorrect secondary axes YLim value. Default white will be applied.'</span>);
+0310                 <span class="keyword">end</span>
+0311             <span class="keyword">end</span>             
+0312             
+0313             <span class="keyword">if</span> strcmpi( varargin{i}, <span class="string">'initialpositionsecondaryaxes'</span> )
+0314                 <span class="keyword">if</span> length(varargin{i+1})==4 &amp;&amp; isnumeric(varargin{i+1})
+0315                     appDataStruct.secondaryAxesPosition = varargin{i+1};
+0316                 <span class="keyword">else</span>
+0317                     warning(<span class="string">'Incorrect initial position of secondary axes. Default values will be applied.'</span>)
+0318                 <span class="keyword">end</span>
+0319             <span class="keyword">end</span>
+0320             <span class="keyword">if</span> strcmpi( varargin{i}, <span class="string">'initialpositionmagnifier'</span> )
+0321                 <span class="keyword">if</span> length(varargin{i+1})==4 &amp;&amp; isnumeric(varargin{i+1})
+0322                     appDataStruct.magnifierPosition = varargin{i+1};
+0323                 <span class="keyword">else</span>
+0324                     warning(<span class="string">'Incorrect initial position of magnifier. Default values will be applied.'</span>)
+0325                 <span class="keyword">end</span>                    
+0326             <span class="keyword">end</span>
+0327         <span class="keyword">end</span>
+0328         
+0329     <span class="keyword">else</span>
+0330         error(<span class="string">'Number of input arguments not supported.'</span>);
+0331     <span class="keyword">end</span>
+0332 <span class="keyword">end</span>
+0333 
+0334 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0335 <span class="comment">%ENTRY POINT</span>
+0336 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0337 <span class="comment">% Create secondary axes</span>
+0338 <span class="keyword">if</span> isempty(appDataStruct.secondaryAxesHandle)
+0339     appDataStruct.secondaryAxesHandle = copyobj(appDataStruct.mainAxesHandle, appDataStruct.figureHandle);    
+0340 <span class="keyword">end</span>
+0341 
+0342 <span class="comment">%Configure secondary axis</span>
+0343 set( appDataStruct.secondaryAxesHandle, <span class="string">'Color'</span>, get(appDataStruct.mainAxesHandle,<span class="string">'Color'</span>), <span class="string">'Box'</span>,<span class="string">'on'</span>);
+0344 set( appDataStruct.secondaryAxesHandle, <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>,<span class="keyword">...</span>
+0345                                         <span class="string">'LineWidth'</span>, appDataStruct.globalEdgeWidth,<span class="keyword">...</span>
+0346                                         <span class="string">'XColor'</span>, appDataStruct.globalEdgeColor,<span class="keyword">...</span>
+0347                                         <span class="string">'YColor'</span>, appDataStruct.globalEdgeColor,<span class="keyword">...</span>
+0348                                         <span class="string">'Color'</span>, appDataStruct.secondaryAxesFaceColor );
+0349 set( appDataStruct.figureHandle, <span class="string">'CurrentAxes'</span>, appDataStruct.secondaryAxesHandle );
+0350 xlabel(<span class="string">''</span>); ylabel(<span class="string">''</span>); zlabel(<span class="string">''</span>); title(<span class="string">''</span>);
+0351 axis( appDataStruct.secondaryAxesHandle, <span class="string">'normal'</span>); <span class="comment">%Ensure that secondary axes are not resizing</span>
+0352 set( appDataStruct.figureHandle, <span class="string">'CurrentAxes'</span>, appDataStruct.mainAxesHandle );
+0353 
+0354 <span class="comment">%Default magnifier position</span>
+0355 <span class="keyword">if</span> isempty(appDataStruct.magnifierPosition)
+0356     appDataStruct.magnifierPosition = <a href="#_sub20" class="code" title="subfunction defaultPosition = computeMagnifierDefaultPosition()">computeMagnifierDefaultPosition</a>();   
+0357 <span class="keyword">end</span>
+0358 
+0359 <span class="comment">%Default secondary axes position</span>
+0360 <span class="keyword">if</span> isempty(appDataStruct.secondaryAxesPosition)
+0361     appDataStruct.secondaryAxesPosition = <a href="#_sub19" class="code" title="subfunction defaultPosition = computeSecondaryAxesDefaultPosition()">computeSecondaryAxesDefaultPosition</a>();
+0362 <span class="keyword">end</span>
+0363 
+0364 <span class="comment">% #PATCH 1 (part 1)</span>
+0365 toolArrayAux = get(appDataStruct.figureHandle, <span class="string">'userdata'</span>);
+0366 set(appDataStruct.figureHandle, <span class="string">'userdata'</span>, []);
+0367 <span class="comment">% #END PATCH 1 (part 1)</span>
+0368 
+0369 <span class="comment">%Set initial position of secondary axes</span>
+0370 <a href="#_sub15" class="code" title="subfunction setSecondaryAxesPositionInPixels( position )">setSecondaryAxesPositionInPixels</a>( appDataStruct.secondaryAxesPosition );
+0371 <span class="comment">%Set initial position of magnifier</span>
+0372 <a href="#_sub16" class="code" title="subfunction setMagnifierPositionInPixels( position )">setMagnifierPositionInPixels</a>( appDataStruct.magnifierPosition );                            
+0373 
+0374 <span class="comment">% #PATCH 1 (part 2)</span>
+0375 set(appDataStruct.figureHandle, <span class="string">'userdata'</span>, toolArrayAux);
+0376 <span class="comment">% #END PATCH 1 (part 2)</span>
+0377 
+0378 <span class="comment">%Update view limits on secondary axis</span>
+0379 <a href="#_sub1" class="code" title="subfunction refreshSecondaryAxisLimits()">refreshSecondaryAxisLimits</a>();
+0380 
+0381 <span class="comment">%Update link between secondary axes and magnifier</span>
+0382 <a href="#_sub17" class="code" title="subfunction refreshMagnifierToSecondaryAxesLink()">refreshMagnifierToSecondaryAxesLink</a>();
+0383 
+0384 <span class="comment">%Set actions for interactive mode</span>
+0385 <span class="keyword">if</span> strcmpi( appDataStruct.globalMode, <span class="string">'interactive'</span>)
+0386     
+0387     toolArray = get(appDataStruct.figureHandle, <span class="string">'userdata'</span>);
+0388     nTools = length(toolArray);
+0389     <span class="keyword">if</span> nTools == 0
+0390         
+0391         <span class="comment">%Store figure position</span>
+0392         appDataStruct.figurePosition = <a href="#_sub11" class="code" title="subfunction position = getFigurePositionInPixels()">getFigurePositionInPixels</a>();
+0393         
+0394         <span class="comment">%Store old callbacks</span>
+0395         appDataStruct.figureOldWindowButtonDownFcn = get( appDataStruct.figureHandle, <span class="string">'WindowButtonDownFcn'</span>);
+0396         appDataStruct.figureOldWindowButtonUpFcn = get( appDataStruct.figureHandle, <span class="string">'WindowButtonUpFcn'</span>);
+0397         appDataStruct.figureOldWindowButtonMotionFcn = get( appDataStruct.figureHandle, <span class="string">'WindowButtonMotionFcn'</span>);
+0398         appDataStruct.figureOldKeyPressFcn = get( appDataStruct.figureHandle, <span class="string">'KeyPressFcn'</span>);
+0399         appDataStruct.figureOldDeleteFcn = get( appDataStruct.figureHandle, <span class="string">'DeleteFcn'</span>);
+0400         appDataStruct.figureOldResizeFcn = get( appDataStruct.figureHandle, <span class="string">'ResizeFcn'</span>);
+0401 
+0402         <span class="comment">%Set service funcions to events</span>
+0403         set(    appDataStruct.figureHandle, <span class="keyword">...</span>
+0404                <span class="string">'WindowButtonDownFcn'</span>,   @<a href="#_sub6" class="code" title="subfunction ButtonDownCallback(src,eventdata)">ButtonDownCallback</a>, <span class="keyword">...</span>
+0405                <span class="string">'WindowButtonUpFcn'</span>,     @<a href="#_sub7" class="code" title="subfunction ButtonUpCallback(src,eventdata)">ButtonUpCallback</a>, <span class="keyword">...</span>
+0406                <span class="string">'WindowButtonMotionFcn'</span>, @<a href="#_sub5" class="code" title="subfunction ButtonMotionCallback(src,eventdata)">ButtonMotionCallback</a>, <span class="keyword">...</span>
+0407                <span class="string">'KeyPressFcn'</span>,           @<a href="#_sub4" class="code" title="subfunction KeyPressCallback(src,eventdata)">KeyPressCallback</a>, <span class="keyword">...</span>
+0408                <span class="string">'DeleteFcn'</span>,             @<a href="#_sub8" class="code" title="subfunction DeleteCallback(src,eventdata)">DeleteCallback</a>,<span class="keyword">...</span>
+0409                <span class="string">'ResizeFcn'</span>,             @<a href="#_sub3" class="code" title="subfunction ResizeCallback(src,eventdata)">ResizeCallback</a><span class="keyword">...</span>
+0410                );
+0411     <span class="keyword">end</span>
+0412 <span class="keyword">else</span>
+0413         
+0414     <span class="comment">%Set service funcions to events</span>
+0415     set(   appDataStruct.figureHandle, <span class="keyword">...</span>
+0416            <span class="string">'WindowButtonDownFcn'</span>,   <span class="string">''</span>, <span class="keyword">...</span>
+0417            <span class="string">'WindowButtonUpFcn'</span>,     <span class="string">''</span>, <span class="keyword">...</span>
+0418            <span class="string">'WindowButtonMotionFcn'</span>, <span class="string">''</span>, <span class="keyword">...</span>
+0419            <span class="string">'KeyPressFcn'</span>,           <span class="string">''</span>, <span class="keyword">...</span>
+0420            <span class="string">'DeleteFcn'</span>,             <span class="string">''</span>,<span class="keyword">...</span>
+0421            <span class="string">'ResizeFcn'</span>,             <span class="string">''</span><span class="keyword">...</span><span class="comment">           </span>
+0422            );
+0423 <span class="keyword">end</span>
+0424 
+0425 <span class="comment">%Set focus</span>
+0426 appDataStruct.focusOnThisTool = true;
+0427 
+0428 <span class="comment">%Compute unique ID of this magnifying tool, from handles of its elements</span>
+0429 toolId =    appDataStruct.figureHandle +<span class="keyword">...</span>
+0430             appDataStruct.mainAxesHandle +<span class="keyword">...</span>
+0431             appDataStruct.magnifierHandle +<span class="keyword">...</span>
+0432             appDataStruct.linkHandle +<span class="keyword">...</span>
+0433             appDataStruct.secondaryAxesHandle;
+0434 <span class="comment">%Set ID of this magnifying tool</span>
+0435 appDataStruct.toolId = toolId;
+0436 
+0437 <span class="comment">%Get active figure</span>
+0438 figureHandle = appDataStruct.figureHandle;
+0439 
+0440 <span class="comment">%Save object of this tool to userdata in figure object</span>
+0441 toolArray = get(figureHandle, <span class="string">'UserData'</span>);
+0442 <span class="keyword">if</span> isempty(toolArray)
+0443     toolArray = struct(appDataStruct);
+0444     toolArray.focusOnThisTool = true;
+0445 <span class="keyword">else</span>
+0446     <span class="comment">%Set focus to this tool</span>
+0447     focusedTool = find([toolArray.focusOnThisTool] == 1);
+0448     toolArray(focusedTool).focusOnThisTool = false;
+0449         
+0450     <span class="comment">%search tool ID</span>
+0451     indexFoundToolId = find([toolArray.toolId] == toolId);    
+0452     <span class="keyword">if</span> isempty(indexFoundToolId)
+0453         <span class="comment">%If not found, create new</span>
+0454         indexFoundToolId = length(toolArray)+1;
+0455     <span class="keyword">end</span>
+0456     toolArray(indexFoundToolId) = struct(appDataStruct);
+0457     toolArray(indexFoundToolId).focusOnThisTool = true;
+0458     
+0459 <span class="keyword">end</span>
+0460 set( figureHandle, <span class="string">'UserData'</span>, toolArray );
+0461 
+0462 <span class="comment">%Set callback global behaviour</span>
+0463 set(appDataStruct.figureHandle, <span class="string">'Interruptible'</span>, <span class="string">'off'</span>);
+0464 set(appDataStruct.figureHandle, <span class="string">'BusyAction'</span>, <span class="string">'cancel'</span>);
+0465 
+0466 <span class="comment">%Return created object if requested</span>
+0467 <span class="keyword">if</span> outputObjectExpected == true
+0468     varargout{1} = appDataStruct;
+0469 <span class="keyword">end</span>
+0470     
+0471   
+0472 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0473 <span class="comment">% NAME: refreshSecondaryAxisLimits</span>
+0474 <span class="comment">%</span>
+0475 <span class="comment">% PURPOSE: Updates the view on the secondary axis, based on position and</span>
+0476 <span class="comment">% span of magnifier, and extend of secondary axis.</span>
+0477 <span class="comment">%</span>
+0478 <span class="comment">% INPUT ARGUMENTS:</span>
+0479 <span class="comment">%                   appDataStructuct [struct 1x1]: global variable</span>
+0480 <span class="comment">% OUTPUT ARGUMENTS:</span>
+0481 <span class="comment">%                   change 'XLim' and 'YLim' of secondary axis (ACTION)</span>
+0482 <span class="comment">%</span>
+0483 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0484 <a name="_sub1" href="#_subfunctions" class="code">function refreshSecondaryAxisLimits()</a>
+0485         
+0486 <span class="keyword">global</span> appDataStruct;
+0487 
+0488 <span class="keyword">if</span> isempty(appDataStruct)
+0489     <span class="keyword">return</span>;
+0490 <span class="keyword">end</span>
+0491 
+0492 <span class="comment">%If limits specified</span>
+0493 <span class="keyword">if</span> ~(isempty(appDataStruct.secondaryAxesXLim) ||<span class="keyword">...</span>
+0494    isempty(appDataStruct.secondaryAxesYLim))     
+0495 
+0496     initialXLim = appDataStruct.secondaryAxesXLim;
+0497     initialYLim = appDataStruct.secondaryAxesYLim;
+0498     
+0499     limitsToSet = [<span class="keyword">...</span>
+0500                         initialXLim(1)<span class="keyword">...</span>
+0501                         initialXLim(2)<span class="keyword">...</span>
+0502                         initialYLim(1)<span class="keyword">...</span>
+0503                         initialYLim(2)<span class="keyword">...</span>
+0504                     ];        
+0505     axis(appDataStruct.secondaryAxesHandle, limitsToSet);
+0506     
+0507     appDataStruct.secondaryAxesXLim = [];
+0508     appDataStruct.secondaryAxesYLim = [];
+0509 <span class="keyword">else</span>
+0510     <span class="comment">%Get main axes limits, in axes units</span>
+0511     mainAxesXLim = get( appDataStruct.mainAxesHandle, <span class="string">'XLim'</span> );
+0512     mainAxesYLim = get( appDataStruct.mainAxesHandle, <span class="string">'YLim'</span> );
+0513     mainAxesXDir = get( appDataStruct.mainAxesHandle, <span class="string">'XDir'</span> );
+0514     mainAxesYDir = get( appDataStruct.mainAxesHandle, <span class="string">'YDir'</span> );
+0515     
+0516     <span class="comment">%Get position and size of main axes in pixels</span>
+0517     mainAxesPositionInPixels = <a href="#_sub12" class="code" title="subfunction position = getMainAxesPositionInPixels()">getMainAxesPositionInPixels</a>();
+0518     
+0519     <span class="comment">%Compute Pixels-to-axes units conversion factors</span>
+0520     xMainAxisPixels2UnitsFactor = <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>( mainAxesXLim(1), mainAxesXLim(2) )/mainAxesPositionInPixels(3);
+0521     yMainAxisPixels2UnitsFactor = <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>( mainAxesYLim(1), mainAxesYLim(2) )/mainAxesPositionInPixels(4);
+0522 
+0523     <span class="comment">%Get position and extend of magnifier, in pixels</span>
+0524     magnifierPosition = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>(); <span class="comment">%In pixels</span>
+0525     
+0526     <span class="comment">%Relative to the lower-left corner of the axes</span>
+0527     magnifierPosition(1) = magnifierPosition(1) - mainAxesPositionInPixels(1);
+0528     magnifierPosition(2) = magnifierPosition(2) - mainAxesPositionInPixels(2);
+0529     
+0530     <span class="comment">%Compute position and exted of magnifier, in axes units</span>
+0531     magnifierPosition(3) = magnifierPosition(3) * xMainAxisPixels2UnitsFactor;
+0532     magnifierPosition(4) = magnifierPosition(4) * yMainAxisPixels2UnitsFactor;
+0533     <span class="keyword">if</span> strcmpi(mainAxesXDir, <span class="string">'normal'</span>) &amp;&amp; strcmpi(mainAxesYDir, <span class="string">'normal'</span>)
+0534         magnifierPosition(1) = mainAxesXLim(1) + magnifierPosition(1)*xMainAxisPixels2UnitsFactor;
+0535         magnifierPosition(2) = mainAxesYLim(1) + magnifierPosition(2)*yMainAxisPixels2UnitsFactor;
+0536     <span class="keyword">end</span>
+0537     <span class="keyword">if</span> strcmpi(mainAxesXDir, <span class="string">'normal'</span>) &amp;&amp; strcmpi(mainAxesYDir, <span class="string">'reverse'</span>)
+0538         magnifierPosition(1) = mainAxesXLim(1) + magnifierPosition(1)*xMainAxisPixels2UnitsFactor;
+0539         magnifierPosition(2) = mainAxesYLim(2) - magnifierPosition(2)*yMainAxisPixels2UnitsFactor - magnifierPosition(4);   
+0540     <span class="keyword">end</span>
+0541     <span class="keyword">if</span> strcmpi(mainAxesXDir, <span class="string">'reverse'</span>) &amp;&amp; strcmpi(mainAxesYDir, <span class="string">'normal'</span>)
+0542         magnifierPosition(1) = mainAxesXLim(2) - magnifierPosition(1)*xMainAxisPixels2UnitsFactor - magnifierPosition(3);
+0543         magnifierPosition(2) = mainAxesYLim(1) + magnifierPosition(2)*yMainAxisPixels2UnitsFactor; 
+0544     <span class="keyword">end</span>
+0545     <span class="keyword">if</span> strcmpi(mainAxesXDir, <span class="string">'reverse'</span>) &amp;&amp; strcmpi(mainAxesYDir, <span class="string">'reverse'</span>)
+0546         magnifierPosition(1) = mainAxesXLim(2) - magnifierPosition(1)*xMainAxisPixels2UnitsFactor - magnifierPosition(3);
+0547         magnifierPosition(2) = mainAxesYLim(2) - magnifierPosition(2)*yMainAxisPixels2UnitsFactor - magnifierPosition(4);
+0548     <span class="keyword">end</span>
+0549         
+0550     secondaryAxisXlim = [magnifierPosition(1) magnifierPosition(1)+magnifierPosition(3)];
+0551     secondaryAxisYlim = [magnifierPosition(2) magnifierPosition(2)+magnifierPosition(4)]; 
+0552     
+0553     zoomFactor = appDataStruct.secondaryAxesAdditionalZoomingFactor;
+0554     xZoom = zoomFactor(1);
+0555     yZoom = zoomFactor(2);
+0556 
+0557     aux_secondaryAxisXlim(1) =  mean(secondaryAxisXlim) -<span class="keyword">...</span>
+0558                             <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>( secondaryAxisXlim(1), mean(secondaryAxisXlim) )*(1-xZoom);
+0559     aux_secondaryAxisXlim(2) =  mean(secondaryAxisXlim) +<span class="keyword">...</span>
+0560                             <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>( secondaryAxisXlim(2), mean(secondaryAxisXlim) )*(1-xZoom);
+0561     aux_secondaryAxisYlim(1) =  mean(secondaryAxisYlim) -<span class="keyword">...</span>
+0562                             <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>( secondaryAxisYlim(1), mean(secondaryAxisYlim) )*(1-yZoom);
+0563     aux_secondaryAxisYlim(2) =  mean(secondaryAxisYlim) +<span class="keyword">...</span>
+0564                             <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>( secondaryAxisYlim(2), mean(secondaryAxisYlim) )*(1-yZoom);
+0565 
+0566     <span class="keyword">if</span> aux_secondaryAxisXlim(1)&lt;aux_secondaryAxisXlim(2) &amp;&amp;<span class="keyword">...</span>
+0567        all(isfinite(aux_secondaryAxisXlim))     
+0568         set( appDataStruct.secondaryAxesHandle, <span class="string">'XLim'</span>, aux_secondaryAxisXlim );
+0569     <span class="keyword">end</span>
+0570     <span class="keyword">if</span> aux_secondaryAxisYlim(1)&lt;aux_secondaryAxisYlim(2) &amp;&amp;<span class="keyword">...</span>
+0571        all(isfinite(aux_secondaryAxisYlim))             
+0572         set( appDataStruct.secondaryAxesHandle, <span class="string">'YLim'</span>, aux_secondaryAxisYlim );
+0573     <span class="keyword">end</span>
+0574 
+0575 <span class="keyword">end</span>
+0576 
+0577 <span class="comment">%Increase line width in plots on secondary axis</span>
+0578 childHandle = get( appDataStruct.secondaryAxesHandle, <span class="string">'Children'</span>);
+0579 <span class="keyword">for</span> iChild = 1:length(childHandle)
+0580     <span class="keyword">if</span> strcmpi(get(childHandle(iChild), <span class="string">'Type'</span>), <span class="string">'line'</span>)
+0581         set(childHandle(iChild), <span class="string">'LineWidth'</span>, 2);
+0582     <span class="keyword">end</span>
+0583     <span class="keyword">if</span> strcmpi(get(childHandle(iChild), <span class="string">'Type'</span>), <span class="string">'image'</span>)
+0584         <span class="comment">%Do nothing for now</span>
+0585     <span class="keyword">end</span>
+0586 <span class="keyword">end</span>
+0587 
+0588 
+0589 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0590 <span class="comment">% NAME: determineSpan</span>
+0591 <span class="comment">%</span>
+0592 <span class="comment">% PURPOSE: Computes the distance between two real numbers on a 1D space.</span>
+0593 <span class="comment">%</span>
+0594 <span class="comment">% INPUT ARGUMENTS:</span>
+0595 <span class="comment">%                   v1 [double 1x1]: first number</span>
+0596 <span class="comment">%                   v2 [double 1x1]: second number</span>
+0597 <span class="comment">% OUTPUT ARGUMENTS:</span>
+0598 <span class="comment">%                   span [double 1x1]: computed span</span>
+0599 <span class="comment">%</span>
+0600 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0601 <a name="_sub2" href="#_subfunctions" class="code">function span = determineSpan( v1, v2 )</a>
+0602 
+0603 <span class="keyword">if</span> v1&gt;=0 &amp;&amp; v2&gt;=0
+0604     span = max(v1,v2) - min(v1,v2);
+0605 <span class="keyword">end</span>
+0606 <span class="keyword">if</span> v1&gt;=0 &amp;&amp; v2&lt;0
+0607     span = v1 - v2;
+0608 <span class="keyword">end</span>
+0609 <span class="keyword">if</span> v1&lt;0 &amp;&amp; v2&gt;=0
+0610     span = -v1 + v2;
+0611 <span class="keyword">end</span>
+0612 <span class="keyword">if</span> v1&lt;0 &amp;&amp; v2&lt;0
+0613     span = max(-v1,-v2) - min(-v1,-v2);
+0614 <span class="keyword">end</span>
+0615    
+0616 
+0617 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0618 <span class="comment">% NAME: ResizeCallback</span>
+0619 <span class="comment">%</span>
+0620 <span class="comment">% PURPOSE: Service routine to Resize event.</span>
+0621 <span class="comment">%</span>
+0622 <span class="comment">% INPUT ARGUMENTS:</span>
+0623 <span class="comment">%</span>
+0624 <span class="comment">% OUTPUT ARGUMENTS:</span>
+0625 <span class="comment">%</span>
+0626 <span class="comment">%</span>
+0627 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0628 <a name="_sub3" href="#_subfunctions" class="code">function ResizeCallback(src,eventdata)</a>
+0629 
+0630 <span class="keyword">global</span> appDataStruct;
+0631 
+0632 <span class="keyword">if</span> isempty(appDataStruct)
+0633     <span class="keyword">return</span>;
+0634 <span class="keyword">end</span>
+0635 
+0636 <span class="comment">%Get userdata</span>
+0637 toolArray = get(src, <span class="string">'userdata'</span>);
+0638 
+0639 <span class="keyword">if</span> isempty(toolArray)
+0640     <span class="keyword">return</span>;
+0641 <span class="keyword">end</span>
+0642 
+0643 nTools = length( toolArray );
+0644 
+0645 <span class="comment">%Store Old&amp;New Figure positions</span>
+0646 oldFigurePosition = toolArray(1).figurePosition;
+0647 newFigurePosition = <a href="#_sub11" class="code" title="subfunction position = getFigurePositionInPixels()">getFigurePositionInPixels</a>(); 
+0648     
+0649 <span class="comment">%Backup global appDataStruct</span>
+0650 appDataStructAux = appDataStruct;
+0651 
+0652 <span class="keyword">for</span> i=1:nTools
+0653     
+0654     <span class="comment">%Modify global vaiable, accessed by functions called below</span>
+0655     appDataStruct = <a href="#_sub21" class="code" title="subfunction obj = initializeToolStruct(varargin)">initializeToolStruct</a>( toolArray(i) );
+0656     
+0657     <span class="comment">%Set position of secondaryAxes (automatically modified)</span>
+0658     toolArray(i).secondaryAxesPosition = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+0659     
+0660        
+0661     toolArray(i).magnifierPosition(1) = toolArray(i).magnifierPosition(1) * newFigurePosition(3)/oldFigurePosition(3);
+0662     toolArray(i).magnifierPosition(2) = toolArray(i).magnifierPosition(2) * newFigurePosition(4)/oldFigurePosition(4);
+0663     toolArray(i).magnifierPosition(3) = toolArray(i).magnifierPosition(3) * newFigurePosition(3)/oldFigurePosition(3);
+0664     toolArray(i).magnifierPosition(4) = toolArray(i).magnifierPosition(4) * newFigurePosition(4)/oldFigurePosition(4);    
+0665     <a href="#_sub16" class="code" title="subfunction setMagnifierPositionInPixels( position )">setMagnifierPositionInPixels</a>( toolArray(i).magnifierPosition );                            
+0666         
+0667     <span class="comment">%Update view limits on secondary axis</span>
+0668     <a href="#_sub1" class="code" title="subfunction refreshSecondaryAxisLimits()">refreshSecondaryAxisLimits</a>();
+0669     <span class="comment">%Update link between secondary axes and magnifier</span>
+0670     <a href="#_sub17" class="code" title="subfunction refreshMagnifierToSecondaryAxesLink()">refreshMagnifierToSecondaryAxesLink</a>();
+0671     
+0672     <span class="keyword">if</span> i==1
+0673         <span class="comment">%Update figure position</span>
+0674         toolArray(i).figurePosition = <a href="#_sub11" class="code" title="subfunction position = getFigurePositionInPixels()">getFigurePositionInPixels</a>();
+0675         appDataStruct.figurePosition = toolArray(i).figurePosition;          
+0676     <span class="keyword">end</span>
+0677 <span class="keyword">end</span>
+0678 
+0679 <span class="comment">%Update userdata</span>
+0680 set(toolArray(1).figureHandle, <span class="string">'userdata'</span>, toolArray);
+0681 
+0682 <span class="comment">%Update appDataStruct</span>
+0683 appDataStruct = appDataStructAux;
+0684 <span class="comment">%Get current position of seconday axes (in pixels)</span>
+0685 appDataStruct.secondaryAxesPosition = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+0686 <span class="comment">%Get magnifier current position and size</span>
+0687 appDataStruct.magnifierPosition = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+0688 
+0689 clear appDataStructAux;
+0690 
+0691 
+0692 
+0693 
+0694 
+0695 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0696 <span class="comment">% NAME: KeyPressCallback</span>
+0697 <span class="comment">%</span>
+0698 <span class="comment">% PURPOSE: Service routine to KeyPress event.</span>
+0699 <span class="comment">%</span>
+0700 <span class="comment">% INPUT ARGUMENTS:</span>
+0701 <span class="comment">%</span>
+0702 <span class="comment">% OUTPUT ARGUMENTS:</span>
+0703 <span class="comment">%</span>
+0704 <span class="comment">%</span>
+0705 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+0706 <a name="_sub4" href="#_subfunctions" class="code">function KeyPressCallback(src,eventdata)</a>
+0707 
+0708 <span class="keyword">global</span> appDataStruct
+0709 
+0710 <span class="keyword">if</span> isempty(appDataStruct)
+0711     <span class="keyword">return</span>;
+0712 <span class="keyword">end</span>
+0713 
+0714 currentCaracter = eventdata.Key;
+0715 currentModifier = eventdata.Modifier;
+0716 
+0717 <span class="keyword">switch</span>(currentCaracter)
+0718     <span class="keyword">case</span> {<span class="string">'leftarrow'</span>} <span class="comment">% left arrow</span>
+0719         <span class="comment">%Move magnifier to the left</span>
+0720         <span class="keyword">if</span> isempty(currentModifier)
+0721             position = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+0722             magnifierPosition(1) = position(1)-1;
+0723             magnifierPosition(2) = position(2);
+0724             magnifierPosition(3) = position(3);
+0725             magnifierPosition(4) = position(4);
+0726             <a href="#_sub16" class="code" title="subfunction setMagnifierPositionInPixels( position )">setMagnifierPositionInPixels</a>( magnifierPosition );         
+0727         <span class="keyword">end</span>
+0728         <span class="comment">%Compress magnifier on the X axis</span>
+0729         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'shift'</span>)
+0730             position = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+0731             magnifierPosition(3) = position(3)*(1 - 0.1);
+0732             <span class="keyword">if</span> strcmpi( appDataStruct.globalZoomMode, <span class="string">'off'</span>)
+0733                 magnifierPosition(4) = position(4);
+0734             <span class="keyword">else</span>
+0735                 <span class="comment">%If 'freezeZoomAspectRatio' to 'on', be consistent</span>
+0736                 magnifierPosition(4) = position(4)*(1 - 0.1); 
+0737             <span class="keyword">end</span>
+0738             magnifierPosition(1) = position(1)-(-position(3)+magnifierPosition(3))/2;
+0739             magnifierPosition(2) = position(2)-(-position(4)+magnifierPosition(4))/2;
+0740             <a href="#_sub16" class="code" title="subfunction setMagnifierPositionInPixels( position )">setMagnifierPositionInPixels</a>( magnifierPosition );
+0741         <span class="keyword">end</span>
+0742         <span class="comment">%Move secondary axes to the left</span>
+0743         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'control'</span>)
+0744             position = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+0745             secondaryAxesPosition(1) = position(1)-1;
+0746             secondaryAxesPosition(2) = position(2);
+0747             secondaryAxesPosition(3) = position(3);
+0748             secondaryAxesPosition(4) = position(4);
+0749             <a href="#_sub15" class="code" title="subfunction setSecondaryAxesPositionInPixels( position )">setSecondaryAxesPositionInPixels</a>( secondaryAxesPosition );        
+0750         <span class="keyword">end</span>
+0751         <span class="comment">%Compress secondary axes on the X axis</span>
+0752         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'alt'</span>)
+0753             position = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+0754             secondaryAxesPosition(3) = position(3)*(1 - 0.1);
+0755             <span class="keyword">if</span> strcmpi( appDataStruct.globalZoomMode, <span class="string">'off'</span>)
+0756                 secondaryAxesPosition(4) = position(4);
+0757             <span class="keyword">else</span>
+0758                 <span class="comment">%If 'freezeZoomAspectRatio' to 'on', be consistent</span>
+0759                 secondaryAxesPosition(4) = position(4)*(1 - 0.1); 
+0760             <span class="keyword">end</span>
+0761             secondaryAxesPosition(1) = position(1)-(-position(3)+secondaryAxesPosition(3))/2;
+0762             secondaryAxesPosition(2) = position(2)-(-position(4)+secondaryAxesPosition(4))/2;
+0763             <a href="#_sub15" class="code" title="subfunction setSecondaryAxesPositionInPixels( position )">setSecondaryAxesPositionInPixels</a>( secondaryAxesPosition ); 
+0764         <span class="keyword">end</span>
+0765         
+0766     <span class="keyword">case</span> {<span class="string">'rightarrow'</span>} <span class="comment">% right arrow</span>
+0767          <span class="comment">%Move magnifier to the right</span>
+0768         <span class="keyword">if</span> isempty(currentModifier)
+0769             position = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+0770             magnifierPosition(1) = position(1)+1;
+0771             magnifierPosition(2) = position(2);
+0772             magnifierPosition(3) = position(3);
+0773             magnifierPosition(4) = position(4);
+0774             <a href="#_sub16" class="code" title="subfunction setMagnifierPositionInPixels( position )">setMagnifierPositionInPixels</a>( magnifierPosition );         
+0775         <span class="keyword">end</span>
+0776         <span class="comment">%Expand magnifier on the X axis</span>
+0777         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'shift'</span>)
+0778             position = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+0779             magnifierPosition(3) = position(3)*(1 + 0.1);
+0780             <span class="keyword">if</span> strcmpi( appDataStruct.globalZoomMode, <span class="string">'off'</span>)
+0781                 magnifierPosition(4) = position(4);
+0782             <span class="keyword">else</span>
+0783                 <span class="comment">%If 'freezeZoomAspectRatio' to 'on', be consistent</span>
+0784                 magnifierPosition(4) = position(4)*(1 + 0.1); 
+0785             <span class="keyword">end</span>
+0786             magnifierPosition(1) = position(1)-(-position(3)+magnifierPosition(3))/2;
+0787             magnifierPosition(2) = position(2)-(-position(4)+magnifierPosition(4))/2;
+0788             <a href="#_sub16" class="code" title="subfunction setMagnifierPositionInPixels( position )">setMagnifierPositionInPixels</a>( magnifierPosition );
+0789         <span class="keyword">end</span>
+0790         <span class="comment">%Move secondary axes to the right</span>
+0791         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'control'</span>)
+0792             position = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+0793             secondaryAxesPosition(1) = position(1)+1;
+0794             secondaryAxesPosition(2) = position(2);
+0795             secondaryAxesPosition(3) = position(3);
+0796             secondaryAxesPosition(4) = position(4);
+0797             <a href="#_sub15" class="code" title="subfunction setSecondaryAxesPositionInPixels( position )">setSecondaryAxesPositionInPixels</a>( secondaryAxesPosition );      
+0798         <span class="keyword">end</span>   
+0799         <span class="comment">%Expand secondary axes on the X axis</span>
+0800         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'alt'</span>)
+0801             position = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+0802             secondaryAxesPosition(3) = position(3)*(1 + 0.1);
+0803             <span class="keyword">if</span> strcmpi( appDataStruct.globalZoomMode, <span class="string">'off'</span>)
+0804                 secondaryAxesPosition(4) = position(4);
+0805             <span class="keyword">else</span>
+0806                 <span class="comment">%If 'freezeZoomAspectRatio' to 'on', be consistent</span>
+0807                 secondaryAxesPosition(4) = position(4)*(1 + 0.1); 
+0808             <span class="keyword">end</span>
+0809             secondaryAxesPosition(1) = position(1)-(-position(3)+secondaryAxesPosition(3))/2;
+0810             secondaryAxesPosition(2) = position(2)-(-position(4)+secondaryAxesPosition(4))/2;
+0811             <a href="#_sub15" class="code" title="subfunction setSecondaryAxesPositionInPixels( position )">setSecondaryAxesPositionInPixels</a>( secondaryAxesPosition );  
+0812         <span class="keyword">end</span>
+0813         
+0814     <span class="keyword">case</span> {<span class="string">'uparrow'</span>} <span class="comment">% up arrow</span>
+0815         <span class="comment">%Move magnifier to the top</span>
+0816         <span class="keyword">if</span> isempty(currentModifier)
+0817             position = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+0818             magnifierPosition(1) = position(1);
+0819             magnifierPosition(2) = position(2)+1;
+0820             magnifierPosition(3) = position(3);
+0821             magnifierPosition(4) = position(4);
+0822             <a href="#_sub16" class="code" title="subfunction setMagnifierPositionInPixels( position )">setMagnifierPositionInPixels</a>( magnifierPosition );         
+0823         <span class="keyword">end</span>
+0824         <span class="comment">%Expand magnifier on the Y axis</span>
+0825         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'shift'</span>)
+0826             position = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+0827             <span class="keyword">if</span> strcmpi( appDataStruct.globalZoomMode, <span class="string">'off'</span>)
+0828                 magnifierPosition(3) = position(3);
+0829             <span class="keyword">else</span>
+0830                 <span class="comment">%If 'freezeZoomAspectRatio' to 'on', be consistent</span>
+0831                 magnifierPosition(3) = position(3)*(1 + 0.1); 
+0832             <span class="keyword">end</span>
+0833             magnifierPosition(4) = position(4)*(1 + 0.1);
+0834             magnifierPosition(1) = position(1)-(-position(3)+magnifierPosition(3))/2;
+0835             magnifierPosition(2) = position(2)-(-position(4)+magnifierPosition(4))/2;
+0836             <a href="#_sub16" class="code" title="subfunction setMagnifierPositionInPixels( position )">setMagnifierPositionInPixels</a>( magnifierPosition );
+0837         <span class="keyword">end</span>
+0838         <span class="comment">%Move secondary axes to the top</span>
+0839         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'control'</span>)
+0840             position = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+0841             secondaryAxesPosition(1) = position(1);
+0842             secondaryAxesPosition(2) = position(2)+1;
+0843             secondaryAxesPosition(3) = position(3);
+0844             secondaryAxesPosition(4) = position(4);
+0845             <a href="#_sub15" class="code" title="subfunction setSecondaryAxesPositionInPixels( position )">setSecondaryAxesPositionInPixels</a>( secondaryAxesPosition );                  
+0846         <span class="keyword">end</span> 
+0847         <span class="comment">%Expand secondary axes on the Y axis</span>
+0848         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'alt'</span>)
+0849             position = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+0850             <span class="keyword">if</span> strcmpi( appDataStruct.globalZoomMode, <span class="string">'off'</span>)
+0851                 secondaryAxesPosition(3) = position(3);
+0852             <span class="keyword">else</span>
+0853                 <span class="comment">%If 'freezeZoomAspectRatio' to 'on', be consistent</span>
+0854                 secondaryAxesPosition(3) = position(3)*(1 + 0.1); 
+0855             <span class="keyword">end</span>
+0856             secondaryAxesPosition(4) = position(4)*(1 + 0.1);
+0857             secondaryAxesPosition(1) = position(1)-(-position(3)+secondaryAxesPosition(3))/2;
+0858             secondaryAxesPosition(2) = position(2)-(-position(4)+secondaryAxesPosition(4))/2;
+0859             <a href="#_sub15" class="code" title="subfunction setSecondaryAxesPositionInPixels( position )">setSecondaryAxesPositionInPixels</a>( secondaryAxesPosition );   
+0860         <span class="keyword">end</span>
+0861         
+0862     <span class="keyword">case</span> {<span class="string">'downarrow'</span>} <span class="comment">% down arrow</span>
+0863         <span class="comment">%Move magnifier to the bottom</span>
+0864         <span class="keyword">if</span> isempty(currentModifier)
+0865             position = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+0866             magnifierPosition(1) = position(1);
+0867             magnifierPosition(2) = position(2)-1;
+0868             magnifierPosition(3) = position(3);
+0869             magnifierPosition(4) = position(4);
+0870             <a href="#_sub16" class="code" title="subfunction setMagnifierPositionInPixels( position )">setMagnifierPositionInPixels</a>( magnifierPosition );         
+0871         <span class="keyword">end</span>
+0872         <span class="comment">%Compress magnifier on the Y axis</span>
+0873         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'shift'</span>)
+0874             position = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+0875             <span class="keyword">if</span> strcmpi( appDataStruct.globalZoomMode, <span class="string">'off'</span>)
+0876                 magnifierPosition(3) = position(3);
+0877             <span class="keyword">else</span>
+0878                 <span class="comment">%If 'freezeZoomAspectRatio' to 'on', be consistent</span>
+0879                 magnifierPosition(3) = position(3)*(1 - 0.1); 
+0880             <span class="keyword">end</span>
+0881             magnifierPosition(4) = position(4)*(1 - 0.1);
+0882             magnifierPosition(1) = position(1)-(-position(3)+magnifierPosition(3))/2;
+0883             magnifierPosition(2) = position(2)-(-position(4)+magnifierPosition(4))/2;
+0884             <a href="#_sub16" class="code" title="subfunction setMagnifierPositionInPixels( position )">setMagnifierPositionInPixels</a>( magnifierPosition );
+0885         <span class="keyword">end</span>
+0886         <span class="comment">%Move secondary axes to the bottom</span>
+0887         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'control'</span>)
+0888             position = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+0889             secondaryAxesPosition(1) = position(1);
+0890             secondaryAxesPosition(2) = position(2)-1;
+0891             secondaryAxesPosition(3) = position(3);
+0892             secondaryAxesPosition(4) = position(4);
+0893             <a href="#_sub15" class="code" title="subfunction setSecondaryAxesPositionInPixels( position )">setSecondaryAxesPositionInPixels</a>( secondaryAxesPosition );         
+0894         <span class="keyword">end</span> 
+0895         <span class="comment">%Compress secondary axes on the Y axis</span>
+0896         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'alt'</span>)
+0897             position = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+0898             <span class="keyword">if</span> strcmpi( appDataStruct.globalZoomMode, <span class="string">'off'</span>)
+0899                 secondaryAxesPosition(3) = position(3);
+0900             <span class="keyword">else</span>
+0901                 <span class="comment">%If 'freezeZoomAspectRatio' to 'on', be consistent</span>
+0902                 secondaryAxesPosition(3) = position(3)*(1 - 0.1); 
+0903             <span class="keyword">end</span>
+0904             secondaryAxesPosition(4) = position(4)*(1 - 0.1);
+0905             secondaryAxesPosition(1) = position(1)-(-position(3)+secondaryAxesPosition(3))/2;
+0906             secondaryAxesPosition(2) = position(2)-(-position(4)+secondaryAxesPosition(4))/2;
+0907             <a href="#_sub15" class="code" title="subfunction setSecondaryAxesPositionInPixels( position )">setSecondaryAxesPositionInPixels</a>( secondaryAxesPosition );        
+0908         <span class="keyword">end</span>      
+0909 
+0910     <span class="keyword">case</span> {<span class="string">'tab'</span>} <span class="comment">% Tabulator</span>
+0911         <span class="comment">%Switch focus to next magnifier instance on the current figure</span>
+0912         toolArray = get( src, <span class="string">'UserData'</span> );
+0913         nTools = length(toolArray);
+0914         focusedTool = find([toolArray.focusOnThisTool] == 1);
+0915         <span class="keyword">if</span> focusedTool ~= nTools
+0916             nextFocusedTool = focusedTool+1;
+0917         <span class="keyword">else</span>
+0918             nextFocusedTool = 1;
+0919         <span class="keyword">end</span>
+0920         appDataStruct = <a href="#_sub21" class="code" title="subfunction obj = initializeToolStruct(varargin)">initializeToolStruct</a>( toolArray(nextFocusedTool) );
+0921         appDataStruct.focusOnThisTool = 1;
+0922         toolArray(focusedTool).focusOnThisTool = 0;
+0923         toolArray(nextFocusedTool).focusOnThisTool = 1;        
+0924         set( src, <span class="string">'UserData'</span>, toolArray );
+0925         
+0926     <span class="keyword">case</span> {<span class="string">'d'</span>} <span class="comment">% 'd'</span>
+0927         <span class="comment">%Delete focused instance</span>
+0928         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'control'</span>)
+0929             toolArray = get( src, <span class="string">'UserData'</span> );
+0930             nTools = length(toolArray);
+0931             focusedTool = find([toolArray.focusOnThisTool] == 1);
+0932                       
+0933             delete(toolArray(focusedTool).magnifierHandle);
+0934             delete(toolArray(focusedTool).linkHandle);
+0935             delete(toolArray(focusedTool).secondaryAxesHandle);                                                     
+0936             
+0937             <span class="keyword">if</span> nTools &gt; 1
+0938                 <span class="comment">%Set focus to next instance</span>
+0939                 <span class="keyword">if</span> focusedTool ~= nTools
+0940                     nextFocusedTool = focusedTool+1;
+0941                 <span class="keyword">else</span>
+0942                     nextFocusedTool = 1;
+0943                 <span class="keyword">end</span>
+0944                 toolArray(nextFocusedTool).focusOnThisTool = 1; 
+0945                 appDataStruct = <a href="#_sub21" class="code" title="subfunction obj = initializeToolStruct(varargin)">initializeToolStruct</a>( toolArray(nextFocusedTool) );
+0946 
+0947                 toolArray(focusedTool) = [];
+0948                 set( src, <span class="string">'UserData'</span>, toolArray );
+0949 
+0950             <span class="keyword">else</span>
+0951                 <span class="comment">%No instance to set focus on</span>
+0952                 appDataStruct = [];
+0953                 set( src, <span class="string">'UserData'</span>, [] );                
+0954             
+0955             <span class="keyword">end</span>
+0956         <span class="keyword">end</span>
+0957         
+0958     <span class="keyword">case</span> {<span class="string">'a'</span>} <span class="comment">% 'a'</span>
+0959         <span class="comment">%Debug info</span>
+0960         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'control'</span>)
+0961             magnifierPosition = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+0962             disp(sprintf(<span class="string">'Magnifier position: [%g %g %g %g];'</span>, magnifierPosition(1), magnifierPosition(2), magnifierPosition(3), magnifierPosition(4)  ));
+0963             secondaryAxesPosition = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();            
+0964             disp(sprintf(<span class="string">'Secondary axes position: [%g %g %g %g];'</span>, secondaryAxesPosition(1), secondaryAxesPosition(2), secondaryAxesPosition(3), secondaryAxesPosition(4)  ));            
+0965         <span class="keyword">end</span>
+0966 
+0967     <span class="keyword">case</span> {<span class="string">'q'</span>} <span class="comment">% 'a'</span>
+0968         <span class="comment">%additional xooming factors reseted</span>
+0969         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'control'</span>)
+0970             appDataStruct.secondaryAxesAdditionalZoomingFactor = [0 0];
+0971         <span class="keyword">end</span>
+0972                 
+0973     <span class="keyword">case</span> {<span class="string">'pageup'</span>} <span class="comment">% '+'</span>
+0974         zoomFactor = appDataStruct.secondaryAxesAdditionalZoomingFactor;
+0975         
+0976         <span class="comment">%Increase additional zooming factor on X-axis</span>
+0977         <span class="keyword">if</span> isempty(currentModifier)
+0978             zoomFactor(1) = zoomFactor(1) + 0.1;
+0979             <span class="keyword">if</span> strcmpi( appDataStruct.globalZoomMode, <span class="string">'on'</span>)
+0980                 zoomFactor(2) = zoomFactor(2) + 0.1;
+0981             <span class="keyword">end</span>
+0982             appDataStruct.secondaryAxesAdditionalZoomingFactor = zoomFactor;
+0983         <span class="keyword">end</span>
+0984         <span class="comment">%Increase additional zooming factor on Y-axis</span>
+0985         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'shift'</span>)
+0986             zoomFactor(2) = zoomFactor(2) + 0.1;
+0987             <span class="keyword">if</span> strcmpi( appDataStruct.globalZoomMode, <span class="string">'on'</span>)
+0988                 zoomFactor(1) = zoomFactor(1) + 0.1;
+0989             <span class="keyword">end</span>
+0990             appDataStruct.secondaryAxesAdditionalZoomingFactor = zoomFactor;
+0991         <span class="keyword">end</span>
+0992         
+0993     <span class="keyword">case</span> {<span class="string">'pagedown'</span>} <span class="comment">% '-'</span>
+0994         zoomFactor = appDataStruct.secondaryAxesAdditionalZoomingFactor;
+0995         
+0996         <span class="comment">%Redude additional zooming factor on X-axis</span>
+0997         <span class="keyword">if</span> isempty(currentModifier)
+0998             zoomFactor(1) = zoomFactor(1) - 0.1;
+0999             <span class="keyword">if</span> strcmpi( appDataStruct.globalZoomMode, <span class="string">'on'</span>)
+1000                 zoomFactor(2) = zoomFactor(2) - 0.1;
+1001             <span class="keyword">end</span>
+1002             appDataStruct.secondaryAxesAdditionalZoomingFactor = zoomFactor;
+1003         <span class="keyword">end</span>
+1004         <span class="comment">%Redude additional zooming factor on Y-axis</span>
+1005         <span class="keyword">if</span> strcmp(currentModifier, <span class="string">'shift'</span>)
+1006             zoomFactor(2) = zoomFactor(2) - 0.1;
+1007             <span class="keyword">if</span> strcmpi( appDataStruct.globalZoomMode, <span class="string">'on'</span>)
+1008                 zoomFactor(1) = zoomFactor(1) - 0.1;
+1009             <span class="keyword">end</span>
+1010             appDataStruct.secondaryAxesAdditionalZoomingFactor = zoomFactor;
+1011         <span class="keyword">end</span>        
+1012         
+1013     <span class="keyword">otherwise</span>
+1014 
+1015         
+1016 <span class="keyword">end</span>
+1017 
+1018 <span class="comment">%Update view limits on secondary axis</span>
+1019 <a href="#_sub1" class="code" title="subfunction refreshSecondaryAxisLimits()">refreshSecondaryAxisLimits</a>();
+1020 
+1021 <span class="comment">%Update link between secondary axes and magnifier</span>
+1022 <a href="#_sub17" class="code" title="subfunction refreshMagnifierToSecondaryAxesLink()">refreshMagnifierToSecondaryAxesLink</a>();
+1023 
+1024 <span class="comment">% %Update userdata</span>
+1025 <span class="comment">% toolArray = get(src, 'userdata');</span>
+1026 <span class="comment">% focusedTool = find([toolArray.focusOnThisTool] == 1);</span>
+1027 <span class="comment">% toolArray(focusedTool) = appDataStruct;</span>
+1028 <span class="comment">% set(src, 'userData', toolArray);</span>
+1029 
+1030 
+1031 
+1032 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1033 <span class="comment">% NAME: ButtonMotionCallback</span>
+1034 <span class="comment">%</span>
+1035 <span class="comment">% PURPOSE: Service routine to ButtonMotion event.</span>
+1036 <span class="comment">%</span>
+1037 <span class="comment">% INPUT ARGUMENTS:</span>
+1038 <span class="comment">%</span>
+1039 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1040 <span class="comment">%</span>
+1041 <span class="comment">%</span>
+1042 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1043 <a name="_sub5" href="#_subfunctions" class="code">function ButtonMotionCallback(src,eventdata)</a>
+1044 
+1045 <span class="keyword">global</span> appDataStruct
+1046 
+1047 <span class="keyword">if</span> isempty(appDataStruct)
+1048     <span class="keyword">return</span>;
+1049 <span class="keyword">end</span>
+1050 
+1051 <span class="comment">% pointerPos = get(appDataStructuct.figure.handle, 'CurrentPoint');</span>
+1052 <span class="comment">% disp(sprintf('X: %g ; Y: %g', pointerPos(1), pointerPos(2)) );</span>
+1053 
+1054 <a href="#_sub10" class="code" title="subfunction getPointerArea()">getPointerArea</a>();
+1055 
+1056 <span class="comment">%If Left mouse button not pressed, exit</span>
+1057 <span class="keyword">if</span> appDataStruct.ButtonDown == false
+1058     <span class="keyword">return</span>;
+1059 <span class="keyword">end</span>
+1060 
+1061 
+1062 <span class="comment">%If Left mouse button pressed while the pointer is moving (drag)</span>
+1063 <span class="keyword">switch</span> appDataStruct.pointerArea
+1064 
+1065     <span class="keyword">case</span> <span class="string">'insideSecondaryAxis'</span>
+1066         <span class="comment">%Get current position of seconday axes (in pixels)</span>
+1067         appDataStruct.secondaryAxesPosition = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+1068        
+1069         <span class="comment">%Get pointer position on figure's frame</span>
+1070         currentPointerPositionOnFigureFrame = <a href="#_sub9" class="code" title="subfunction pointerPositionOnFigureFrame = getPointerPositionOnFigureFrame()">getPointerPositionOnFigureFrame</a>();
+1071         
+1072         pointerPositionOnButtonDown = appDataStruct.pointerPositionOnButtonDown;
+1073         
+1074         <span class="comment">%Modify position</span>
+1075         secondaryAxisPosition_W = appDataStruct.secondaryAxesPosition(3);
+1076         secondaryAxisPosition_H = appDataStruct.secondaryAxesPosition(4);
+1077         secondaryAxisPosition_X = appDataStruct.secondaryAxesPosition(1) + (-pointerPositionOnButtonDown(1)+currentPointerPositionOnFigureFrame(1));
+1078         secondaryAxisPosition_Y = appDataStruct.secondaryAxesPosition(2) + (-pointerPositionOnButtonDown(2)+currentPointerPositionOnFigureFrame(2));
+1079         appDataStruct.pointerPositionOnButtonDown = currentPointerPositionOnFigureFrame;
+1080         
+1081         <span class="comment">%Set initial position and size of secondary axes</span>
+1082         <a href="#_sub15" class="code" title="subfunction setSecondaryAxesPositionInPixels( position )">setSecondaryAxesPositionInPixels</a>( [<span class="keyword">...</span>
+1083                                             secondaryAxisPosition_X,<span class="keyword">...</span>
+1084                                             secondaryAxisPosition_Y,<span class="keyword">...</span>
+1085                                             secondaryAxisPosition_W,<span class="keyword">...</span>
+1086                                             secondaryAxisPosition_H<span class="keyword">...</span>
+1087                                             ] );
+1088         
+1089         
+1090     <span class="keyword">case</span> <span class="string">'insideMagnifier'</span>                 
+1091         <span class="comment">%Get magnifier current position and size</span>
+1092         appDataStruct.magnifierPosition = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+1093         
+1094         <span class="comment">%Get pointer position on figure's frame</span>
+1095         currentPointerPosition = <a href="#_sub9" class="code" title="subfunction pointerPositionOnFigureFrame = getPointerPositionOnFigureFrame()">getPointerPositionOnFigureFrame</a>();
+1096         
+1097         pointerPositionOnButtonDown = appDataStruct.pointerPositionOnButtonDown;
+1098         
+1099         <span class="comment">%Modify magnifier position</span>
+1100         magnifierPosition_W = appDataStruct.magnifierPosition(3);
+1101         magnifierPosition_H = appDataStruct.magnifierPosition(4);
+1102         magnifierPosition_X = appDataStruct.magnifierPosition(1) + (-pointerPositionOnButtonDown(1)+currentPointerPosition(1));
+1103         magnifierPosition_Y = appDataStruct.magnifierPosition(2) + (-pointerPositionOnButtonDown(2)+currentPointerPosition(2));
+1104         appDataStruct.pointerPositionOnButtonDown = currentPointerPosition;
+1105         
+1106         <span class="comment">%Set initial position and size of magnifying rectangle</span>
+1107         <a href="#_sub16" class="code" title="subfunction setMagnifierPositionInPixels( position )">setMagnifierPositionInPixels</a>( [<span class="keyword">...</span>
+1108                                           magnifierPosition_X<span class="keyword">...</span>
+1109                                           magnifierPosition_Y<span class="keyword">...</span>
+1110                                           magnifierPosition_W<span class="keyword">...</span>
+1111                                           magnifierPosition_H<span class="keyword">...</span>
+1112                                        ] );
+1113         
+1114         <span class="comment">%Refresh zooming on secondary axis, based on magnifier position and extend</span>
+1115         <a href="#_sub1" class="code" title="subfunction refreshSecondaryAxisLimits()">refreshSecondaryAxisLimits</a>();    
+1116                            
+1117     <span class="keyword">otherwise</span>
+1118 <span class="comment">%         appDataStructuct.pointerArea</span>
+1119 
+1120 <span class="keyword">end</span>
+1121 
+1122 <span class="comment">%Update link between secondary axes and magnifier</span>
+1123 <a href="#_sub17" class="code" title="subfunction refreshMagnifierToSecondaryAxesLink()">refreshMagnifierToSecondaryAxesLink</a>();
+1124 
+1125 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1126 <span class="comment">% NAME: ButtonDownCallback</span>
+1127 <span class="comment">%</span>
+1128 <span class="comment">% PURPOSE: Service routine to ButtonDown event.</span>
+1129 <span class="comment">%</span>
+1130 <span class="comment">% INPUT ARGUMENTS:</span>
+1131 <span class="comment">%</span>
+1132 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1133 <span class="comment">%</span>
+1134 <span class="comment">%</span>
+1135 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1136 <a name="_sub6" href="#_subfunctions" class="code">function ButtonDownCallback(src,eventdata)</a>
+1137 
+1138 <span class="keyword">global</span> appDataStruct  
+1139 
+1140 <span class="keyword">if</span> isempty(appDataStruct)     
+1141     <span class="keyword">return</span>; 
+1142 <span class="keyword">end</span>
+1143 
+1144 <span class="keyword">if</span> strcmpi( get(appDataStruct.figureHandle, <span class="string">'SelectionType'</span>), <span class="string">'normal'</span> )
+1145     
+1146     <span class="comment">%Respond to left mouse button</span>
+1147     appDataStruct.ButtonDown = true;
+1148     <span class="comment">%Get pointer position on figure's frame</span>
+1149     appDataStruct.pointerPositionOnButtonDown = <a href="#_sub9" class="code" title="subfunction pointerPositionOnFigureFrame = getPointerPositionOnFigureFrame()">getPointerPositionOnFigureFrame</a>();
+1150 
+1151 <span class="keyword">elseif</span> strcmpi( get(appDataStruct.figureHandle, <span class="string">'SelectionType'</span>), <span class="string">'alt'</span> )
+1152     
+1153     <span class="comment">%Display contextual menu?</span>
+1154     
+1155 <span class="keyword">elseif</span> strcmpi( get(appDataStruct.figureHandle, <span class="string">'SelectionType'</span>), <span class="string">'open'</span> )
+1156    
+1157     <span class="comment">%Is pointer on any active area?</span>
+1158     toolArray = get(src, <span class="string">'userdata'</span>);
+1159     nTools = length(toolArray);
+1160     focusedTool = find([toolArray.focusOnThisTool] == 1);
+1161     nextFocusedTool = 0;
+1162     foundActive = false;
+1163     <span class="keyword">while</span> nextFocusedTool&lt;=nTools-1 &amp;&amp; foundActive == false
+1164         
+1165         nextFocusedTool = nextFocusedTool+1; 
+1166         appDataStructAux = appDataStruct;
+1167         appDataStruct = <a href="#_sub21" class="code" title="subfunction obj = initializeToolStruct(varargin)">initializeToolStruct</a>( toolArray(nextFocusedTool) );
+1168         <a href="#_sub10" class="code" title="subfunction getPointerArea()">getPointerArea</a>();
+1169         <span class="keyword">if</span> ~strcmp( appDataStruct.pointerArea, <span class="string">'none'</span>)
+1170             foundActive = true;
+1171         <span class="keyword">end</span>               
+1172         
+1173     <span class="keyword">end</span>
+1174     <span class="keyword">if</span> foundActive == true
+1175        <span class="comment">%Switch focus to next magnifier instance on the current figure</span>
+1176         appDataStruct = <a href="#_sub21" class="code" title="subfunction obj = initializeToolStruct(varargin)">initializeToolStruct</a>( toolArray(nextFocusedTool) );
+1177         appDataStruct.focusOnThisTool = 1;
+1178         toolArray(focusedTool).focusOnThisTool = 0;
+1179         toolArray(nextFocusedTool).focusOnThisTool = 1;        
+1180         set( src, <span class="string">'UserData'</span>, toolArray );
+1181     <span class="keyword">else</span>
+1182         appDataStruct = appDataStructAux;
+1183     <span class="keyword">end</span>        
+1184     
+1185 <span class="keyword">end</span>
+1186 
+1187 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1188 <span class="comment">% NAME: ButtonUpCallback</span>
+1189 <span class="comment">%</span>
+1190 <span class="comment">% PURPOSE: Service routine to ButtonUp event.</span>
+1191 <span class="comment">%</span>
+1192 <span class="comment">% INPUT ARGUMENTS:</span>
+1193 <span class="comment">%</span>
+1194 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1195 <span class="comment">%</span>
+1196 <span class="comment">%</span>
+1197 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1198 <a name="_sub7" href="#_subfunctions" class="code">function ButtonUpCallback(src,eventdata)</a>
+1199 
+1200 <span class="keyword">global</span> appDataStruct  
+1201 
+1202 <span class="keyword">if</span> isempty(appDataStruct)     
+1203     <span class="keyword">return</span>; 
+1204 <span class="keyword">end</span>
+1205 
+1206 <span class="comment">% if strcmp(appDataStruct.pointerArea, 'insideMagnifier')</span>
+1207 <span class="comment">%     %Refresh zooming on secondary axis, based on magnifier position and extend</span>
+1208 <span class="comment">%     refreshSecondaryAxisLimits();</span>
+1209 <span class="comment">% end</span>
+1210 
+1211 appDataStruct.ButtonDown = false;
+1212 
+1213 toolArray = get(src, <span class="string">'userdata'</span>);
+1214 focusedTool = find([toolArray.focusOnThisTool] == 1);
+1215 toolArray(focusedTool).ButtonDown = false;
+1216 set(src, <span class="string">'userdata'</span>, toolArray);
+1217 
+1218 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1219 <span class="comment">% NAME: DeleteCallback</span>
+1220 <span class="comment">%</span>
+1221 <span class="comment">% PURPOSE: Service routine to Delete event.</span>
+1222 <span class="comment">%</span>
+1223 <span class="comment">% INPUT ARGUMENTS:</span>
+1224 <span class="comment">%</span>
+1225 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1226 <span class="comment">%</span>
+1227 <span class="comment">%</span>
+1228 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1229 <a name="_sub8" href="#_subfunctions" class="code">function DeleteCallback(src,eventdata)</a>
+1230 
+1231 <span class="keyword">global</span> appDataStruct;
+1232 
+1233 <span class="keyword">if</span> isempty(appDataStruct)
+1234     <span class="keyword">return</span>;
+1235 <span class="keyword">end</span>
+1236 
+1237 toolArray = get(src, <span class="string">'UserData'</span>);
+1238 
+1239 <span class="comment">%Recover old callback handles from the first instance</span>
+1240 set( src, <span class="string">'WindowButtonDownFcn'</span>, toolArray(1).figureOldWindowButtonDownFcn );
+1241 set( src, <span class="string">'WindowButtonUpFcn'</span>, toolArray(1).figureOldWindowButtonUpFcn );
+1242 set( src, <span class="string">'WindowButtonMotionFcn'</span>, toolArray(1).figureOldWindowButtonMotionFcn );
+1243 set( src, <span class="string">'KeyPressFcn'</span>, toolArray(1).figureOldKeyPressFcn );
+1244 set( src, <span class="string">'DeleteFcn'</span>, toolArray(1).figureOldDeleteFcn );
+1245 set( src, <span class="string">'ResizeFcn'</span>, toolArray(1).figureOldResizeFcn );
+1246 
+1247 <span class="comment">%Clear global variable when figure is closed</span>
+1248 clear <span class="keyword">global</span> appDataStructuct;
+1249 
+1250 
+1251 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1252 <span class="comment">% NAME: getPointerPositionOnFigureFrame</span>
+1253 <span class="comment">%</span>
+1254 <span class="comment">% PURPOSE: determine if the position of the mouse pointer on the figure frame, in pixels.</span>
+1255 <span class="comment">%</span>
+1256 <span class="comment">% INPUT ARGUMENTS:</span>
+1257 <span class="comment">%                   none</span>
+1258 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1259 <span class="comment">%                   pointerPositionOnFigureFrame [double 1x2]: (X Y)</span>
+1260 <span class="comment">%                   position</span>
+1261 <span class="comment">%</span>
+1262 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1263 <a name="_sub9" href="#_subfunctions" class="code">function pointerPositionOnFigureFrame = getPointerPositionOnFigureFrame()</a>
+1264 
+1265 <span class="keyword">global</span> appDataStruct  
+1266 
+1267 <span class="keyword">if</span> isempty(appDataStruct)     
+1268     <span class="keyword">return</span>; 
+1269 <span class="keyword">end</span>
+1270 
+1271 <span class="comment">%Get position of mouse pointer on screen</span>
+1272 defaultUnits = get(appDataStruct.figureHandle,<span class="string">'Units'</span>);
+1273 set(appDataStruct.figureHandle, <span class="string">'Units'</span>, <span class="string">'pixels'</span>);
+1274 pointerPositionOnFigureFrame = get(appDataStruct.figureHandle,<span class="string">'CurrentPoint'</span>);
+1275 set(appDataStruct.figureHandle, <span class="string">'Units'</span>, defaultUnits);
+1276 
+1277 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1278 <span class="comment">% NAME: getPointerArea</span>
+1279 <span class="comment">%</span>
+1280 <span class="comment">% PURPOSE: determine if the mouse pointer is on an active area. Change</span>
+1281 <span class="comment">% pointer image if this is the case, and communicate the status.</span>
+1282 <span class="comment">%</span>
+1283 <span class="comment">% INPUT ARGUMENTS:</span>
+1284 <span class="comment">%                   appDataStructuct [struct 1x1]: global variable</span>
+1285 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1286 <span class="comment">%                   change image of pointer (ACTION)</span>
+1287 <span class="comment">%                   appDataStructuct.pointerArea: ID of the active area</span>
+1288 <span class="comment">%</span>
+1289 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1290 <a name="_sub10" href="#_subfunctions" class="code">function getPointerArea()</a>
+1291 
+1292 <span class="keyword">global</span> appDataStruct
+1293 
+1294 <span class="keyword">if</span> isempty(appDataStruct)
+1295     <span class="keyword">return</span>;
+1296 <span class="keyword">end</span>
+1297 
+1298 <span class="comment">%Get current pointer position on figure frame</span>
+1299 pointerPositionOnFigureFrame = <a href="#_sub9" class="code" title="subfunction pointerPositionOnFigureFrame = getPointerPositionOnFigureFrame()">getPointerPositionOnFigureFrame</a>();
+1300 
+1301 <span class="comment">%Get current secondaryAxes position</span>
+1302 secondaryAxesPosition = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+1303 
+1304 <span class="comment">%Get current magnifier position</span>
+1305 magnifierPosition = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+1306 
+1307 <span class="comment">%If mouse pointer on the secondary axis</span>
+1308 <span class="keyword">if</span>  pointerPositionOnFigureFrame(1)&gt;=secondaryAxesPosition(1) &amp;&amp;<span class="keyword">...</span>
+1309     pointerPositionOnFigureFrame(1)&lt;=secondaryAxesPosition(1)+secondaryAxesPosition(3) &amp;&amp;<span class="keyword">...</span>
+1310     pointerPositionOnFigureFrame(2)&gt;=secondaryAxesPosition(2) &amp;&amp;<span class="keyword">...</span>
+1311     pointerPositionOnFigureFrame(2)&lt;=secondaryAxesPosition(2)+secondaryAxesPosition(4)
+1312     <span class="comment">%Pointer inside secondary axis</span>
+1313     set(appDataStruct.figureHandle, <span class="string">'Pointer'</span>, <span class="string">'fleur'</span>);
+1314     
+1315     appDataStruct.pointerArea = <span class="string">'insideSecondaryAxis'</span>;
+1316     
+1317 <span class="keyword">elseif</span>  pointerPositionOnFigureFrame(1)&gt;=magnifierPosition(1) &amp;&amp;<span class="keyword">...</span>
+1318         pointerPositionOnFigureFrame(1)&lt;=magnifierPosition(1)+magnifierPosition(3) &amp;&amp;<span class="keyword">...</span>
+1319         pointerPositionOnFigureFrame(2)&gt;=magnifierPosition(2) &amp;&amp;<span class="keyword">...</span>
+1320         pointerPositionOnFigureFrame(2)&lt;=magnifierPosition(2)+magnifierPosition(4) 
+1321     <span class="comment">%Pointer inside magnifier</span>
+1322     set(appDataStruct.figureHandle, <span class="string">'Pointer'</span>, <span class="string">'fleur'</span>);
+1323     
+1324     appDataStruct.pointerArea = <span class="string">'insideMagnifier'</span>;
+1325      
+1326 <span class="keyword">else</span>
+1327     <span class="comment">%Otherwise</span>
+1328     set(appDataStruct.figureHandle, <span class="string">'Pointer'</span>, <span class="string">'arrow'</span>);  
+1329     
+1330     appDataStruct.pointerArea = <span class="string">'none'</span>;
+1331 <span class="keyword">end</span>
+1332 
+1333 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1334 <span class="comment">% NAME: getFigurePositionInPixels</span>
+1335 <span class="comment">%</span>
+1336 <span class="comment">% PURPOSE: obtain the position and size of the figure, relative to the</span>
+1337 <span class="comment">% lower left corner of the screen, in pixels.</span>
+1338 <span class="comment">%</span>
+1339 <span class="comment">% INPUT ARGUMENTS:</span>
+1340 <span class="comment">%                   none</span>
+1341 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1342 <span class="comment">%                   position [double 1x4]:</span>
+1343 <span class="comment">%                               X of lower left corner of the figure frame</span>
+1344 <span class="comment">%                               Y of lower left corner of the figure frame</span>
+1345 <span class="comment">%                               Width of the figure frame</span>
+1346 <span class="comment">%                               Height of the figure frame</span>
+1347 <span class="comment">%</span>
+1348 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1349 <a name="_sub11" href="#_subfunctions" class="code">function position = getFigurePositionInPixels()</a>
+1350 
+1351 <span class="keyword">global</span> appDataStruct  
+1352 
+1353 <span class="keyword">if</span> isempty(appDataStruct)     
+1354     <span class="keyword">return</span>; 
+1355 <span class="keyword">end</span>
+1356 
+1357 defaultUnits = get(appDataStruct.figureHandle,<span class="string">'Units'</span>);
+1358 set(appDataStruct.figureHandle,<span class="string">'Units'</span>, <span class="string">'pixels'</span>);
+1359 position = get(appDataStruct.figureHandle,<span class="string">'Position'</span>); <span class="comment">%pixels [ low bottom width height]</span>
+1360 set(appDataStruct.figureHandle,<span class="string">'Units'</span>, defaultUnits);
+1361 
+1362 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1363 <span class="comment">% NAME: getMainAxesPositionInPixels</span>
+1364 <span class="comment">%</span>
+1365 <span class="comment">% PURPOSE: obtain the position and size of the main axes, relative to the</span>
+1366 <span class="comment">% lower left corner of the figure, in pixels. This fucntion locates the</span>
+1367 <span class="comment">% lower-left corner of the displayed axes, accounting for all conditions of</span>
+1368 <span class="comment">% DataAspectRatio and PlotBoxAspectRatio.</span>
+1369 <span class="comment">%</span>
+1370 <span class="comment">% INPUT ARGUMENTS:</span>
+1371 <span class="comment">%                   none</span>
+1372 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1373 <span class="comment">%                   position [double 1x4]:</span>
+1374 <span class="comment">%                               X of lower left corner of the axis frame</span>
+1375 <span class="comment">%                               Y of lower left corner of the axis frame</span>
+1376 <span class="comment">%                               Width of the axis frame</span>
+1377 <span class="comment">%                               Height of the axis frame</span>
+1378 <span class="comment">%</span>
+1379 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1380 <a name="_sub12" href="#_subfunctions" class="code">function position = getMainAxesPositionInPixels()</a>
+1381 
+1382 <span class="keyword">global</span> appDataStruct
+1383 
+1384 <span class="keyword">if</span> isempty(appDataStruct)
+1385     position = [];
+1386     <span class="keyword">return</span>;
+1387 <span class="keyword">end</span>
+1388 
+1389 <span class="comment">%Characterize mainAxes in axes units</span>
+1390 mainAxisXLim = get( appDataStruct.mainAxesHandle, <span class="string">'XLim'</span> );
+1391 mainAxisYLim = get( appDataStruct.mainAxesHandle, <span class="string">'YLim'</span> );
+1392 spanX = <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>(mainAxisXLim(1), mainAxisXLim(2) );
+1393 spanY = <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>(mainAxisYLim(1), mainAxisYLim(2));
+1394 
+1395 <span class="comment">%Capture default units of mainAxes, and fix units to 'pixels'</span>
+1396 defaultUnits = get(appDataStruct.mainAxesHandle,<span class="string">'Units'</span>);
+1397 set(appDataStruct.mainAxesHandle, <span class="string">'Units'</span>, <span class="string">'pixels'</span>);
+1398 
+1399 <span class="comment">%Obtain values in 'pixels'</span>
+1400 mainAxesPosition = get(appDataStruct.mainAxesHandle, <span class="string">'Position'</span>);
+1401 dataAspectRatioMode  = get(appDataStruct.mainAxesHandle, <span class="string">'DataAspectRatioMode'</span>);
+1402 dataAspectRatio = get(appDataStruct.mainAxesHandle, <span class="string">'DataAspectRatio'</span>);
+1403 plotBoxAspectRatioMode = get(appDataStruct.mainAxesHandle, <span class="string">'PlotBoxAspectRatioMode'</span>);
+1404 plotBoxAspectRatio = get(appDataStruct.mainAxesHandle, <span class="string">'PlotBoxAspectRatio'</span>);
+1405 
+1406 <span class="comment">%Determine correction values</span>
+1407 dataAspectRatioLimits = (spanX/dataAspectRatio(1))/(spanY/dataAspectRatio(2));
+1408 plotBoxAspectRatioRelation = plotBoxAspectRatio(1)/plotBoxAspectRatio(2);
+1409 mainAxesRatio = mainAxesPosition(3)/mainAxesPosition(4);
+1410 
+1411 <span class="comment">%Id DataAspectRatio to auto and PlotBoxAspectRatio to auto</span>
+1412 <span class="keyword">if</span> ~strcmpi( dataAspectRatioMode, <span class="string">'manual'</span>) &amp;&amp; ~strcmpi( plotBoxAspectRatioMode, <span class="string">'manual'</span>)
+1413        
+1414     <span class="comment">%Recover default units of mainAxes</span>
+1415     set(appDataStruct.mainAxesHandle,<span class="string">'Units'</span>, defaultUnits);
+1416 
+1417     <span class="comment">%Obtain 'real' position from a temporal axes</span>
+1418     temporalAxes = axes(<span class="string">'Visible'</span>, <span class="string">'off'</span>);
+1419     set(temporalAxes, <span class="string">'Units'</span>, <span class="string">'pixels'</span>);
+1420     set(temporalAxes, <span class="string">'Position'</span>, mainAxesPosition);
+1421     position = get(temporalAxes, <span class="string">'Position'</span>);
+1422     delete(temporalAxes);
+1423     
+1424     <span class="keyword">return</span>;
+1425 <span class="keyword">end</span> 
+1426 
+1427 <span class="comment">%If DataAspectRatio to manual</span>
+1428 <span class="keyword">if</span> strcmpi( dataAspectRatioMode, <span class="string">'manual'</span>)
+1429     <span class="keyword">if</span> dataAspectRatioLimits &lt;= mainAxesRatio       
+1430         position(4) = mainAxesPosition(4);
+1431         position(3) = mainAxesPosition(4) * dataAspectRatioLimits;
+1432         position(2) = mainAxesPosition(2);
+1433         position(1) = mainAxesPosition(1) + (mainAxesPosition(3) - position(3))/2;
+1434         
+1435     <span class="keyword">else</span> 
+1436         position(1) = mainAxesPosition(1);
+1437         position(3) = mainAxesPosition(3);
+1438         position(4) = mainAxesPosition(3)/dataAspectRatioLimits;
+1439         position(2) = mainAxesPosition(2) + (mainAxesPosition(4) - position(4))/2;     
+1440         
+1441     <span class="keyword">end</span>
+1442 <span class="keyword">elseif</span> strcmpi( plotBoxAspectRatioMode, <span class="string">'manual'</span>)
+1443     <span class="comment">% Or PlotBoxAspectRatio to manual</span>
+1444     <span class="keyword">if</span> plotBoxAspectRatioRelation &lt;= mainAxesRatio       
+1445         position(4) = mainAxesPosition(4);
+1446         position(3) = mainAxesPosition(4) * plotBoxAspectRatioRelation;
+1447         position(2) = mainAxesPosition(2);
+1448         position(1) = mainAxesPosition(1) + (mainAxesPosition(3) - position(3))/2;
+1449         
+1450     <span class="keyword">else</span>
+1451         position(1) = mainAxesPosition(1);
+1452         position(3) = mainAxesPosition(3);
+1453         position(4) = mainAxesPosition(3)/plotBoxAspectRatioRelation;
+1454         position(2) = mainAxesPosition(2) + (mainAxesPosition(4) - position(4))/2;  
+1455         
+1456     <span class="keyword">end</span>
+1457 <span class="keyword">end</span>
+1458 
+1459 <span class="comment">%Recover default units of mainAxes</span>
+1460 set(appDataStruct.mainAxesHandle, <span class="string">'Units'</span>, defaultUnits);
+1461 
+1462 <span class="comment">%Obtain 'real' position from a temporal axes</span>
+1463 temporalAxes = axes(<span class="string">'Visible'</span>, <span class="string">'off'</span>);
+1464 set(temporalAxes, <span class="string">'Units'</span>, <span class="string">'pixels'</span>);
+1465 set(temporalAxes, <span class="string">'Position'</span>, position );
+1466 position = get(temporalAxes, <span class="string">'Position'</span>);
+1467 delete(temporalAxes);
+1468 
+1469 
+1470 
+1471 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1472 <span class="comment">% NAME: getMagnifierPositionInPixels</span>
+1473 <span class="comment">%</span>
+1474 <span class="comment">% PURPOSE: obtain the position (of the lower left corner) and size of the</span>
+1475 <span class="comment">% magnifier, relative to the lower left corner of the figure, in pixels.</span>
+1476 <span class="comment">%</span>
+1477 <span class="comment">% INPUT ARGUMENTS:</span>
+1478 <span class="comment">%                   none</span>
+1479 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1480 <span class="comment">%                   position [double 1x4]:</span>
+1481 <span class="comment">%                               X of lower left corner of the magnifier</span>
+1482 <span class="comment">%                               Y of lower left corner of the magnifier</span>
+1483 <span class="comment">%                               Width of the magnifier</span>
+1484 <span class="comment">%                               Height of the magnifier</span>
+1485 <span class="comment">%</span>
+1486 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1487 <a name="_sub13" href="#_subfunctions" class="code">function position = getMagnifierPositionInPixels()</a>
+1488 
+1489 <span class="keyword">global</span> appDataStruct  
+1490 
+1491 <span class="keyword">if</span> isempty(appDataStruct)     
+1492     <span class="keyword">return</span>; 
+1493 <span class="keyword">end</span>;
+1494 
+1495 defaultUnits = get(appDataStruct.magnifierHandle, <span class="string">'Units'</span>);
+1496 set(appDataStruct.magnifierHandle, <span class="string">'Units'</span>, <span class="string">'pixels'</span>);
+1497 position = get(appDataStruct.magnifierHandle, <span class="string">'Position'</span>);
+1498 set(appDataStruct.magnifierHandle, <span class="string">'Units'</span>, defaultUnits );
+1499 
+1500 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1501 <span class="comment">% NAME: getSecondaryAxesPositionInPixels</span>
+1502 <span class="comment">%</span>
+1503 <span class="comment">% PURPOSE: obtain the position and size of the secondary axis, relative to the</span>
+1504 <span class="comment">% lower left corner of the figure, in pixels. Includes legends and axes</span>
+1505 <span class="comment">% numbering</span>
+1506 <span class="comment">%</span>
+1507 <span class="comment">% INPUT ARGUMENTS:</span>
+1508 <span class="comment">%                   none</span>
+1509 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1510 <span class="comment">%                   position [double 1x4]:</span>
+1511 <span class="comment">%                               X of lower left corner of the axis frame</span>
+1512 <span class="comment">%                               Y of lower left corner of the axis frame</span>
+1513 <span class="comment">%                               Width of the axis frame</span>
+1514 <span class="comment">%                               Height of the axis frame</span>
+1515 <span class="comment">%</span>
+1516 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1517 <a name="_sub14" href="#_subfunctions" class="code">function position = getSecondaryAxesPositionInPixels()</a>
+1518 
+1519 <span class="keyword">global</span> appDataStruct  
+1520 
+1521 <span class="keyword">if</span> isempty(appDataStruct)     
+1522     <span class="keyword">return</span>; 
+1523 <span class="keyword">end</span>
+1524 
+1525 defaultUnits = get(appDataStruct.secondaryAxesHandle,<span class="string">'Units'</span>); 
+1526 set(appDataStruct.secondaryAxesHandle,<span class="string">'Units'</span>, <span class="string">'pixels'</span>); 
+1527 position = get(appDataStruct.secondaryAxesHandle,<span class="string">'Position'</span>); <span class="comment">%[ left bottom width height]</span>
+1528 set(appDataStruct.secondaryAxesHandle,<span class="string">'Units'</span>, defaultUnits); 
+1529 
+1530 
+1531 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1532 <span class="comment">% NAME: setSecondaryAxesPositionInPixels</span>
+1533 <span class="comment">%</span>
+1534 <span class="comment">% PURPOSE: fix the position and size of the secondary axis, relative to the</span>
+1535 <span class="comment">% lower left corner of the figure, in pixels.</span>
+1536 <span class="comment">%</span>
+1537 <span class="comment">% INPUT ARGUMENTS:</span>
+1538 <span class="comment">%                   position [double 1x4]:</span>
+1539 <span class="comment">%                               X of lower left corner of the axis frame</span>
+1540 <span class="comment">%                               Y of lower left corner of the axis frame</span>
+1541 <span class="comment">%                               Width of the axis frame</span>
+1542 <span class="comment">%                               Height of the axis frame</span>
+1543 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1544 <span class="comment">%                   none</span>
+1545 <span class="comment">%</span>
+1546 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1547 <a name="_sub15" href="#_subfunctions" class="code">function setSecondaryAxesPositionInPixels( position )</a>
+1548 
+1549 <span class="keyword">global</span> appDataStruct  
+1550 
+1551 <span class="keyword">if</span> isempty(appDataStruct)     
+1552     <span class="keyword">return</span>; 
+1553 <span class="keyword">end</span>
+1554 
+1555 <span class="comment">%Get position of secondary axes</span>
+1556 defaultUnits = get(appDataStruct.secondaryAxesHandle,<span class="string">'Units'</span>);
+1557 set(appDataStruct.secondaryAxesHandle, <span class="string">'Units'</span>, <span class="string">'pixels'</span>);
+1558 set(    appDataStruct.secondaryAxesHandle,<span class="keyword">...</span>
+1559         <span class="string">'Position'</span>, [<span class="keyword">...</span>
+1560                     position(1),<span class="keyword">...</span>
+1561                     position(2),<span class="keyword">...</span>
+1562                     position(3),<span class="keyword">...</span>
+1563                     position(4)<span class="keyword">...</span>
+1564                     ]<span class="keyword">...</span>
+1565     ); 
+1566 <span class="comment">% tightInset = get( appDataStruct.secondaryAxes.handle, 'TightInset' );</span>
+1567 set(appDataStruct.secondaryAxesHandle,<span class="string">'Units'</span>, defaultUnits);
+1568 
+1569 <span class="comment">%Update appDataStruct</span>
+1570 appDataStruct.secondaryAxesPosition = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+1571 
+1572 <span class="comment">%Update 'userdata'</span>
+1573 toolArray = get(appDataStruct.figureHandle, <span class="string">'userdata'</span>);
+1574 <span class="keyword">if</span> ~isempty(toolArray)
+1575     focusedTool = find([toolArray.focusOnThisTool] == 1);
+1576     toolArray(focusedTool).secondaryAxesPosition = appDataStruct.secondaryAxesPosition;
+1577     set(appDataStruct.figureHandle, <span class="string">'userdata'</span>, toolArray);
+1578 <span class="keyword">end</span>
+1579 
+1580 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1581 <span class="comment">% NAME: setMagnifierPositionInPixels</span>
+1582 <span class="comment">%</span>
+1583 <span class="comment">% PURPOSE: fix the position and size of the magnifier, relative to the</span>
+1584 <span class="comment">% lower left corner of the figure, in pixels.</span>
+1585 <span class="comment">%</span>
+1586 <span class="comment">% INPUT ARGUMENTS:</span>
+1587 <span class="comment">%                   position [double 1x4]:</span>
+1588 <span class="comment">%                               X of lower left corner of the magnifier</span>
+1589 <span class="comment">%                               Y of lower left corner of the magnifier</span>
+1590 <span class="comment">%                               Width of the magnifier frame</span>
+1591 <span class="comment">%                               Height of the magnifier frame</span>
+1592 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1593 <span class="comment">%                   none</span>
+1594 <span class="comment">%</span>
+1595 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1596 <a name="_sub16" href="#_subfunctions" class="code">function setMagnifierPositionInPixels( position )</a>
+1597 
+1598 
+1599 <span class="keyword">global</span> appDataStruct  
+1600 
+1601 <span class="keyword">if</span> isempty(appDataStruct)     
+1602     <span class="keyword">return</span>; 
+1603 <span class="keyword">end</span>
+1604 
+1605 <span class="comment">%Limit position of magnifier within the main axes</span>
+1606 mainAxesPosition = <a href="#_sub12" class="code" title="subfunction position = getMainAxesPositionInPixels()">getMainAxesPositionInPixels</a>();
+1607 <span class="keyword">if</span> position(1)&lt;mainAxesPosition(1)
+1608     position(1) = mainAxesPosition(1);
+1609 <span class="keyword">end</span>
+1610 <span class="keyword">if</span> position(1)+position(3)&gt;mainAxesPosition(1)+mainAxesPosition(3)
+1611     position(1) = mainAxesPosition(1)+mainAxesPosition(3)-position(3);
+1612 <span class="keyword">end</span>
+1613 <span class="keyword">if</span> position(2)&lt;mainAxesPosition(2)
+1614     position(2) = mainAxesPosition(2);
+1615 <span class="keyword">end</span>
+1616 <span class="keyword">if</span> position(2)+position(4)&gt;mainAxesPosition(2)+mainAxesPosition(4)
+1617     position(2) = mainAxesPosition(2)+mainAxesPosition(4)-position(4);
+1618 <span class="keyword">end</span>
+1619 
+1620 <span class="comment">%Create of set magnifier</span>
+1621 <span class="keyword">if</span> isempty(appDataStruct.magnifierHandle) 
+1622    
+1623     <span class="keyword">if</span> strcmpi(appDataStruct.magnifierShape, <span class="string">'rectangle'</span>)
+1624         appDataStruct.magnifierHandle = <span class="keyword">...</span>
+1625                        annotation(  <span class="string">'rectangle'</span>,<span class="keyword">...</span>
+1626                                     <span class="string">'Units'</span>, <span class="string">'pixels'</span>,<span class="keyword">...</span>
+1627                                     <span class="string">'Position'</span>, position,<span class="keyword">...</span>
+1628                                     <span class="string">'LineWidth'</span>, appDataStruct.globalEdgeWidth,<span class="keyword">...</span>
+1629                                     <span class="string">'LineStyle'</span>,<span class="string">'-'</span>,<span class="keyword">...</span>
+1630                                     <span class="string">'EdgeColor'</span>, appDataStruct.globalEdgeColor<span class="keyword">...</span><span class="comment">                                </span>
+1631                                     );
+1632     <span class="keyword">end</span>
+1633     <span class="keyword">if</span> strcmpi(appDataStruct.magnifierShape, <span class="string">'ellipse'</span>)
+1634         appDataStruct.magnifierHandle = <span class="keyword">...</span>
+1635                        annotation(  <span class="string">'ellipse'</span>,<span class="keyword">...</span>
+1636                                     <span class="string">'Units'</span>, <span class="string">'pixels'</span>,<span class="keyword">...</span>
+1637                                     <span class="string">'Position'</span>, position,<span class="keyword">...</span>
+1638                                     <span class="string">'LineWidth'</span>, appDataStruct.globalEdgeWidth,<span class="keyword">...</span>
+1639                                     <span class="string">'LineStyle'</span>,<span class="string">'-'</span>,<span class="keyword">...</span>
+1640                                     <span class="string">'EdgeColor'</span>, appDataStruct.globalEdgeColor<span class="keyword">...</span><span class="comment">                                </span>
+1641                                     );
+1642     <span class="keyword">end</span>
+1643     
+1644 <span class="keyword">else</span>
+1645    set( appDataStruct.magnifierHandle,<span class="keyword">...</span>
+1646         <span class="string">'Position'</span>, position,<span class="keyword">...</span>
+1647         <span class="string">'LineWidth'</span>, appDataStruct.globalEdgeWidth,<span class="keyword">...</span>
+1648         <span class="string">'EdgeColor'</span>, appDataStruct.globalEdgeColor ); 
+1649 <span class="keyword">end</span>   
+1650 
+1651 <span class="comment">%Update appDataStruct</span>
+1652 appDataStruct.magnifierPosition = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+1653 
+1654 <span class="comment">%Update 'userdata'</span>
+1655 toolArray = get(appDataStruct.figureHandle, <span class="string">'userdata'</span>);
+1656 <span class="keyword">if</span> ~isempty(toolArray)
+1657     focusedTool = find([toolArray.focusOnThisTool] == 1);
+1658     toolArray(focusedTool).magnifierPosition = appDataStruct.magnifierPosition;
+1659     set(appDataStruct.figureHandle, <span class="string">'userdata'</span>, toolArray);
+1660 <span class="keyword">end</span>
+1661 
+1662 
+1663 
+1664          
+1665 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1666 <span class="comment">% NAME: refreshMagnifierToSecondaryAxesLink</span>
+1667 <span class="comment">%</span>
+1668 <span class="comment">% PURPOSE: Updates the line connection between the magnifier and the secondary axes.</span>
+1669 <span class="comment">%</span>
+1670 <span class="comment">% INPUT ARGUMENTS:</span>
+1671 <span class="comment">%</span>
+1672 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1673 <span class="comment">%</span>
+1674 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1675 <a name="_sub17" href="#_subfunctions" class="code">function refreshMagnifierToSecondaryAxesLink()</a>
+1676         
+1677 <span class="keyword">global</span> appDataStruct;
+1678 
+1679 <span class="keyword">if</span> isempty(appDataStruct)
+1680     <span class="keyword">return</span>;
+1681 <span class="keyword">end</span>
+1682 
+1683 <span class="comment">%Don't display link if not requestred</span>
+1684 linkStyle = appDataStruct.linkDisplayStyle;
+1685 <span class="keyword">if</span> strcmpi( linkStyle(1), <span class="string">'none'</span>)
+1686     <span class="keyword">return</span>;
+1687 <span class="keyword">end</span>
+1688 
+1689 <span class="comment">%Get position and size of figure in pixels</span>
+1690 figurePosition = <a href="#_sub11" class="code" title="subfunction position = getFigurePositionInPixels()">getFigurePositionInPixels</a>();
+1691 
+1692 <span class="comment">%Get position and size of secondary axes in pixels</span>
+1693 secondaryAxesPosition = <a href="#_sub14" class="code" title="subfunction position = getSecondaryAxesPositionInPixels()">getSecondaryAxesPositionInPixels</a>();
+1694 
+1695 defaultUnits = get(appDataStruct.secondaryAxesHandle, <span class="string">'Units'</span>);
+1696 set(appDataStruct.secondaryAxesHandle, <span class="string">'Units'</span>, <span class="string">'pixels'</span>);
+1697 tightInset = get(appDataStruct.secondaryAxesHandle, <span class="string">'TightInset'</span>);
+1698 set(appDataStruct.secondaryAxesHandle, <span class="string">'Units'</span>, defaultUnits);
+1699 
+1700 <span class="comment">%Get position and size of secondary axes in pixels</span>
+1701 magnifierPosition = <a href="#_sub13" class="code" title="subfunction position = getMagnifierPositionInPixels()">getMagnifierPositionInPixels</a>();
+1702    
+1703 
+1704 <span class="keyword">if</span> strcmpi( linkStyle, <span class="string">'straight'</span>)
+1705 
+1706     <span class="comment">%Magnifier Hot points</span>
+1707     magnifierHotPoints = [<span class="keyword">...</span>
+1708         magnifierPosition(1) + magnifierPosition(3)/2   magnifierPosition(2);<span class="keyword">...</span>
+1709         magnifierPosition(1) + magnifierPosition(3)     magnifierPosition(2)+magnifierPosition(4)/2;<span class="keyword">...</span>
+1710         magnifierPosition(1) + magnifierPosition(3)/2   magnifierPosition(2)+magnifierPosition(4);<span class="keyword">...</span>
+1711         magnifierPosition(1)                            magnifierPosition(2)+magnifierPosition(4)/2;<span class="keyword">...</span>
+1712         ];
+1713 
+1714     <span class="comment">%Secondary axes Hot points</span>
+1715     secondaryAxesHotPoints = [<span class="keyword">...</span>
+1716         secondaryAxesPosition(1) + secondaryAxesPosition(3)/2   secondaryAxesPosition(2) - tightInset(2) - 2;<span class="keyword">...</span>
+1717         secondaryAxesPosition(1) + secondaryAxesPosition(3)     secondaryAxesPosition(2)+secondaryAxesPosition(4)/2;<span class="keyword">...</span>
+1718         secondaryAxesPosition(1) + secondaryAxesPosition(3)/2   secondaryAxesPosition(2)+secondaryAxesPosition(4);<span class="keyword">...</span><span class="comment">    </span>
+1719         secondaryAxesPosition(1) - tightInset(1) - 2            secondaryAxesPosition(2)+secondaryAxesPosition(4)/2;<span class="keyword">...</span><span class="comment">    </span>
+1720         ];
+1721     
+1722     <span class="comment">%Minimize distance between hot spots</span>
+1723     L1 = size(magnifierHotPoints, 1);
+1724     L2 = size(secondaryAxesHotPoints, 1);
+1725     [iMagnifierHotPoints iSecondaryAxesHotPoints] = meshgrid(1:L1, 1:L2);
+1726     D2  =   ( magnifierHotPoints(iMagnifierHotPoints(:),1) - secondaryAxesHotPoints(iSecondaryAxesHotPoints(:),1) ).^2 + <span class="keyword">...</span>
+1727             ( magnifierHotPoints(iMagnifierHotPoints(:),2) - secondaryAxesHotPoints(iSecondaryAxesHotPoints(:),2) ).^2;
+1728 
+1729     [C,I] = sort( D2, <span class="string">'ascend'</span> );
+1730 
+1731     X(1) = magnifierHotPoints(iMagnifierHotPoints(I(1)),1);
+1732     Y(1) = magnifierHotPoints(iMagnifierHotPoints(I(1)),2);
+1733     X(2) = secondaryAxesHotPoints(iSecondaryAxesHotPoints(I(1)),1);
+1734     Y(2) = secondaryAxesHotPoints(iSecondaryAxesHotPoints(I(1)),2);
+1735     
+1736     <span class="comment">%Plot/update line</span>
+1737     <span class="keyword">if</span> isempty(appDataStruct.linkHandle)
+1738 
+1739         appDataStruct.linkHandle = annotation(  <span class="string">'line'</span>, X/figurePosition(3), Y/figurePosition(4),<span class="keyword">...</span>
+1740                                                 <span class="string">'LineWidth'</span>, appDataStruct.globalEdgeWidth,<span class="keyword">...</span>
+1741                                                 <span class="string">'Color'</span>, appDataStruct.globalEdgeColor );
+1742 
+1743     <span class="keyword">else</span>
+1744 
+1745         set(appDataStruct.linkHandle,   <span class="string">'X'</span>, X/figurePosition(3), <span class="string">'Y'</span>, Y/figurePosition(4),<span class="keyword">...</span>
+1746                                         <span class="string">'LineWidth'</span>, appDataStruct.globalEdgeWidth,<span class="keyword">...</span>
+1747                                         <span class="string">'Color'</span>, appDataStruct.globalEdgeColor ); 
+1748 
+1749     <span class="keyword">end</span>
+1750 <span class="keyword">end</span>
+1751 
+1752 <span class="keyword">if</span> strcmpi( linkStyle, <span class="string">'edges'</span>)
+1753     <span class="comment">%Magnifier Hot points</span>
+1754     magnifierHotPoints = [<span class="keyword">...</span>
+1755         magnifierPosition(1) - 3                            magnifierPosition(2);<span class="keyword">...</span>
+1756         magnifierPosition(1) + magnifierPosition(3)     magnifierPosition(2);<span class="keyword">...</span><span class="comment">    </span>
+1757         magnifierPosition(1) + magnifierPosition(3)     magnifierPosition(2)+magnifierPosition(4);<span class="keyword">...</span><span class="comment">    </span>
+1758         magnifierPosition(1) - 3                           magnifierPosition(2)+magnifierPosition(4)<span class="keyword">...</span>
+1759         ];
+1760 
+1761     <span class="comment">%Secondary axes Hot points</span>
+1762     secondaryAxesHotPoints = [<span class="keyword">...</span>
+1763         secondaryAxesPosition(1)                                secondaryAxesPosition(2);<span class="keyword">...</span>
+1764         secondaryAxesPosition(1) + secondaryAxesPosition(3)     secondaryAxesPosition(2);<span class="keyword">...</span>
+1765         secondaryAxesPosition(1) + secondaryAxesPosition(3)     secondaryAxesPosition(2)+secondaryAxesPosition(4);<span class="keyword">...</span>
+1766         secondaryAxesPosition(1)                                secondaryAxesPosition(2)+secondaryAxesPosition(4)<span class="keyword">...</span>
+1767         ];
+1768     
+1769     
+1770     <span class="keyword">for</span> i=1:4
+1771         X(1) = magnifierHotPoints(i,1);
+1772         Y(1) = magnifierHotPoints(i,2);
+1773         X(2) = secondaryAxesHotPoints(i,1);
+1774         Y(2) = secondaryAxesHotPoints(i,2);
+1775 
+1776         <span class="comment">%If intersection with secondary Axes bottom edge</span>
+1777 <span class="comment">%         intersectionPoint = intersectionPointInPixels(...</span>
+1778 <span class="comment">%                     [X(1) Y(1) X(2) Y(2)], ...</span>
+1779 <span class="comment">%                     [   secondaryAxesPosition(1)...</span>
+1780 <span class="comment">%                         secondaryAxesPosition(2)...</span>
+1781 <span class="comment">%                         secondaryAxesPosition(1)+secondaryAxesPosition(3)...</span>
+1782 <span class="comment">%                         secondaryAxesPosition(2) ]...</span>
+1783 <span class="comment">%                         );</span>
+1784 <span class="comment">%         if ~isempty(intersectionPoint)</span>
+1785 <span class="comment">%             D2_1 = (X(1)-X(2))^2 + (Y(1)-Y(2))^2;</span>
+1786 <span class="comment">%             D2_2 = (X(1)-intersectionPoint(1))^2 + (Y(1)-intersectionPoint(2))^2;</span>
+1787 <span class="comment">%             if D2_2&lt;D2_1</span>
+1788 <span class="comment">%                 %link to intersecting point</span>
+1789 <span class="comment">%                 X(2) = intersectionPoint(1);</span>
+1790 <span class="comment">%                 Y(2) = intersectionPoint(2);</span>
+1791 <span class="comment">%             end</span>
+1792 <span class="comment">%         end</span>
+1793 <span class="comment">%</span>
+1794 <span class="comment">%         %If intersection with secondary Axes top edge</span>
+1795 <span class="comment">%         intersectionPoint = intersectionPointInPixels(...</span>
+1796 <span class="comment">%                     [X(1) Y(1) X(2) Y(2)], ...</span>
+1797 <span class="comment">%                     [   secondaryAxesPosition(1)...</span>
+1798 <span class="comment">%                         secondaryAxesPosition(2)+secondaryAxesPosition(4)...</span>
+1799 <span class="comment">%                         secondaryAxesPosition(1)+secondaryAxesPosition(3)...</span>
+1800 <span class="comment">%                         secondaryAxesPosition(2)+secondaryAxesPosition(4) ]...</span>
+1801 <span class="comment">%                         );</span>
+1802 <span class="comment">%         if ~isempty(intersectionPoint)</span>
+1803 <span class="comment">%             D2_1 = (X(1)-X(2))^2 + (Y(1)-Y(2))^2;</span>
+1804 <span class="comment">%             D2_2 = (X(1)-intersectionPoint(1))^2 + (Y(1)-intersectionPoint(2))^2;</span>
+1805 <span class="comment">%             if D2_2&lt;D2_1</span>
+1806 <span class="comment">%                 %link to intersecting point</span>
+1807 <span class="comment">%                 X(2) = intersectionPoint(1);</span>
+1808 <span class="comment">%                 Y(2) = intersectionPoint(2);</span>
+1809 <span class="comment">%             end</span>
+1810 <span class="comment">%         end</span>
+1811 <span class="comment">%</span>
+1812 <span class="comment">%         %If intersection with secondary Axes left edge</span>
+1813 <span class="comment">%         intersectionPoint = intersectionPointInPixels(...</span>
+1814 <span class="comment">%                     [X(1) Y(1) X(2) Y(2)], ...</span>
+1815 <span class="comment">%                     [   secondaryAxesPosition(1)...</span>
+1816 <span class="comment">%                         secondaryAxesPosition(2)...</span>
+1817 <span class="comment">%                         secondaryAxesPosition(1)...</span>
+1818 <span class="comment">%                         secondaryAxesPosition(2)+secondaryAxesPosition(4) ]...</span>
+1819 <span class="comment">%                         );</span>
+1820 <span class="comment">%         if ~isempty(intersectionPoint)</span>
+1821 <span class="comment">%             D2_1 = (X(1)-X(2))^2 + (Y(1)-Y(2))^2;</span>
+1822 <span class="comment">%             D2_2 = (X(1)-intersectionPoint(1))^2 + (Y(1)-intersectionPoint(2))^2;</span>
+1823 <span class="comment">%             if D2_2&lt;D2_1</span>
+1824 <span class="comment">%                 %link to intersecting point</span>
+1825 <span class="comment">%                 X(2) = intersectionPoint(1);</span>
+1826 <span class="comment">%                 Y(2) = intersectionPoint(2);</span>
+1827 <span class="comment">%             end</span>
+1828 <span class="comment">%         end</span>
+1829 <span class="comment">%</span>
+1830 <span class="comment">%         %If intersection with secondary Axes right edge</span>
+1831 <span class="comment">%         intersectionPoint = intersectionPointInPixels(...</span>
+1832 <span class="comment">%                     [X(1) Y(1) X(2) Y(2)], ...</span>
+1833 <span class="comment">%                     [   secondaryAxesPosition(1)+secondaryAxesPosition(3)...</span>
+1834 <span class="comment">%                         secondaryAxesPosition(2)...</span>
+1835 <span class="comment">%                         secondaryAxesPosition(1)+secondaryAxesPosition(3)...</span>
+1836 <span class="comment">%                         secondaryAxesPosition(2)+secondaryAxesPosition(4) ]...</span>
+1837 <span class="comment">%                         );</span>
+1838 <span class="comment">%         if ~isempty(intersectionPoint)</span>
+1839 <span class="comment">%             D2_1 = (X(1)-X(2))^2 + (Y(1)-Y(2))^2;</span>
+1840 <span class="comment">%             D2_2 = (X(1)-intersectionPoint(1))^2 + (Y(1)-intersectionPoint(2))^2;</span>
+1841 <span class="comment">%             if D2_2&lt;D2_1</span>
+1842 <span class="comment">%                 %link to intersecting point</span>
+1843 <span class="comment">%                 X(2) = intersectionPoint(1);</span>
+1844 <span class="comment">%                 Y(2) = intersectionPoint(2);</span>
+1845 <span class="comment">%             end</span>
+1846 <span class="comment">%         end</span>
+1847 
+1848         <span class="comment">%Plot/update line</span>
+1849         <span class="keyword">if</span> isempty( appDataStruct.linkHandle )
+1850         
+1851             newlinkHandle = annotation(     <span class="string">'line'</span>, X/figurePosition(3), Y/figurePosition(4),<span class="keyword">...</span>
+1852                                             <span class="string">'LineWidth'</span>, appDataStruct.globalEdgeWidth,<span class="keyword">...</span>
+1853                                             <span class="string">'LineStyle'</span>, <span class="string">':'</span>,<span class="keyword">...</span>
+1854                                             <span class="string">'Color'</span>, appDataStruct.globalEdgeColor );
+1855             linkHandle  = appDataStruct.linkHandle;
+1856             appDataStruct.linkHandle = [linkHandle newlinkHandle];
+1857         
+1858         <span class="keyword">else</span>
+1859             linkHandle = appDataStruct.linkhandle;
+1860             set( linkHandle(i), <span class="string">'X'</span>, X/figurePosition(3), <span class="string">'Y'</span>, Y/figurePosition(4),<span class="keyword">...</span>
+1861                                 <span class="string">'LineWidth'</span>, appDataStruct.globalEdgeWidth,<span class="keyword">...</span>
+1862                                 <span class="string">'Color'</span>, appDataStruct.globalEdgeColor ); 
+1863         <span class="keyword">end</span>
+1864             
+1865     <span class="keyword">end</span>
+1866 <span class="keyword">end</span>
+1867 
+1868 <span class="keyword">if</span> strcmpi( linkStyle, <span class="string">'elbow'</span>)
+1869 
+1870     <span class="comment">%Magnifier Hot points</span>
+1871     magnifierHotPoints = [<span class="keyword">...</span>
+1872         magnifierPosition(1) + magnifierPosition(3)/2   magnifierPosition(2);<span class="keyword">...</span>
+1873         magnifierPosition(1) + magnifierPosition(3)     magnifierPosition(2)+magnifierPosition(4)/2;<span class="keyword">...</span>
+1874         magnifierPosition(1) + magnifierPosition(3)/2   magnifierPosition(2)+magnifierPosition(4);<span class="keyword">...</span>
+1875         magnifierPosition(1)                            magnifierPosition(2)+magnifierPosition(4)/2;<span class="keyword">...</span>
+1876         ];
+1877 
+1878     <span class="comment">%Secondary axes Hot points</span>
+1879     secondaryAxesHotPoints = [<span class="keyword">...</span>
+1880         secondaryAxesPosition(1) + secondaryAxesPosition(3)/2   secondaryAxesPosition(2) - tightInset(2) - 2;<span class="keyword">...</span>
+1881         secondaryAxesPosition(1) + secondaryAxesPosition(3)     secondaryAxesPosition(2)+secondaryAxesPosition(4)/2;<span class="keyword">...</span>
+1882         secondaryAxesPosition(1) + secondaryAxesPosition(3)/2   secondaryAxesPosition(2)+secondaryAxesPosition(4);<span class="keyword">...</span><span class="comment">    </span>
+1883         secondaryAxesPosition(1) - tightInset(1) - 2            secondaryAxesPosition(2)+secondaryAxesPosition(4)/2;<span class="keyword">...</span><span class="comment">    </span>
+1884         ];
+1885     
+1886     
+1887     <span class="comment">%Allowed connections</span>
+1888 <span class="comment">%     iMagnifierHotPoints(1) = 1;</span>
+1889 <span class="comment">%     iSecondaryAxesHotPoints(1) = 4;</span>
+1890 <span class="comment">%     iMagnifierHotPoints(2) = 1;</span>
+1891 <span class="comment">%     iSecondaryAxesHotPoints(2) = 2;</span>
+1892 <span class="comment">%     iMagnifierHotPoints(3) = 2;</span>
+1893 <span class="comment">%     iSecondaryAxesHotPoints(3) = 3;</span>
+1894 <span class="comment">%     iMagnifierHotPoints(4) = 2;</span>
+1895 <span class="comment">%     iSecondaryAxesHotPoints(4) = 1;</span>
+1896 <span class="comment">%     iMagnifierHotPoints(5) = 3;</span>
+1897 <span class="comment">%     iSecondaryAxesHotPoints(5) = 4;</span>
+1898 <span class="comment">%     iMagnifierHotPoints(6) = 3;</span>
+1899 <span class="comment">%     iSecondaryAxesHotPoints(6) = 2;</span>
+1900 <span class="comment">%     iMagnifierHotPoints(7) = 4;</span>
+1901 <span class="comment">%     iSecondaryAxesHotPoints(7) = 1;</span>
+1902 <span class="comment">%     iMagnifierHotPoints(8) = 4;</span>
+1903 <span class="comment">%     iSecondaryAxesHotPoints(8) = 3;</span>
+1904 <span class="comment">%     iMagnifierHotPoints(9) = 1;</span>
+1905 <span class="comment">%     iSecondaryAxesHotPoints(9) = 3;</span>
+1906 <span class="comment">%     iMagnifierHotPoints(10) = 2;</span>
+1907 <span class="comment">%     iSecondaryAxesHotPoints(10) = 4;</span>
+1908 <span class="comment">%     iMagnifierHotPoints(11) = 3;</span>
+1909 <span class="comment">%     iSecondaryAxesHotPoints(11) = 1;</span>
+1910 <span class="comment">%     iMagnifierHotPoints(12) = 4;</span>
+1911 <span class="comment">%     iSecondaryAxesHotPoints(12) = 2;</span>
+1912     
+1913     <span class="comment">%Minimize distance between hot spots</span>
+1914     L1 = size(magnifierHotPoints, 1);
+1915     L2 = size(secondaryAxesHotPoints, 1);
+1916     [iMagnifierHotPoints iSecondaryAxesHotPoints] = meshgrid(1:L1, 1:L2);
+1917     D2  =   ( magnifierHotPoints(iMagnifierHotPoints(:),1) - secondaryAxesHotPoints(iSecondaryAxesHotPoints(:),1) ).^2 + <span class="keyword">...</span>
+1918             ( magnifierHotPoints(iMagnifierHotPoints(:),2) - secondaryAxesHotPoints(iSecondaryAxesHotPoints(:),2) ).^2;
+1919 
+1920     [C,I] = sort( D2, <span class="string">'ascend'</span> );
+1921 
+1922     X(1) = magnifierHotPoints(iMagnifierHotPoints(I(1)),1);
+1923     Y(1) = magnifierHotPoints(iMagnifierHotPoints(I(1)),2);
+1924     X(2) = secondaryAxesHotPoints(iSecondaryAxesHotPoints(I(1)),1);
+1925     Y(2) = secondaryAxesHotPoints(iSecondaryAxesHotPoints(I(1)),2);
+1926     
+1927     <span class="comment">%Plot/update line</span>
+1928     <span class="keyword">if</span> isempty( appDataStruct.linkHandle )
+1929 
+1930         newlinkHandle = annotation(    <span class="string">'line'</span>, X/figurePosition(3), Y/figurePosition(4),<span class="keyword">...</span>
+1931                                                 <span class="string">'LineWidth'</span>, appDataStruct.globalEdgeWidth,<span class="keyword">...</span>
+1932                                                 <span class="string">'Color'</span>, appDataStruct.globalEdgeColor );
+1933         linkHandle  = appDataStruct.linkHandle;
+1934         appDataStruct.linkHandle = [linkHandle newlinkHandle];
+1935     <span class="keyword">else</span>
+1936 
+1937         linkHandle = appDataStruct.linkhandle;
+1938         set( linkHandle,    <span class="string">'X'</span>, X/figurePosition(3), <span class="string">'Y'</span>, Y/figurePosition(4),<span class="keyword">...</span>
+1939                             <span class="string">'LineWidth'</span>, appDataStruct.globalEdgeWidth,<span class="keyword">...</span>
+1940                             <span class="string">'Color'</span>, appDataStruct.globalEdgeColor ); 
+1941 
+1942     <span class="keyword">end</span>
+1943 <span class="keyword">end</span>
+1944 
+1945 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1946 <span class="comment">% NAME: intersectionPointInPixels</span>
+1947 <span class="comment">%</span>
+1948 <span class="comment">% PURPOSE: Computes constrained intersection of two lines in pixels, on the 2D space</span>
+1949 <span class="comment">%</span>
+1950 <span class="comment">% INPUT ARGUMENTS:</span>
+1951 <span class="comment">%                   line1 [double 1x4]: [Xstart Ystart Xend Yend]</span>
+1952 <span class="comment">%                   line2 [double 1x4]: [Xstart Ystart Xend Yend]</span>
+1953 <span class="comment">%</span>
+1954 <span class="comment">% OUTPUT ARGUMENTS:</span>
+1955 <span class="comment">%                   intersectionPont [double 1x2]: [X Y] intersection</span>
+1956 <span class="comment">%</span>
+1957 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+1958 <a name="_sub18" href="#_subfunctions" class="code">function intersectionPoint = intersectionPointInPixels( line1, line2)</a>
+1959                     
+1960 <span class="comment">%Cartessian caracterization of line 1</span>
+1961 X1(1) = line1(1);
+1962 Y1(1) = line1(2); 
+1963 X1(2) = line1(3);
+1964 Y1(2) = line1(4); 
+1965 
+1966 a1 = (Y1(2) - Y1(1)) / (X1(2) - X1(1));
+1967 b1 = Y1(1) - X1(1)*a1;
+1968 
+1969 <span class="comment">%Cartessian caracterization of line 2</span>
+1970 X2(1) = line2(1);
+1971 Y2(1) = line2(2); 
+1972 X2(2) = line2(3);
+1973 Y2(2) = line2(4); 
+1974 
+1975 a2 = (Y2(2) - Y2(1)) / (X2(2) - X2(1));
+1976 b2 = Y2(1) - X2(1)*a2;
+1977 
+1978 <span class="comment">%Intersection</span>
+1979 <span class="keyword">if</span> isfinite(a1) &amp;&amp; isfinite(a2)
+1980     intersectionPoint(1) = (b2-b1) / (a1-a2);
+1981     intersectionPoint(2) = intersectionPoint(1)*a1 + b1;
+1982 <span class="keyword">end</span>
+1983 <span class="comment">%Pathologic case 1 (line2 x=constant)</span>
+1984 <span class="keyword">if</span> isfinite(a1) &amp;&amp; ~isfinite(a2)
+1985     intersectionPoint(1) = X2(1);
+1986     intersectionPoint(2) = intersectionPoint(1)*a1 + b1;
+1987 <span class="keyword">end</span>
+1988 <span class="comment">%Pathologic case 2 (line1 x=constant)</span>
+1989 <span class="keyword">if</span> ~isfinite(a1) &amp;&amp; isfinite(a2)
+1990     intersectionPoint(1) = X1(1);
+1991     intersectionPoint(2) = intersectionPoint(1)*a2 + b2;
+1992 <span class="keyword">end</span>
+1993 
+1994 <span class="keyword">if</span> intersectionPoint(1)&lt;min([X1(1) X2(1)]) ||<span class="keyword">...</span>
+1995    intersectionPoint(1)&gt;max([X1(2) X2(2)]) ||<span class="keyword">...</span>
+1996    intersectionPoint(2)&lt;min([Y1(1) Y2(1)]) ||<span class="keyword">...</span>
+1997    intersectionPoint(2)&gt;max([Y1(2) Y2(2)]) 
+1998         
+1999     intersectionPoint = [];
+2000 <span class="keyword">end</span>
+2001 
+2002 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+2003 <span class="comment">% NAME: computeSecondaryAxesDefaultPosition</span>
+2004 <span class="comment">%</span>
+2005 <span class="comment">% PURPOSE: obtain the default position and size of the secondary axis, relative to the</span>
+2006 <span class="comment">% lower left corner of the figure, in pixels. Includes legends and axes</span>
+2007 <span class="comment">% numbering</span>
+2008 <span class="comment">%</span>
+2009 <span class="comment">% INPUT ARGUMENTS:</span>
+2010 <span class="comment">%                   none</span>
+2011 <span class="comment">% OUTPUT ARGUMENTS:</span>
+2012 <span class="comment">%                   position [double 1x4]:</span>
+2013 <span class="comment">%                               X of lower left corner of the axis frame</span>
+2014 <span class="comment">%                               Y of lower left corner of the axis frame</span>
+2015 <span class="comment">%                               Width of the axis frame</span>
+2016 <span class="comment">%                               Height of the axis frame</span>
+2017 <span class="comment">%</span>
+2018 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+2019 <a name="_sub19" href="#_subfunctions" class="code">function defaultPosition = computeSecondaryAxesDefaultPosition()</a>
+2020 
+2021 <span class="keyword">global</span> appDataStruct  
+2022 
+2023 <span class="keyword">if</span> isempty(appDataStruct)     
+2024     <span class="keyword">return</span>; 
+2025 <span class="keyword">end</span>;
+2026 
+2027 <span class="comment">% If image, defualt aspect ratio of magnifier and secondary axes to [1 1]</span>
+2028 childHandle = get(appDataStruct.mainAxesHandle, <span class="string">'Children'</span>);
+2029 plotFlag = ~isempty( find(strcmpi(get(childHandle, <span class="string">'Type'</span>), <span class="string">'line'</span>),1) );
+2030 imageFlag = ~isempty( find(strcmpi(get(childHandle, <span class="string">'Type'</span>), <span class="string">'image'</span>),1) );
+2031 
+2032 <span class="comment">%Get position and size of main Axis (left &amp; bottom relative to figure frame)</span>
+2033 mainAxesPosition = <a href="#_sub12" class="code" title="subfunction position = getMainAxesPositionInPixels()">getMainAxesPositionInPixels</a>();
+2034 
+2035 <span class="keyword">if</span> plotFlag
+2036     <span class="comment">%Set initial position and size for secondary axis</span>
+2037     secondaryAxisPosition_W = mainAxesPosition(3)*0.3;
+2038     secondaryAxisPosition_H = mainAxesPosition(4)*0.3;
+2039     secondaryAxisPosition_X = mainAxesPosition(1)+mainAxesPosition(3)-secondaryAxisPosition_W-10;
+2040     secondaryAxisPosition_Y = mainAxesPosition(2)+mainAxesPosition(4)-secondaryAxisPosition_H-10;
+2041 <span class="keyword">else</span>
+2042     <span class="comment">%Set initial position and size for secondary axis</span>
+2043     secondaryAxisPosition_W = mainAxesPosition(3)*0.3;
+2044     secondaryAxisPosition_H = mainAxesPosition(4)*0.3;
+2045     secondaryAxisPosition_X = mainAxesPosition(1)+mainAxesPosition(3)-secondaryAxisPosition_W-10;
+2046     secondaryAxisPosition_Y = mainAxesPosition(2)+mainAxesPosition(4)-secondaryAxisPosition_H-10;
+2047 <span class="keyword">end</span>
+2048 
+2049 defaultPosition = [<span class="keyword">...</span>
+2050                         secondaryAxisPosition_X<span class="keyword">...</span>
+2051                         secondaryAxisPosition_Y<span class="keyword">...</span>
+2052                         secondaryAxisPosition_W<span class="keyword">...</span>
+2053                         secondaryAxisPosition_H<span class="keyword">...</span>
+2054                         ];
+2055                         
+2056  
+2057 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+2058 <span class="comment">% NAME: computeMagnifierDefaultPosition</span>
+2059 <span class="comment">%</span>
+2060 <span class="comment">% PURPOSE: obtain the default position and size of the magnifier, relative to the</span>
+2061 <span class="comment">% lower left corner of the figure, in pixels. Includes legends and axes</span>
+2062 <span class="comment">% numbering</span>
+2063 <span class="comment">%</span>
+2064 <span class="comment">% INPUT ARGUMENTS:</span>
+2065 <span class="comment">%                   none</span>
+2066 <span class="comment">% OUTPUT ARGUMENTS:</span>
+2067 <span class="comment">%                   position [double 1x4]:</span>
+2068 <span class="comment">%                               X of lower left corner of the rectangle</span>
+2069 <span class="comment">%                               Y of lower left corner of the rectangle</span>
+2070 <span class="comment">%                               Width of the rectangle</span>
+2071 <span class="comment">%                               Height of the rectangle</span>
+2072 <span class="comment">%</span>
+2073 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+2074 <a name="_sub20" href="#_subfunctions" class="code">function defaultPosition = computeMagnifierDefaultPosition()</a>
+2075 
+2076 <span class="keyword">global</span> appDataStruct  
+2077 
+2078 <span class="keyword">if</span> isempty(appDataStruct)     
+2079     <span class="keyword">return</span>; 
+2080 <span class="keyword">end</span>;
+2081 
+2082 <span class="comment">% If image, defualt aspect ratio of magnifier and secondary axes to [1 1]</span>
+2083 childHandle = get(appDataStruct.mainAxesHandle, <span class="string">'Children'</span>);
+2084 plotFlag = ~isempty( find(strcmpi(get(childHandle, <span class="string">'Type'</span>), <span class="string">'line'</span>),1) );
+2085 imageFlag = ~isempty( find(strcmpi(get(childHandle, <span class="string">'Type'</span>), <span class="string">'image'</span>),1) );
+2086 
+2087 <span class="comment">%Set initial position and size of magnifying rectangle</span>
+2088 mainAxisXLim = get( appDataStruct.mainAxesHandle, <span class="string">'XLim'</span> );
+2089 mainAxisYLim = get( appDataStruct.mainAxesHandle, <span class="string">'YLim'</span> );
+2090 mainAxesPositionInPixels = <a href="#_sub12" class="code" title="subfunction position = getMainAxesPositionInPixels()">getMainAxesPositionInPixels</a>();
+2091 xMainAxisUnits2PixelsFactor = mainAxesPositionInPixels(3)/<a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>( mainAxisXLim(1), mainAxisXLim(2) );
+2092 yMainAxisUnits2PixelsFactor = mainAxesPositionInPixels(4)/<a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>( mainAxisYLim(1), mainAxisYLim(2) );
+2093 
+2094 <span class="keyword">if</span> plotFlag
+2095     <span class="comment">%Get main axis position and dimensions, in pixels</span>
+2096     magnifierPosition_W = <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>(mainAxisXLim(1), mainAxisXLim(2))*xMainAxisUnits2PixelsFactor*0.1;                        
+2097     magnifierPosition_H = <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>(mainAxisYLim(1), mainAxisYLim(2))*yMainAxisUnits2PixelsFactor*0.3;     
+2098     magnifierPosition_X = <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>(mean(mainAxisXLim), mainAxisXLim(1))*xMainAxisUnits2PixelsFactor - magnifierPosition_W/2;
+2099     magnifierPosition_Y = <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>(mean(mainAxisYLim), mainAxisYLim(1))*yMainAxisUnits2PixelsFactor - magnifierPosition_H/2;
+2100 <span class="keyword">else</span>
+2101     <span class="comment">%Get main axis position and dimensions, in pixels</span>
+2102     magnifierPosition_W = <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>(mainAxisXLim(1), mainAxisXLim(2))*xMainAxisUnits2PixelsFactor*0.1;                        
+2103     magnifierPosition_H = <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>(mainAxisYLim(1), mainAxisYLim(2))*yMainAxisUnits2PixelsFactor*0.1;  
+2104     magnifierPosition_X = <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>(mean(mainAxisXLim), mainAxisXLim(1))*xMainAxisUnits2PixelsFactor - magnifierPosition_W/2;
+2105     magnifierPosition_Y = <a href="#_sub2" class="code" title="subfunction span = determineSpan( v1, v2 )">determineSpan</a>(mean(mainAxisYLim), mainAxisYLim(1))*yMainAxisUnits2PixelsFactor - magnifierPosition_H/2;
+2106 <span class="keyword">end</span>
+2107 
+2108 defaultPosition = [<span class="keyword">...</span>
+2109                         magnifierPosition_X+mainAxesPositionInPixels(1)<span class="keyword">...</span>
+2110                         magnifierPosition_Y+mainAxesPositionInPixels(2)<span class="keyword">...</span>
+2111                         magnifierPosition_W<span class="keyword">...</span>
+2112                         magnifierPosition_H<span class="keyword">...</span>
+2113                         ];
+2114 
+2115 
+2116 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+2117 <span class="comment">% NAME: initializeToolStruct</span>
+2118 <span class="comment">%</span>
+2119 <span class="comment">% PURPOSE: Set value for default properties</span>
+2120 <span class="comment">%</span>
+2121 <span class="comment">% INPUT ARGUMENTS:</span>
+2122 <span class="comment">%                   none</span>
+2123 <span class="comment">% OUTPUT ARGUMENTS:</span>
+2124 <span class="comment">%                   none</span>
+2125 <span class="comment">%</span>
+2126 <span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+2127 <a name="_sub21" href="#_subfunctions" class="code">function obj = initializeToolStruct(varargin)</a>
+2128 
+2129     <span class="keyword">if</span> nargin == 0
+2130         obj.toolId = [];
+2131         obj.focusOnThisTool = true;
+2132 
+2133         <span class="comment">%figure</span>
+2134         obj.figureHandle = []; 
+2135         obj.figurePosition = [];
+2136         obj.figureOldWindowButtonDownFcn = [];
+2137         obj.figureOldWindowButtonUpFcn = [];
+2138         obj.figureOldWindowButtonMotionFcn = [];
+2139         obj.figureOldKeyPressFcn = [];
+2140         obj.figureOldDeleteFcn = [];
+2141         obj.figureOldResizeFcn = [];                
+2142 
+2143         <span class="comment">%main axes</span>
+2144         obj.mainAxesHandle = [];  
+2145 
+2146         <span class="comment">%magnifier</span>
+2147         obj.magnifierHandle = [];
+2148         obj.magnifierPosition = [];
+2149         obj.magnifierShape = <span class="string">'rectangle'</span>;                
+2150 
+2151         <span class="comment">%link</span>
+2152         obj.linkHandle = [];
+2153         obj.linkDisplayStyle = <span class="string">'straight'</span>;
+2154 
+2155         <span class="comment">%secondary axes</span>
+2156         obj.secondaryAxesHandle = [];
+2157         obj.secondaryAxesFaceColor = <span class="string">'white'</span>;
+2158         obj.secondaryAxesPosition = [];
+2159         obj.secondaryAxesXLim = [];
+2160         obj.secondaryAxesYLim = [];
+2161         obj.secondaryAxesAdditionalZoomingFactor = [0 0];
+2162 
+2163         <span class="comment">%global</span>
+2164         obj.globalUnits = <span class="string">'pixels'</span>;
+2165         obj.globalMode = <span class="string">'interactive'</span>;
+2166         obj.globalEdgeWidth = 1;
+2167         obj.globalEdgeColor = <span class="string">'black'</span>;
+2168         obj.globalZoomMode = <span class="string">'off'</span>;                           
+2169 
+2170         <span class="comment">%Temp</span>
+2171         obj.pointerArea = <span class="string">'none'</span>;
+2172         obj.ButtonDown = false;
+2173         obj.pointerPositionOnButtonDown = [];
+2174     <span class="keyword">end</span>
+2175     
+2176     <span class="keyword">if</span> nargin == 1 &amp;&amp; isstruct(varargin{1})
+2177         structIn = varargin{1};
+2178         <span class="keyword">if</span> all(isfield(structIn, {<span class="string">'toolId'</span>,<span class="string">'focusOnThisTool'</span>,<span class="keyword">...</span>
+2179             <span class="string">'figureHandle'</span>, <span class="string">'figurePosition'</span>, <span class="string">'figureOldWindowButtonDownFcn'</span>,<span class="keyword">...</span>
+2180             <span class="string">'figureOldWindowButtonUpFcn'</span>, <span class="string">'figureOldWindowButtonMotionFcn'</span>,<span class="keyword">...</span>
+2181             <span class="string">'figureOldKeyPressFcn'</span>, <span class="string">'figureOldDeleteFcn'</span>, <span class="string">'figureOldResizeFcn'</span>,<span class="keyword">...</span>
+2182             <span class="string">'mainAxesHandle'</span>, <span class="string">'magnifierHandle'</span>, <span class="string">'magnifierPosition'</span>, <span class="keyword">...</span>
+2183             <span class="string">'magnifierShape'</span>, <span class="string">'linkHandle'</span>, <span class="string">'linkDisplayStyle'</span>, <span class="string">'secondaryAxesHandle'</span>,<span class="keyword">...</span>
+2184             <span class="string">'secondaryAxesFaceColor'</span>, <span class="string">'secondaryAxesPosition'</span>, <span class="string">'secondaryAxesXLim'</span>,<span class="keyword">...</span>
+2185             <span class="string">'secondaryAxesYLim'</span>, <span class="string">'secondaryAxesAdditionalZoomingFactor'</span>, <span class="keyword">...</span>
+2186             <span class="string">'globalUnits'</span>, <span class="string">'globalMode'</span>, <span class="string">'globalEdgeWidth'</span>, <span class="string">'globalEdgeColor'</span>,<span class="keyword">...</span>
+2187             <span class="string">'globalZoomMode'</span>, <span class="string">'pointerArea'</span>, <span class="string">'ButtonDown'</span>, <span class="string">'pointerPositionOnButtonDown'</span>}))
+2188             
+2189         <span class="keyword">else</span>
+2190             error(<span class="string">'Input structure not recognized'</span>);
+2191         <span class="keyword">end</span>
+2192         
+2193         obj = structIn;    
+2194        
+2195     <span class="keyword">end</span>
+2196     
+2197     
+2198     
+2199</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

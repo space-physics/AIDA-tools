@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of V_em_save_intrp</title>
+  <meta name="keywords" content="V_em_save_intrp">
+  <meta name="description" content="V_em_save_intrp - save volume distribution emission and">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html I3D -->
+<h1>V_em_save_intrp
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>V_em_save_intrp - save volume distribution emission and</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function ok = V_em_save_intrp(I0_R0_DR,X,Y,Z,tau3D,T) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> V_em_save_intrp - save volume distribution emission and
+ excitation rates (in default files named ['heat',sprintf('%02d',i1),'.dat']
+ and ['excit',sprintf('%02d',i),'.dat'].
+ 
+ Calling:
+  ok = V_em_save_intrp(I0_R0_DR,X,Y,Z,tau3D,T)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>	I3d_p_dI3D - Integration of continuity equation with sources</li><li><a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>	dI3D_multiple - multiple 3-D generalized Gaussians</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ok = V_em_save_intrp(I0_R0_DR,X,Y,Z,tau3D,T)</a>
+0002 <span class="comment">% V_em_save_intrp - save volume distribution emission and</span>
+0003 <span class="comment">% excitation rates (in default files named ['heat',sprintf('%02d',i1),'.dat']</span>
+0004 <span class="comment">% and ['excit',sprintf('%02d',i),'.dat'].</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%  ok = V_em_save_intrp(I0_R0_DR,X,Y,Z,tau3D,T)</span>
+0008 
+0009 
+0010 
+0011 <span class="comment">%   Copyright � 2002 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0012 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0013 
+0014 V_em = zeros(size(X));
+0015 
+0016 <span class="keyword">for</span> i1 = 2:length(I0_R0_DR),
+0017   
+0018   <span class="keyword">if</span> ( ~isnan(I0_R0_DR(i1,1) ) )
+0019     
+0020     Iintrp = I0_R0_DR(i1,:)*.25+I0_R0_DR(i1-1,:)*.75;
+0021     dI3d = <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>(Iintrp,X,Y,Z,2.5,tau3D);
+0022     V_em = <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>(Iintrp,X,Y,Z,I0_R0_DR(1:i1-1,:),[T(i1) T(i1)+2.5], <span class="keyword">...</span>
+0023                       T(1:i1),tau3D,V_em,dI3d);
+0024     Iintrp = I0_R0_DR(i1,:)*.5+I0_R0_DR(i1-1,:)*.5;
+0025     dI3d = <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>(Iintrp,X,Y,Z,2.5,tau3D);
+0026     V_em = <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>(Iintrp,X,Y,Z,I0_R0_DR(1:i1-1,:),[T(i1)+2.5 T(i1)+5], <span class="keyword">...</span>
+0027                       T(1:i1),tau3D,V_em,dI3d);
+0028     
+0029     Iintrp = I0_R0_DR(i1,:)*.75+I0_R0_DR(i1-1,:)*.25;
+0030     dI3d = <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>(Iintrp,X,Y,Z,2.5,tau3D);
+0031     V_em = <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>(Iintrp,X,Y,Z,I0_R0_DR(1:i1-1,:),[T(i1)+5 T(i1)+7.5], <span class="keyword">...</span>
+0032                       T(1:i1),tau3D,V_em,dI3d);
+0033     U = I0_R0_DR(i1,7);
+0034     V = I0_R0_DR(i1,8);
+0035     W = I0_R0_DR(i1,9);
+0036     
+0037     savestr = [<span class="string">'U'</span>,num2str(i1),<span class="string">'.dat'</span>];
+0038     fp = fopen(savestr,<span class="string">'w'</span>);
+0039     fprintf(fp,<span class="string">'%6.2g\n'</span>,U);
+0040     fclose(fp);
+0041     savestr = [<span class="string">'V'</span>,num2str(i1),<span class="string">'.dat'</span>];
+0042     fp = fopen(savestr,<span class="string">'w'</span>);
+0043     fprintf(fp,<span class="string">'%6.2g\n'</span>,V);
+0044     fclose(fp);
+0045     savestr = [<span class="string">'W'</span>,num2str(i1),<span class="string">'.dat'</span>];
+0046     fp = fopen(savestr,<span class="string">'w'</span>);
+0047     fprintf(fp,<span class="string">'%6.2g\n'</span>,W);
+0048     fclose(fp);
+0049     <span class="comment">%nani = find(isnan(V_em(:)));</span>
+0050     <span class="comment">%V_em(nani) = 0;</span>
+0051     V_em(isnan(V_em(:))) = 0;
+0052     filename = [<span class="string">'heat'</span>,sprintf(<span class="string">'%02d'</span>,i1),<span class="string">'.dat'</span>];
+0053     disp(filename)
+0054     fp = fopen(filename,<span class="string">'w'</span>);
+0055     <span class="keyword">for</span> ii = 1:32,
+0056       <span class="keyword">for</span> jj = 1:32,
+0057     <span class="keyword">for</span> kk = 1:32,
+0058       fprintf(fp,<span class="string">'%6.2g '</span>,V_em(ii,jj,kk));
+0059     <span class="keyword">end</span>
+0060     fprintf(fp,<span class="string">'\n'</span>);
+0061       <span class="keyword">end</span>
+0062     <span class="keyword">end</span>
+0063     fclose(fp);
+0064     filename = [<span class="string">'excit'</span>,sprintf(<span class="string">'%02d'</span>,i1),<span class="string">'.dat'</span>];
+0065     fp = fopen(filename,<span class="string">'w'</span>);
+0066     <span class="keyword">for</span> ii = 1:32,
+0067       <span class="keyword">for</span> jj = 1:32,
+0068     <span class="keyword">for</span> kk = 1:32,
+0069       fprintf(fp,<span class="string">'%6.2g '</span>,dI3d(ii,jj,kk));
+0070     <span class="keyword">end</span>
+0071     fprintf(fp,<span class="string">'\n'</span>);
+0072       <span class="keyword">end</span>
+0073     <span class="keyword">end</span>
+0074     fclose(fp);
+0075     
+0076     Iintrp = I0_R0_DR(i1,:);
+0077     dI3d = <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>(Iintrp,X,Y,Z,2.5,tau3D);
+0078     V_em = <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>(Iintrp,X,Y,Z,I0_R0_DR(1:i1-1,:),[T(i1)+7.5 T(i1+1)], <span class="keyword">...</span>
+0079                       T(1:i1),tau3D,V_em,dI3d);
+0080     
+0081   <span class="keyword">end</span>
+0082   
+0083 <span class="keyword">end</span>
+0084 ok = 1;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of findneareststarxy</title>
+  <meta name="keywords" content="findneareststarxy">
+  <meta name="description" content="FINDNEARESTSTARXY is a function that find the star among PSTARS that">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>findneareststarxy
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>FINDNEARESTSTARXY is a function that find the star among PSTARS that</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [staz,stze,stind,stmagn] = findneareststarxy(x0,y0,SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FINDNEARESTSTARXY is a function that find the star among PSTARS that
+ are closest to X0, Y0 in the sky. The star found is marked with a
+ red star in the figure with the star-chart, and Azimuth, Zenith,
+ Catalog Index and Magnitude of the star is returned. 
+ 
+ Function is called through the skymap/starcal GUI
+ 
+ Calling:
+ [staz,stze,stind,stmagn] = findneareststarxy(x0,y0,SkMp)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="updstrinfo.html" class="code" title="function [SkMp,staraz,starze,starid,starmagn,thisstar] = updstrinfo(SkMp)">updstrinfo</a>	</li><li><a href="../Starcal/update/updfindstar.html" class="code" title="function [SkMp,starpar] = updfindstar(starpar,SkMp)">updfindstar</a>	UPDFINDSTAR -</li><li><a href="../Starcal/update/updrmstar.html" class="code" title="function [SkMp] = updrmstar(SkMp)">updrmstar</a>	UPDRMSTAR - Callback function removing a selected star</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [staz,stze,stind,stmagn] = findneareststarxy(x0,y0,SkMp)</a>
+0002 <span class="comment">% FINDNEARESTSTARXY is a function that find the star among PSTARS that</span>
+0003 <span class="comment">% are closest to X0, Y0 in the sky. The star found is marked with a</span>
+0004 <span class="comment">% red star in the figure with the star-chart, and Azimuth, Zenith,</span>
+0005 <span class="comment">% Catalog Index and Magnitude of the star is returned.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Function is called through the skymap/starcal GUI</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Calling:</span>
+0010 <span class="comment">% [staz,stze,stind,stmagn] = findneareststarxy(x0,y0,SkMp)</span>
+0011 <span class="comment">%</span>
+0012 
+0013 
+0014 <span class="comment">%   Copyright � 1997 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0015 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0016 
+0017 pstars = SkMp.plottstars;
+0018 
+0019 fig = SkMp.figsky;
+0020 set(fig,<span class="string">'pointer'</span>,<span class="string">'watch'</span>)
+0021 
+0022 diff = ( 180/pi*pstars(:,6).*cos(-pstars(:,5))-x0 ).^2 + ( 180/pi*pstars(:,6).*sin(-pstars(:,5))-y0 ).^2;
+0023 [mindiff,minindex] = min(diff);
+0024 
+0025 staz = pstars(minindex,1);
+0026 stze = pstars(minindex,2);
+0027 stind = pstars(minindex,3);
+0028 stmagn = pstars(minindex,4);
+0029 
+0030 figure(fig)
+0031 hold on
+0032 ph = polar(-pstars(minindex,5),180/pi*pstars(minindex,6),<span class="string">'rh'</span>);
+0033 set(ph,<span class="string">'color'</span>,SkMp.prefs.cl_st_pt,<span class="string">'markersize'</span>,SkMp.prefs.sz_st_pt/2)
+0034 hold off
+0035 set(fig,<span class="string">'pointer'</span>,<span class="string">'arrow'</span>)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

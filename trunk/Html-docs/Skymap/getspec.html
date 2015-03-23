@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of getspec</title>
+  <meta name="keywords" content="getspec">
+  <meta name="description" content="GETSPEC - high resolution stellar spectras around visible wavelengths.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>getspec
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>GETSPEC - high resolution stellar spectras around visible wavelengths.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [wavelengths,energyfluxes] = getspec(bright_star_nr,verbosity) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> GETSPEC - high resolution stellar spectras around visible wavelengths.
+ 
+   GETSPEC is a matlab wrapper to getsp a C-shell script that
+   reads the Pulkovo Spectrophotometric Catalog. WAVELENGTHS are
+   given in nm, and ENERGYFLUXES in W/m^2/m
+ 
+ Calling:
+   [wavelengths,energyfluxes] = getspec(bright_star_nr,verbosity)
+ Input:
+   BRIGHT_STAR_NR - bright star catalog index of star whose
+                    spectra we want.
+ Output:
+   WAVELENGTHS - wavelengts (nm), not necessarily monotonic
+   ENERGYFLUXES - energy flux of the star in wavelength
+                  region. (W/m^2/m)
+ 
+ Works, provided the C-shell script getsp can be executed
+ (typically one has to make sure one has execute permision on the
+ file, otherwise all stars will erroneously lack speckra), and
+ provided one can create a file '/tmp/test1.qWe' - which means
+ that MS-DOS/WINDOWS are on thin ice (If anyone know how to fix
+ this I'd be happy to know, BG:bjorn@irf.se)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="sk_make_rgb.html" class="code" title="function RGB = sk_make_rgb(BSNR)">sk_make_rgb</a>	SK_MAKE_RGB - transform Pulkovo spectra into RGB triplet</li><li><a href="../Spectral_cal/spc_spectral_filter_int_conv.html" class="code" title="function [I,dI] = spc_spectral_filter_int_conv(wl,filter_tr,BSCNR,dispOPS)">spc_spectral_filter_int_conv</a>	SPC_SPECTRAL_FILTER_INT_CONV - convert Pulkovo intensity to #/cm^2/s/fw</li><li><a href="../Spectral_cal/spc_spectral_int_conv.html" class="code" title="function [I,dI] = spc_spectral_int_conv(wl_center,delta_wl,BSCNR,dispOPS)">spc_spectral_int_conv</a>	SPC_SPECTRAL_INT_CONV - convert Pulkovo intensity to #/cm^2/s/fw</li><li><a href="../Spectral_cal/spc_spectral_int_conv2.html" class="code" title="function [I,dI] = spc_spectral_int_conv2(wl_filter,filter_tr,BSCNR,dispOPS)">spc_spectral_int_conv2</a>	SPC_SPECTRAL_INT_CONV2 - convert Pulkovo intensity to #/cm^2/s/fw</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [wavelengths,energyfluxes] = getspec(bright_star_nr,verbosity)</a>
+0002 <span class="comment">% GETSPEC - high resolution stellar spectras around visible wavelengths.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   GETSPEC is a matlab wrapper to getsp a C-shell script that</span>
+0005 <span class="comment">%   reads the Pulkovo Spectrophotometric Catalog. WAVELENGTHS are</span>
+0006 <span class="comment">%   given in nm, and ENERGYFLUXES in W/m^2/m</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">%   [wavelengths,energyfluxes] = getspec(bright_star_nr,verbosity)</span>
+0010 <span class="comment">% Input:</span>
+0011 <span class="comment">%   BRIGHT_STAR_NR - bright star catalog index of star whose</span>
+0012 <span class="comment">%                    spectra we want.</span>
+0013 <span class="comment">% Output:</span>
+0014 <span class="comment">%   WAVELENGTHS - wavelengts (nm), not necessarily monotonic</span>
+0015 <span class="comment">%   ENERGYFLUXES - energy flux of the star in wavelength</span>
+0016 <span class="comment">%                  region. (W/m^2/m)</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Works, provided the C-shell script getsp can be executed</span>
+0019 <span class="comment">% (typically one has to make sure one has execute permision on the</span>
+0020 <span class="comment">% file, otherwise all stars will erroneously lack speckra), and</span>
+0021 <span class="comment">% provided one can create a file '/tmp/test1.qWe' - which means</span>
+0022 <span class="comment">% that MS-DOS/WINDOWS are on thin ice (If anyone know how to fix</span>
+0023 <span class="comment">% this I'd be happy to know, BG:bjorn@irf.se)</span>
+0024 
+0025 
+0026 
+0027 <span class="comment">%   Copyright � 2002 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0028 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0029 
+0030 <span class="keyword">global</span> stardir
+0031 
+0032 <span class="keyword">if</span> nargin == 1
+0033   verbosity = 1;
+0034 <span class="keyword">end</span>
+0035 [stardir] = fileparts(which(<span class="string">'skymap'</span>));
+0036 
+0037 qWe_cmd = [<span class="string">'cd '</span>,stardir,<span class="string">'/stars/;./getsp '</span>,num2str(bright_star_nr),<span class="string">' &gt; /tmp/test1.qWe'</span>];
+0038 <span class="comment">%TBR?: [qWe_q,qWe_w] = unix(qWe_cmd);</span>
+0039 [qWe_q,qWe_w] = unix(qWe_cmd);
+0040 <span class="keyword">if</span> qWe_q == 0
+0041   
+0042   qWe_fp = fopen(<span class="string">'/tmp/test1.qWe'</span>,<span class="string">'r'</span>);
+0043   qWe_i = 1;
+0044   <span class="keyword">while</span>(~feof(qWe_fp))
+0045     qWe_l = fgets(qWe_fp);
+0046     <span class="keyword">if</span> ~isempty(str2num(qWe_l))
+0047       qWe_spe15(qWe_i,1:length(str2num(qWe_l))) = str2num(qWe_l);
+0048       <span class="keyword">if</span> length(str2num(qWe_l))==1
+0049         qWe_spe15(qWe_i,2) = nan;
+0050       <span class="keyword">end</span>
+0051       qWe_i = qWe_i+1;
+0052     <span class="keyword">end</span>
+0053   <span class="keyword">end</span>
+0054   
+0055   wavelengths = qWe_spe15(:,1);
+0056   energyfluxes = qWe_spe15(:,2);
+0057   unix(<span class="string">'rm /tmp/test1.qWe'</span>);
+0058   
+0059 <span class="keyword">elseif</span> verbosity == 1
+0060   
+0061   disp([<span class="string">'No specra in `Pulkovo Spectrophotometric Catalog'' for star: '</span>,num2str(bright_star_nr)])
+0062   
+0063 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

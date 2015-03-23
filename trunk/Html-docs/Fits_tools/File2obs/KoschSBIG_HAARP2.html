@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of KoschSBIG_HAARP2</title>
+  <meta name="keywords" content="KoschSBIG_HAARP2">
+  <meta name="description" content="KoschSBIG_HAARP2 extracts observation info from SBIG header-struct">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Fits_tools --><!-- menu.html File2obs -->
+<h1>KoschSBIG_HAARP2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>KoschSBIG_HAARP2 extracts observation info from SBIG header-struct</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [obs] = KoschSBIG_HAARP2(img_struct) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> KoschSBIG_HAARP2 extracts observation info from SBIG header-struct 
+ as returned from SBIG.M
+ such as exposure time, time and date of exposure et al.
+ This version is hard-coded for a HAARP-campaign.
+
+ Outdated! use: sbig2AIDAobs instead!
+ 
+ Calling:
+    [obs] = try_to_be_smart(img_struct)
+ 
+ INPUT: 
+   img_head - a sbig9 meta-data struct as returned from sbig.
+ 
+ OUTPUT:
+    OBS the output is a struct with some relevant key parameters
+    such as camera rotation, exposure time, time and date of
+    exposure filter camera number, camera position.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function outstr = ddeblank(in_str)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [obs] = KoschSBIG_HAARP2(img_struct)</a>
+0002 <span class="comment">% KoschSBIG_HAARP2 extracts observation info from SBIG header-struct</span>
+0003 <span class="comment">% as returned from SBIG.M</span>
+0004 <span class="comment">% such as exposure time, time and date of exposure et al.</span>
+0005 <span class="comment">% This version is hard-coded for a HAARP-campaign.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Outdated! use: sbig2AIDAobs instead!</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Calling:</span>
+0010 <span class="comment">%    [obs] = try_to_be_smart(img_struct)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% INPUT:</span>
+0013 <span class="comment">%   img_head - a sbig9 meta-data struct as returned from sbig.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% OUTPUT:</span>
+0016 <span class="comment">%    OBS the output is a struct with some relevant key parameters</span>
+0017 <span class="comment">%    such as camera rotation, exposure time, time and date of</span>
+0018 <span class="comment">%    exposure filter camera number, camera position.</span>
+0019 
+0020 <span class="comment">%       Bjorn Gustavsson 2007-06-16</span>
+0021 <span class="comment">%       Copyright (c) 2001 by Bjorn Gustavsson</span>
+0022 
+0023 <span class="keyword">global</span> FITS_HOME
+0024 
+0025 FITS_HOME = which(<span class="string">'inimg'</span>);
+0026 FITS_HOME = fileparts(FITS_HOME);
+0027 
+0028 obs.time = [];
+0029 obs.pos = [];
+0030 obs.longlat = [];
+0031 obs.xyz = [];
+0032 obs.station = [];
+0033 obs.alpha = [];
+0034 obs.beta = [];
+0035 obs.az = [];
+0036 obs.ze = [];
+0037 obs.camnr = [];
+0038 obs.exptime = [];
+0039 obs.filter = [];
+0040 
+0041 o_date = sscanf(img_struct.date,<span class="string">'%f/%f/%f'</span>)';
+0042 o_time = sscanf(img_struct.time,<span class="string">'%f:%f:%f'</span>)';
+0043 obs.time = [o_date([3 1 2]),o_time];
+0044 <span class="keyword">if</span> obs.time(1) &lt; 80
+0045   obs.time(1) = 2000 + obs.time(1);
+0046 <span class="keyword">elseif</span> obs.time(1) &lt; 1900
+0047   obs.time(1) = 1900 + obs.time(1);
+0048 <span class="keyword">end</span>
+0049 obs.exptime = str2num(img_struct.exposure);
+0050 
+0051 obs.station = 0; <span class="comment">% HAARP is station 401 in the AIDA-tools station enumeration.</span>
+0052 obs.longlat = [-146.842017 64.872];
+0053 obs.pos = [-146.842017 64.872];
+0054 obs.cmtr = eye(3);
+0055 obs.xyz = [0,0,0];
+0056 
+0057 <span class="keyword">switch</span> lower(img_struct.filter)
+0058  <span class="keyword">case</span> <span class="string">'red'</span>
+0059   obs.filter = 6300;
+0060  <span class="keyword">case</span> <span class="string">'green'</span>
+0061   obs.filter = 5577;
+0062  <span class="keyword">case</span> <span class="string">'blue'</span>
+0063   obs.filter = 4278;
+0064  <span class="keyword">otherwise</span>
+0065   obs.filter = nan;
+0066 <span class="keyword">end</span>
+0067 
+0068 
+0069 obs.ccdtemp = str2num(img_struct.temperature);
+0070 
+0071 obs.BZERO = 0;
+0072 obs.bscale = 1;
+0073 
+0074 
+0075 <span class="comment">% Some functions related to the geometric calibrations benefits</span>
+0076 <span class="comment">% from getting azimuth and zenith (or alpha and beta) angles. But</span>
+0077 <span class="comment">% as none is in the header it is just to set them all to 0.</span>
+0078 obs.az = 0;
+0079 obs.ze = 0;
+0080 obs.alpha = 0;
+0081 obs.beta = 0;
+0082 <span class="comment">% Some image correction/pre-processing steps require information</span>
+0083 <span class="comment">% about which ccd it is - ALIS bias correction and bad-pixel fixing</span>
+0084 <span class="comment">% have images and maps for bias and bad pixels. As long as the</span>
+0085 <span class="comment">% camnr doesnt match it should be OK.</span>
+0086 obs.camnr = -12;
+0087 
+0088 <a name="_sub1" href="#_subfunctions" class="code">function outstr = ddeblank(in_str)</a>
+0089 <span class="comment">% DDEBLANK -</span>
+0090 <span class="comment">%</span>
+0091 
+0092 outstr = fliplr(deblank(fliplr(deblank(in_str))));</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

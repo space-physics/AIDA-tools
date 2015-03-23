@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_get_ask_cal</title>
+  <meta name="keywords" content="ASK_get_ask_cal">
+  <meta name="description" content="ASK_GET_ASK_CAL - get  absolute intensity calibration factors">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_get_ask_cal
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_GET_ASK_CAL - get  absolute intensity calibration factors</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function retval = ASK_get_ask_cal(mjs,cam) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_GET_ASK_CAL - get  absolute intensity calibration factors 
+ for the ASK cameras. They come from the ask.lut lookup table.
+ 
+ Calling:
+   CalFactor = ASK_get_ask_cal(mjs,cam)
+ Inputs:
+   mjs - The time in mjs
+   cam - The camera(s) wanted. This can be a single value (e.g. 2 for ASK2)
+         or an array, e.g. [1,2,3] for all cameras. In this case an array
+         to match cam is returned.
+ Output:
+   CalFactor - calibration factor(s)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_locate_int.html" class="code" title="function [start_indx,stop_indx] = ASK_locate_int(t1,t2,mjs1,mjs2,hardBoundaries)">ASK_locate_int</a>	ASK_LOCATE_INT -</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_add_int_radar.html" class="code" title="function I_of_T = ASK_add_int_radar(RadarSite,az,el,dphi,indices,Cams,optpar,r_camera,OPS)">ASK_add_int_radar</a>	ASK_ADD_INT_RADAR - Image intenisity inside radar beam.</li><li><a href="ASK_fanograms.html" class="code" title="function [Keos,time_V,u,v] = ASK_fanograms(Indices2do,Cams,shifts,e_fan,width,OPS)">ASK_fanograms</a>	ASK_FANOGRAMS - Produce keograms of a fan-beam-cut from an ASK image sequence</li><li><a href="ASK_image_sequence.html" class="code" title="function varargout = ASK_image_sequence(indices2show,Cams,OPS)">ASK_image_sequence</a>	ASK_IMAGE_SEQUENCE - to display an ASK image sequence as movie, and</li><li><a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function retval = ASK_get_ask_cal(mjs,cam)</a>
+0002 <span class="comment">% ASK_GET_ASK_CAL - get  absolute intensity calibration factors</span>
+0003 <span class="comment">% for the ASK cameras. They come from the ask.lut lookup table.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%   CalFactor = ASK_get_ask_cal(mjs,cam)</span>
+0007 <span class="comment">% Inputs:</span>
+0008 <span class="comment">%   mjs - The time in mjs</span>
+0009 <span class="comment">%   cam - The camera(s) wanted. This can be a single value (e.g. 2 for ASK2)</span>
+0010 <span class="comment">%         or an array, e.g. [1,2,3] for all cameras. In this case an array</span>
+0011 <span class="comment">%         to match cam is returned.</span>
+0012 <span class="comment">% Output:</span>
+0013 <span class="comment">%   CalFactor - calibration factor(s)</span>
+0014 
+0015 <span class="comment">% Modified from add_multi.pro</span>
+0016 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0017 <span class="comment">% GPL 3.0 or later applies</span>
+0018 
+0019 <span class="keyword">global</span> asklut
+0020 
+0021 <span class="comment">% [start_indx,stop_indx] = ASK_locate_int(asklut.ask_t1,asklut.ask_t2,mjs,mjs);</span>
+0022 [start_indx] = <a href="ASK_locate_int.html" class="code" title="function [start_indx,stop_indx] = ASK_locate_int(t1,t2,mjs1,mjs2,hardBoundaries)">ASK_locate_int</a>(asklut.ask_t1,asklut.ask_t2,mjs,mjs);
+0023 
+0024 retval = asklut.ask_cal(cam,start_indx);
+0025 
+0026 <span class="keyword">for</span> i1 = 1:length(cam),
+0027   
+0028   <span class="keyword">if</span> retval(i1) == 0
+0029     disp([<span class="string">'WARNING!! Data is not intensity calibrated for ASK'</span>,sprintf(<span class="string">'%d'</span>,cam),<span class="string">': '</span> num2str(asklut.ask_t1(start_indx)),<span class="string">' - '</span>,num2str(asklut.ask_t2(start_indx))])
+0030     retval(i1) = 1;
+0031   <span class="keyword">end</span>
+0032   
+0033 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

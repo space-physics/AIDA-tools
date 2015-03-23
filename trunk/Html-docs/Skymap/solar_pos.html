@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of solar_pos</title>
+  <meta name="keywords" content="solar_pos">
+  <meta name="description" content="Unfinished! SOLAR_POS - Get the sky position of the sun">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>solar_pos
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Unfinished! SOLAR_POS - Get the sky position of the sun</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [az,alt,ze] = solar_pos(date,time,long,lat) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Unfinished! SOLAR_POS - Get the sky position of the sun
+ 
+ Calling:
+  [az,alt,ze] = solar_pos(date,time,long,lat)
+ 
+ Input:
+ DATE - date [Y, M, D]
+ TIME - time [HH, MM, SS] (UT)
+ LONG - longitude
+ LAT  - latitude</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [az,alt,ze] = solar_pos(date,time,long,lat)</a>
+0002 <span class="comment">% Unfinished! SOLAR_POS - Get the sky position of the sun</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  [az,alt,ze] = solar_pos(date,time,long,lat)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">% DATE - date [Y, M, D]</span>
+0009 <span class="comment">% TIME - time [HH, MM, SS] (UT)</span>
+0010 <span class="comment">% LONG - longitude</span>
+0011 <span class="comment">% LAT  - latitude</span>
+0012 <span class="comment">%</span>
+0013 
+0014 
+0015 <span class="comment">%   Copyright � 2005 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0016 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0017 
+0018 UT = time(1) + time(2)/60 + time(3)/3600;
+0019 
+0020 Z = [-.5 30.5 58.5 89.5 119.5 150.5 211.5 242.5 272.5 303.5 333.5];
+0021 
+0022 Y = date(1) - 1900;
+0023 <span class="keyword">if</span> Y/4 == floor(Y/4)
+0024   Z(1:2) = Z(1:2)-1;
+0025 <span class="keyword">end</span>
+0026 D = floor(365.25 * Y) + Z(date(2)) + date(3) + UT/24;
+0027 T = D/36525;
+0028 
+0029 L = pi/180*(279.697 + 36000.769 * T); <span class="comment">% Mean longitud of sun</span>
+0030 
+0031 M = pi/180*(358.476 + 35999.050 * T);  <span class="comment">% Mean anomaly of sun</span>
+0032 epsilon = pi/180*(23.452 - 0.013 * T);        <span class="comment">% approximate obliquity</span>
+0033 
+0034 lambda = L + pi/180*((1.919 - 0.005 * T) * sin(M) + 0.020 * sin(2*M)); <span class="comment">% ecliptic longitude</span>
+0035 alpha = atan2(tan(lambda),cos(epsilon));
+0036 dec = asin(sin(lambda) * sin(epsilon));
+0037 
+0038 HA = L - alpha + pi + 15/180*pi * UT + long;
+0039 
+0040 alt = asin(sin(lat)*sin(dec) + cos(lat)*cos(dec)*cos(HA));
+0041 az = atan2( sin(HA), cos(HA)*sin(lat) - tan(dec)*cos(lat) );
+0042 ze = pi-alt;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

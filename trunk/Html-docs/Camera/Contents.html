@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of Contents</title>
+  <meta name="keywords" content="Contents">
+  <meta name="description" content="Camera - triangulation, projection and mapping functions">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>Contents
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Camera - triangulation, projection and mapping functions</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Camera - triangulation, projection and mapping functions
+ Version (1.6) (20120711) Copyright B Gustavsson
+ Path -&gt; AIDA_tools/Camera
+ 
+ Camera contains projection, mapping, corrections, and
+ triangulation functions - all rerlated to or based on the optical
+ characteristics of the camera.
+ 
+ Basic camera functions:
+   
+ CAMERA_MODEL    - determine the image coordinates of light from [az,ze]
+ CAMERA_INVMODEL - line-of-sight azimuthal and polar angles FI TAETA
+ CAMERA_ROT      - determines the coordinate system of the camera 
+ CAMERA_BASE     - determine the coordinate system of the camera 
+ CAMERA_MIM_TEST - test that camera_model and camera_invmodel inverse-pair
+ 
+ Next level camera related functions.
+ 
+ PROJECT_DIRECTIONS - calculates the image positions [UA,WA] from (AZ,ZE) 
+ PROJECT_POINT      - project a point in space R down onto an image
+ PROJECT_LLH2IMG    - project a point in space LONGLATALT down onto an image
+
+ Multi-view-point and similiar image functions
+
+ INV_PROJECT_IMG        - maps an image IMG_IN to a plane.
+ INV_PROJECT_IMG_SURF   - map IMG_IN - onto an arbitrary surface
+ INV_PROJ_IMG_LL        - map IMG_IN to a latitude-longitude grid LAT, LONG
+ INV_PROJECT_POINTS     - maps points (PX,PY) in image IMG_IN to a plane
+ INV_PROJECT_DIRECTIONS - pixels line-of-sight azimuth and zenith angles
+ INV_PROJECT_LineOfSightVectors - pixels coordinates to line-of-sight vectors
+ TRIANGULATE            - stereoscopic triangulation from a pair of images
+ AUTO_P_TRIANG          - triangulation of 3D positions of imaged objects
+ AUTO_QUICKTRIANG       - Automatic triangulation of structured surfaces
+ AUTO_TRIANGULATE       - Automatic stareoscopic triangulation
+
+ Camera related image correction functions
+
+ FFS_CORRECTION     - flat-field variation for optical transfer
+ FFS_CORRECTION2    - flat-field variation for optical transfer
+ FFS_CORRECTION_RAW - flat-field variation for optical transfer
+ DOHMEGA            - calculate the solid angle spanned by a pixel.
+ DOHMEGA1           - calculate the solid angle spanned by a pixel.
+ DOHMEGA2           - calculate the solid angle spanned by a pixel.
+ 
+ ASK related functions in this directory
+
+ ASK_camera_model     - the camera model for the ASK instrument.
+ ASK_camera_invmodel  - the inverse camera model for the ASK instrument.
+ ASK_CONV_CART2SPHERE - conversion used in ASK_camera_[inv]model
+
+ Assorted functions:
+ 
+ DETERMINE_FOV     - determine field-of-view of optics
+ INTERF_FILT_SHAPE - calculate pass-band of interference filter
+ OLDROTS2NEWERROTS - Transformation between 2 set of rotation angles 
+ STEREOSCOPIC      - calculate the shortest intersection between 2 lines.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

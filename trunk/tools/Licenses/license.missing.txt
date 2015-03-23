@@ -1,0 +1,14 @@
+The following functions lack license files, they are downloaded from
+the matlab file exchange
+(http://www.mathworks.com/matlabcentral/fileexchange) and
+redistribution in original format is assumed to be allowed.
+
+/Björn Gustavsson 2012 11 17
+
+errorbarxy.m
+plot_map.m
+strim.m
+tcolor.m
+textable.m
+unixtime2mat.m
+vol3dtool.m

@@ -1,0 +1,53 @@
+function OK = tomo_renorm_check(stns,X,tomo_ops)
+% TOMO_RENORM_CHECK - check calibration factor for fastprojection of 3D b-o-b
+%
+% Calling:
+%  OK = tomo_renorm_check(stns,X,tomo_ops)
+
+
+%   Copyright © 2005 Bjorn Gustavsson, <bjorn.gustavsson@irf.se>
+%   This is free software, licensed under GNU GPL version 2 or later
+
+OK = zeros(length(stns),5);
+
+for i1 = length(stns):-1:1,
+  if isfield(stns,'sens_mtr')
+    img_test{i1} = fastprojection(ones(size(X)),...
+                                  stns(i1).uv,...
+                                  stns(i1).d, ...
+                                  stns(i1).l_cl,...
+                                  stns(i1).bfk, ...
+                                  size(stns(i1).img),...
+                                  stns(i1).sens_mtr);
+  else
+    img_test{i1} = fastprojection(ones(size(X)),...
+                                  stns(i1).uv, ...
+                                  stns(i1).d, ...
+                                  stns(i1).l_cl, ...
+                                  stns(i1).bfk, ...
+                                  size(stns(i1).img));
+  end
+% $$$   img_test{i1} = fastprojection(ones(size(X)),...
+% $$$                                 stns(i1).uv,...
+% $$$                                 stns(i1).d, ...
+% $$$                                 stns(i1).l_cl,...
+% $$$                                 stns(i1).bfk,...
+% $$$                                 size(stns(i1).d)); 
+
+  OK(i1,1) = 1;
+end
+
+SP = fix_subplots_tomo(length(stns));
+
+for i1 = 1:length(stns),
+  
+  subplot(SP(1),SP(2),i1)
+  imagesc(stns(i1).img)
+  hold on
+  contour('v6',img_test{i1},9,'k')
+  if ~all(isnan(tomo_ops(i1).renorm))
+    plot(tomo_ops(i1).renorm([1 2 2 1 1]),tomo_ops(i1).renorm([3 3 4 4 3]),'w')
+    OK(i1,2:5) = tomo_ops(i1).renorm;
+  end
+  
+end

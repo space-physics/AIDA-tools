@@ -1,0 +1,418 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of hh_tomo1234_New01</title>
+  <meta name="keywords" content="hh_tomo1234_New01">
+  <meta name="description" content="HH_TOMO1234_NEW01 - script for tomographing 2007 HIPAS-observations">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>hh_tomo1234_New01
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>HH_TOMO1234_NEW01 - script for tomographing 2007 HIPAS-observations</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> HH_TOMO1234_NEW01 - script for tomographing 2007 HIPAS-observations</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>	FFS_CORRECTION2 - flat-field variation for optical transfer</li><li><a href="../EARTH/makenlcpos.html" class="code" title="function [x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt)">makenlcpos</a>	MAKENLCPOS transforms the positions (LAT, LONG, ALT) to (X,Y,Z)</li><li><a href="../EARTH/maketransfmtr.html" class="code" title="function [trmtr] = maketransfmtr(lat0,long0,lat,long,already_degrees)">maketransfmtr</a>	MAKETRANSFMTR - the transformation rotation matrixes</li><li><a href="../Fits_tools/File2obs/KoschSBIG_HIPAS2007.html" class="code" title="function [obs] = KoschSBIG_HIPAS2007(img_head)">KoschSBIG_HIPAS2007</a>	LANCS_APOGEE_FITS parses an fits header for observation info</li><li><a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>	TYPICAL_PRE_PROC_OPS - Typical ALIS-fits preprocessing options</li><li><a href="camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">camera_set_up_sc</a>	CAMERA_SET_UP_SC - Calculates the projection matrix from 3-D simple cubic grid</li><li><a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>	FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</li><li><a href="sc_positioning.html" class="code" title="function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)">sc_positioning</a>	SC_POSITIONING - position voxels/base-functions in SC grid.</li><li><a href="tomo_inp_images.html" class="code" title="function stns = tomo_inp_images(file_list,stns,img_ops)">tomo_inp_images</a>	TOMO_INP_IMAGES - Preprocessing of images for tomography plus</li><li><a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>	FMINSEARCHBND: FMINSEARCH, but with bound constraints by transformation</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% HH_TOMO1234_NEW01 - script for tomographing 2007 HIPAS-observations</span>
+0002 
+0003 <span class="comment">% 00 Identifier of this script.</span>
+0004 version_string = <span class="string">'1234_New01'</span>;
+0005 
+0006 <span class="comment">% 0 Location of the cameras</span>
+0007 pos0 = [-146.84       64.872];
+0008 pos1 = [-145.15       62.393];
+0009 longlat = [-146.84       64.872;
+0010            -145.15       62.393];
+0011 <span class="comment">%% 1 Image-pre-processing options</span>
+0012 <span class="comment">%% 1.1 Air Force Research Lab keo imager located at HAARP</span>
+0013 po_haarp = <a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>(<span class="string">'none'</span>);
+0014 po_haarp.filetype = <span class="string">'afrl-keo'</span>;
+0015 po_haarp.medianfilter = 3;
+0016 <span class="comment">%load ../../S00_070319_134300_5577_HAARP.acc</span>
+0017 <span class="comment">%po_haarp.optpar = S00_070319_134300_5577_HAARP([7:14 6 end]);</span>
+0018 load /home/DATA/work/HH-tomo/S00_070319_053800_5577_HAARP.acc
+0019 po_haarp.optpar = S00_070319_053800_5577_HAARP([7:14 6 end]);
+0020 
+0021 <span class="comment">%% 1.2 AFRL Apogee-camerra located at HIPAS</span>
+0022 po_apogee = <a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>(<span class="string">'none'</span>);
+0023 po_apogee.filetype = <span class="string">'afrl-raw'</span>;
+0024 <span class="comment">%load /home/DATA/HH200703/S00_070319_052420_5577_HIPAS-2007@.acc.mat</span>
+0025 load /home/DATA/work/HH-tomo/S00_070319_061510_5577_HIPAS-2007@.acc
+0026 po_apogee.optpar = S00_070319_061510_5577_HIPAS_2007_([7:14,6,end]);
+0027 po_apogee.medianfilter = 3;
+0028 
+0029 <span class="comment">%% 1.3 sbig-ST9 camera located at HIPAS</span>
+0030 po_st9 = <a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>(<span class="string">'none'</span>);
+0031 po_st9.filetype = <span class="string">'sbig'</span>;             
+0032 po_st9.log2obs = @<a href="../Fits_tools/File2obs/KoschSBIG_HIPAS2007.html" class="code" title="function [obs] = KoschSBIG_HIPAS2007(img_head)">KoschSBIG_HIPAS2007</a>;
+0033 
+0034 <span class="comment">%load /home/DATA/HH200703/S0_HIPAS_stars008.acc</span>
+0035 <span class="comment">%po_st9.optpar = S0_HIPAS_stars008([6:13 5 14]);</span>
+0036 load /home/DATA/work/HH-tomo/S00_HIPAS_star030_m2.acc
+0037 po_st9.optpar = S00_HIPAS_star030_m2([7:14 6 end]);
+0038 po_st9.medianfilter = 3;
+0039 
+0040 <span class="comment">%% 2 Geometry of the set-up</span>
+0041 <span class="comment">%% 2.1 Positions relative to HIPAS</span>
+0042 r_0 = [0 0 0];
+0043 
+0044 [x,y,z] = <a href="../EARTH/makenlcpos.html" class="code" title="function [x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt)">makenlcpos</a>(pos0(2),pos0(1),0.2,pos1(2),pos1(1),0.2);
+0045 r_stns = [0,0,0;x,y,z];
+0046 <span class="keyword">for</span> i1 = 1:length(stns),
+0047   [x,y,z] = <a href="../EARTH/makenlcpos.html" class="code" title="function [x,y,z] = makenlcpos(lat0,long0,alt0,lat,long,alt)">makenlcpos</a>(longlat(1,2),longlat(1,1),0.2,longlat(i1,2),longlat(i1,1),0.2);
+0048   r_stns(i1,:) = [x,y,z];
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">%% 2.2 Transformation matrix</span>
+0052 [trmtr] = <a href="../EARTH/maketransfmtr.html" class="code" title="function [trmtr] = maketransfmtr(lat0,long0,lat,long,already_degrees)">maketransfmtr</a>(pos0(2)*pi/180,pos0(1)*pi/180,pos1(2)*pi/180,pos1(1)*pi/180);
+0053 <span class="keyword">for</span> i1 = 1:length(stns),
+0054   trmtr{i1} = <a href="../EARTH/maketransfmtr.html" class="code" title="function [trmtr] = maketransfmtr(lat0,long0,lat,long,already_degrees)">maketransfmtr</a>(longlat(1,2)*pi/180,longlat(1,1)*pi/180,<span class="keyword">...</span>
+0055                             longlat(i1,2)*pi/180,longlat(i1,1)*pi/180);
+0056 <span class="keyword">end</span>
+0057 
+0058 <span class="comment">%% 3 Flat field correction matrices</span>
+0059 ff_haarp =  max(0,real(<a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>([277, 277],po_haarp.optpar,po_haarp.optpar(9))));
+0060 ff_apogee = max(0,real(<a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>([256, 256],po_apogee.optpar,po_apogee.optpar(9))));
+0061 ff_st9 =    max(0,real(<a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>([170, 170],po_st9.optpar,po_st9.optpar(9))));
+0062 
+0063 
+0064 
+0065 <span class="comment">%% 4 Set-up of Tomographic paraphenalia</span>
+0066 <span class="comment">% In the retrieval of the altitude distribution we use the fast</span>
+0067 <span class="comment">% projection and back-projection of 3-D volume emission</span>
+0068 <span class="comment">% distributions based on smooth base functions (Rydesater and</span>
+0069 <span class="comment">% Gustavsson 2001) - but here we use cos^2-shaped base functions.</span>
+0070 <span class="comment">%</span>
+0071 <span class="comment">% Set up the geometry of the base function block</span>
+0072 ds = 3;  <span class="comment">% Size (full-width-at-half-max) of base function in km:</span>
+0073 sx = 60; <span class="comment">% Number of base functions in WEST-EAST</span>
+0074 sy = 60; <span class="comment">% Number of base functions in NORTH-SOUTH</span>
+0075 sz = 60;<span class="comment">% Number of base functions along the magnetic zenith</span>
+0076 <span class="comment">%%</span>
+0077 <span class="comment">% |ds| should preferably a little smaller and the number of</span>
+0078 <span class="comment">% elements a little bit bigger.</span>
+0079 <span class="comment">%</span>
+0080 <span class="comment">% Position of the lower south-west corner</span>
+0081 r0 = [-3*60/2 -3*60/2-20 160]; <span class="comment">% Should be OK,</span>
+0082 <span class="comment">%%</span>
+0083 <span class="comment">% Unit vector along the first (x) second and third dimension of the</span>
+0084 <span class="comment">% base-function-block:</span>
+0085 dr1 = [ds 0 0]; 
+0086 dr2 = [0 ds 0];
+0087 dr3 = [0 0 ds];
+0088 <span class="comment">%%</span>
+0089 <span class="comment">% Note that this makes up a block sheared along the magnetic</span>
+0090 <span class="comment">% zenith.</span>
+0091 <span class="comment">%</span>
+0092 <span class="comment">% Setting up the base function block and its location</span>
+0093 I3D0 = zeros([sy sx sz]);
+0094 [r,X,Y,Z] = <a href="sc_positioning.html" class="code" title="function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)">sc_positioning</a>(r0,dr1,dr2,dr3,I3D0);
+0095 XfI = r0(1)+dr1(1)*(X-1)+dr2(1)*(Y-1)+dr3(1)*(Z-1);
+0096 YfI = r0(2)+dr1(2)*(X-1)+dr2(2)*(Y-1)+dr3(2)*(Z-1);
+0097 ZfI = r0(3)+dr1(3)*(X-1)+dr2(3)*(Y-1)+dr3(3)*(Z-1);
+0098 
+0099 <span class="comment">%% 5 Build the STNS structs</span>
+0100 filelist = str2mat(<span class="string">'/home/DATA/HH200703/HAARP/070319/070319_053415_6300_HAARP.keo'</span>,<span class="keyword">...</span>
+0101                    <span class="string">'/home/DATA/HH200703/HIPAS/070319/070319_053300_5577_HIPAS-2007@.raw'</span>,<span class="keyword">...</span>
+0102                    <span class="string">'/home/DATA/HH200703/HIPAS/st9/19Mar07/HIPAS263.ST9'</span>);
+0103 stns_HH = <a href="tomo_inp_images.html" class="code" title="function stns = tomo_inp_images(file_list,stns,img_ops)">tomo_inp_images</a>(filelist,[],[po_haarp,po_apogee,po_st9]);
+0104 stns_HH(1).optpar = po_haarp.optpar;
+0105 stns_HH(2).optpar = po_apogee.optpar;
+0106 stns_HH(3).optpar = po_st9.optpar;
+0107 
+0108 <span class="comment">%%</span>
+0109 <span class="comment">% Setup the number of layers to divide the base functions into</span>
+0110 <span class="comment">% Might be larger, 16?</span>
+0111 nr_layers = 16;
+0112 <span class="comment">%%</span>
+0113 <span class="comment">% Set up the projection matrices and base function foot-point</span>
+0114 rstns = r_stns([2 1 1],:);
+0115 <span class="keyword">for</span> i1 = 1:length(stns_HH),
+0116   
+0117   optpar = stns_HH(i1).optpar;
+0118   imgsize = size(stns_HH(i1).img);
+0119   <span class="comment">%cmt = stns_DR(i1).obs.cmtr;</span>
+0120   stns_HH(i1).r = rstns(i1,:);
+0121   [stns_HH(i1).uv,stns_HH(i1).d,stns_HH(i1).l_cl,stns_HH(i1).bfk] = <a href="camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">camera_set_up_sc</a>(r,X,Y,Z,stns_HH(i1).optpar,rstns(i1,:),imgsize,nr_layers);
+0122   
+0123 <span class="keyword">end</span>
+0124 <span class="comment">%%</span>
+0125 <span class="comment">% Check that they work</span>
+0126 load /home/DATA/work/HH-tomo/imgs_HH.mat
+0127 
+0128 img_test{1} = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(ones(size(X)),stns_HH(1).uv,stns_HH(1).d,stns_HH(1).l_cl,stns_HH(1).bfk,size(imgs_HAARP5577{1}),ff_haarp); 
+0129 img_test{2} = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(ones(size(X)),stns_HH(2).uv,stns_HH(2).d,stns_HH(2).l_cl,stns_HH(2).bfk,size(imgs_HIPAS5577{1}),ff_apogee);
+0130 img_test{3} = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(ones(size(X)),stns_HH(3).uv,stns_HH(3).d,stns_HH(3).l_cl,stns_HH(3).bfk,size(imgs_HIPAS6300{1}),ff_st9);   
+0131 
+0132 
+0133 subplot(1,3,1)
+0134 imagesc(imgs_HAARP6300{1}),caxis([-.5 .8])
+0135 hold on
+0136 contour(img_test{1},10,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,2)
+0137 subplot(1,3,2)
+0138 imagesc(imgs_HIPAS5577{1}),caxis([-.5 .8])
+0139 hold on
+0140 contour(img_test{2},10,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,2)
+0141 subplot(1,3,3)
+0142 imagesc(imgs_HIPAS6300{1}),caxis([-0.05 0.1])
+0143 hold on
+0144 contour(img_test{3},10,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,2)
+0145 
+0146 <span class="comment">% Scale Haarp images to Rayleighsar!</span>
+0147 <span class="keyword">for</span> i1 = 1:4,
+0148   imgs_HAARP6300{i1} = imgs_HAARP6300{i1}*130*.16;
+0149   imgs_HAARP5577{i1} = imgs_HAARP5577{i1}*130*.11;
+0150 <span class="keyword">end</span>  
+0151 
+0152 <span class="comment">%% 6 Set the tomo_options - REMAINS!</span>
+0153 
+0154 qb_HAARP = [22   103    99   180];
+0155 qb_APOGEE = [82, 172, 62, 174];
+0156 qb_ST9 = [42, 151, 36, 145];
+0157 rn_HAARP = [35    66   124   157];
+0158 rn_APOGEE = [106   148   112   154];
+0159 rn_ST9 = [ 92   125    88   114];
+0160 
+0161 tomo_ops.tomotype = 2;
+0162 tomo_ops.randorder = NaN;
+0163 tomo_ops.qb = [qb_HAARP;
+0164                qb_APOGEE;
+0165                qb_ST9];
+0166 tomo_ops.renorm = [rn_HAARP;
+0167                    rn_APOGEE;
+0168                    rn_ST9];
+0169 tomo_ops.renorm(1,:) = NaN;
+0170 tomo_ops.filtertype = 3;
+0171 tomo_ops.filterkernel = ones(3)/9;
+0172 
+0173 
+0174 t_ops13 = tomo_ops;
+0175 t_ops13.qb = t_ops13.qb([1 3],:);
+0176 t_ops13.renorm = t_ops13.renorm([1 3],:);
+0177 
+0178 t_ops12 = tomo_ops;
+0179 t_ops12.qb = t_ops12.qb([1 2],:);
+0180 t_ops12.renorm = t_ops12.renorm([1 2],:);
+0181 
+0182 <span class="comment">% Then it should just be to read in the images - with background</span>
+0183 <span class="comment">% reduction, this could easily be done with imgs_plot_bg_red</span>
+0184 <span class="comment">%stns(n).img = imgs_plot_bg_red(files([bg1,imgnr,bg2,:),PO,1,1,1,ff_X,[],[],[],'','img');</span>
+0185 <span class="comment">% and then set it off in a manner similar to this.</span>
+0186 
+0187 <span class="comment">%% Set the initial guesses for the parameters</span>
+0188 <span class="comment">%           1  2  3  4                    5                     6    7   8     9 10    11 12 13 14 15</span>
+0189 <span class="comment">%           I,x0,y0,z0,dsx,dsy,dzu,dzd,gamma,fi,alpha,vx,vy,vz,D</span>
+0190 I0r(1,:) = [1,12,12,12,  15, 15, 10, 10,    2, 0,    2, 0, 0, 0,1];
+0191 I0r(2,:) = [1,12,12,12,  15, 15, 10, 10,2,0,2,0,0,0,1];
+0192 I0r(3,:) = [1,12,12,12,  15, 15, 10, 10,2,0,2,0,0,0,1];
+0193 I0r(4,:) = [1,12,12,12,  15, 15, 10, 10,2,0,2,0,0,0,1];
+0194 
+0195 I0g = I0r;
+0196 
+0197 <span class="comment">%     I,  x0, y0, z0,sx,sy,szu,szd,gamma,fi,alpha,vx,vy,vz,D</span>
+0198 UB = [1e5 30  30  30 3    3   3   3   6   pi/2 6     1, 1, 1,1];
+0199 LB = [0  -30 -30 -30 0.3  0.3 0.3 0.3 0.5  0   0.25,-1,-1,-1,0];
+0200 
+0201 load MSIS20070319.dat
+0202 tauO1D = tau_O1D(MSIS20070319(:,2)*1e6,<span class="keyword">...</span>
+0203                  MSIS20070319(:,4)*1e6,<span class="keyword">...</span>
+0204                  MSIS20070319(:,3)*1e6,<span class="keyword">...</span>
+0205                  MSIS20070319(:,6),<span class="keyword">...</span>
+0206                  zeros(size(MSIS20070319(:,6))),<span class="keyword">...</span>
+0207                  MSIS20070319(:,6));
+0208 tauO1D3D = ZfI;
+0209 tauO1D3D(:) = interp1(MSIS20070319(:,1),tauO1D,ZfI(:));
+0210 
+0211 imgs_HIPAS5577{1} = max(-1.5,min(1,imgs_HIPAS5577{1}));     
+0212 imgs_HIPAS5577{2} = max(-1,min(1.5,imgs_HIPAS5577{2}+0.5)); 
+0213 imgs_HIPAS5577{3} = max(-1,min(1.5,imgs_HIPAS5577{3}+0.7)); 
+0214 imgs_HIPAS5577{4} = max(-1,min(1.5,imgs_HIPAS5577{4}+0.75));
+0215 
+0216 fms_opts = optimset(<span class="string">'fminsearch'</span>);
+0217 fms_opts.Display = <span class="string">'iter'</span>;        
+0218 
+0219 <span class="comment">% 7 Run the tomography for 5577</span>
+0220 load HH1234G2_00.mat <span class="comment">% load the preceding tomographic results.</span>
+0221 fK = conv2(conv2(ones(3)/9,ones(2)/4,<span class="string">'full'</span>),ones(2)/4,<span class="string">'full'</span>);
+0222 fK2 = fK.^2;
+0223 fK = fK2/sum(fK2(:));
+0224 
+0225 load HH1234h_06.mat I_R
+0226 
+0227 i_i = 0;
+0228 <span class="keyword">for</span> t_indx = [2 4], <span class="comment">% Times for the pulses.</span>
+0229   
+0230   var_pars = 1:9;
+0231   lb = LB;
+0232   ub = UB;
+0233   
+0234   I0 = I_G{t_indx};
+0235   I0(2:4) = I_R{t_indx}(2:4);
+0236   I0(1) = I0(1)*130*.11;
+0237   
+0238   lb(2:4) = I0(2:4)+lb(2:4);
+0239   ub(2:4) = I0(2:4)+ub(2:4);
+0240   lb(5:8) = I0(5:8).*lb(5:8);
+0241   ub(5:8) = I0(5:8).*ub(5:8);
+0242   
+0243   ub = ub(var_pars);
+0244   lb = lb(var_pars);
+0245   I0 = I_G{t_indx};
+0246   
+0247   stns_HH(1).img = conv2(imgs_HAARP5577{t_indx},fK,<span class="string">'same'</span>);
+0248   stns_HH(2).img = conv2(imgs_HIPAS5577{t_indx},fK,<span class="string">'same'</span>);
+0249   <span class="keyword">if</span> test_only
+0250     hh_5577_error(I0,var_pars, I0g(t_indx,:),stns_HH([1,2]),XfI,YfI,ZfI,t_ops12);
+0251   <span class="keyword">else</span>
+0252     I_G{t_indx} = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I0) hh_5577_error(I0,var_pars, I0g(t_indx,:),stns_HH([1,2]),XfI,YfI,ZfI,t_ops12),I0,lb,ub,fms_opts);
+0253     disp([<span class="string">'5577: '</span>,num2str(t_indx)])
+0254     disp(I_G{t_indx})
+0255     figure
+0256     hh_5577_res_plot(I_G{t_indx},var_pars, I0g(t_indx,:),stns_HH([1,2]),XfI,YfI,ZfI,t_ops12);
+0257     save([<span class="string">'HH'</span>,version_string,sprintf(<span class="string">'_%02d'</span>,i_i),<span class="string">'.mat'</span>],<span class="string">'I_G'</span>)
+0258   <span class="keyword">end</span>
+0259   
+0260 <span class="keyword">end</span>
+0261 
+0262 fms_opts.TolFun = 0.001;
+0263 fms_opts.MaxFunEvals = 100;
+0264 fms_optq = fms_opts;
+0265 fms_optq.MaxFunEvals = 60;
+0266 
+0267 load HH1234h_06.mat I_R
+0268 <span class="comment">% 8 Run the tomography for 6300</span>
+0269 i_i = [6 6];
+0270 
+0271 <span class="keyword">for</span> t_indx = 1:4, <span class="comment">% Times for the pulses.</span>
+0272   
+0273   disp([i_i,t_indx])
+0274   var_pars = [1,2,3,4,5,6,7,8,9,12,13,15];
+0275   I_R{t_indx}(1) = I_R{t_indx}(1)*130*0.16;
+0276 
+0277 <span class="keyword">end</span>
+0278 <span class="keyword">for</span> t_indx = 1:4, <span class="comment">% Times for the pulses.</span>
+0279   
+0280   disp([i_i,t_indx])
+0281   var_pars = [1,2,3,4,5,6,7,8,9,12,13,15];
+0282   I_0 = I_R{t_indx};
+0283   I_0(1) = I_0(1);
+0284   I0 = I0r(t_indx,:);
+0285   
+0286   lb = LB;
+0287   ub = UB;
+0288   lb(2:4) = I0(2:4)+lb(2:4);
+0289   ub(2:4) = I0(2:4)+ub(2:4);
+0290   ub(5:8) = I0(5:8).*ub(5:8);
+0291   ub = ub(var_pars);
+0292   lb = lb(var_pars);
+0293   
+0294   stns_HH(1).img = imgs_HAARP6300{t_indx};
+0295   stns_HH(3).img = imgs_HIPAS6300{t_indx};
+0296   <span class="keyword">if</span> test_only
+0297     hh_6300_qerror(I_0,var_pars, I0g(t_indx,:),stns_HH([1,3]),XfI,YfI,ZfI,tauO1D3D,t_ops13,i_i);
+0298     disp([<span class="string">'HH1234_t'</span>,sprintf(<span class="string">'%02d'</span>,i_i),<span class="string">'f.mat'</span>])
+0299   <span class="keyword">else</span>
+0300     
+0301     <span class="keyword">for</span> i_tmp = 1:4,
+0302       I_0 = I_R{i_tmp};
+0303       [I_tmp{i_tmp},tmp_val(i_tmp)] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I_0) hh_6300_qerror(I_0,var_pars,I0,stns_HH([1,3]),XfI,YfI,ZfI,tauO1D3D,t_ops13,i_i),<span class="keyword">...</span>
+0304                                                     I_0,lb,ub,fms_optq);
+0305     <span class="keyword">end</span>
+0306     disp(tmp_val)
+0307     [min_tmp,min_tmp] = min(tmp_val);
+0308     I_R{t_indx} = I_tmp{min_tmp};
+0309     [I_R{t_indx}] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I_0) hh_6300_qerror(I_0,var_pars,I0,stns_HH([1,3]),XfI,YfI,ZfI,tauO1D3D,t_ops13,i_i),<span class="keyword">...</span>
+0310                                   I_R{t_indx},lb,ub,fms_opts);
+0311     <span class="keyword">try</span>
+0312       figure(<span class="string">'name'</span>,[<span class="string">'6300: '</span>,sprintf(<span class="string">'%02d'</span>,t_indx)])
+0313       hh_6300_qres_plot(I_R{t_indx},var_pars, I0,stns_HH([1,3]),XfI,YfI,ZfI,tauO1D3D,t_ops13,i_i);
+0314       print(<span class="string">'-depsc2 -painters'</span>,[<span class="string">'6300-'</span>,sprintf(<span class="string">'%02d-%02d'</span>,t_indx,i_i),<span class="string">'.eps'</span>])
+0315     <span class="keyword">catch</span>
+0316       disp([<span class="string">'probs for res_plot: '</span>,num2str(t_indx)])
+0317     <span class="keyword">end</span>
+0318     disp([<span class="string">'6300: '</span>,num2str(t_indx)])
+0319     disp(I_R{t_indx})
+0320     save([<span class="string">'HH'</span>,version_string,sprintf(<span class="string">'_%02d'</span>,i_i),<span class="string">'.mat'</span>],<span class="string">'I_R'</span>)
+0321     
+0322   <span class="keyword">end</span>
+0323   
+0324 <span class="keyword">end</span>
+0325 
+0326 <span class="keyword">for</span> t_indx = 1:4, <span class="comment">% Times for the pulses.</span>
+0327   
+0328   disp([i_i,t_indx])
+0329   var_pars = [1,2,3,4,5,6,7,8,9,12,13,15];
+0330   I_0 = I_R{t_indx};
+0331   I0 = I0r(t_indx,:);
+0332   
+0333   lb = LB;
+0334   ub = UB;
+0335   lb(2:4) = I0(2:4)+lb(2:4);
+0336   ub(2:4) = I0(2:4)+ub(2:4);
+0337   ub(5:8) = I0(5:8).*ub(5:8);
+0338   ub = ub(var_pars);
+0339   lb = lb(var_pars);
+0340   
+0341   stns_HH(1).img = imgs_HAARP6300{t_indx};
+0342   stns_HH(3).img = imgs_HIPAS6300{t_indx};
+0343   <span class="keyword">if</span> test_only
+0344     hh_6300_qerror(I_0,var_pars, I0g(t_indx,:),stns_HH([1,3]),XfI,YfI,ZfI,tauO1D3D,t_ops13,i_i);
+0345     disp([<span class="string">'HH1234_t'</span>,sprintf(<span class="string">'%02d'</span>,i_i),<span class="string">'f.mat'</span>])
+0346   <span class="keyword">else</span>
+0347     
+0348     <span class="keyword">for</span> i_tmp = 1:4,
+0349       I_0 = I_R{i_tmp};
+0350       [I_tmp{i_tmp},tmp_val(i_tmp)] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I_0) hh_6300_qerror(I_0,var_pars,I0,stns_HH([1,3]),XfI,YfI,ZfI,tauO1D3D,t_ops13,i_i),<span class="keyword">...</span>
+0351                                                     I_0,lb,ub,fms_optq);
+0352     <span class="keyword">end</span>
+0353     disp(tmp_val)
+0354     [min_tmp,min_tmp] = min(tmp_val);
+0355     I_R{t_indx} = I_tmp{min_tmp};
+0356     [I_R{t_indx}] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I_0) hh_6300_qerror(I_0,var_pars,I0,stns_HH([1,3]),XfI,YfI,ZfI,tauO1D3D,t_ops13,i_i),<span class="keyword">...</span>
+0357                                   I_R{t_indx},lb,ub,fms_opts);
+0358     <span class="keyword">try</span>
+0359       figure(<span class="string">'name'</span>,[<span class="string">'6300: '</span>,sprintf(<span class="string">'%02d'</span>,t_indx)])
+0360       hh_6300_qres_plot(I_R{t_indx},var_pars, I0,stns_HH([1,3]),XfI,YfI,ZfI,tauO1D3D,t_ops13,i_i);
+0361       print(<span class="string">'-depsc2 -painters'</span>,[<span class="string">'6300-'</span>,sprintf(<span class="string">'%02d-%02d'</span>,t_indx,i_i),<span class="string">'.eps'</span>])
+0362     <span class="keyword">catch</span>
+0363       disp([<span class="string">'probs for res_plot: '</span>,num2str(t_indx)])
+0364     <span class="keyword">end</span>
+0365     disp([<span class="string">'6300: '</span>,num2str(t_indx)])
+0366     disp(I_R{t_indx})
+0367     save([<span class="string">'HH'</span>,version_string,sprintf(<span class="string">'_%02d'</span>,i_i),<span class="string">'.mat'</span>],<span class="string">'I_R'</span>)
+0368     
+0369   <span class="keyword">end</span>
+0370   
+0371 <span class="keyword">end</span>
+0372 
+0373 
+0374 
+0375 <span class="comment">%   Copyright � 2007 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0376 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

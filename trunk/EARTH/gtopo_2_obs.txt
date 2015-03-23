@@ -1,0 +1,8 @@
+nx:      NCOLS   str2num(strtok(hdr_string(cindx,11:end)))
+ny:      NROWS   str2num(strtok(hdr_string(cindx,11:end)))
+nbits:   NBITS   str2num(strtok(hdr_string(cindx,11:end)))
+nan:     NODATA  str2num(strtok(hdr_string(cindx,11:end)))
+ulx:     ULXMAP  str2num(strtok(hdr_string(cindx,11:end)))
+uly:     ULYMAP  str2num(strtok(hdr_string(cindx,11:end)))
+dx:      XDIM    str2num(strtok(hdr_string(cindx,11:end)))
+dy:      YDIM    str2num(strtok(hdr_string(cindx,11:end)))

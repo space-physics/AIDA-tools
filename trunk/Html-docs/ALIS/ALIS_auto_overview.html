@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ALIS_auto_overview</title>
+  <meta name="keywords" content="ALIS_auto_overview">
+  <meta name="description" content="ALIS_AUTO_OVERVIEW - automated fits data to png image conversion">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>ALIS_auto_overview
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ALIS_AUTO_OVERVIEW - automated fits data to png image conversion</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function dOPS = ALIS_auto_overview(ops4AAO) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ALIS_AUTO_OVERVIEW - automated fits data to png image conversion 
+  a Scrip for generating automatically scaled png-images from a
+  chunk of ALIS data, in addition single-emission animations from
+  each station will be made. The trick with this is that there is
+  an automatic intensity scaling that uses histogram clipping on
+  each image - those limits will then be filtered (local maximum
+  and low-pass) and used as time-varying intensity-limits. The
+  benefit with this is that periods of very bright aurora will be
+  mapped between black and white (0-1, 0-255, whatever) without
+  completely pushing periods with fainter aurora down into all
+  black and darkest grays. To display the actual intensity scale
+  the histogram of absolute intensities is displayed thermometer
+  style on the right edge of the images.
+
+ Calling:
+   dOPS = ALIS_auto_overview
+   dOPS = ALIS_auto_overview(ops4AAO)
+   dOPS = ALIS_auto_overview(-1)
+ Input:
+   ops4AAO - struct with fields controlling the behaviour of the
+             function
+   -1      - any non-struct input actually, to get the default
+             struct out without any further processing.
+ Output:
+   dOPS - struct with the default parameters:
+       .MovieBaseName  = 'overview' - name for movie file, to this
+                         station, filter and date information will
+                         be appended.
+       .medianfilter   = 0 region size for image filtering, &gt; 0
+                         2-D median filtering, &lt; 0 wiener2
+                         filtering see also INIMG.
+       .colormap       = bone - colour map, either nx3 double
+                         array with rgb-values 0-1, or string
+                         with name of function returning such
+                         a colourmap-array.
+       .figureposition = [1138 464 560 510]; default position of
+                         figure window [x0 y0 dx dy] (pixels)
+       .ffc            = 1; Flat-field-correction matrix, see:
+                         FFC_CORRECTION2
+       .BaseSaveDir    = '/home/bjorn/tmp/'; path to the directory
+                         where converted images will be saved,
+                         full or relative path.
+       .histClip       = 0.003; fraction of intensities to clip
+                         when mapping the image to 0-1.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ALIS_image_sequence.html" class="code" title="function varargout = ALIS_image_sequence(files,PO,OPS)">ALIS_image_sequence</a>	ALIS_IMAGE_SEQUENCE - to display an ALIS image sequence as movie</li><li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>	TYPICAL_PRE_PROC_OPS - Typical ALIS-fits preprocessing options</li><li><a href="../tools/maxfilt1.html" class="code" title="function Iout = maxfilt1(Iin,reg)">maxfilt1</a>	maxfilt1 - one dimensional sliding max-filter</li><li><a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function dOPS = ALIS_auto_overview(ops4AAO)</a>
+0002 <span class="comment">% ALIS_AUTO_OVERVIEW - automated fits data to png image conversion</span>
+0003 <span class="comment">%  a Scrip for generating automatically scaled png-images from a</span>
+0004 <span class="comment">%  chunk of ALIS data, in addition single-emission animations from</span>
+0005 <span class="comment">%  each station will be made. The trick with this is that there is</span>
+0006 <span class="comment">%  an automatic intensity scaling that uses histogram clipping on</span>
+0007 <span class="comment">%  each image - those limits will then be filtered (local maximum</span>
+0008 <span class="comment">%  and low-pass) and used as time-varying intensity-limits. The</span>
+0009 <span class="comment">%  benefit with this is that periods of very bright aurora will be</span>
+0010 <span class="comment">%  mapped between black and white (0-1, 0-255, whatever) without</span>
+0011 <span class="comment">%  completely pushing periods with fainter aurora down into all</span>
+0012 <span class="comment">%  black and darkest grays. To display the actual intensity scale</span>
+0013 <span class="comment">%  the histogram of absolute intensities is displayed thermometer</span>
+0014 <span class="comment">%  style on the right edge of the images.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Calling:</span>
+0017 <span class="comment">%   dOPS = ALIS_auto_overview</span>
+0018 <span class="comment">%   dOPS = ALIS_auto_overview(ops4AAO)</span>
+0019 <span class="comment">%   dOPS = ALIS_auto_overview(-1)</span>
+0020 <span class="comment">% Input:</span>
+0021 <span class="comment">%   ops4AAO - struct with fields controlling the behaviour of the</span>
+0022 <span class="comment">%             function</span>
+0023 <span class="comment">%   -1      - any non-struct input actually, to get the default</span>
+0024 <span class="comment">%             struct out without any further processing.</span>
+0025 <span class="comment">% Output:</span>
+0026 <span class="comment">%   dOPS - struct with the default parameters:</span>
+0027 <span class="comment">%       .MovieBaseName  = 'overview' - name for movie file, to this</span>
+0028 <span class="comment">%                         station, filter and date information will</span>
+0029 <span class="comment">%                         be appended.</span>
+0030 <span class="comment">%       .medianfilter   = 0 region size for image filtering, &gt; 0</span>
+0031 <span class="comment">%                         2-D median filtering, &lt; 0 wiener2</span>
+0032 <span class="comment">%                         filtering see also INIMG.</span>
+0033 <span class="comment">%       .colormap       = bone - colour map, either nx3 double</span>
+0034 <span class="comment">%                         array with rgb-values 0-1, or string</span>
+0035 <span class="comment">%                         with name of function returning such</span>
+0036 <span class="comment">%                         a colourmap-array.</span>
+0037 <span class="comment">%       .figureposition = [1138 464 560 510]; default position of</span>
+0038 <span class="comment">%                         figure window [x0 y0 dx dy] (pixels)</span>
+0039 <span class="comment">%       .ffc            = 1; Flat-field-correction matrix, see:</span>
+0040 <span class="comment">%                         FFC_CORRECTION2</span>
+0041 <span class="comment">%       .BaseSaveDir    = '/home/bjorn/tmp/'; path to the directory</span>
+0042 <span class="comment">%                         where converted images will be saved,</span>
+0043 <span class="comment">%                         full or relative path.</span>
+0044 <span class="comment">%       .histClip       = 0.003; fraction of intensities to clip</span>
+0045 <span class="comment">%                         when mapping the image to 0-1.</span>
+0046 
+0047 <span class="comment">%   Copyright ? 2012 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0048 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0049 
+0050 <span class="comment">%% Struct with default parameters:</span>
+0051 dOPS.MovieBaseName  = <span class="string">'overview'</span>;
+0052 dOPS.medianfilter   = 0;
+0053 dOPS.colormap       = bone;
+0054 dOPS.figureposition = [1138 464 560 510];
+0055 dOPS.ffc            = 1;
+0056 dOPS.BaseSaveDir    = <span class="string">'/home/bjorn/tmp/'</span>;
+0057 dOPS.histClip       = 0.003;
+0058 
+0059 <span class="comment">% If there is input argument and that is a struct</span>
+0060 <span class="keyword">if</span> nargin &gt; 0 &amp; isstruct(ops4AAO)
+0061   <span class="comment">% then merge that ontop of the default ones</span>
+0062   dOPS = <a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,ops4AAO);
+0063 <span class="keyword">elseif</span> nargin &gt; 0
+0064   <span class="comment">% if the input argument is not a struct (supposedly with options)</span>
+0065   <span class="comment">% then simply return the default struct</span>
+0066   <span class="keyword">return</span>
+0067 <span class="keyword">end</span>
+0068 <span class="comment">% that way the function will continue below with the default</span>
+0069 <span class="comment">% parameters if there is no input argument...</span>
+0070 
+0071 
+0072 
+0073 <span class="comment">%% 0 pre-amblings</span>
+0074 <span class="comment">% Put up a figure with predefined size:</span>
+0075 figure(<span class="string">'position'</span>,dOPS.figureposition)
+0076 <span class="comment">%%</span>
+0077 <span class="comment">% Make its colormap grayish, bone is neater to the eye:0</span>
+0078 colormap(dOPS.colormap)
+0079 <span class="comment">%%</span>
+0080 <span class="comment">% Preprocessing options for reading and preparing ALIS data:</span>
+0081 PO = <a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>(<span class="string">'alis'</span>);
+0082 PO.ffc = [];<span class="comment">%dOPS.ffc;</span>
+0083 PO.medianfilter = dOPS.medianfilter; <span class="comment">% Set this to 3 in case image filtering is needed</span>
+0084 PO.BE = 1;                           <span class="comment">% This is the setting except for a brief</span>
+0085                                      <span class="comment">% period in the late 90s or early 2000s...</span>
+0086 <span class="keyword">if</span> isfield(dOPS,<span class="string">'optpar'</span>)
+0087   PO.optpar = dOPS.optpar;
+0088 <span class="keyword">end</span>
+0089 <span class="keyword">if</span> isfield(dOPS,<span class="string">'interference_level'</span>)
+0090   PO.interference_level = dOPS.interference_level;
+0091 <span class="keyword">end</span>
+0092 <span class="comment">%%</span>
+0093 <span class="comment">% Only look for images from imaging stations...</span>
+0094 <span class="comment">% ...skip calibration data?</span>
+0095 stn_keys = {<span class="string">'\*K.fits'</span>,<span class="string">'\*M.fits'</span>,<span class="string">'\*S.fits'</span>,<span class="string">'\*T.fits'</span>,<span class="string">'\*A.fits'</span>,<span class="string">'\*N.fits'</span>,<span class="string">'\*O.fits'</span>,<span class="string">'\*B.fits'</span>};
+0096 
+0097 <span class="comment">% Process the data station by station:</span>
+0098 <span class="keyword">for</span> iS = 1:length(stn_keys),
+0099   <span class="comment">%% 1 Search for fits-files below current working directory</span>
+0100   [~,q] = my_unix([<span class="string">'find ./ -name '</span>,stn_keys{iS}]);
+0101   <span class="keyword">if</span> ~isempty(q) <span class="comment">% then we actually have data from that station</span>
+0102     <span class="comment">% Sort the file-names in sequence of time...</span>
+0103     q = sortrows(q(1:end-1,:));
+0104     
+0105     <span class="comment">% Read one image to get the observation date...</span>
+0106     [d,h,o] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(q(1,:),PO);
+0107     
+0108     <span class="comment">% Prepar to run the image-sequence function:</span>
+0109     ops4imseq = <a href="ALIS_image_sequence.html" class="code" title="function varargout = ALIS_image_sequence(files,PO,OPS)">ALIS_image_sequence</a>;
+0110     ops4imseq.histClip = 0.003;       <span class="comment">% Only clip this hard</span>
+0111     ops4imseq.outargtype = <span class="string">'intaxes'</span>; <span class="comment">% First we want the intensity</span>
+0112                                 <span class="comment">% limits out</span>
+0113     
+0114     <span class="comment">%% 2 Get the intensity limits - as well as the intensity histogram</span>
+0115     <span class="comment">% and the filter sequence:</span>
+0116     [I99,ImM,Ihists,filtIdB] = <a href="ALIS_image_sequence.html" class="code" title="function varargout = ALIS_image_sequence(files,PO,OPS)">ALIS_image_sequence</a>(q,PO,ops4imseq);
+0117     
+0118     <span class="comment">% Get the filters that are used...</span>
+0119     uFilts = unique(filtIdB);
+0120     <span class="keyword">for</span> i1 = 1:length(uFilts),
+0121       <span class="comment">% ...and loop over each filter</span>
+0122       <span class="keyword">if</span> size(I99(filtIdB==uFilts(i1),:),1) &gt; 15
+0123         <span class="comment">% only do the data conversion to png-files if there are</span>
+0124         <span class="comment">% more than 5 images with the current filter</span>
+0125         
+0126         <span class="comment">%% 3 Max and low-pass filter the intensity limits.</span>
+0127         Im99 = <a href="../tools/maxfilt1.html" class="code" title="function Iout = maxfilt1(Iin,reg)">maxfilt1</a>(I99(filtIdB==uFilts(i1),:),5);
+0128         fIm99 = filtfilt([.25 .75 1 .75 .25]/3,1,Im99);
+0129         
+0130         <span class="comment">%% 4 prepare for the fits to png-image conversion...</span>
+0131         ops4imseq.outargtype = <span class="string">'M'</span>; <span class="comment">% get a matlab-movie back</span>
+0132         ops4imseq.caxis = fIm99;    <span class="comment">% set the filtered intensity limit to</span>
+0133                                     <span class="comment">% be the hard intensity limits to use.</span>
+0134         
+0135         <span class="comment">%%</span>
+0136         <span class="comment">% Set the output directory to where to print the png images,</span>
+0137         <span class="comment">% that is one directory per station and filter per date:</span>
+0138         ops4imseq.savedir = fullfile(dOPS.BaseSaveDir,<span class="keyword">...</span>
+0139                                      sprintf(<span class="string">'ALIS-%s-%d-%s'</span>,<span class="keyword">...</span>
+0140                                              stn_keys{iS}(3),uFilts(i1),datestr(o.time,<span class="string">'yyyy-mm-dd'</span>)));
+0141         <span class="comment">%% 5, run the image conversion:</span>
+0142         [Mov] = <a href="ALIS_image_sequence.html" class="code" title="function varargout = ALIS_image_sequence(files,PO,OPS)">ALIS_image_sequence</a>(q(filtIdB==uFilts(i1),:),PO,ops4imseq);
+0143         <span class="comment">%% 6, write the movie to an avi-file.</span>
+0144         moviename = [dOPS.MovieBaseName,<span class="string">'-'</span>,sprintf(<span class="string">'%s-%d-%s'</span>,stn_keys{iS}(3),uFilts(i1),datestr(o.time,<span class="string">'yyyy-mm-dd'</span>)),<span class="string">'.avi'</span>];
+0145         movie2avi(Mov,fullfile(ops4imseq.savedir,moviename))
+0146         
+0147       <span class="keyword">end</span>
+0148       
+0149     <span class="keyword">end</span>
+0150     
+0151   <span class="keyword">end</span>
+0152   
+0153 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

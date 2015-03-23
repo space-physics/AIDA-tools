@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sifread</title>
+  <meta name="keywords" content="sifread">
+  <meta name="description" content="Read Andor SIF multi-channel image file.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Fits_tools --><!-- menu.html SIF -->
+<h1>sifread
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Read Andor SIF multi-channel image file.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [data,back,ref]=sifread(file) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">Read Andor SIF multi-channel image file.
+
+Synopsis:
+
+  [data,back,ref]=sifread(file)
+     Read the image data, background and reference from file.
+     Return the image data, background and reference in named
+     structures as follows:
+
+  .temperature            CCD temperature [�C]
+  .exposureTime           Exposure time [s]
+  .cycleTime              Time per full image take [s]
+  .accumulateCycles       Number of accumulation cycles
+  .accumulateCycleTime    Time per accumulated image [s]
+  .stackCycleTime         Interval in image series [s]
+  .pixelReadoutTime       Time per pixel readout [s]
+  .detectorType           CCD type
+  .detectorSize           Number of read CCD pixels [x,y]
+  .fileName               Original file name
+  .shutterTime            Time to open/close the shutter [s]
+  .frameAxis              Axis unit of CCD frame
+  .dataType               Type of image data
+  .imageAxis              Axis unit of image
+  .imageArea              Image limits [x1,y1,first image;
+                                        x2,y2,last image]
+  .frameArea              Frame limits [x1,y1;x2,y2]
+  .frameBins              Binned pixels [x,y]
+  .timeStamp              Time stamp in image series
+  .imageData              Image data (x,y,t)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [info,next]=readSection(f)</a></li><li><a href="#_sub2" class="code">function o=readString(f)</a></li><li><a href="#_sub3" class="code">function o=readLine(f)</a></li><li><a href="#_sub4" class="code">function skipBytes(f,N)</a></li><li><a href="#_sub5" class="code">function skipLines(f,N)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%Read Andor SIF multi-channel image file.</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%Synopsis:</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%  [data,back,ref]=sifread(file)</span>
+0006 <span class="comment">%     Read the image data, background and reference from file.</span>
+0007 <span class="comment">%     Return the image data, background and reference in named</span>
+0008 <span class="comment">%     structures as follows:</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%  .temperature            CCD temperature [�C]</span>
+0011 <span class="comment">%  .exposureTime           Exposure time [s]</span>
+0012 <span class="comment">%  .cycleTime              Time per full image take [s]</span>
+0013 <span class="comment">%  .accumulateCycles       Number of accumulation cycles</span>
+0014 <span class="comment">%  .accumulateCycleTime    Time per accumulated image [s]</span>
+0015 <span class="comment">%  .stackCycleTime         Interval in image series [s]</span>
+0016 <span class="comment">%  .pixelReadoutTime       Time per pixel readout [s]</span>
+0017 <span class="comment">%  .detectorType           CCD type</span>
+0018 <span class="comment">%  .detectorSize           Number of read CCD pixels [x,y]</span>
+0019 <span class="comment">%  .fileName               Original file name</span>
+0020 <span class="comment">%  .shutterTime            Time to open/close the shutter [s]</span>
+0021 <span class="comment">%  .frameAxis              Axis unit of CCD frame</span>
+0022 <span class="comment">%  .dataType               Type of image data</span>
+0023 <span class="comment">%  .imageAxis              Axis unit of image</span>
+0024 <span class="comment">%  .imageArea              Image limits [x1,y1,first image;</span>
+0025 <span class="comment">%                                        x2,y2,last image]</span>
+0026 <span class="comment">%  .frameArea              Frame limits [x1,y1;x2,y2]</span>
+0027 <span class="comment">%  .frameBins              Binned pixels [x,y]</span>
+0028 <span class="comment">%  .timeStamp              Time stamp in image series</span>
+0029 <span class="comment">%  .imageData              Image data (x,y,t)</span>
+0030 
+0031 <span class="comment">%Note:</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%  The file format was reverse engineered by identifying known</span>
+0034 <span class="comment">%  information within the corresponding file. There are still</span>
+0035 <span class="comment">%  non-identified regions left over but the current summary is</span>
+0036 <span class="comment">%  available on request.</span>
+0037 <span class="comment">%</span>
+0038 
+0039 <span class="comment">%        Marcel Leutenegger � November 2006</span>
+0040 <span class="comment">%</span>
+0041 <a name="_sub0" href="#_subfunctions" class="code">function [data,back,ref]=sifread(file)</a>
+0042 f=fopen(file,<span class="string">'r'</span>);
+0043 <span class="keyword">if</span> f &lt; 0
+0044    error(<span class="string">'Could not open the file.'</span>);
+0045 <span class="keyword">end</span>
+0046 <span class="keyword">if</span> ~isequal(fgetl(f),<span class="string">'Andor Technology Multi-Channel File'</span>)
+0047    fclose(f);
+0048    error(<span class="string">'Not an Andor SIF image file.'</span>);
+0049 <span class="keyword">end</span>
+0050 <a href="#_sub5" class="code" title="subfunction skipLines(f,N)">skipLines</a>(f,1);
+0051 [data,next]=<a href="#_sub1" class="code" title="subfunction [info,next]=readSection(f)">readSection</a>(f);
+0052 <span class="keyword">if</span> nargout &gt; 1 &amp; next == 1
+0053    [back,next]=<a href="#_sub1" class="code" title="subfunction [info,next]=readSection(f)">readSection</a>(f);
+0054    <span class="keyword">if</span> nargout &gt; 2 &amp; next == 1
+0055       ref=back;
+0056       back=<a href="#_sub1" class="code" title="subfunction [info,next]=readSection(f)">readSection</a>(f);
+0057    <span class="keyword">else</span>
+0058       ref=struct([]);
+0059    <span class="keyword">end</span>
+0060 <span class="keyword">else</span>
+0061    back=struct([]);
+0062    ref=back;
+0063 <span class="keyword">end</span>
+0064 fclose(f);
+0065 
+0066 
+0067 <span class="comment">%Read a file section.</span>
+0068 <span class="comment">%</span>
+0069 <span class="comment">% f      File handle</span>
+0070 <span class="comment">% info   Section data</span>
+0071 <span class="comment">% next   Flags if another section is available</span>
+0072 <span class="comment">%</span>
+0073 <a name="_sub1" href="#_subfunctions" class="code">function [info,next]=readSection(f)</a>
+0074 o=fscanf(f,<span class="string">'%d'</span>,6);
+0075 info.temperature=o(6);
+0076 <a href="#_sub4" class="code" title="subfunction skipBytes(f,N)">skipBytes</a>(f,10);
+0077 o=fscanf(f,<span class="string">'%f'</span>,5);
+0078 info.exposureTime=o(2);
+0079 info.cycleTime=o(3);
+0080 info.accumulateCycles=o(5);
+0081 info.accumulateCycleTime=o(4);
+0082 <a href="#_sub4" class="code" title="subfunction skipBytes(f,N)">skipBytes</a>(f,2);
+0083 o=fscanf(f,<span class="string">'%f'</span>,2);
+0084 info.stackCycleTime=o(1);
+0085 info.pixelReadoutTime=o(2);
+0086 o=fscanf(f,<span class="string">'%d'</span>,3);
+0087 info.gainDAC=o(3);
+0088 <a href="#_sub5" class="code" title="subfunction skipLines(f,N)">skipLines</a>(f,1);
+0089 info.detectorType=<a href="#_sub3" class="code" title="subfunction o=readLine(f)">readLine</a>(f);
+0090 info.detectorSize=fscanf(f,<span class="string">'%d'</span>,[1 2]);
+0091 info.fileName=<a href="#_sub2" class="code" title="subfunction o=readString(f)">readString</a>(f);
+0092 <a href="#_sub5" class="code" title="subfunction skipLines(f,N)">skipLines</a>(f,3);
+0093 <a href="#_sub4" class="code" title="subfunction skipBytes(f,N)">skipBytes</a>(f,14);
+0094 info.shutterTime=fscanf(f,<span class="string">'%f'</span>,[1 2]);
+0095 <a href="#_sub5" class="code" title="subfunction skipLines(f,N)">skipLines</a>(f,8);
+0096 <span class="keyword">if</span> strmatch(<span class="string">'Luc'</span>,info.detectorType)
+0097    <a href="#_sub5" class="code" title="subfunction skipLines(f,N)">skipLines</a>(f,2);                       <span class="comment">% Andor Luca</span>
+0098 <span class="keyword">end</span>
+0099 info.frameAxis=<a href="#_sub2" class="code" title="subfunction o=readString(f)">readString</a>(f);
+0100 info.dataType=<a href="#_sub2" class="code" title="subfunction o=readString(f)">readString</a>(f);
+0101 info.imageAxis=<a href="#_sub2" class="code" title="subfunction o=readString(f)">readString</a>(f);
+0102 o=fscanf(f,<span class="string">'65538 %d %d %d %d %d %d %d %d 65538 %d %d %d %d %d %d'</span>,14);
+0103 info.imageArea=[o(1) o(4) o(6);o(3) o(2) o(5)];
+0104 info.frameArea=[o(9) o(12);o(11) o(10)];
+0105 info.frameBins=[o(14) o(13)];
+0106 s=(1 + diff(info.frameArea))./info.frameBins;
+0107 z=1 + diff(info.imageArea(5:6));
+0108 <span class="keyword">if</span> prod(s) ~= o(8) | o(8)*z ~= o(7)
+0109    fclose(f);
+0110    error(<span class="string">'Inconsistent image header.'</span>);
+0111 <span class="keyword">end</span>
+0112 <span class="keyword">for</span> n=1:z
+0113    o=<a href="#_sub2" class="code" title="subfunction o=readString(f)">readString</a>(f);
+0114    <span class="keyword">if</span> numel(o)
+0115       fprintf(<span class="string">'%s\n'</span>,o);      <span class="comment">% comments</span>
+0116    <span class="keyword">end</span>
+0117 <span class="keyword">end</span>
+0118 info.timeStamp=fread(f,1,<span class="string">'uint16'</span>);
+0119 info.imageData=reshape(fread(f,prod(s)*z,<span class="string">'single=&gt;single'</span>),[s z]);
+0120 o=<a href="#_sub2" class="code" title="subfunction o=readString(f)">readString</a>(f);           <span class="comment">% ???</span>
+0121 <span class="keyword">if</span> numel(o)
+0122    fprintf(<span class="string">'%s\n'</span>,o);      <span class="comment">% ???</span>
+0123 <span class="keyword">end</span>
+0124 next=fscanf(f,<span class="string">'%d'</span>,1);
+0125 
+0126 
+0127 <span class="comment">%Read a character string.</span>
+0128 <span class="comment">%</span>
+0129 <span class="comment">% f      File handle</span>
+0130 <span class="comment">% o      String</span>
+0131 <span class="comment">%</span>
+0132 <a name="_sub2" href="#_subfunctions" class="code">function o=readString(f)</a>
+0133 n=fscanf(f,<span class="string">'%d'</span>,1);
+0134 <span class="keyword">if</span> isempty(n) | n &lt; 0 | isequal(fgetl(f),-1)
+0135    fclose(f);
+0136    error(<span class="string">'Inconsistent string.'</span>);
+0137 <span class="keyword">end</span>
+0138 o=fread(f,[1 n],<span class="string">'uint8=&gt;char'</span>);
+0139 
+0140 
+0141 <span class="comment">%Read a line.</span>
+0142 <span class="comment">%</span>
+0143 <span class="comment">% f      File handle</span>
+0144 <span class="comment">% o      Read line</span>
+0145 <span class="comment">%</span>
+0146 <a name="_sub3" href="#_subfunctions" class="code">function o=readLine(f)</a>
+0147 o=fgetl(f);
+0148 <span class="keyword">if</span> isequal(o,-1)
+0149    fclose(f);
+0150    error(<span class="string">'Inconsistent image header.'</span>);
+0151 <span class="keyword">end</span>
+0152 o=deblank(o);
+0153 
+0154 
+0155 <span class="comment">%Skip bytes.</span>
+0156 <span class="comment">%</span>
+0157 <span class="comment">% f      File handle</span>
+0158 <span class="comment">% N      Number of bytes to skip</span>
+0159 <span class="comment">%</span>
+0160 <a name="_sub4" href="#_subfunctions" class="code">function skipBytes(f,N)</a>
+0161 [s,n]=fread(f,N,<span class="string">'uint8'</span>);
+0162 <span class="keyword">if</span> n &lt; N
+0163    fclose(f);
+0164    error(<span class="string">'Inconsistent image header.'</span>);
+0165 <span class="keyword">end</span>
+0166 
+0167 
+0168 <span class="comment">%Skip lines.</span>
+0169 <span class="comment">%</span>
+0170 <span class="comment">% f      File handle</span>
+0171 <span class="comment">% N      Number of lines to skip</span>
+0172 <span class="comment">%</span>
+0173 <a name="_sub5" href="#_subfunctions" class="code">function skipLines(f,N)</a>
+0174 <span class="keyword">for</span> n=1:N
+0175    <span class="keyword">if</span> isequal(fgetl(f),-1)
+0176       fclose(f);
+0177       error(<span class="string">'Inconsistent image header.'</span>);
+0178    <span class="keyword">end</span>
+0179 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

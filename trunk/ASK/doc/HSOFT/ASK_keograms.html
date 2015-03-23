@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_keograms</title>
+  <meta name="keywords" content="ASK_keograms">
+  <meta name="description" content="ASK_KEOGRAMS - Produce keograms keograms from an ASK image sequence">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_keograms
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_KEOGRAMS - Produce keograms keograms from an ASK image sequence</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [keo1,keo2,keo3,time_V] = ASK_keograms(fir,las,ste,width,x0,y0,angle,bkg,dist) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_KEOGRAMS - Produce keograms keograms from an ASK image sequence
+
+ CALLING:
+   [keo1,keo2,keo3,time_V] = ASK_keograms(fir,las,ste,width,x0,y0,angle,bkg,dist)
+ INPUTS:
+   fir      - first image number 
+   las      - last image number 
+   ste      - frame step 
+   shift    - shift of images with respect to each other ([0,0,0] if there is no shift), 
+   width    - width of the column that is used for creating the keogram, 
+   x0, y0   - central pixles of the keogram cut, 
+   angle    - angle of the cut, where 0 is a horizontal cut and 90
+              vertical. 
+   name     - the name of the resulting ps-file 
+
+ Optional arguments:
+   bkg      - background to remove from [ASK1,ASK2,ASK3]
+   dist     - Puts distance on the y-axis in km (set up for ASK data)
+
+ The nicest keograms are created from appr. 1000 frames.
+ WARNING: If data is not calibrated this routine will crash!
+ First of all the ASK meta-data has to be read in with read_vs!
+ If the data is 512x512 pixels, the images will first be binned to
+ 256x256 pixels</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_binning.html" class="code" title="function img_out = ASK_binning(img_in,binningFactors)">ASK_binning</a>	ASK_BINNING - Post-bin data</li><li><a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>	ASK_INDX2DATEVEC - Convert a frame index into a [yyyy,mm,dd,HH,MM,SS.FFF]</li><li><a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>	ASK_READ_V -</li><li><a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>	ASK_V_SELECT - Set current camera index in global structure VS</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [keo1,keo2,keo3,time_V] = ASK_keograms(fir,las,ste,width,x0,y0,angle,bkg,dist)</a>
+0002 <span class="comment">% ASK_KEOGRAMS - Produce keograms keograms from an ASK image sequence</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% CALLING:</span>
+0005 <span class="comment">%   [keo1,keo2,keo3,time_V] = ASK_keograms(fir,las,ste,width,x0,y0,angle,bkg,dist)</span>
+0006 <span class="comment">% INPUTS:</span>
+0007 <span class="comment">%   fir      - first image number</span>
+0008 <span class="comment">%   las      - last image number</span>
+0009 <span class="comment">%   ste      - frame step</span>
+0010 <span class="comment">%   shift    - shift of images with respect to each other ([0,0,0] if there is no shift),</span>
+0011 <span class="comment">%   width    - width of the column that is used for creating the keogram,</span>
+0012 <span class="comment">%   x0, y0   - central pixles of the keogram cut,</span>
+0013 <span class="comment">%   angle    - angle of the cut, where 0 is a horizontal cut and 90</span>
+0014 <span class="comment">%              vertical.</span>
+0015 <span class="comment">%   name     - the name of the resulting ps-file</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Optional arguments:</span>
+0018 <span class="comment">%   bkg      - background to remove from [ASK1,ASK2,ASK3]</span>
+0019 <span class="comment">%   dist     - Puts distance on the y-axis in km (set up for ASK data)</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% The nicest keograms are created from appr. 1000 frames.</span>
+0022 <span class="comment">% WARNING: If data is not calibrated this routine will crash!</span>
+0023 <span class="comment">% First of all the ASK meta-data has to be read in with read_vs!</span>
+0024 <span class="comment">% If the data is 512x512 pixels, the images will first be binned to</span>
+0025 <span class="comment">% 256x256 pixels</span>
+0026 <span class="comment">%</span>
+0027 
+0028 <span class="keyword">global</span> vs
+0029 
+0030 OPS.loud = 0;
+0031 
+0032 num = 1;
+0033 nelem = (las - fir)/ste + 1;
+0034 
+0035 keo1 = zeros(256,nelem);
+0036 keo2 = keo1;
+0037 keo3 = keo1;
+0038 
+0039 i1 = 1; <span class="comment">% was l???</span>
+0040 
+0041 <span class="keyword">for</span> num = fir:ste:las
+0042   <span class="keyword">if</span> OPS.loud
+0043     disp(num)
+0044   <span class="keyword">end</span>
+0045   <span class="comment">% Read the three current images</span>
+0046   <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>(1,<span class="string">'quiet'</span>); <span class="comment">% Set current camera to 1</span>
+0047   im1 = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(num);   <span class="comment">% Read the ASK#1 image</span>
+0048   time_V(i1,:) = <a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>(num);
+0049   
+0050   <span class="comment">% If required do post-binning to 256 x 256</span>
+0051   <span class="keyword">if</span> all([vs.dimx(vs.vsel) vs.dimy(vs.vsel)] == [512 512])
+0052     im1 = <a href="ASK_binning.html" class="code" title="function img_out = ASK_binning(img_in,binningFactors)">ASK_binning</a>(im1,[2,2]);
+0053   <span class="keyword">end</span>
+0054   <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>( 2, <span class="string">'quiet'</span>); <span class="comment">% Cycl.</span>
+0055   im2 = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(num);     <span class="comment">% Cycl.</span>
+0056   <span class="keyword">if</span> all([vs.dimx(vs.vsel) vs.dimy(vs.vsel)] == [512 512])<span class="comment">% Cycl...</span>
+0057     im2 = <a href="ASK_binning.html" class="code" title="function img_out = ASK_binning(img_in,binningFactors)">ASK_binning</a>(im2,[2,2]);
+0058   <span class="keyword">end</span>
+0059   <a href="ASK_v_select.html" class="code" title="function ASK_v_select(indx,quiet)">ASK_v_select</a>( 3, <span class="string">'quiet'</span>); <span class="comment">% Cycl..</span>
+0060   im3 = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(num);     <span class="comment">% Cycl..</span>
+0061   <span class="keyword">if</span> all([vs.dimx(vs.vsel) vs.dimy(vs.vsel)] == [512 512])<span class="comment">% Cycl...</span>
+0062     im3 = <a href="ASK_binning.html" class="code" title="function img_out = ASK_binning(img_in,binningFactors)">ASK_binning</a>(im3,[2,2]);
+0063   <span class="keyword">end</span>
+0064   
+0065   <span class="comment">% Rotate images:</span>
+0066   im_1 = img_rot(im1,-(angle-90),x0,y0,<span class="string">'*spline'</span>,0);
+0067   im_2 = img_rot(im2,-(angle-90),x0,y0,<span class="string">'*spline'</span>,0);
+0068   im_3 = img_rot(im3,-(angle-90),x0,y0,<span class="string">'*spline'</span>,0);
+0069   <span class="comment">% Display current image</span>
+0070   <span class="keyword">if</span> OPS.loud
+0071     imagesc(im_3),axis xy,drawnow
+0072   <span class="keyword">end</span>
+0073   <span class="comment">% Extract intensity cut for building the keograms:</span>
+0074   lin1 = mean(im_1(:,127-width/2:127-width/2+width-1),2);
+0075   lin2 = mean(im_2(:,127-width/2:127-width/2+width-1),2);
+0076   lin3 = mean(im_3(:,127-width/2:127-width/2+width-1),2);
+0077   <span class="comment">% Stuff the line-intensities into the keograms:</span>
+0078   keo1(:,i1) = lin1;
+0079   keo2(:,i1) = lin2;
+0080   keo3(:,i1) = lin3;
+0081   
+0082   i1 = i1+1;
+0083   
+0084 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

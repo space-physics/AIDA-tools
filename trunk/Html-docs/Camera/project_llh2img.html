@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of project_llh2img</title>
+  <meta name="keywords" content="project_llh2img">
+  <meta name="description" content="PROJECT_LLH2IMG - project a point in space LONGLATALT down onto an image">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>project_llh2img
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>PROJECT_LLH2IMG - project a point in space LONGLATALT down onto an image</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [u,v,uG,vG,cG1,cG2] = project_llh2img(longlatalt,long0lat0alt0,optpar,imsiz,gridstyle) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> PROJECT_LLH2IMG - project a point in space LONGLATALT down onto an image
+  point [U,V]. The imager is located in LONG0LAT0ALT0 and the 
+  optical transfer is caracterized by OPTPAR. IMSIZ is the size of
+  the image.
+
+ Calling:
+  [u,v,uG,vG] = project_llh2img(longlatalt,long0lat0alt0,optpar,imsiz)
+ 
+ Input:
+  long0lat0alt0 - [1x3] array for camera position [long,lat,alt] (degrees, km).
+  longlatalt    - [nx3] array of point coordinates (degrees, km) .
+  optpar - parameters for optical model focal widths, camera
+           rotation angles, image coordinates (relative units) for
+           projection point of optical axis, shape factor, optical
+           model.
+  imsiz  - size of image.
+
+ See also <a href="camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">CAMERA_BASE</a>, <a href="camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">CAMERA_MODEL</a>, INV_PROJECT_POINT</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>	PROJECT_DIRECTIONS - calculates the image positions [UA,WA] from (AZ,ZE)</li><li><a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>	PROJECT_POINT - project a point in space R down onto an image</li><li><a href="../EARTH/llh_to_local_coord.html" class="code" title="function [x,y,z] = llh_to_local_coord(lat0,long0,alt0,lat,long,alt)">llh_to_local_coord</a>	LLH_TO_LOCAL_COORD transforms the positions (LAT, LONG, ALT) to (X,Y,Z)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Imgtools/img_overplot_llh.html" class="code" title="function h = img_overplot_llh(ImgIn,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblstr,gridstyle)">img_overplot_llh</a>	IMG_OVERPLOT_LLH - longitude-latitude-height points projected</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [u,v,uG,vG,cG1,cG2] = project_llh2img(longlatalt,long0lat0alt0,optpar,imsiz,gridstyle)</a>
+0002 <span class="comment">% PROJECT_LLH2IMG - project a point in space LONGLATALT down onto an image</span>
+0003 <span class="comment">%  point [U,V]. The imager is located in LONG0LAT0ALT0 and the</span>
+0004 <span class="comment">%  optical transfer is caracterized by OPTPAR. IMSIZ is the size of</span>
+0005 <span class="comment">%  the image.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%  [u,v,uG,vG] = project_llh2img(longlatalt,long0lat0alt0,optpar,imsiz)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Input:</span>
+0011 <span class="comment">%  long0lat0alt0 - [1x3] array for camera position [long,lat,alt] (degrees, km).</span>
+0012 <span class="comment">%  longlatalt    - [nx3] array of point coordinates (degrees, km) .</span>
+0013 <span class="comment">%  optpar - parameters for optical model focal widths, camera</span>
+0014 <span class="comment">%           rotation angles, image coordinates (relative units) for</span>
+0015 <span class="comment">%           projection point of optical axis, shape factor, optical</span>
+0016 <span class="comment">%           model.</span>
+0017 <span class="comment">%  imsiz  - size of image.</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">% See also CAMERA_BASE, CAMERA_MODEL, INV_PROJECT_POINT</span>
+0020 
+0021 <span class="comment">%   Copyright � 20121013 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0022 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0023 
+0024 long = longlatalt(:,1);
+0025 lat = longlatalt(:,2);
+0026 alt = longlatalt(:,3);
+0027 long0 = long0lat0alt0(1);
+0028 lat0 = long0lat0alt0(2);
+0029 alt0 = long0lat0alt0(3);
+0030 
+0031 <span class="comment">% Convert the longitude-latitude-altitude to cartesian coordinates</span>
+0032 <span class="comment">% in the local horizontal coordinate system centred in</span>
+0033 <span class="comment">% [long0, lat0 alt0].</span>
+0034 <span class="comment">% TODO: This should be possible to vectorize...</span>
+0035 <span class="keyword">for</span> i1 = 1:length(alt),
+0036   [r(i1,1),r(i1,2),r(i1,3)] = <a href="../EARTH/llh_to_local_coord.html" class="code" title="function [x,y,z] = llh_to_local_coord(lat0,long0,alt0,lat,long,alt)">llh_to_local_coord</a>(lat0,long0,alt0,<span class="keyword">...</span>
+0037                                                  lat(i1),long(i1),alt(i1));
+0038 <span class="keyword">end</span>
+0039 
+0040 <span class="comment">% Calculate the pixel coordinates of the image projections of the</span>
+0041 <span class="comment">% points:</span>
+0042 [u,v] = <a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>([0 0 0],optpar,r',eye(3),imsiz);
+0043 
+0044 <span class="keyword">if</span> nargout &gt; 2
+0045   <span class="keyword">if</span> strcmp(gridstyle,<span class="string">'ll'</span>)
+0046     <span class="comment">% If the number of ouput arguments are 4 then calculate the image</span>
+0047     <span class="comment">% coordinates of a long-lat grid centred above the camera</span>
+0048     <span class="comment">% coordinates too...</span>
+0049     longGrid0 = round(long0) + [-5:.5:5];
+0050     latGrid0 = round(lat0) +  [-2.5:.25:2.5];
+0051     
+0052     [longGrid,latGrid] = meshgrid(longGrid0,latGrid0);
+0053     <span class="keyword">for</span> i1 = 1:size(latGrid,1),
+0054       <span class="keyword">for</span> i2 = 1:size(latGrid,2),
+0055         [rG(1),rG(2),rG(3)] = <a href="../EARTH/llh_to_local_coord.html" class="code" title="function [x,y,z] = llh_to_local_coord(lat0,long0,alt0,lat,long,alt)">llh_to_local_coord</a>(lat0,long0,alt0,<span class="keyword">...</span>
+0056                                                latGrid(i1,i2),longGrid(i1,i2),alt(1));
+0057         [uG(i1,i2),vG(i1,i2)] = <a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>([0 0 0],optpar,rG',eye(3),imsiz);
+0058       <span class="keyword">end</span>
+0059     <span class="keyword">end</span>
+0060     cG1 = longGrid0;
+0061     cG2 = latGrid0;
+0062   <span class="keyword">else</span>
+0063     <span class="comment">% calculate the image coordinates of an azimuth-zenith grid too...</span>
+0064     azGrid0 = [0:360]*pi/180;
+0065     zeGrid0 = [20:10:80]*pi/180;
+0066     
+0067     [azGrid,zeGrid] = meshgrid(azGrid0,zeGrid0);
+0068     <span class="keyword">for</span> i1 = 1:size(azGrid,1),
+0069       <span class="keyword">for</span> i2 = 1:size(azGrid,2),
+0070         [uG(i1,i2),vG(i1,i2)] = <a href="project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(azGrid(i1,i2),zeGrid(i1,i2),<span class="keyword">...</span>
+0071                                                      optpar,optpar(9),imsiz);
+0072       <span class="keyword">end</span>
+0073     <span class="keyword">end</span>
+0074     cG1 = azGrid0;
+0075     cG2 = zeGrid0;
+0076   <span class="keyword">end</span>
+0077 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

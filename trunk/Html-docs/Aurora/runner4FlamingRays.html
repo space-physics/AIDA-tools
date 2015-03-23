@@ -1,0 +1,312 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of runner4FlamingRays</title>
+  <meta name="keywords" content="runner4FlamingRays">
+  <meta name="description" content="runner4FlamingRays - Estimate electron precipitation variation with E and Y">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Aurora -->
+<h1>runner4FlamingRays
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>runner4FlamingRays - Estimate electron precipitation variation with E and Y</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function Ibest = runner4FlamingRays(indices2run,Keos,IstartGuesses,Ibestest,trmtr2Dto1D,A1Z,A2Z,E,Y,Z,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> runner4FlamingRays - Estimate electron precipitation variation with E and Y
+ from multimonochromatic narrow-field-of-view imaging.
+   
+ Calling
+   Ibest = runner4FlamingRays(indices2run,Keos,IstartGuesses,Ibestest,trmtr2Dto1D,A1Z,A2Z,E,Y,Z,OPS)
+ Input:
+  indices2run   - Array with indices of time-steps for keograms to
+                  run the fitting procedure on.
+  Keos          - Cell array with keograms { 1 x 3 } with keograms
+                  {[nT x nPix],[],[nT x nPix]}
+                  from fanbeam made from pixels with
+                  lines-of-sight in plane || B
+  IstartGuesses - Start guesses for electron spectra producing the
+                  emissions. 
+  trmtr2Dto1D   - Projection matrix from volume emission rates in
+                  plane (Y,Z) to pixel coordinates in keogram
+  A1Z           - Electron Energy flux to volume emission altitude
+                  profile matrix mapping Ie(E) to I_lambda(z) for
+                  emission 1 [nZ x nE]
+  A2Z           - same as above for emission #3
+  E             - Electron energy array [1 x nE] (keV) 
+  Y             - 2-D array of horizontal spatial position of
+                  volume elements [nZ x nY] (km)
+  Z             - 2-D array of vertical spatial position of
+                  volume elements [nZ x nY] (km)
+  OPS           - Options structure</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="err4FlamingRays.html" class="code" title="function res = err4FlamingRays(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)">err4FlamingRays</a>	1        2    3    4      5   6   7   8    9 0           11    12</li><li><a href="err4FlamingRaysC.html" class="code" title="function res = err4FlamingRaysC(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)">err4FlamingRaysC</a>	err4FlamingRaysC - error function for estimating electron spectra</li><li><a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>	imgs_smart_caxis - alpha-percentile setting of color-axis,</li><li><a href="../Inversion/errDeParallax2DiffuseS.html" class="code" title="function res = errDeParallax2DiffuseS(Par,var_pars,par0,trmtr2d21d,Ie2H,E,ImgCuts,Y,Z,biasAmplitudes,biasVals,out_arg_type,z_max)">errDeParallax2DiffuseS</a>	errDeParallax2DiffuseS - error function for estimating electron spectra</li><li><a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>	FMINSEARCHBND: FMINSEARCH, but with bound constraints by transformation</li><li><a href="../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>	INPAINT_NANS: in-paints over nans in an array</li><li><a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>	MEDFILT2 - 2 dimensional sliding median filter</li><li><a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function Ibest = runner4FlamingRays(indices2run,Keos,IstartGuesses,Ibestest,trmtr2Dto1D,A1Z,A2Z,E,Y,Z,OPS)</a>
+0002 <span class="comment">% runner4FlamingRays - Estimate electron precipitation variation with E and Y</span>
+0003 <span class="comment">% from multimonochromatic narrow-field-of-view imaging.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling</span>
+0006 <span class="comment">%   Ibest = runner4FlamingRays(indices2run,Keos,IstartGuesses,Ibestest,trmtr2Dto1D,A1Z,A2Z,E,Y,Z,OPS)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%  indices2run   - Array with indices of time-steps for keograms to</span>
+0009 <span class="comment">%                  run the fitting procedure on.</span>
+0010 <span class="comment">%  Keos          - Cell array with keograms { 1 x 3 } with keograms</span>
+0011 <span class="comment">%                  {[nT x nPix],[],[nT x nPix]}</span>
+0012 <span class="comment">%                  from fanbeam made from pixels with</span>
+0013 <span class="comment">%                  lines-of-sight in plane || B</span>
+0014 <span class="comment">%  IstartGuesses - Start guesses for electron spectra producing the</span>
+0015 <span class="comment">%                  emissions.</span>
+0016 <span class="comment">%  trmtr2Dto1D   - Projection matrix from volume emission rates in</span>
+0017 <span class="comment">%                  plane (Y,Z) to pixel coordinates in keogram</span>
+0018 <span class="comment">%  A1Z           - Electron Energy flux to volume emission altitude</span>
+0019 <span class="comment">%                  profile matrix mapping Ie(E) to I_lambda(z) for</span>
+0020 <span class="comment">%                  emission 1 [nZ x nE]</span>
+0021 <span class="comment">%  A2Z           - same as above for emission #3</span>
+0022 <span class="comment">%  E             - Electron energy array [1 x nE] (keV)</span>
+0023 <span class="comment">%  Y             - 2-D array of horizontal spatial position of</span>
+0024 <span class="comment">%                  volume elements [nZ x nY] (km)</span>
+0025 <span class="comment">%  Z             - 2-D array of vertical spatial position of</span>
+0026 <span class="comment">%                  volume elements [nZ x nY] (km)</span>
+0027 <span class="comment">%  OPS           - Options structure</span>
+0028 
+0029 <span class="comment">% 4 options:</span>
+0030 dOPS.Plot4ShowInRun = 0;
+0031 dOPS.verNR = 5;
+0032 dOPS.saveFileBaseName = <span class="string">'arc_split_fitS-200612150217-600to700'</span>;<span class="comment">%-%02d-%02d.mat'</span>
+0033 dOPS.forReals = 0;
+0034 <span class="keyword">if</span> nargin == 0
+0035   Ibest = dOPS;
+0036   <span class="keyword">return</span>
+0037 <span class="keyword">end</span>
+0038 <span class="keyword">if</span> nargin &gt; 8
+0039   dOPS = <a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0040 <span class="keyword">end</span>
+0041 <span class="keyword">if</span> ~isfield(dOPS,<span class="string">'z_max'</span>) | isempty(dOPS.z_max)
+0042   z_max = 106;
+0043 <span class="keyword">else</span>
+0044   z_max = dOPS.z_max;
+0045 <span class="keyword">end</span>
+0046 <span class="keyword">for</span> i1 = 1:size(ImStack{1},3),
+0047   img4bg = wiener2(<a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(ImStack{1}(:,:,i1),[3,3]),[3,3]);
+0048   img4bg(bgMask==1) = nan;                   
+0049   imbg{1}(:,:,i1) = <a href="../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>(img4bg,4);
+0050   img4bg = wiener2(<a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(ImStack{3}(:,:,i1),[3,3]),[3,3]);
+0051   img4bg(bgMask==1) = nan;                   
+0052   imbg{3}(:,:,i1) = <a href="../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>(img4bg,4);  
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="keyword">for</span> i1 = 1:size(ImStack{1},3),
+0056   imagesc(imbg{1}(:,:,i1)),cX = <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.003,imbg{1}(:,:,i1));colorbar
+0057   caxis([-0.2 1]*cX(2))
+0058   pause
+0059 <span class="keyword">end</span>
+0060 
+0061 
+0062 <span class="keyword">for</span> i1 = 1:size(ImStack{1},3),
+0063   Iq = wiener2(ImStack{3}(150:240,160:256,i1),[3,3])-imbg{3}(150:240,160:256,i1)*1;
+0064   imagesc(Iq),cX = <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.003,Iq);colorbar
+0065   caxis([-0.2 1]*cX(2))
+0066   pause
+0067 <span class="keyword">end</span>
+0068 <span class="keyword">for</span> i1 = 1:size(ImStack{1},3),
+0069   Iq = wiener2(ImStack{1}(150:240,160:256,i1),[3,3])-imbg{1}(150:240,160:256,i1)*1; 
+0070   imagesc(Iq),cX = <a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.003,Iq);colorbar
+0071   caxis([-0.2 1]*cX(2))
+0072   pause
+0073 <span class="keyword">end</span>
+0074 
+0075 fmsOPS = optimset(<span class="string">'fminsearch'</span>);
+0076 fmsOPS.Display = <span class="string">'iter'</span>;
+0077 <span class="comment">%            I0        x0     dx           y0      dy       g_x     E0      dE      g_E     g_E2     I1      E0      dE        g_E     g_E2</span>
+0078 parTest = [ 4.7336,   -6.0518, 0.0021721, -12.553, 0.39745, 2.2325, 3.2487, 2.9215, 2.9828, 0.47734,  0.927, 16.56,  0.044845, 1.8183, 1];
+0079 parMin = [  eps(1),-12.0518, ds*1/3,    -18.553, ds*1/3,  0.6325, 0.3248, 0.9215, 0.5828, 0.25,      eps(1),  0.56,  0.044845, 0.5183, 0.25];
+0080 parMax = [473.36,     -0.0518, 2.1721,     -6.553, 3.9745,  4.2325,32.487, 29.215,  4.9828, 2.47734, 21.927, 16.56, 12.044845, 3.8183, 3.7833];
+0081 v_p =    [  1          2       3            4      5        6       7       8       9      10        11      17     18        19      20];
+0082 vpI = [1 11];
+0083 parI = parTest([1 11]);
+0084 parI = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="err4FlamingRays.html" class="code" title="function res = err4FlamingRays(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)">err4FlamingRays</a>(I,vpI,I0b,stns,{bgMask,bgMask},ZfI,XfI(:,:,115),YfI(:,:,115),{A2Z,A1Z},E,1,110),parI,[eps(1) eps(1)],[1e6 1e6],fmsOPS);
+0085 parTest([1 11]) = parI;
+0086 errMask = bgMask;
+0087 errMask(:,250:end) = 0;
+0088 <span class="keyword">for</span> i1 = 1:size(ImStack{1},3),
+0089   Iq = ( wiener2(ImStack{1}(:,:,i1),[3,3]) - wiener2(imbg{1}(:,:,i1),[3,3]) ) * 1/C_filter6370;
+0090   stns(1).img = Iq;
+0091   Iq = ( wiener2(ImStack{3}(:,:,i1),[3,3]) - wiener2(imbg{3}(:,:,i1),[3,3]) ) * 1/C_filter7774;
+0092   stns(2).img = Iq;
+0093   <span class="comment">%parTest = fminsearch(@(I) err4FlamingRays(I,v_p,I0b,stns,{bgMask,bgMask},ZfI,XfI(:,:,115),YfI(:,:,115),{A2Z,A1Z},E,1,110),parTest);</span>
+0094   parTest = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="err4FlamingRays.html" class="code" title="function res = err4FlamingRays(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)">err4FlamingRays</a>(I,v_p,I0b,stns,{errMask,errMask},ZfI,XfI(:,:,115),YfI(:,:,115),{A2Z,A1Z},E,1,110),parTest,parMin,parMax,fmsOPS);
+0095   It(i1,:) = parTest;
+0096 <span class="keyword">end</span>
+0097 ItC = It(:,[1,2,4,3,6:end])/2 + It(:,[1,2,4,5,6:end])/2;
+0098 <span class="comment">%            I0     x0        y0      dS         g_x     E0      dE      g_E     g_E2     I1      E0    dE         g_E     g_E2</span>
+0099 parIC = [ 4.7336,   -6.0518, -12.553, 0.0021721, 2.2325, 3.2487, 2.9215, 2.9828, 0.47734, 0.927, 16.56,  0.044845, 1.8183, 1];
+0100 pICMin = [  eps(1),-12.0518, -18.553, ds*1/3,    0.6325, 0.3248, 0.9215, 0.5828, 0.25,   eps(1),  0.56,  0.044845, 0.5183, 0.25];
+0101 pICMax = [473.36,   -0.0518,  -6.553, 2.1721,    4.2325,32.487, 29.215,  4.9828, 2.47734,21.927, 16.56, 12.044845, 3.8183, 3.7833];
+0102 vpC =    [  1          2       3          4      5       6       7       8       9       10      15     16         17      18];
+0103 
+0104 fmsOPS.Display = <span class="string">'final'</span>;
+0105 <span class="keyword">for</span> i1 = 1:size(ImStack{1},3),
+0106   Iq = ( wiener2(ImStack{1}(:,:,i1),[3,3]) - wiener2(imbg{1}(:,:,i1),[3,3]) ) * 1/C_filter6370;
+0107   stns(1).img = Iq;
+0108   Iq = ( wiener2(ImStack{3}(:,:,i1),[3,3]) - wiener2(imbg{3}(:,:,i1),[3,3]) ) * 1/C_filter7774;
+0109   stns(2).img = Iq;
+0110   parTest = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="err4FlamingRaysC.html" class="code" title="function res = err4FlamingRaysC(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)">err4FlamingRaysC</a>(I,vpC,I0C,stns,{errMask,errMask},ZfI,XfI(:,:,115),YfI(:,:,115),{A2Z,A1Z},E,1,110),ItC(i1,:),pICMin,pICMax,fmsOPS);
+0111   ItC(i1,:) = parTest;
+0112 <span class="keyword">end</span>
+0113 
+0114 fmsOPS.Display = <span class="string">'final'</span>;
+0115 <span class="keyword">for</span> i1 = 1:size(ImStack{1},3),
+0116   Iq = ( wiener2(ImStack{1}(:,:,i1),[3,3]) - wiener2(imbg{1}(:,:,i1),[3,3]) ) * 1/C_filter6370;
+0117   stns(1).img = Iq;
+0118   Iq = ( wiener2(ImStack{3}(:,:,i1),[3,3]) - wiener2(imbg{3}(:,:,i1),[3,3]) ) * 1/C_filter7774;
+0119   stns(2).img = Iq;
+0120   pICMin(2:3) = ItC0(i1,2:3)-0.5;
+0121   pICMax(2:3) = ItC0(i1,2:3)+0.5;
+0122   parTest = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="err4FlamingRaysC.html" class="code" title="function res = err4FlamingRaysC(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)">err4FlamingRaysC</a>(I,vpC,I0C,stns,{errMask,errMask},ZfI,XfI(:,:,115),YfI(:,:,115),{A2Z,A1Z},E,1,110),ItC0(i1,:),pICMin,pICMax,fmsOPS);
+0123   ItC(i1,:) = parTest;
+0124 <span class="keyword">end</span>
+0125 
+0126 
+0127 <span class="keyword">for</span> i1 = 1:size(ImStack{1},3),
+0128   Iq = ( wiener2(ImStack{1}(:,:,i1),[3,3]) - wiener2(imbg{1}(:,:,i1),[3,3]) ) * 1/C_filter6370;
+0129   stns(1).img = Iq;
+0130   Iq = ( wiener2(ImStack{3}(:,:,i1),[3,3]) - wiener2(imbg{3}(:,:,i1),[3,3]) ) * 1/C_filter7774;
+0131   stns(2).img = Iq;
+0132   <span class="comment">%parTest = fminsearch(@(I) err4FlamingRays(I,v_p,I0b,stns,{bgMask,bgMask},ZfI,XfI(:,:,115),YfI(:,:,115),{A2Z,A1Z},E,1,110),parTest);</span>
+0133   parTest = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="err4FlamingRays.html" class="code" title="function res = err4FlamingRays(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)">err4FlamingRays</a>(I,vpC,I0C,stns,{errMask,errMask},ZfI,XfI(:,:,115),YfI(:,:,115),{A2Z,A1Z},E,1,110),ItC(i1,:),pICMin,pICMax,fmsOPS);
+0134   It2(i1,:) = parTest;
+0135 <span class="keyword">end</span>
+0136 
+0137 
+0138 
+0139 subplot(3,1,1)
+0140 pcolor([1:20]*1/32,E*1e3,log10(IeRay')),shading flat,caxis([-5 0]+max(caxis))
+0141 set(gca,<span class="string">'yscale'</span>,<span class="string">'log'</span>)
+0142 hold on
+0143 <span class="keyword">for</span> i1 = 1:size(ImStack{1},3),
+0144   Iq = ( wiener2(ImStack{1}(:,:,i1),[3,3]) - wiener2(imbg{1}(:,:,i1),[3,3]) ) * 1/C_filter6370;
+0145   stns(1).img = Iq;
+0146   Iq = ( wiener2(ImStack{3}(:,:,i1),[3,3]) - wiener2(imbg{3}(:,:,i1),[3,3]) ) * 1/C_filter7774;
+0147   stns(2).img = Iq;
+0148   res = <a href="err4FlamingRaysC.html" class="code" title="function res = err4FlamingRaysC(Par,var_pars,par0,stns,ImRois,Z3D,x2D,y2D,Ie2H,E,out_arg_type,z_max)">err4FlamingRaysC</a>(ItC(i1,:),vpC,I0C,stns,{errMask,errMask},ZfI,XfI(:,:,115),YfI(:,:,115),{A2Z,A1Z},E,2,110);
+0149   subplot(3,1,1)
+0150   <span class="comment">%semilogy(E,res.IeOutput{1})</span>
+0151   ph = plot((i1+0.5)/32*[1 1],E([1,end])*1e3,<span class="string">'k'</span>);
+0152   subplot(3,2,3)
+0153   imagesc(res.currImg{1}),<a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.0003,res.currImg{1}),axis([150 256 150 256]) 
+0154   subplot(3,2,4)
+0155   imagesc(res.currImg{2}),<a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.0003,res.currImg{2}),axis([150 256 150 256]) 
+0156   subplot(3,2,5)
+0157   imagesc(res.currProj{1}),<a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.0003,res.currImg{1}),axis([150 256 150 256])
+0158   subplot(3,2,6)
+0159   imagesc(res.currProj{2}),<a href="../Imgtools/imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.0003,res.currImg{2}),axis([150 256 150 256])
+0160   mRay(i1) = getframe(gcf);
+0161   delete(ph)
+0162 <span class="keyword">end</span>
+0163 
+0164 
+0165 pT = [  4.804
+0166       -6.0539
+0167     0.0020815
+0168        -13.27
+0169       0.39244
+0170        2.6325
+0171        3.3457
+0172        2.8948
+0173         2.581
+0174       0.44457
+0175        16.479
+0176        16.755
+0177      0.050126
+0178         2.333
+0179        1.6808];
+0180       
+0181 pT2 = [ 4.804
+0182       -6.0539
+0183     0.0020815
+0184        -13.27
+0185       0.39244
+0186        2.6325
+0187        3.3457
+0188        2.8948
+0189         2.581
+0190       0.44457
+0191        16.479
+0192        1.5893
+0193        16.752
+0194      0.050126
+0195         2.333
+0196       -1.6808];
+0197 
+0198 disp(<span class="string">'Starts with the Fit-n-Run!'</span>)
+0199 fmsOPS = optimset(<span class="string">'fminsearch'</span>);
+0200 fmsOPS.Display = <span class="string">'iter'</span>;
+0201 
+0202 <span class="keyword">for</span> iT = indices2run,
+0203   <span class="comment">%errOps.saveruns = sprintf('errlog%s-%02d.dat',dOPS.saveFileBaseName,iT);</span>
+0204   
+0205   [I0v,I0,v_p,bias_val,bias_Amp,Iupper,Ilower] = arc_split_reordernmerge_I0vpNbias(Ibestest{iT},IstartGuesses{iT},1);
+0206   <span class="comment">%whos I0v I0 v_p bias_val bias_Amp Iupper Ilower</span>
+0207   CurrCuts = {4*Keos{1}(:,iT),Keos{3}(:,iT)};
+0208   <span class="comment">%testE0 = errDeParallax2DiffuseS(I0v,v_p,I0,1e-12*trmtr2Dto1D,{4*A1Z,A2Z},E,CurrCuts,Y,Z,[],[],2);</span>
+0209   <span class="keyword">if</span> dOPS.Plot4ShowInRun
+0210     testRes = <a href="../Inversion/errDeParallax2DiffuseS.html" class="code" title="function res = errDeParallax2DiffuseS(Par,var_pars,par0,trmtr2d21d,Ie2H,E,ImgCuts,Y,Z,biasAmplitudes,biasVals,out_arg_type,z_max)">errDeParallax2DiffuseS</a>(I0v,v_p,I0,1e-12*trmtr2Dto1D,{4*A1Z,A2Z},E,CurrCuts,Y,Z,[],[],2,z_max);
+0211     arc_split_plotTestRes1(testRes,iT,1,[],[],[])
+0212   <span class="keyword">end</span>
+0213   <span class="comment">%keyboard</span>
+0214   disp(sprintf(<span class="string">'%d %02d-%02d-%02d %02d:%02d:%05.2f'</span>,iT,clock))
+0215   [Ip1F{iT},fv1(iT),exitflag,output] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="../Inversion/errDeParallax2DiffuseS.html" class="code" title="function res = errDeParallax2DiffuseS(Par,var_pars,par0,trmtr2d21d,Ie2H,E,ImgCuts,Y,Z,biasAmplitudes,biasVals,out_arg_type,z_max)">errDeParallax2DiffuseS</a>(I,v_p,I0,1e-12*trmtr2Dto1D,{4*A1Z,A2Z},E,CurrCuts,Y,Z,bias_Amp',bias_val',1,z_max),I0v,Ilower,Iupper,fmsOPS);
+0216   fmsOPS.Display = <span class="string">'notify'</span>;
+0217   <span class="keyword">if</span> dOPS.forReals
+0218     I0c = I0;
+0219     I0c(v_p) = Ip1F{iT};
+0220     I0c = I0c(v_p);
+0221     I0c = Ip1F{iT}; <span class="comment">% Has to be identical to the above!</span>
+0222     [Ip1{iT},fv2(iT),exitflag,output] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="../Inversion/errDeParallax2DiffuseS.html" class="code" title="function res = errDeParallax2DiffuseS(Par,var_pars,par0,trmtr2d21d,Ie2H,E,ImgCuts,Y,Z,biasAmplitudes,biasVals,out_arg_type,z_max)">errDeParallax2DiffuseS</a>(I,v_p,I0,1e-12*trmtr2Dto1D,{4*A1Z,A2Z},E,CurrCuts,Y,Z,bias_Amp',bias_val',1,z_max),I0c,Ilower,Iupper,fmsOPS);
+0223     I0c = I0;
+0224     I0c(v_p) = Ip1{iT};
+0225     I0c = I0c(v_p);
+0226     I0c = Ip1{iT}; <span class="comment">% Has to be identical to the above!</span>
+0227     [Ip1{iT},fv2(iT),exitflag,output] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="../Inversion/errDeParallax2DiffuseS.html" class="code" title="function res = errDeParallax2DiffuseS(Par,var_pars,par0,trmtr2d21d,Ie2H,E,ImgCuts,Y,Z,biasAmplitudes,biasVals,out_arg_type,z_max)">errDeParallax2DiffuseS</a>(I,v_p,I0,1e-12*trmtr2Dto1D,{4*A1Z,A2Z},E,CurrCuts,Y,Z,bias_Amp',bias_val',1,z_max),I0c,Ilower,Iupper,fmsOPS);
+0228     I0c = I0;
+0229     I0c(v_p) = Ip1{iT};
+0230     I0c = I0c(v_p);
+0231     I0c = Ip1{iT}; <span class="comment">% Has to be identical to the above!</span>
+0232     [Ip1{iT},fv2(iT),exitflag,output] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="../Inversion/errDeParallax2DiffuseS.html" class="code" title="function res = errDeParallax2DiffuseS(Par,var_pars,par0,trmtr2d21d,Ie2H,E,ImgCuts,Y,Z,biasAmplitudes,biasVals,out_arg_type,z_max)">errDeParallax2DiffuseS</a>(I,v_p,I0,1e-12*trmtr2Dto1D,{4*A1Z,A2Z},E,CurrCuts,Y,Z,bias_Amp',bias_val',1,z_max),I0c,Ilower,Iupper,fmsOPS);
+0233   <span class="keyword">end</span>
+0234   Ibest{iT} = Ip1{iT};
+0235   testRes = <a href="../Inversion/errDeParallax2DiffuseS.html" class="code" title="function res = errDeParallax2DiffuseS(Par,var_pars,par0,trmtr2d21d,Ie2H,E,ImgCuts,Y,Z,biasAmplitudes,biasVals,out_arg_type,z_max)">errDeParallax2DiffuseS</a>(Ip1{iT},v_p,I0,1e-12*trmtr2Dto1D,{4*A1Z,A2Z},E,CurrCuts,Y,Z,[],[],2,z_max);
+0236   
+0237   <span class="keyword">if</span> dOPS.Plot4ShowInRun
+0238     arc_split_plotTestRes1(testRes,iT,2,[],[],[])
+0239     print(<span class="string">'-depsc2'</span>,<span class="string">'-painters'</span>,sprintf([dOPS.saveFileBaseName,<span class="string">'-%d-%03d'</span>],dOPS.verNR,iT))
+0240   <span class="keyword">end</span>
+0241   disp(sprintf(<span class="string">'%d %02d-%02d-%02d %02d:%02d:%05.2f'</span>,iT,clock))
+0242   testresfile = sprintf(<span class="string">'%s-%02d-%02d.mat'</span>,dOPS.saveFileBaseName,dOPS.verNR,iT);
+0243   save(testresfile,<span class="string">'testRes'</span>,<span class="string">'Ibest'</span>)
+0244   
+0245 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

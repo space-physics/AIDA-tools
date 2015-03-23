@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of imgs_deinterlace</title>
+  <meta name="keywords" content="imgs_deinterlace">
+  <meta name="description" content="IMGS_DEINTERLACE - Deinterlace 2-field video-frames">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>imgs_deinterlace
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>IMGS_DEINTERLACE - Deinterlace 2-field video-frames</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [data_field1,data_field2] = imgs_deinterlace(data) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> IMGS_DEINTERLACE - Deinterlace 2-field video-frames
+
+ Calling:
+   [data_field1,data_field2] = imgs_deinterlace(data)
+ Input:
+   DATA - interlaced image [NxM], that is every second line
+          corresponds to two exposures at different times.
+ Output:
+   DATA_FIELD1,DATA_FIELD2 (both [NxM]) are the deinterlaced
+   fields, linearly interpolated to the original resolution.
+ 
+   The function assumes that the first frame is data(2:2:end,:);</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [data_field1,data_field2] = imgs_deinterlace(data)</a>
+0002 <span class="comment">% IMGS_DEINTERLACE - Deinterlace 2-field video-frames</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   [data_field1,data_field2] = imgs_deinterlace(data)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%   DATA - interlaced image [NxM], that is every second line</span>
+0008 <span class="comment">%          corresponds to two exposures at different times.</span>
+0009 <span class="comment">% Output:</span>
+0010 <span class="comment">%   DATA_FIELD1,DATA_FIELD2 (both [NxM]) are the deinterlaced</span>
+0011 <span class="comment">%   fields, linearly interpolated to the original resolution.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   The function assumes that the first frame is data(2:2:end,:);</span>
+0014 
+0015 
+0016 <span class="comment">%   Copyright � 20061006 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0017 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0018 
+0019 nrlines = size(data,1);
+0020 data_field1 = data(2:2:<span class="keyword">end</span>,:);
+0021 data_field2 = data(1:2:<span class="keyword">end</span>,:);
+0022 
+0023 data_field1 = interp1(2:2:nrlines,data_field1,1:nrlines,<span class="string">'linear'</span>,<span class="string">'extrap'</span>);
+0024 data_field2 = interp1(1:2:nrlines,data_field2,1:nrlines,<span class="string">'linear'</span>,<span class="string">'extrap'</span>);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

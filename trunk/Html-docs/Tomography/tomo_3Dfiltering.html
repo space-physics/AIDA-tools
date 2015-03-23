@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_3Dfiltering</title>
+  <meta name="keywords" content="tomo_3Dfiltering">
+  <meta name="description" content="TOMO_3DFILTERING -">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_3Dfiltering
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TOMO_3DFILTERING -</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function Vem = tomo_3Dfiltering(VemIn,tomo_ops) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TOMO_3DFILTERING -</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Imgtools/imgs_deconv_crude.html" class="code" title="function img_out = imgs_deconv_crude(img_in,psf,damp_level,edge_t_scale)">imgs_deconv_crude</a>	imgs_deconv_crude - Deconvolution, amplitude cut-off method</li><li><a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>	MEDFILT2 - 2 dimensional sliding median filter</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function Vem = tomo_3Dfiltering(VemIn,tomo_ops)</a>
+0002 <span class="comment">% TOMO_3DFILTERING -</span>
+0003 <span class="comment">%</span>
+0004 
+0005 <span class="comment">%   Copyright � 20120330 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0006 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0007 
+0008 
+0009 Vem = VemIn;
+0010 <span class="comment">% Here, after the itteration, we do filtering to suppress noise</span>
+0011 <span class="keyword">switch</span> tomo_ops(1).filtertype
+0012  <span class="keyword">case</span> 1 <span class="comment">% horizontal 2D averaging</span>
+0013   <span class="keyword">for</span> k = 1:size(Vem,3),
+0014     Vem(:,:,k) = conv2(squeeze(Vem(:,:,k)),tomo_ops(1).filterkernel,<span class="string">'same'</span>);
+0015   <span class="keyword">end</span>
+0016  <span class="keyword">case</span> 2 <span class="comment">% horizontal 2D median</span>
+0017   <span class="keyword">for</span> k = 1:size(Vem,3),
+0018     Vem(:,:,k) = <a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(squeeze(Vem(:,:,k)),tomo_ops(1).filterkernel);
+0019   <span class="keyword">end</span>
+0020  <span class="keyword">case</span> 3 <span class="comment">% proximity filtering</span>
+0021   fiel_align_int = sum(Vem,3);
+0022   filt_f_a_i = conv2(fiel_align_int,tomo_ops(1).filterkernel,<span class="string">'same'</span>);
+0023   <span class="keyword">for</span> k = 1:size(Vem,3),
+0024     Vem(:,:,k) = conv2(squeeze(Vem(:,:,k)),tomo_ops(1).filterkernel,<span class="string">'same'</span>).*fiel_align_int./filt_f_a_i;
+0025   <span class="keyword">end</span>
+0026   <span class="comment">%Infindx = find(~isfinite(Vem(:)));</span>
+0027   Vem(~isfinite(Vem(:))) = 0;
+0028  <span class="keyword">case</span> 4 <span class="comment">% proximity sharpening, Lucy-Richardson deconvolution-like</span>
+0029   fiel_align_int = sum(Vem,3);
+0030   <span class="comment">%filt_f_a_i = conv2(fiel_align_int,tomo_ops(1).filterkernel,'same');</span>
+0031   deconvd_f_a_i = <a href="../Imgtools/imgs_deconv_crude.html" class="code" title="function img_out = imgs_deconv_crude(img_in,psf,damp_level,edge_t_scale)">imgs_deconv_crude</a>(fiel_align_int,tomo_ops(1).filterkernel,1,1);
+0032   <span class="keyword">for</span> k = 1:size(Vem,3),
+0033     Vem(:,:,k) = squeeze(Vem(:,:,k)).*deconvd_f_a_i./fiel_align_int;
+0034   <span class="keyword">end</span>
+0035   <span class="comment">%Infindx = find(~isfinite(Vem(:)));</span>
+0036   Vem(~isfinite(Vem(:))) = 0;
+0037  <span class="keyword">otherwise</span>
+0038   <span class="comment">% no filtering</span>
+0039 <span class="keyword">end</span> <span class="comment">% switch filtertype</span>
+0040</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_set_blockofblobs</title>
+  <meta name="keywords" content="tomo_set_blockofblobs">
+  <meta name="description" content="TOMO_SET_BLOCKOFBLOBS - setup function  for b-o-b geometry parameters">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_set_blockofblobs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TOMO_SET_BLOCKOFBLOBS - setup function  for b-o-b geometry parameters</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [Vem,r,XfI,YfI,ZfI] = tomo_set_blockofblobs(r0,dr1,dr2,dr3,sizes_yxz) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TOMO_SET_BLOCKOFBLOBS - setup function  for b-o-b geometry parameters
+  Unfinished
+
+ Calling:
+  [Vem,r,XfI,YfI,ZfI] = tomo_set_blockofblobs(r0,dr1,dr2,dr3,sizes_yxz)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="sc_positioning.html" class="code" title="function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)">sc_positioning</a>	SC_POSITIONING - position voxels/base-functions in SC grid.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Vem,r,XfI,YfI,ZfI] = tomo_set_blockofblobs(r0,dr1,dr2,dr3,sizes_yxz)</a>
+0002 <span class="comment">% TOMO_SET_BLOCKOFBLOBS - setup function  for b-o-b geometry parameters</span>
+0003 <span class="comment">%  Unfinished</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%  [Vem,r,XfI,YfI,ZfI] = tomo_set_blockofblobs(r0,dr1,dr2,dr3,sizes_yxz)</span>
+0007 
+0008 
+0009 <span class="comment">%   Copyright � 2008 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0010 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0011 
+0012 Vem = zeros(sizes_yxz);
+0013 <span class="comment">% set the lower south-west corner:</span>
+0014 <span class="comment">%ds = 2.5;</span>
+0015 <span class="comment">%r0 = [-128 -64 80];</span>
+0016 <span class="comment">%r0 = r_B + [-64*ds -64*ds 80]+[10 0 0];</span>
+0017 <span class="comment">% Define the latice unit vectors</span>
+0018 <span class="comment">%dr1 = [ds 0 0];</span>
+0019 <span class="comment">%dr2 = [0 ds 0];</span>
+0020 <span class="comment">% With e3 || vertical:</span>
+0021 <span class="comment">%dr3 = [0 0 ds];</span>
+0022 <span class="comment">% or || magnetic zenith:</span>
+0023 <span class="comment">%dr3 = [0 -ds*tan(pi*12/180) ds];</span>
+0024 <span class="comment">% Calculate duplicate arrays for the position of the base functions:</span>
+0025 [r,X,Y,Z] = <a href="sc_positioning.html" class="code" title="function [r,xi,yi,zi] = sc_positioning(r0,dr1,dr2,dr3,Vem)">sc_positioning</a>(r0,dr1,dr2,dr3,Vem);
+0026 XfI = r0(1)+dr1(1)*(X-1)+dr2(1)*(Y-1)+dr3(1)*(Z-1);
+0027 YfI = r0(2)+dr1(2)*(X-1)+dr2(2)*(Y-1)+dr3(2)*(Z-1);
+0028 ZfI = r0(3)+dr1(3)*(X-1)+dr2(3)*(Y-1)+dr3(3)*(Z-1);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

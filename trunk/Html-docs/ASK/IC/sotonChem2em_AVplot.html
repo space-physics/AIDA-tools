@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sotonChem2em_AVplot</title>
+  <meta name="keywords" content="sotonChem2em_AVplot">
+  <meta name="description" content="sotonChem2em_AVplot - plot altitude variation of emission rates">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html IC -->
+<h1>sotonChem2em_AVplot
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>sotonChem2em_AVplot - plot altitude variation of emission rates</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [ph,emissions] = sotonChem2em_AVplot(emissions,OPS,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> sotonChem2em_AVplot - plot altitude variation of emission rates
+ from SOTON Chemistry model emission-file/struct 
+   
+ Calling:
+   [ph,emissions] = sotonChem2em_AVplot(emissions,OPS,varargin)
+ Input:
+   emissions - Emissions structure as returned from
+               soton_ionchem_emissions_parser
+   OPS       - Options struct (optional), the default options is
+               returne if the function is called without input
+               parameters. The defaults are:
+               OPS.T = [] - meaning that the time-axis will be
+                            taken from the emissions.t_out field
+                            if some othe mapping is desired just
+                            give the desired coordinates here.
+               OPS.indx4T = [] - meaning that modeled output for
+                            all instances in time shall be
+                            plotted. If any temporal subset of
+                            outputs is desired just give array
+                            with indices.
+               OPS.indxLambda2plot = [] - meaning that all modeled
+                                     emissions shall be plotted If
+                                     any subset of modeled outputs
+                                     is desired just give array
+                                     with indices.
+               OPS.ScaleLambda2plot = 1; - scalilng factor, for
+                                      adjusting to stuff like
+                                      bandpass transmission et al.
+               OPS.lineStyles = {'-','-.','--'} - Cell array with
+                                linestyles to cycle over, if
+                                emissions for several time-steps
+                                is plotted
+               OPS.axlims = 'auto' - automatic scaling, will be
+                            used as argument to AXIS
+               OPS.pIndxUpperLimOffset = 1; Oddity!
+  varargin - cell array of inputs passed on to loglog. Controlling
+             things such as linestyle, colours etc. 
+ Example OPS settings:
+   OPS.T = logspace(log10(10),log10(1e4),42) - for a case when the
+           modeling the emissions at 42 log-space energies between
+           10 eV and 10 keV.
+  OPS.indx4T = 2*[1:42] - selecting every second time-step between
+           2 and 84.
+  OPS.indxLambda2plot = [4,5,6] select to plot only emissions nr
+                        4,5 and 6
+  ScaleLambda2plot: [0.06 1 1] scale emission #4 with 0.06.
+
+ SEE also:  <a href="soton_ionchem_emissions_parser.html" class="code" title="function [emissions] = soton_ionchem_emissions_parser(filename)">soton_ionchem_emissions_parser</a> plot legend</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="soton_ionchem_emissions_parser.html" class="code" title="function [emissions] = soton_ionchem_emissions_parser(filename)">soton_ionchem_emissions_parser</a>	soton_ionchem_emissions_parser - Parses the emission.dat output</li><li><a href="../../tools/catstruct.html" class="code" title="function A = catstruct(varargin)">catstruct</a>	CATSTRUCT - concatenate structures</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ph,emissions] = sotonChem2em_AVplot(emissions,OPS,varargin)</a>
+0002 <span class="comment">% sotonChem2em_AVplot - plot altitude variation of emission rates</span>
+0003 <span class="comment">% from SOTON Chemistry model emission-file/struct</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%   [ph,emissions] = sotonChem2em_AVplot(emissions,OPS,varargin)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%   emissions - Emissions structure as returned from</span>
+0009 <span class="comment">%               soton_ionchem_emissions_parser</span>
+0010 <span class="comment">%   OPS       - Options struct (optional), the default options is</span>
+0011 <span class="comment">%               returne if the function is called without input</span>
+0012 <span class="comment">%               parameters. The defaults are:</span>
+0013 <span class="comment">%               OPS.T = [] - meaning that the time-axis will be</span>
+0014 <span class="comment">%                            taken from the emissions.t_out field</span>
+0015 <span class="comment">%                            if some othe mapping is desired just</span>
+0016 <span class="comment">%                            give the desired coordinates here.</span>
+0017 <span class="comment">%               OPS.indx4T = [] - meaning that modeled output for</span>
+0018 <span class="comment">%                            all instances in time shall be</span>
+0019 <span class="comment">%                            plotted. If any temporal subset of</span>
+0020 <span class="comment">%                            outputs is desired just give array</span>
+0021 <span class="comment">%                            with indices.</span>
+0022 <span class="comment">%               OPS.indxLambda2plot = [] - meaning that all modeled</span>
+0023 <span class="comment">%                                     emissions shall be plotted If</span>
+0024 <span class="comment">%                                     any subset of modeled outputs</span>
+0025 <span class="comment">%                                     is desired just give array</span>
+0026 <span class="comment">%                                     with indices.</span>
+0027 <span class="comment">%               OPS.ScaleLambda2plot = 1; - scalilng factor, for</span>
+0028 <span class="comment">%                                      adjusting to stuff like</span>
+0029 <span class="comment">%                                      bandpass transmission et al.</span>
+0030 <span class="comment">%               OPS.lineStyles = {'-','-.','--'} - Cell array with</span>
+0031 <span class="comment">%                                linestyles to cycle over, if</span>
+0032 <span class="comment">%                                emissions for several time-steps</span>
+0033 <span class="comment">%                                is plotted</span>
+0034 <span class="comment">%               OPS.axlims = 'auto' - automatic scaling, will be</span>
+0035 <span class="comment">%                            used as argument to AXIS</span>
+0036 <span class="comment">%               OPS.pIndxUpperLimOffset = 1; Oddity!</span>
+0037 <span class="comment">%  varargin - cell array of inputs passed on to loglog. Controlling</span>
+0038 <span class="comment">%             things such as linestyle, colours etc.</span>
+0039 <span class="comment">% Example OPS settings:</span>
+0040 <span class="comment">%   OPS.T = logspace(log10(10),log10(1e4),42) - for a case when the</span>
+0041 <span class="comment">%           modeling the emissions at 42 log-space energies between</span>
+0042 <span class="comment">%           10 eV and 10 keV.</span>
+0043 <span class="comment">%  OPS.indx4T = 2*[1:42] - selecting every second time-step between</span>
+0044 <span class="comment">%           2 and 84.</span>
+0045 <span class="comment">%  OPS.indxLambda2plot = [4,5,6] select to plot only emissions nr</span>
+0046 <span class="comment">%                        4,5 and 6</span>
+0047 <span class="comment">%  ScaleLambda2plot: [0.06 1 1] scale emission #4 with 0.06.</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">% SEE also:  soton_ionchem_emissions_parser plot legend</span>
+0050 
+0051 
+0052 <span class="comment">% Copyright Bjorn Gustavsson 20110128,</span>
+0053 <span class="comment">% GPL version 3 or later applies.</span>
+0054 
+0055 dOPS.T = [];
+0056 dOPS.indx4T = [];
+0057 dOPS.indxLambda2plot = [];
+0058 dOPS.ScaleLambda2plot = 1;
+0059 dOPS.pIndxUpperLimOffset = 1;
+0060 dOPS.lineStyles = {<span class="string">'-'</span>,<span class="string">'-.'</span>,<span class="string">'--'</span>};
+0061 dOPS.axlims = <span class="string">'auto'</span>;
+0062 
+0063 <span class="keyword">if</span> nargin == 0
+0064   ph = dOPS;
+0065   <span class="keyword">return</span>
+0066 <span class="keyword">end</span>
+0067 
+0068 
+0069 holdstate = ishold;
+0070 
+0071 <span class="keyword">if</span> nargin &gt; 1
+0072   dOPS = <a href="../../tools/catstruct.html" class="code" title="function A = catstruct(varargin)">catstruct</a>(dOPS,OPS);
+0073 <span class="keyword">end</span>
+0074 
+0075 <span class="keyword">if</span> ~isstruct(emissions)
+0076   emissions = <a href="soton_ionchem_emissions_parser.html" class="code" title="function [emissions] = soton_ionchem_emissions_parser(filename)">soton_ionchem_emissions_parser</a>(<span class="string">'emissions.dat'</span>);
+0077 <span class="keyword">end</span>
+0078 
+0079 <span class="keyword">if</span> isempty(dOPS.indxLambda2plot)
+0080   pIndx = 2:(size(emissions.data,2)-dOPS.pIndxUpperLimOffset);
+0081 <span class="keyword">else</span>
+0082   pIndx = dOPS.indxLambda2plot;
+0083 <span class="keyword">end</span>
+0084 pIndx = pIndx(:);
+0085 <span class="keyword">try</span>
+0086   ScaleLambda2plot = dOPS.ScaleLambda2plot.*ones(size(pIndx));
+0087 <span class="keyword">catch</span>
+0088   error(<span class="string">'size of OPS.ScaleLambda2plot (%d) should match size of wavelengths to plot (%d)'</span>,size(dOPS.ScaleLambda2plot),pIndx)
+0089 <span class="keyword">end</span>
+0090 
+0091 <span class="keyword">if</span> isempty(dOPS.T)
+0092   T = emissions.t_out;
+0093 <span class="keyword">else</span>
+0094   T = dOPS.T;
+0095 <span class="keyword">end</span>
+0096 T = T(:);
+0097 <span class="keyword">if</span> ~isempty(dOPS.indx4T)
+0098   indxT = dOPS.indx4T(:);
+0099 <span class="keyword">else</span>
+0100   indxT = 1:length(T);
+0101 <span class="keyword">end</span>
+0102 indxT = indxT(:);
+0103 
+0104 <span class="keyword">if</span> isempty(dOPS.indxLambda2plot)
+0105   indxLambda2plot = 2:size(emissions.data,2);
+0106 <span class="keyword">else</span>
+0107   indxLambda2plot = dOPS.indxLambda2plot;
+0108 <span class="keyword">end</span>
+0109 indxLambda2plot = indxLambda2plot(:);
+0110 
+0111 h = emissions.data(:,1,2);
+0112 dh = abs(gradient(h));
+0113 sz_Lambda_T = size(emissions.data(1,indxLambda2plot,indxT));
+0114 
+0115 i_T = dOPS.indx4T;
+0116 ph = [];
+0117 <span class="keyword">for</span> i1 = 1:length(i_T),
+0118   
+0119   phC = plot((emissions.data(:,indxLambda2plot,i_T(i1))),emissions.data(:,1,i_T(i1))/1e5,varargin{:});
+0120   hold on
+0121   set(phC,<span class="string">'linestyle'</span>,dOPS.lineStyles{1+rem(i1,length(dOPS.lineStyles))})
+0122   ph = [ph,phC];
+0123   
+0124 <span class="keyword">end</span>
+0125 
+0126 set(gca,<span class="string">'xscale'</span>,<span class="string">'log'</span>,<span class="string">'yscale'</span>,<span class="string">'linear'</span>)
+0127 
+0128 axis(dOPS.axlims)
+0129 
+0130 <span class="keyword">if</span> ~holdstate
+0131   hold off
+0132 <span class="keyword">end</span>
+0133</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of spc_make_theta</title>
+  <meta name="keywords" content="spc_make_theta">
+  <meta name="description" content="SPC_MAKE_THETA - Calculate the angle from the optical axis,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Spectral_cal -->
+<h1>spc_make_theta
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SPC_MAKE_THETA - Calculate the angle from the optical axis,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [theta_out,ze_out,ff_out,costheta] = spc_make_theta(gX,gY,optpar,sis,sz_img) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SPC_MAKE_THETA - Calculate the angle from the optical axis,
+ zenith angle and flatfield correction factor for each star
+ intensity value.
+
+ Calling:
+  [theta_out,ze_out,ff_out] = spc_make_theta(gX,gY,optpar,sis)
+ Input:
+  gX     - Array with horizontal image position of stars (pixels)
+           [N x 1]
+  gY     - Array with vertical image position of stars (pixels)
+           [N x 1]
+  optpar - camera parameters describing the imaging geometry, see
+           CAMERA and STARCAL for details.
+  sis    - Star identifier - appears unused!
+ Output:
+  theta_out - Array with angles relative to the optical axis.
+  ze_out    - Array with zenith angles.
+  ff_out    - Flat-field/vignetting correction factors</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>	CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA</li><li><a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>	FFS_CORRECTION2 - flat-field variation for optical transfer</li><li><a href="../Camera/inv_project_directions.html" class="code" title="function [az,ze] = inv_project_directions(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_directions</a>	INV_PROJECT_DIRECTIONS - pixels line-of-sight to azimuth and zenith angles</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="Spec_cal_jobb_Miracle.html" class="code" title="">Spec_cal_jobb_Miracle</a>	Spec_cal_jobb_Miracle - Example of spectral camera sensitivity calibration</li><li><a href="Spec_cal_jobb_exmplCell.html" class="code" title="">Spec_cal_jobb_exmplCell</a>	Spec_cal_jobb_exmplCell - Example of spectral camera sensitivity calibration</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [theta_out,ze_out,ff_out,costheta] = spc_make_theta(gX,gY,optpar,sis,sz_img)</a>
+0002 <span class="comment">% SPC_MAKE_THETA - Calculate the angle from the optical axis,</span>
+0003 <span class="comment">% zenith angle and flatfield correction factor for each star</span>
+0004 <span class="comment">% intensity value.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%  [theta_out,ze_out,ff_out] = spc_make_theta(gX,gY,optpar,sis)</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%  gX     - Array with horizontal image position of stars (pixels)</span>
+0010 <span class="comment">%           [N x 1]</span>
+0011 <span class="comment">%  gY     - Array with vertical image position of stars (pixels)</span>
+0012 <span class="comment">%           [N x 1]</span>
+0013 <span class="comment">%  optpar - camera parameters describing the imaging geometry, see</span>
+0014 <span class="comment">%           CAMERA and STARCAL for details.</span>
+0015 <span class="comment">%  sis    - Star identifier - appears unused!</span>
+0016 <span class="comment">% Output:</span>
+0017 <span class="comment">%  theta_out - Array with angles relative to the optical axis.</span>
+0018 <span class="comment">%  ze_out    - Array with zenith angles.</span>
+0019 <span class="comment">%  ff_out    - Flat-field/vignetting correction factors</span>
+0020 
+0021 
+0022 <span class="comment">%   Copyright � 20030901 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0023 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0024 
+0025 <span class="comment">% $$$ global bx by</span>
+0026 
+0027 bx = sz_img(2);
+0028 by = sz_img(1);
+0029 
+0030 <span class="comment">%ffc_raw = ffs_correction_raw([bx by],optpar,optpar(9))/bx/by;</span>
+0031 ffc = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>([bx by],optpar,optpar(9));
+0032 
+0033 <span class="comment">% (</span>
+0034 e_n = [0 0 1];
+0035 l_0 = 1;
+0036 <span class="comment">% ) These are really unnecessary?</span>
+0037 
+0038 
+0039 [u,v] = meshgrid(1:bx,1:by);
+0040 [fi,theta] = <a href="../Camera/camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>(u,v,optpar,optpar(9),[by bx]);
+0041 az = fi;
+0042 ze = fi;
+0043 [az(:),ze(:)] = <a href="../Camera/inv_project_directions.html" class="code" title="function [az,ze] = inv_project_directions(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_directions</a>(u(:)',v(:)',theta,[],optpar(9),optpar,e_n,l_0);
+0044 
+0045 <span class="keyword">for</span> i1 = size(gX,1):-1:1,
+0046   <span class="keyword">for</span> j2 = size(gX,2):-1:1,
+0047     <span class="keyword">for</span> i3 = length(gX{i1,j2}):-1:1,
+0048       
+0049       <span class="comment">% AAaah saa daaligt att goera det haer haer.</span>
+0050       ff_out{i1,j2}(i3) = ffc(round(gY{i1,j2}(i3)),round(gX{i1,j2}(i3)));
+0051       theta_out{i1,j2}(i3) = theta(round(gY{i1,j2}(i3)),round(gX{i1,j2}(i3)));
+0052       costheta{i1,j2}(i3) = cos(theta_out{i1,j2}(i3));
+0053       ze_out{i1,j2}(i3) = ze(round(gY{i1,j2}(i3)),round(gX{i1,j2}(i3)));
+0054       
+0055     <span class="keyword">end</span>
+0056   <span class="keyword">end</span>
+0057 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

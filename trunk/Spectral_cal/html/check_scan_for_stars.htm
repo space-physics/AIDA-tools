@@ -1,0 +1,114 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>check_scan_for_stars.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function synopsis</FONT></FONT></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>  [ok] = check_scan_for_stars(files,pos,optpar,IDENTSTARS,STARPARS,PO,OPS)                                                                           </FONT></FONT></P> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function comments</FONT></FONT></P> 
+<pre> 
+% 
+% CHECK_SCAN_FOR_STARS  Check the result of spc_scan_for_stars. 
+% See spc_scan_for_stars for information about the input. 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files called by check_scan_for_stars.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="star_int_model.htm">star_int_model</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files that call check_scan_for_stars.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="Spec_cal_jobb_mall.htm">Spec_cal_jobb_mall</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of check_scan_for_stars.m</FONT></FONT></P> 
+<pre> 
+function [ok] = check_scan_for_stars(files,pos,optpar,IDENTSTARS,STARPARS,PO,OPS) 
+%  [ok] = check_scan_for_stars(files,pos,optpar,IDENTSTARS,STARPARS,PO,OPS) 
+% 
+% CHECK_SCAN_FOR_STARS  Check the result of <A HREF ="spc_scan_for_stars.htm">spc_scan_for_stars</A>. 
+% See <A HREF ="spc_scan_for_stars.htm">spc_scan_for_stars</A> for information about the input. 
+ 
+% Copyright Bjorn Gustavsson 20030901 
+ 
+global stardir bx by 
+ 
+% default display option 
+if nargin==3 
+  disp_ops = 'off'; 
+end 
+ 
+% $$$ stardir = '/home/bjorn/matlab/Skymap'; 
+stardir = fileparts(eval('which(''skymap'')')); 
+%%%%%%% du maaste testa read_all_catalogs 
+readme_file = [stardir,'/stars/README.spectra']; 
+catalog_file = [stardir,'/stars/stars.dat']; 
+get_these_fields = [1 4 7 8 9 10 11 12 14 16]; 
+star_list = read_all_astro_catalogs(catalog_file,readme_file,get_these_fields); 
+star_list = star_list(2:end); 
+star_list = fix_ra_decl(star_list); 
+ 
+if nargin >= 7 &  ~isempty(OPS.Mag_limit) 
+ 
+  i = find([star_list(:).Vmag] <= OPS.Mag_limit); 
+  star_list = star_list(i); 
+ 
+end 
+ra = [star_list(:).ra]'; 
+decl = [star_list(:).decl]'; 
+%whos 
+% image preprocessing options 
+if isempty(PO) 
+  PO = typical_pre_proc_ops; 
+  PO.outimgsize = 256; 
+  PO.LE = 1; 
+  PO.medianfilter = 0; 
+end 
+if length(optpar) < 9 
+ 
+  optmod = 3; 
+ 
+else 
+ 
+  optmod = optpar(9); 
+ 
+end 
+ 
+for i = 1:size(files,1) 
+ 
+  [data,header,obs] = inimg(files(i,:),PO); 
+ 
+  [stars_azze(:,1),stars_azze(:,2)] = starpos2( ra,... 
+                                                decl,... 
+                                                obs.time(1:3),... 
+                                                obs.time(4:6),... 
+                                                obs.pos(2),... 
+                                                obs.pos(1)); 
+  %stars_azze = stars_azze; 
+  stars_azze(:,3) = [star_list(:).HR]'; 
+  Stars_azze = stars_azze(stars_azze(:,2)<pi/2,:); 
+  this_j = find(IDENTSTARS(:,1)==i); 
+  these_stars = IDENTSTARS(this_j,9); 
+  STars_azze = []; 
+  for j = 1:length(these_stars) 
+    if any(Stars_azze(:,3)==these_stars(j)) 
+      STars_azze = [STars_azze;Stars_azze(Stars_azze(:,3)==these_stars(j),:)]; 
+    end 
+  end 
+  <A HREF ="star_int_model.htm">star_int_model</A>(data,optpar,optpar(9),STars_azze,STARPARS(this_j,:),OPS); 
+end 
+ok = 1; 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 16:26 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

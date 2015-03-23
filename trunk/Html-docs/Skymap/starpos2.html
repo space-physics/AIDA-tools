@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of starpos2</title>
+  <meta name="keywords" content="starpos2">
+  <meta name="description" content="STARPOS2 gives the azimuth, zenith and apparent zenith angles">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>starpos2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STARPOS2 gives the azimuth, zenith and apparent zenith angles</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STARPOS2 gives the azimuth, zenith and apparent zenith angles
+ for a sky object. It makes some good corrections for precession.
+ Formulas from spherical astronomy by Robin m. Green Cambridge
+ Univ. Press. 1985 
+ 
+ Calling:
+ [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)
+ Input:
+ ra   - right acsention of the object in hour
+ decl - declination of the object in degrees
+ date - date for the observation. Date = [year month day]
+ utc  - utc time for the observation. UTC = [hour minute second]
+ lat  - latitude of the observer in degres
+ long - longitude of the observer
+ 
+ Output: 
+ az   - azimuth angle clockwise from north in radians
+ ze   - zenith angle in radians
+ apze - apparent zenith angle in radians</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>	DATE2JULIANDATE calculates the julian date at 0h UT</li><li><a href="nutation.html" class="code" title="function [N] = nutation(Obsdate,utc)">nutation</a>	NUTATION calculates the nutation</li><li><a href="refrcorr.html" class="code" title="function [apze] = refrcorr(ze)">refrcorr</a>	REFRCORR - From true zenith angle to apparent zenith correcting</li><li><a href="utc2losidt.html" class="code" title="function [localsidtime] = utc2losidt(date,utc,longitude)">utc2losidt</a>	UTC2LOSIDT calculates the local sidereal time.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>	PRE_PROC_IMG - systematic image correction and preprocessing of</li><li><a href="../Fits_tools/remove_some_stars.html" class="code" title="function img_out = remove_some_stars(img_in,time,pos,optpar,remove_these_stars,size_r_t_s)">remove_some_stars</a>	REMOVE_SOME_STARS - Remove bright stars from images,</li><li><a href="above_horizon.html" class="code" title="function [az,ze,apze,i_abh] = above_horizon(ra,decl,pos0,date,time0)">above_horizon</a>	ABOVE_HORIZON - finds stars above the horizon at place and time,</li><li><a href="loadstars2.html" class="code" title="function [possiblestars,catalog] = loadstars2(pos0,date,time0)">loadstars2</a>	LOADSTARS2 load stars from the: Bright Star Catalogue, 5th Revised</li><li><a href="plotgrid.html" class="code" title="function [ok] = plotgrid(az0,ze0,rot0,date,utc,lat,long,radecl_or_azze)">plotgrid</a>	PLOTGRID - plots Azimuth-Zenith or Rect acsention-Declination grid.</li><li><a href="read_BSC.html" class="code" title="function [possiblestars,star_list] = read_BSC(pos0,date,time0)">read_BSC</a>	READ_BSC loads stars from the Bright Star Catalogue, (BSC Star</li><li><a href="read_SAO.html" class="code" title="function [possiblestars,star_list] = read_SAO(pos0,date,time0)">read_SAO</a>	READ_SAO loads stars from the SAO Star Catalogue, (SAO Star</li><li><a href="read_sao.html" class="code" title="function [possiblestars,star_list] = read_sao(pos0,date,time0)">read_sao</a>	READ_SAO loads stars from the SAO Star Catalogue, (SAO Star</li><li><a href="../Spectral_cal/check_scan_for_stars.html" class="code" title="function [ok] = check_scan_for_stars(files,pos,optpar,IDENTSTARS,STARPARS,PO,OPS)">check_scan_for_stars</a>	CHECK_SCAN_FOR_STARS  Check the result of spc_scan_for_stars.</li><li><a href="../Spectral_cal/spc_scan_for_stars.html" class="code" title="function [IDSTARS,STARPARS,filtnr,Stime,extime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops)">spc_scan_for_stars</a>	SPC_SCAN_FOR_STARS - Scan images for stars in the Pulkovo</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)</a>
+0002 <span class="comment">% STARPOS2 gives the azimuth, zenith and apparent zenith angles</span>
+0003 <span class="comment">% for a sky object. It makes some good corrections for precession.</span>
+0004 <span class="comment">% Formulas from spherical astronomy by Robin m. Green Cambridge</span>
+0005 <span class="comment">% Univ. Press. 1985</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">% [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">% ra   - right acsention of the object in hour</span>
+0011 <span class="comment">% decl - declination of the object in degrees</span>
+0012 <span class="comment">% date - date for the observation. Date = [year month day]</span>
+0013 <span class="comment">% utc  - utc time for the observation. UTC = [hour minute second]</span>
+0014 <span class="comment">% lat  - latitude of the observer in degres</span>
+0015 <span class="comment">% long - longitude of the observer</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Output:</span>
+0018 <span class="comment">% az   - azimuth angle clockwise from north in radians</span>
+0019 <span class="comment">% ze   - zenith angle in radians</span>
+0020 <span class="comment">% apze - apparent zenith angle in radians</span>
+0021 
+0022 <span class="comment">%   Copyright � 1999 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0023 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0024 
+0025 rsidtime = <a href="utc2losidt.html" class="code" title="function [localsidtime] = utc2losidt(date,utc,longitude)">utc2losidt</a>( date , utc , long )/12*pi;
+0026 rra = ra'/12*pi;
+0027 rdecl = decl'/180*pi;
+0028 rlong = long/180*pi;
+0029 rlat = lat/180*pi;
+0030 
+0031 t = ( <a href="date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>(date) - 2451545.0 ) / 36525;
+0032 d = <a href="date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>(date)-<a href="date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>([1985 01 01]);
+0033 <span class="comment">%Cartesian coordinates on the celestial sphere</span>
+0034 r(1,:) = cos(rdecl).*cos(rra);
+0035 r(2,:) = cos(rdecl).*sin(rra);
+0036 r(3,:) = sin(rdecl);
+0037 
+0038 <span class="comment">% rigorous precession</span>
+0039 Za = ( .6406161 * t + .0000839 * t^2 + .0000050 * t^3 ) / 180 * pi;
+0040 za = ( .6406161 * t + .0003041 * t^2 + .0000051 * t^3 ) / 180 * pi;
+0041 ta = ( .5567530 * t + .0001185 * t^2 + .0000116 * t^3 ) / 180 * pi;
+0042 
+0043 P = [-sin(Za)*sin(za) + cos(Za)*cos(za)*cos(ta),  -cos(Za)*sin(za) - sin(Za)*cos(za)*cos(ta),  -cos(za)*sin(ta);<span class="keyword">...</span>
+0044     sin(Za)*cos(za) + cos(Za)*sin(za)*cos(ta) ,   cos(Za)*cos(za) - sin(Za)*sin(za)*cos(ta),  -sin(za)*sin(ta);<span class="keyword">...</span>
+0045     cos(Za)*sin(ta)                           ,   sin(Za)*sin(ta)                          ,   cos(ta)];
+0046 
+0047 N = <a href="nutation.html" class="code" title="function [N] = nutation(Obsdate,utc)">nutation</a>(date,utc);
+0048 
+0049 rp = N*P*r;
+0050 
+0051 
+0052 rdecl = asin(rp(3,:));
+0053 rra = atan2(rp(2,:)./cos(rdecl),rp(1,:)./cos(rdecl));
+0054 
+0055 rcorrdecl =  rdecl;
+0056 
+0057 cosaz = cos ( rra );
+0058 
+0059 sinaz = sin( rra );
+0060 
+0061 rcorrra =    rra;
+0062 
+0063 alt = asin( cos( rsidtime - rra ) .* cos( rdecl ) * cos( rlat ) + sin( rdecl ) * sin( rlat ) );
+0064 ze = pi/2 - alt';
+0065 
+0066 sina = sin( rsidtime - rra ) .* cos( rdecl ) ./ cos( alt );
+0067 cosa = ( cos( rsidtime - rra ) .* cos( rdecl ) * sin ( rlat ) - <span class="keyword">...</span>
+0068          sin( rdecl ) * cos( rlat ) )./ cos( alt );
+0069 az = atan2( sina' , cosa' ) + pi;
+0070 
+0071 apze = <a href="refrcorr.html" class="code" title="function [apze] = refrcorr(ze)">refrcorr</a>( ze );</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

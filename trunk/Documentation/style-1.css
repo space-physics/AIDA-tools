@@ -1,0 +1,265 @@
+/* This is a _much_ modified version of
+   
+   http://www.w3.org/StyleSheets/TR/W3C-REC.css
+   
+   RR
+   */
+
+body {
+  margin : 10px;
+  font-family: "Century Schoolbook", sans-serif;/*sans-serif;*/
+  color: black;
+  background: white;
+  background-position: top left;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-color: #fffff8;
+  padding: 0px;
+}
+
+A
+{
+  text-decoration: none;
+}
+a:link {
+  color: #00C; 
+  background: transparent
+}
+a:visited {
+  color: #609;
+  background: transparent
+}
+a:active {
+  color: #F00;
+  background: transparent
+}
+@media screen {	/* hide from IE3 */
+  /*a[href]:hover { background: #ffa }*/
+  a[href]:hover { text-decoration: underline; }
+}
+
+* {
+  margin-top:	0.0ex;
+  margin-bottom:	1.0ex;
+}
+
+h1 {
+  text-align: center;
+}
+
+h2, h3, h4, h5, h6 {
+  text-align: left;
+}
+
+h1 {
+  color: #990000; 
+  background: transparent;
+}
+h2, h3 {
+  color: #990000; 
+  background: transparent;
+}
+
+h1 { font: 170% sans-serif } /* default is { font: bold 200% sans-serif} */
+h2 { font: 140% sans-serif }
+h3 { font: 120% sans-serif }
+h4 { font: bold 100% sans-serif }
+h5 { font: italic 100% sans-serif }
+h6 { font: small-caps 100% sans-serif }
+
+h1,h2, h3 {
+  margin-top:	3.0ex;
+}
+
+dt {
+  margin-bottom:	0ex;
+  font-weight:	bold;
+}
+
+li {
+  margin-bottom:  0.5ex;
+}
+
+tr, td, img { margin-bottom:	0ex; }
+
+pre, code { font-family: monospace } /* navigator 4 requires this */
+/* pre { margin-left: 2em } */
+
+pre { 
+  margin-left: 1em; 
+  margin-right: 1em; 
+  padding: 0.2em;
+  border: 1px solid; 
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+  background-color: #eeeeee 
+}
+
+div.boxit {
+  margin-left: 1em; 
+  margin-right: 1em; 
+  padding: 0.5em;
+  border: 1px solid; 
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+  background-color: #eeeeee 
+}
+
+ul
+{
+list-style-type: none;
+}
+li {
+  margin-bottom:  0.2ex;
+}
+
+span.highlight { background: yellow }
+span.boxit { border: solid teal; padding: 0.15em; border-width: thin; }
+SPAN.LI-HD {   color: #880000; }
+
+div.pic { margin-top: 20px; margin-bottom: 20px; text-align: center }
+div.picture { margin-top: 60px; margin-bottom: 60px; }
+
+div.remark { margin-top: 20px; margin-bottom: 20px; }
+
+div.navbar { margin-top: 40px; text-align: center } */
+
+/*.hide { display: none }*/
+
+#menu {
+	border-bottom : 1px solid #ccc;
+	margin : 0;
+	padding-bottom : 19px;
+	padding-left : 10px;
+}
+
+#menu ul, #menu li	{
+	display : inline;
+	list-style-type : none;
+	margin : 0;
+	padding : 0;
+}
+
+	
+#menu a:link, #menu a:visited	{
+	background : #E8EBF0;
+	border : 1px solid #ccc;
+	color : #666;
+	float : left;
+	font-size : small;
+	font-weight : normal;
+	line-height : 14px;
+	margin-right : 8px;
+	padding : 2px 10px 2px 10px;
+	text-decoration : none;
+}
+
+#menu a:link.active, #menu a:visited.active	{
+	background : #fff;
+	border-bottom : 1px solid #fff;
+	color : #000;
+}
+
+#menu a:hover	{
+	color : #f00;
+}
+
+	
+body.section-1 #menu li#nav-1 a, 
+body.section-2 #menu li#nav-2 a,
+body.section-3 #menu li#nav-3 a,
+body.section-4 #menu li#nav-4 a {
+	background : #fff;
+	border-bottom : 1px solid #fff;
+	color : #000;
+}
+
+#menu #subnav-1,
+#menu #subnav-2,
+#menu #subnav-3,
+#menu #subnav-4 {
+	display : none;
+	width: 90%;
+}
+
+body.section-1 #menu ul#subnav-1, 
+body.section-2 #menu ul#subnav-2,
+body.section-3 #menu ul#subnav-3,
+body.section-4 #menu ul#subnav-4 {
+	display : inline;
+	left : 10px;
+	position : absolute;
+	top : 30px;
+}
+
+body.section-1 #menu ul#subnav-1 a, 
+body.section-2 #menu ul#subnav-2 a,
+body.section-3 #menu ul#subnav-3 a,
+body.section-4 #menu ul#subnav-4 a {
+	background : #fff;
+	border : none;
+	border-left : 1px solid #ccc;
+	color : #999;
+	font-size : smaller;
+	font-weight : bold;
+	line-height : 10px;
+	margin-right : 4px;
+	padding : 2px 10px 2px 10px;
+	text-decoration : none;
+}
+
+ #menu ul a:hover {
+	color : #f00 !important;
+}
+
+#contents {
+	background : #fff;
+	border : 1px solid #ccc;
+	border-top : none;
+/* 	border-right : none; */
+	clear : both;
+	margin : 0px;
+	padding : 15px;
+}
+
+/* CSS */
+/* #navlist */
+/* { */
+/* padding: 3px 0; */
+/* margin-left: 0; */
+/* border-bottom: 1px solid #778; */
+/* font: bold 1px Verdana, sans-serif; */
+/* } */
+
+/* #navlist li */
+/* { */
+/* list-style: none; */
+/* margin: 0; */
+/* display: inline; */
+/* } */
+
+/* #navlist li a */
+/* { */
+/* padding: 3px 0.5em; */
+/* margin-left: 3px; */
+/* border: 1px solid #778; */
+/* border-bottom: none; */
+/* background: #DDE; */
+/* text-decoration: none; */
+/* } */
+
+/* #navlist li a:link { color: #600; } */
+/* #navlist li a:visited { color: #224; } */
+
+/* #navlist li a:hover */
+/* { */
+/* color: #000; */
+/* background: #AAE; */
+/* border-color: #227; */
+/* } */
+
+/* #navlist li a#current */
+/* { */
+/* background: white; */
+/* border-bottom: 1px solid white; */
+/* } */

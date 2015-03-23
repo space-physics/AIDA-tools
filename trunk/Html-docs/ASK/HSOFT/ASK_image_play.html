@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_image_play</title>
+  <meta name="keywords" content="ASK_image_play">
+  <meta name="description" content="ASK_IMAGE_PLAY - Convert image-stacks to matlab movie">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_image_play
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_IMAGE_PLAY - Convert image-stacks to matlab movie</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function M = ASK_image_play(imgs1,imgs2,imgs3,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_IMAGE_PLAY - Convert image-stacks to matlab movie</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>	ASK_BYTSCL - clip-n-scale matrix into [0-MAXOUT] from min(max_IN,max(min_IN,M_in))</li><li><a href="ASK_print_dat.html" class="code" title="function th = ASK_print_dat(time_mjs,FormatNoOrString,OPS)">ASK_print_dat</a>	ASK_PRINT_DAT - prints the date corresponding to a modified</li><li><a href="../../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function M = ASK_image_play(imgs1,imgs2,imgs3,OPS)</a>
+0002 <span class="comment">% ASK_IMAGE_PLAY - Convert image-stacks to matlab movie</span>
+0003 <span class="comment">%</span>
+0004 
+0005 <span class="comment">% Modified from add_multi.pro</span>
+0006 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0007 <span class="comment">% GPL 3.0 or later applies</span>
+0008 
+0009 dOPS.times = [];
+0010 dOPS.txtcolour = 0.98*[1,1,1];
+0011 dOPS.txtpos = [15 24];
+0012 dOPS.txtXYT = <span class="string">''</span>;
+0013 dOPS.fontsize = 16;
+0014 
+0015 x = -9:9;
+0016 [x,y] = meshgrid(x,x);
+0017 fK4contour = exp(-abs(x.^2+y.^2).^(3/2)/7^3);fK4contour = fK4contour/sum(fK4contour(:));
+0018 
+0019 dOPS.contourframe = 0; <span class="comment">% { [0] | 1 | 2 | 3 | 4 }</span>
+0020 dOPS.Intensity2RGB = [1,0,0;
+0021                       0,1,0;
+0022                       0,0,1;
+0023                       1,1,1];
+0024 dOPS.fK4contour = fK4contour;
+0025 
+0026 <span class="keyword">if</span> nargin == 0
+0027   M = dOPS;
+0028   <span class="keyword">return</span>
+0029 <span class="keyword">end</span>
+0030 <span class="keyword">if</span> nargin &gt; 3;
+0031   dOPS = <a href="../../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0032 <span class="keyword">end</span>
+0033 
+0034 <span class="keyword">for</span> i2 = 4:-1:1
+0035   sph(i2) = subplot(2,2,i2);
+0036 <span class="keyword">end</span>
+0037 sphpos = get(sph,<span class="string">'position'</span>);
+0038 SPHpos = [sphpos{1};sphpos{2};sphpos{3};sphpos{4}];
+0039 
+0040 set(sph(2),<span class="string">'position'</span>,SPHpos(2,:)+[-0.052841 -0.066337 0.052841 0.066337],<span class="string">'xtick'</span>,[],<span class="string">'ytick'</span>,[])
+0041 set(sph(1),<span class="string">'position'</span>,SPHpos(1,:)+[0 -0.066337 0.052841 0.066337],<span class="string">'xtick'</span>,[])
+0042 set(sph(3),<span class="string">'position'</span>,SPHpos(3,:)+[0 0 0.052841 0.066337])
+0043 set(sph(4),<span class="string">'position'</span>,SPHpos(4,:)+[-0.052841 0 0.052841 0.066337],<span class="string">'ytick'</span>,[])
+0044 
+0045 
+0046 <span class="keyword">for</span> i2 = 1:size(imgs1,3)
+0047   axes(sph(1))
+0048   imagesc(cat(3,<span class="keyword">...</span>
+0049               <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(imgs3(:,:,i2))*dOPS.Intensity2RGB(1,1),<span class="keyword">...</span>
+0050               <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(imgs2(:,:,i2))*dOPS.Intensity2RGB(1,2),<span class="keyword">...</span>
+0051               <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(imgs1(:,:,i2))*dOPS.Intensity2RGB(1,3)))
+0052   <span class="keyword">if</span> ~isempty(dOPS.times)
+0053     th = <a href="ASK_print_dat.html" class="code" title="function th = ASK_print_dat(time_mjs,FormatNoOrString,OPS)">ASK_print_dat</a>(dOPS.times(i2),<span class="string">'HH:MM:SS.FFF'</span>,dOPS);
+0054   <span class="keyword">end</span>
+0055   axes(sph(2))
+0056   <span class="comment">%subplot(2,2,2)</span>
+0057   imagesc(cat(3,<span class="keyword">...</span>
+0058               <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(imgs3(:,:,i2))*dOPS.Intensity2RGB(2,1),<span class="keyword">...</span>
+0059               <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(imgs2(:,:,i2))*dOPS.Intensity2RGB(2,2),<span class="keyword">...</span>
+0060               <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(imgs1(:,:,i2))*dOPS.Intensity2RGB(2,3)))
+0061   axes(sph(3))
+0062   <span class="comment">%subplot(2,2,3)</span>
+0063   imagesc(cat(3,<span class="keyword">...</span>
+0064               <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(imgs3(:,:,i2))*dOPS.Intensity2RGB(3,1),<span class="keyword">...</span>
+0065               <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(imgs2(:,:,i2))*dOPS.Intensity2RGB(3,2),<span class="keyword">...</span>
+0066               <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(imgs1(:,:,i2))*dOPS.Intensity2RGB(3,3)))
+0067   axes(sph(4))
+0068   <span class="comment">%subplot(2,2,4)</span>
+0069   imagesc(cat(3,<span class="keyword">...</span>
+0070               <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(imgs3(:,:,i2))*dOPS.Intensity2RGB(4,1),<span class="keyword">...</span>
+0071               <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(imgs2(:,:,i2))*dOPS.Intensity2RGB(4,2),<span class="keyword">...</span>
+0072               <a href="ASK_bytscl.html" class="code" title="function M_out = ASK_bytscl(M_in,min_in,max_in,max_out)">ASK_bytscl</a>(imgs1(:,:,i2))*dOPS.Intensity2RGB(4,3)))
+0073   <span class="keyword">if</span> dOPS.contourframe ~= 0
+0074     axes(sph(dOPS.contourframe))
+0075     hold on
+0076     contour(conv2(imgs3(:,:,i2),fK4contour,<span class="string">'same'</span>),linspace(0,max(max(imgs3(:,:,i2))),8),<span class="string">'r'</span>)
+0077     contour(conv2(imgs2(:,:,i2),fK4contour,<span class="string">'same'</span>),linspace(0,max(max(imgs2(:,:,i2))),8),<span class="string">'k'</span>)
+0078     contour(conv2(imgs2(:,:,i2),fK4contour,<span class="string">'same'</span>),linspace(0,max(max(imgs2(:,:,i2))),8),<span class="string">'w--'</span>)
+0079     contour(conv2(imgs1(:,:,i2),fK4contour,<span class="string">'same'</span>),linspace(0,max(max(imgs1(:,:,i2))),8),<span class="string">'b'</span>)
+0080     hold off
+0081   <span class="keyword">end</span>
+0082   set(sph(2),<span class="string">'xtick'</span>,[],<span class="string">'ytick'</span>,[])
+0083   set(sph(1),<span class="string">'xtick'</span>,[])
+0084   set(sph(4),<span class="string">'ytick'</span>,[])
+0085   drawnow
+0086   M(i2) = getframe(gcf);
+0087 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

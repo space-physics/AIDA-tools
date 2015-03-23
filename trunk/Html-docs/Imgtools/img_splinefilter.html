@@ -1,0 +1,295 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of img_splinefilter</title>
+  <meta name="keywords" content="img_splinefilter">
+  <meta name="description" content="IMG_SPLINEFILTER - spline fitting filter optimum statistical filter">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>img_splinefilter
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>IMG_SPLINEFILTER - spline fitting filter optimum statistical filter</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [varargout] = img_splinefilter(img_in,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> IMG_SPLINEFILTER - spline fitting filter optimum statistical filter
+
+   [varargout] = img_splinefilter(img_in,OPS)
+ Calling:
+  [Img,Imgs,Measures,BestIndxs] = img_splinefilter(img_in,OPS)
+  OPS = img_splinefilter</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>	imgs_smart_caxis - alpha-percentile setting of color-axis,</li><li><a href="../tools/colorbar_labeled.html" class="code" title="function handle=colorbar_labeled(label,lg,varargin)">colorbar_labeled</a>	COLORBAR_LABELED - colorbar with label for range linear or log</li><li><a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>	MEDFILT2 - 2 dimensional sliding median filter</li><li><a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [varargout] = img_splinefilter(img_in,OPS)</a>
+0002 <span class="comment">% IMG_SPLINEFILTER - spline fitting filter optimum statistical filter</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   [varargout] = img_splinefilter(img_in,OPS)</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%  [Img,Imgs,Measures,BestIndxs] = img_splinefilter(img_in,OPS)</span>
+0007 <span class="comment">%  OPS = img_splinefilter</span>
+0008 
+0009 <span class="comment">%   Copyright � 20110105 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0010 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0011 
+0012 <span class="comment">%function [Imgs,Measures] = lsqfs_filter(img_in,Order,MaxKnots,noise_pdfF)</span>
+0013 
+0014 <span class="comment">% 1 Make the default options:</span>
+0015 dOPS.Order = 3;             <span class="comment">% Spline order (3 - cubic splines)</span>
+0016 dOPS.MaxKnots = 21;         <span class="comment">% Maximum number of node points in</span>
+0017                             <span class="comment">% vertical and horizontal dimension</span>
+0018 dOPS.MinKnots = 2;          <span class="comment">% Minimum number of node points in</span>
+0019                             <span class="comment">% vertical and horizontal dimension</span>
+0020 dOPS.NoisePdfF = @normcdf;  <span class="comment">% Cumulative distribution function of</span>
+0021                             <span class="comment">% noise statistics, defaults to normal</span>
+0022                             <span class="comment">% distributed noise.</span>
+0023 dOPS.NoisePdfExtraArgs = {};<span class="comment">% If there should be extra arguments to</span>
+0024                             <span class="comment">% the NoisePdfF function, here is the</span>
+0025                             <span class="comment">% cell array to put it into.</span>
+0026 dOPS.NoiseRange = [-3 3];   <span class="comment">% Range of noise to calculate the</span>
+0027                             <span class="comment">% distribution of the pixel noise</span>
+0028 dOPS.nrNR = 101;            <span class="comment">% Number of bins to calculate the</span>
+0029                             <span class="comment">% histogram in</span>
+0030 dOPS.NoiseScaleFcn = @(I,Is) (I-Is)./Is.^.5; <span class="comment">% Function to scale</span>
+0031                                              <span class="comment">% the noise with, this</span>
+0032                                              <span class="comment">% example assumes that</span>
+0033                                              <span class="comment">% the noise in I is N(Is,sqrt(Is))</span>
+0034 dOPS.display = 1;  <span class="comment">% Whether to display the filtering or not</span>
+0035 dOPS.pause = 1;    <span class="comment">% How long to pause during displaing, -1 disables</span>
+0036 dOPS.medianFilter = 3;    <span class="comment">% reg-size to use for prefiltering image</span>
+0037                           <span class="comment">% to fit the 2-D splines to</span>
+0038 
+0039 <span class="keyword">if</span> nargin == 0
+0040   varargout{1} = dOPS;
+0041   <span class="keyword">return</span>
+0042 <span class="keyword">elseif</span> nargin &gt; 1
+0043   dOPS = <a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0044 <span class="keyword">end</span>
+0045 
+0046 <span class="comment">%</span>
+0047 order = dOPS.Order;
+0048 max_knts = dOPS.MaxKnots;
+0049 min_knts = dOPS.MinKnots;
+0050 NoiseScaleFcn = dOPS.NoiseScaleFcn;
+0051 NoisePdfF = dOPS.NoisePdfF;
+0052 
+0053 stdI = inf*ones(1,max_knts);
+0054 nfit = stdI;
+0055 nfit2 = stdI;
+0056 AIC = stdI;
+0057 
+0058 sz = size(img_in);
+0059 
+0060 <span class="keyword">if</span> dOPS.display == 1
+0061   phImgIn = subplot(2,3,1);
+0062   imagesc(img_in)
+0063   cx = <a href="imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.003,img_in(:));
+0064 <span class="keyword">elseif</span> dOPS.display == 2
+0065   indx2plot = round(linspace(max(10,min_knts),max_knts-8,5));
+0066   spp_org = [2,1,1;4,5,11;4,5,12;4,5,13;4,5,14;4,5,15;5,1,4;5,1,5];
+0067   <span class="keyword">for</span> i1 = 1:(length(spp_org)-2),
+0068     sph(i1) = subplot(spp_org(i1,1),spp_org(i1,2),spp_org(i1,3));
+0069     axP{i1} = get(sph(i1),<span class="string">'position'</span>);
+0070   <span class="keyword">end</span>
+0071   dx = axP{i1}(1) - (axP{i1-1}(1)+axP{i1-1}(3));
+0072   <span class="keyword">for</span> i1 = 2:length(spp_org)-2,
+0073     set(sph(i1),<span class="string">'position'</span>,axP{i1}+[-(i1-2)/5*dx,axP{1}(2)-(axP{i1}(2)+axP{i1}(4)),4/5*dx,0])
+0074     axP{i1} = get(sph(i1),<span class="string">'position'</span>);
+0075   <span class="keyword">end</span>
+0076   axes(sph(1))
+0077   imagesc(img_in),set(gca,<span class="string">'xticklabel'</span>,<span class="string">''</span>)
+0078   cx = <a href="imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.003,img_in(:));
+0079   cblh = <a href="../tools/colorbar_labeled.html" class="code" title="function handle=colorbar_labeled(label,lg,varargin)">colorbar_labeled</a>(<span class="string">'Counts'</span>,<span class="string">'linear'</span>,<span class="string">'fontsize'</span>,12);
+0080   cblP = get(cblh,<span class="string">'position'</span>);
+0081   <span class="comment">%set(cblh,'position',[cblP(1)-0.01,axP{6}(2),cblP(3)+0.0,cblP(2)+cblP(4)-axP{6}(2)])</span>
+0082   set(cblh,<span class="string">'position'</span>,cblP+[-0.01,0,0,0])
+0083   <span class="keyword">for</span> i1 = (length(spp_org)-1):length(spp_org),
+0084     sph(i1) = subplot(spp_org(i1,1),spp_org(i1,2),spp_org(i1,3));
+0085     axP{i1} = get(sph(i1),<span class="string">'position'</span>);
+0086   <span class="keyword">end</span>
+0087   dy = axP{end-2}(2) - (axP{end-1}(2)+axP{end-1}(4));
+0088   set(sph(end-1),<span class="string">'position'</span>,axP{end-1}+[0,0,0,dy])
+0089   dy = axP{end-1}(2) - (axP{end}(2)+axP{end}(4));
+0090   set(sph(end),<span class="string">'position'</span>,axP{end}+[0,0,0,dy])
+0091   
+0092 <span class="keyword">end</span>
+0093 x = linspace(dOPS.NoiseRange(1),dOPS.NoiseRange(2),dOPS.nrNR);
+0094 x = [-inf,x,inf];
+0095 hI = zeros(max_knts,length(x));
+0096 eDfit = hI(:,1:end-1);
+0097 
+0098 <span class="keyword">if</span> isempty(dOPS.NoisePdfExtraArgs)
+0099   nc01 = NoisePdfF(x);
+0100 <span class="keyword">else</span>
+0101   nc01 = NoisePdfF(x,dOPS.NoisePdfExtraArgs{:});
+0102 <span class="keyword">end</span>
+0103 n01 = diff(nc01);
+0104 
+0105 <span class="keyword">if</span> dOPS.medianFilter &gt; 0,
+0106   img2fit = <a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(img_in,[1,1].*dOPS.medianFilter);
+0107 <span class="keyword">else</span>
+0108   img2fit = img_in;
+0109 <span class="keyword">end</span>
+0110 <span class="keyword">for</span> i1 = min_knts:max_knts,
+0111   <span class="comment">% i1-length knot-point sequence</span>
+0112   knts = augknt(linspace(1,sz(1),i1),order);
+0113   <span class="comment">% Least square spline approximant:</span>
+0114   sI(i1) = spap2({knts,knts},[1,1]*order,{1:sz(1),1:sz(2)},img2fit);
+0115   <span class="comment">% with the corresponding least square spline approximation image</span>
+0116   Is = fnval(sI(i1),{1:sz(1),1:sz(2)});
+0117   
+0118   <span class="comment">% Calculate histogram of the scaled residual:</span>
+0119   hI(i1,:) = histc(NoiseScaleFcn(img_in(:),max(1,Is(:))),x);
+0120   <span class="comment">% Calculate the sum-of-squares between the &quot;residual histogram&quot;</span>
+0121   <span class="comment">% and a normal-distributed pdf:</span>
+0122   nfit(i1) = sum((hI(i1,1:end-1)/sum(hI(i1,:))-n01).^2);
+0123   nfit2(i1) = sum((hI(i1,2:end-2)/sum(hI(i1,2:end-2))-n01(2:end-1)).^2);
+0124   <span class="comment">% Calculate the standard deviation of the scaled residual:</span>
+0125   stdI(i1) = std(NoiseScaleFcn(img_in(:),max(1,Is(:))));
+0126   <span class="comment">% Calculate the Akaike Information Criteria:</span>
+0127   AIC(i1) = log(sum(NoiseScaleFcn(img_in(:),max(1,Is(:))).^2)) + <span class="keyword">...</span>
+0128             (prod(sz)+length(knts)^2)/(prod(sz)-length(knts)^2-2);
+0129   <span class="comment">%  BIC(i1) = Do the same with the Bayesian information criteria</span>
+0130   
+0131   <span class="comment">% Save away the difference between the histogram and the</span>
+0132   <span class="comment">% normal-pdf:</span>
+0133   eDfit(i1,:) = hI(i1,1:end-1)/sum(hI(i1,1:end-1))-n01;
+0134   <span class="comment">%Idiff(i1) = mean((I(:)-Is(:)).^2);</span>
+0135   
+0136   
+0137   <span class="comment">% For displaying the current lsqfs-filtered image:</span>
+0138   <span class="keyword">if</span> dOPS.display == 1
+0139     subplot(2,3,3)
+0140     imagesc(Is),caxis(cx)
+0141     hold on
+0142     <span class="comment">% with the corresponding node points:</span>
+0143     <span class="keyword">if</span> i1 &lt; 20
+0144       [Kntx,Knty] = meshgrid(knts,knts);
+0145       plot(Kntx,Knty,<span class="string">'k+'</span>)
+0146     <span class="keyword">end</span>
+0147     hold off
+0148     subplot(2,3,2)
+0149     imagesc(img_in - Is),<a href="imgs_smart_caxis.html" class="code" title="function cax = imgs_smart_caxis(alpha,varargin)">imgs_smart_caxis</a>(0.005,img_in - Is)
+0150     subplot(2,1,2)
+0151     ph = stairs(x,hI(i1,:)/sum(hI(i1,:)),<span class="string">'r'</span>,<span class="string">'linewidth'</span>,3);
+0152     hold on,
+0153     plot(x(2:end-1),n01(2:end),<span class="string">'b'</span>,<span class="string">'linewidth'</span>,3),
+0154     title(num2str([i1, stdI(i1), nfit(i1)]))
+0155     axis([x([2,end-1]) 0 1.2*max(n01(2:end))])
+0156     <span class="keyword">if</span> dOPS.pause &gt; 0 &amp; i1 &gt; min_knts
+0157       pause(dOPS.pause)
+0158     <span class="keyword">elseif</span> dOPS.pause == 0 | i1 == min_knts
+0159       pause
+0160     <span class="keyword">end</span>
+0161     set(ph,<span class="string">'color'</span>,<span class="string">'k'</span>,<span class="string">'linewidth'</span>,1),
+0162   <span class="keyword">elseif</span> dOPS.display == 2 &amp; any(i1==indx2plot)
+0163     i2p = 1+ find(i1==indx2plot);
+0164     axes(sph(i2p))
+0165     imagesc(Is),caxis(cx),
+0166     <span class="keyword">if</span> i2p &gt; 2
+0167       set(gca,<span class="string">'xticklabel'</span>,<span class="string">''</span>,<span class="string">'yticklabel'</span>,<span class="string">''</span>)
+0168     <span class="keyword">else</span>
+0169       set(gca,<span class="string">'xticklabel'</span>,<span class="string">''</span>)
+0170     <span class="keyword">end</span>
+0171     text(10,30,num2str(i1),<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+0172   <span class="keyword">end</span>
+0173 <span class="keyword">end</span>
+0174 
+0175 <span class="keyword">if</span> dOPS.display == 1
+0176   subplot(2,2,4)
+0177   imagesc(1:size(eDfit,1),x(2:end-1),eDfit'),caxis([-1 1]/200)
+0178   ylabel(<span class="string">'Residual'</span>,<span class="string">'fontsize'</span>,14)
+0179   xlabel(<span class="string">'# knot-points per dimension'</span>,<span class="string">'fontsize'</span>,14)
+0180   title(<span class="string">'Residual distribution error'</span>,<span class="string">'fontsize'</span>,14)
+0181   <a href="../tools/colorbar_labeled.html" class="code" title="function handle=colorbar_labeled(label,lg,varargin)">colorbar_labeled</a>(<span class="string">''</span>,<span class="string">'linear'</span>,<span class="string">'fontsize'</span>,12)
+0182   subplot(2,2,3)
+0183   hold off
+0184   
+0185   
+0186   ph = semilogy(min_knts:max_knts,0.0001+[abs(stdI(min_knts:end)-1);
+0187                       400*(nfit(min_knts:end)-min(nfit(min_knts:end)));
+0188                       (AIC(min_knts:end)-min(AIC(min_knts:end)));
+0189                       400*(nfit2(min_knts:end)-min(nfit2(min_knts:end)))],<span class="string">'.-'</span>);
+0190   axis tight
+0191   title(<span class="string">'Fit-measures'</span>,<span class="string">'fontsize'</span>,14)
+0192   xlabel(<span class="string">'# knot-points per dimension'</span>,<span class="string">'fontsize'</span>,14)
+0193   set(gca,<span class="string">'ytick'</span>,[1e-4 1e-2 1e0])
+0194   legend(ph,<span class="string">'abs(std-1)'</span>,<span class="string">'pdf-diff'</span>,<span class="string">'AIC'</span>,<span class="string">'pdf-fit2'</span>)
+0195   
+0196 <span class="keyword">elseif</span> dOPS.display == 2
+0197   
+0198   
+0199   axes(sph(end))
+0200   ph = semilogy(min_knts:max_knts,0.0001+[abs(stdI(min_knts:end)-1);
+0201                       400*(nfit(min_knts:end)-min(nfit(min_knts:end)));
+0202                       (AIC(min_knts:end)-min(AIC(min_knts:end)));
+0203                       400*(nfit2(min_knts:end)-min(nfit2(min_knts:end)))],<span class="string">'.-'</span>);
+0204   axis tight
+0205   ylabel(<span class="string">'Fit-measures'</span>,<span class="string">'fontsize'</span>,14)
+0206   xlabel(<span class="string">'# knot-points per dimension'</span>,<span class="string">'fontsize'</span>,14)
+0207   set(gca,<span class="string">'ytick'</span>,[1e-4 1e-2 1e0])
+0208   legend(ph,<span class="string">'abs(std-1)'</span>,<span class="string">'pdf-diff'</span>,<span class="string">'AIC'</span>,<span class="string">'pdf-fit2'</span>)
+0209   
+0210   axes(sph(end-1))
+0211   imagesc(1:size(eDfit,1),x(2:end-1),eDfit'),caxis([-1 1]/200)
+0212   ylabel(<span class="string">'Residual'</span>,<span class="string">'fontsize'</span>,14)
+0213   <span class="comment">%xlabel('# knot-points per dimension','fontsize',14)</span>
+0214   <span class="comment">%title('Residual distribution error','fontsize',14)</span>
+0215   set(gca,<span class="string">'xticklabel'</span>,<span class="string">''</span>)
+0216   <a href="../tools/colorbar_labeled.html" class="code" title="function handle=colorbar_labeled(label,lg,varargin)">colorbar_labeled</a>(<span class="string">'\Delta # pixels'</span>,<span class="string">'linear'</span>,<span class="string">'fontsize'</span>,12)
+0217   
+0218 <span class="keyword">end</span>
+0219 [sNfit,isNfit] = sort(nfit(min_knts:end));
+0220 [sNfit2,isNfit2] = sort(nfit2(min_knts:end));
+0221 [sStdI,isStdI] = sort(abs(stdI(min_knts:end)-1));
+0222 [sAIC,isAIC] = sort(AIC(min_knts:end));
+0223 <span class="keyword">if</span> nargout == 0
+0224   disp([isNfit(1:5)+min_knts-1;sNfit(1:5);stdI(isNfit(1:5)+min_knts-1)])
+0225   disp([isStdI(1:5)+min_knts-1;sNfit(isStdI(1:5)+min_knts-1);stdI(isStdI(1:5)+min_knts-1)])
+0226   disp([isAIC(1:5)+min_knts-1;sAIC(1:5)])
+0227 <span class="keyword">else</span>
+0228   
+0229   Measures = [stdI(min_knts:end);nfit(min_knts:end);nfit2(min_knts:end);AIC(min_knts:end)];
+0230   
+0231   BestIndxs = [isNfit(1),isNfit2(1),isStdI(1),isAIC(1)];
+0232   Img = 0;
+0233   <span class="keyword">for</span> i1 = 1:length(BestIndxs),
+0234     Imgs{i1} = fnval(sI(BestIndxs(i1)+min_knts-1),{1:sz(1),1:sz(2)});
+0235     Img = Img+Imgs{i1}/length(BestIndxs);
+0236   <span class="keyword">end</span>
+0237   varargout{1} = Img;
+0238   varargout{2} = Imgs;
+0239   varargout{3} = Measures;
+0240   varargout{4} = BestIndxs;
+0241   <span class="keyword">if</span> dOPS.display == 1
+0242     subplot(2,3,3)
+0243     imagesc(Img)
+0244     caxis(cx)
+0245   <span class="keyword">end</span>
+0246   
+0247 <span class="keyword">end</span>
+0248</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of findneareststarxy</title>
+  <meta name="keywords" content="findneareststarxy">
+  <meta name="description" content="FINDNEARESTSTARXY - find the star among PSTARS closest to X0, Y0">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>findneareststarxy
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>FINDNEARESTSTARXY - find the star among PSTARS closest to X0, Y0</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [staz,stze,stind,stmagn] = findneareststarxy(x0,y0,SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FINDNEARESTSTARXY - find the star among PSTARS closest to X0, Y0
+ in the sky. FIG is a handle to the figure where the result is
+ plotted.
+ 
+ Calling:
+  [staz,stze,stind,stmagn] = findneareststar(x0,y0,pstars,fig)
+ Input:
+  x0 - horizontal position of star
+  y0 - vertical position of star
+  SkMp - starcal struct</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>	CAMERA_BASE - determine the coordinate system of the camera</li><li><a href="../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>	CAMERA_MODEL - determine the image coordinates of light from [az,ze]</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Skymap/updstrinfo.html" class="code" title="function [SkMp,staraz,starze,starid,starmagn,thisstar] = updstrinfo(SkMp)">updstrinfo</a>	</li><li><a href="../Starcal/update/updfindstar.html" class="code" title="function [SkMp,starpar] = updfindstar(starpar,SkMp)">updfindstar</a>	UPDFINDSTAR -</li><li><a href="../Starcal/update/updrmstar.html" class="code" title="function [SkMp] = updrmstar(SkMp)">updrmstar</a>	UPDRMSTAR - Callback function removing a selected star</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [staz,stze,stind,stmagn] = findneareststarxy(x0,y0,SkMp)</a>
+0002 <span class="comment">% FINDNEARESTSTARXY - find the star among PSTARS closest to X0, Y0</span>
+0003 <span class="comment">% in the sky. FIG is a handle to the figure where the result is</span>
+0004 <span class="comment">% plotted.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%  [staz,stze,stind,stmagn] = findneareststar(x0,y0,pstars,fig)</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%  x0 - horizontal position of star</span>
+0010 <span class="comment">%  y0 - vertical position of star</span>
+0011 <span class="comment">%  SkMp - starcal struct</span>
+0012 
+0013 <span class="comment">%   Copyright �  1997 by Bjorn Gustavsson &lt;bjorn.gustavsson@irf.se&gt;</span>
+0014 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0015 
+0016 <span class="keyword">global</span> bxy bx by
+0017 fig = SkMp.figsky;
+0018 set(fig,<span class="string">'pointer'</span>,<span class="string">'watch'</span>)
+0019 
+0020 <span class="keyword">if</span> SkMp.optmod &lt; 0
+0021   [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(SkMp.optpar.rot(1),SkMp.optpar.rot(2),SkMp.optpar.rot(3));
+0022 <span class="keyword">else</span>
+0023   <span class="keyword">if</span> length(SkMp.optpar) &gt; 9
+0024     [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(SkMp.optpar(3),SkMp.optpar(4),SkMp.optpar(5),SkMp.optpar(10));
+0025   <span class="keyword">else</span>
+0026     [e1,e2,e3] = <a href="../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(SkMp.optpar(3),SkMp.optpar(4),SkMp.optpar(5));
+0027   <span class="keyword">end</span>
+0028 <span class="keyword">end</span>
+0029 SkMp.e1 = e1;
+0030 SkMp.e2 = e2;
+0031 SkMp.e3 = e3;
+0032 
+0033 pstars = SkMp.plottstars;
+0034 
+0035 bxy = size(SkMp.img);
+0036 bx = bxy(2);
+0037 by = bxy(1);
+0038 
+0039 az = pstars(:,1);
+0040 ze = pstars(:,2);
+0041 
+0042 [u,w] = <a href="../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>(az',ze',e1,e2,e3,SkMp.optpar,SkMp.optmod,size(SkMp.img));
+0043 
+0044 diff = (u-x0).^2 + (w-y0).^2;
+0045 [mindiff,minindex] = min(diff);
+0046 
+0047 staz = pstars(minindex,1);
+0048 stze = pstars(minindex,2);
+0049 stind = pstars(minindex,3);
+0050 stmagn = pstars(minindex,4);
+0051 
+0052 figure(fig)
+0053 hold on
+0054 SkMp.last_pH = plot(u(minindex),w(minindex),<span class="keyword">...</span>
+0055                     [SkMp.prefs.cl_st_pt,<span class="string">'h'</span>],<span class="keyword">...</span>
+0056                     <span class="string">'markersize'</span>,SkMp.prefs.sz_st_pt);
+0057 hold off
+0058 zoom on
+0059 set(fig,<span class="string">'pointer'</span>,<span class="string">'arrow'</span>)
+0060 title(<span class="string">''</span>)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

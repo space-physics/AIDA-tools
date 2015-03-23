@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of def_s_preferences</title>
+  <meta name="keywords" content="def_s_preferences">
+  <meta name="description" content="DEF_S_PREFERENCES - default preferences for starcal">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>def_s_preferences
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>DEF_S_PREFERENCES - default preferences for starcal</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function SkMp = def_s_preferences(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> DEF_S_PREFERENCES - default preferences for starcal
+   
+ &quot;Private&quot; function, not much use for a user to call this
+ manually. The function is called from the GUI.
+ Calling:
+  SkMp = def_s_preferences(SkMp)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="s_preferences.html" class="code" title="function SkMp = s_preferences(SkMp,whichP)">s_preferences</a>	S_PREFERENCES - set preferences for starcal and skymap</li><li><a href="skymap.html" class="code" title="function [SkMp] = skymap(pos,time,SkMp)">skymap</a>	SKYMAP An easy to astronomical starchart.</li><li><a href="../Starcal/s_preferences.html" class="code" title="function SkMp = s_preferences(SkMp,whichP)">s_preferences</a>	PREFERENCES - set preferences for starcal and skymap</li><li><a href="../Starcal/stargui.html" class="code" title="">stargui</a>	STARGUI - sets up the GUI for starcal</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function SkMp = def_s_preferences(SkMp)</a>
+0002 <span class="comment">% DEF_S_PREFERENCES - default preferences for starcal</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% &quot;Private&quot; function, not much use for a user to call this</span>
+0005 <span class="comment">% manually. The function is called from the GUI.</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%  SkMp = def_s_preferences(SkMp)</span>
+0008 
+0009 
+0010 <span class="comment">%   Copyright � 2002 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0011 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0012 
+0013 SkMp.prefs.sz_z_r = 10;        <span class="comment">% Side length of zoom region [dl] (pixels)</span>
+0014 SkMp.prefs.pl_sz_st = 10;      <span class="comment">% Plot-size of stars</span>
+0015 SkMp.prefs.pl_cl_st = [1 1 .6];<span class="comment">% Plot colour of stars</span>
+0016 SkMp.prefs.pl_cl_slst = <span class="string">'r'</span>;     <span class="comment">% Plot colour of selected star</span>
+0017 SkMp.prefs.pl_cl_slwn = <span class="string">'w'</span>;     <span class="comment">% Plot colour of selection window</span>
+0018 SkMp.prefs.sz_st_pt = 8;       <span class="comment">% Size of star-point-mark</span>
+0019 SkMp.prefs.cl_st_pt = <span class="string">'r'</span>;     <span class="comment">% Colour of star-point-mark</span>
+0020 SkMp.prefs.sz_er_pt = 10;      <span class="comment">% Size of error-point-mark</span>
+0021 SkMp.prefs.cl_er_pt = <span class="string">'r'</span>;     <span class="comment">% Colour of error-point-mark</span>
+0022 SkMp.prefs.sc_er_ar = 10;      <span class="comment">% Length scaling of error arrows</span>
+0023 SkMp.prefs.cl_er_ar = <span class="string">'r'</span>;     <span class="comment">% Colour of error arrows</span>
+0024 SkMp.prefs.pscoptlck = 1e6;    <span class="comment">% Penalty scaling of optpar pseudolocking</span>
+0025 SkMp.prefs.mx_nr_st = 150;     <span class="comment">% Max number of stars for autocal</span>
+0026 SkMp.prefs.sz_rg_st = [.4 7];  <span class="comment">% Size range for stars (pixels) [autocal]</span>
+0027 SkMp.prefs.hu_nm_ln = 16;      <span class="comment">% Huber-tanh-norm length [autocal]</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

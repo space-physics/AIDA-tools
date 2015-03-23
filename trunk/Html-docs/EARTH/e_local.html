@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of e_local</title>
+  <meta name="keywords" content="e_local">
+  <meta name="description" content="E_LOCAL - base vectors for local Cartesian coordinate in the GEO system">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html EARTH -->
+<h1>e_local
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>E_LOCAL - base vectors for local Cartesian coordinate in the GEO system</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [e1,e2,e3] = e_local(lat0,long0,alt0) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> E_LOCAL - base vectors for local Cartesian coordinate in the GEO system
+ x || east , y || north, z || zenit in in (lat0,long0). 
+ 
+ CALLING:
+ [e1,e2,e3] = e_local(lat0,long0,alt0)
+
+ INPUT: 
+  LAT0  - geographic/geodetic latitude, in degrees
+  LONG0 - geographic/geodetic longiture, in degrees
+  ALT0  - altitude, in km
+ 
+ E_LOCAL breaks down at the geographic poles - there the longitude
+ is &quot;poorly defined&quot; so the e1 and e2 directions become pretty
+ arbitrary.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="llh_to_local_coord.html" class="code" title="function [x,y,z] = llh_to_local_coord(lat0,long0,alt0,lat,long,alt)">llh_to_local_coord</a>	LLH_TO_LOCAL_COORD transforms the positions (LAT, LONG, ALT) to (X,Y,Z)</li><li><a href="maketransfmtr.html" class="code" title="function [trmtr] = maketransfmtr(lat0,long0,lat,long,already_degrees)">maketransfmtr</a>	MAKETRANSFMTR - the transformation rotation matrixes</li><li><a href="xyz_2_llh.html" class="code" title="function [long,lat,h] = xyz_2_llh(lat0,long0,h0,r)">xyz_2_llh</a>	XYZ_2_LLH transforms X,Y,Z in an lat0,long0 centred horizontal system</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [e1,e2,e3] = e_local(lat0,long0,alt0)</a>
+0002 <span class="comment">% E_LOCAL - base vectors for local Cartesian coordinate in the GEO system</span>
+0003 <span class="comment">% x || east , y || north, z || zenit in in (lat0,long0).</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% CALLING:</span>
+0006 <span class="comment">% [e1,e2,e3] = e_local(lat0,long0,alt0)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% INPUT:</span>
+0009 <span class="comment">%  LAT0  - geographic/geodetic latitude, in degrees</span>
+0010 <span class="comment">%  LONG0 - geographic/geodetic longiture, in degrees</span>
+0011 <span class="comment">%  ALT0  - altitude, in km</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% E_LOCAL breaks down at the geographic poles - there the longitude</span>
+0014 <span class="comment">% is &quot;poorly defined&quot; so the e1 and e2 directions become pretty</span>
+0015 <span class="comment">% arbitrary.</span>
+0016 
+0017 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0018 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0019 
+0020 
+0021 f = 1/298.257;
+0022 e = (2*f-f*f)^.5;
+0023 a = 6378.137;
+0024 
+0025 phi = pi/180*lat0;
+0026 lambda = pi/180*long0;
+0027 
+0028 e1(1) =  cos(lambda);<span class="comment">%*cos(phi);</span>
+0029 e1(2) =  0;
+0030 e1(3) = -sin(lambda);<span class="comment">%*cos(phi);</span>
+0031 e1 = e1/norm(e1);
+0032 
+0033 e2(1) = -sin(lambda)*sin(phi);
+0034 e2(2) =              cos(phi);
+0035 e2(3) = -cos(lambda)*sin(phi);
+0036 
+0037 e3 = cross(e1,e2);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

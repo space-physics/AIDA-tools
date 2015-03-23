@@ -1,0 +1,56 @@
+\documentclass[amstex,psfig]{article}
+
+\begin{document}
+
+\section{General overview and introduction}
+\label{sec:gener-overv-intr}
+
+\begin{itemize}
+\item
+  Loading images - giving the image as well as information about
+  date and time and place of observation.
+  \begin{itemize}
+  \item This involves reading of images in all formats possible not
+    only standard/ALIS fits images.
+  \item Further it is preferable if all sorts of header syntaxes are
+    understood and correctly parsed, this is not a advanced but
+    difficult task.
+  \item A good feature would be if the program made as good a guess as
+    possible of the optical parameters based on the information in the
+    FITS header.
+  \end{itemize}
+\item Zooming in on individual stars and determining their shape and
+  intensity.
+  \begin{itemize}
+  \item This is something that works well enough in the current
+    implementation.
+  \end{itemize}
+\item Semi/Fully automated search ad identification of stars.
+  \begin{itemize}
+  \item The semi-automated identification should preferably be updated
+    so that it is possible to stop and resume identification at will.
+  \item Fully automated identification is desirable but the current
+    understanding is that it will not be achieved without much work
+    and then with doubtful quality.
+  \end{itemize}
+\item Manual/Automatic search/optimisation of optical parameters.
+  \begin{itemize}
+  \item This should be streamlined. So that it will always produce.
+  \end{itemize}
+\item Merging a star-field over the image.
+  \begin{itemize}
+  \item This works well. 
+  \item One thing would be that dragging and pushing the star-chart
+    would alter the optical parameters.
+  \end{itemize}
+\item Saving and plotting of the result should be made easier so that
+  it is straightforward to understand.
+\item The current implementation clutters the matlab workspace with
+  variables --- this must be addressed
+\end{itemize}
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

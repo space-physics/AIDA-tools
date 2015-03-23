@@ -1,0 +1,374 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of autoidentify</title>
+  <meta name="keywords" content="autoidentify">
+  <meta name="description" content="AUTOIDENTIFY - automatically identify all the stars of PLSTARS">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Starcal --><!-- menu.html M7 -->
+<h1>autoidentify
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>AUTOIDENTIFY - automatically identify all the stars of PLSTARS</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [idstarsok,stars_par] = autoidentify(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> AUTOIDENTIFY - automatically identify all the stars of PLSTARS
+ that appear in the skyview pannel and 
+ falls within the field of view of the image, as computed with the
+ optical parameters OPTPAR and optical transfer function MODE. 
+ Autoidentify does its job from the brightest star in the field 
+ of view to the faintest. You have to accept/reject/change the 
+ identification of the star in the image. BILD is the image in which we
+ try to identify the stars. FIG4, FIG3, is handles to the figures
+ in which the plotting is done.
+
+ Calling:
+ [idstarsok] = autoidentify(plstars,optpar,mode,bild,fig4,fig3)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>	CAMERA_BASE - determine the coordinate system of the camera</li><li><a href="../../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>	CAMERA_MODEL - determine the image coordinates of light from [az,ze]</li><li><a href="../../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>	PROJECT_DIRECTIONS - calculates the image positions [UA,WA] from (AZ,ZE)</li><li><a href="../../Starcal/stardiff.html" class="code" title="function [diff] = stardiff(fv,xmin,xmax,ymin,ymax,starmat)">stardiff</a>	STARDIFF - total error of starfield fit.</li><li><a href="../../Starcal/stardiff2.html" class="code" title="function [diff] = stardiff2(fv,xmin,xmax,ymin,ymax,starmat,x0,y0,d_x0y0)">stardiff2</a>	STARDIFF2 - total error of starfield fit.</li><li><a href="../../Starcal/starint.html" class="code" title="function [starintens] = starint(fv,xmin,xmax,ymin,ymax)">starint</a>	STARINT evaluation of a 2D gaussian.</li><li><a href="../../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>	MEDFILT2 - 2 dimensional sliding median filter</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Starcal/update/updautident.html" class="code" title="">updautident</a>	Callback wrapping script.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [idstarsok,stars_par] = autoidentify(SkMp)</a>
+0002 <span class="comment">% AUTOIDENTIFY - automatically identify all the stars of PLSTARS</span>
+0003 <span class="comment">% that appear in the skyview pannel and</span>
+0004 <span class="comment">% falls within the field of view of the image, as computed with the</span>
+0005 <span class="comment">% optical parameters OPTPAR and optical transfer function MODE.</span>
+0006 <span class="comment">% Autoidentify does its job from the brightest star in the field</span>
+0007 <span class="comment">% of view to the faintest. You have to accept/reject/change the</span>
+0008 <span class="comment">% identification of the star in the image. BILD is the image in which we</span>
+0009 <span class="comment">% try to identify the stars. FIG4, FIG3, is handles to the figures</span>
+0010 <span class="comment">% in which the plotting is done.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% Calling:</span>
+0013 <span class="comment">% [idstarsok] = autoidentify(plstars,optpar,mode,bild,fig4,fig3)</span>
+0014 
+0015 <span class="comment">%   Copyright � 1997 Bjorn Gustavsson&lt;bjorn.gustavsson@irf.se&gt;</span>
+0016 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0017 
+0018 plstars = SkMp.plottstars;
+0019 optpar = SkMp.optpar;
+0020 mode = SkMp.optmod;
+0021 bild = SkMp.img;
+0022 fig4 = SkMp.figzoom;
+0023 fig3 = SkMp.figsky;
+0024 dl = SkMp.prefs.sz_z_r;
+0025 
+0026 figtmp = figure;
+0027 <span class="comment">% ua = [];</span>
+0028 <span class="comment">% va = [];</span>
+0029 more off
+0030 b = size(bild);
+0031 bx = b(2);
+0032 by = b(1);
+0033 tbild = bild-min(min(bild));
+0034 tstr = <span class="string">''</span>;
+0035 imax = max(size(plstars));
+0036 idnr = 0;
+0037 
+0038 <span class="comment">% Sort plstars in ascending order with respect to magnitude.</span>
+0039 <span class="comment">% That is in descending order with respect to intensity.</span>
+0040 order = plstars(:,4);
+0041 [x1,indx1] = sort(order);
+0042 sortisd1 = plstars(indx1,:);
+0043 plstars = sortisd1;
+0044 clear sortids1 order x1 indx1
+0045 
+0046 <span class="comment">% Determine the coordinate system for the camera.</span>
+0047 <span class="keyword">if</span> mode &lt; 0
+0048   
+0049   az0 = optpar.rot(1);
+0050   el0 = optpar.rot(2);
+0051   roll = optpar.rot(3);
+0052   [e1,e2,e3] = <a href="../../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(az0,el0,roll);
+0053   
+0054 <span class="keyword">else</span>
+0055   
+0056   alpha0 = optpar(3);
+0057   beta0 = optpar(4);
+0058   gamma0 = optpar(5);
+0059   <span class="keyword">if</span> length(optpar) &gt; 9
+0060     [e1,e2,e3] = <a href="../../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(alpha0,beta0,gamma0,optpar(10));
+0061   <span class="keyword">else</span>
+0062     [e1,e2,e3] = <a href="../../Camera/camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">camera_base</a>(alpha0,beta0,gamma0);
+0063   <span class="keyword">end</span>
+0064   
+0065 <span class="keyword">end</span>
+0066 tmp_ph = [];
+0067 <span class="keyword">for</span> i = 1:imax,
+0068   
+0069   clear sortids1 order x1 indx1
+0070   <span class="comment">%Determine the projected position of the star on the image</span>
+0071   az = plstars(i,1);
+0072   ze = plstars(i,2);
+0073   
+0074   [x0,y0] = <a href="../../Camera/camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>(az,ze,e1,e2,e3,optpar,mode,size(SkMp.img));
+0075   
+0076   <span class="keyword">if</span> ( ( 1 &lt; x0 &amp; x0 &lt; bx ) &amp; ( 1 &lt; y0 &amp; y0 &lt; by ) )
+0077     figure(fig3)
+0078     <span class="keyword">try</span>
+0079       delete(tmp_ph)
+0080     <span class="keyword">catch</span>
+0081       <span class="comment">% nothing</span>
+0082     <span class="keyword">end</span>
+0083     hold on
+0084     <span class="comment">%tmp_ph = plot(x0,y0,[SkMp.prefs.cl_st_pt,'h']);</span>
+0085     tmp_ph = plot(x0,y0,<span class="string">'gh'</span>);
+0086     hold off
+0087     <span class="comment">% Determine the part of the image confining the star.</span>
+0088     xmin = floor(min(max(x0-dl/2,1),bx-dl));
+0089     xmax = floor(max(min(x0+dl/2,bx),(dl+1)));
+0090     ymin = floor(min(max(y0-dl/2,1),by-dl));
+0091     ymax = floor(max(min(y0+dl/2,by),(dl+1)));
+0092     
+0093     <span class="comment">% Find the star in the region of interest.</span>
+0094     set(fig4,<span class="string">'pointer'</span>,<span class="string">'watch'</span>)
+0095     
+0096     starmat = tbild(ymin:ymax,xmin:xmax);
+0097     starmat = <a href="../../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(starmat([1 1:end end],[1 1:end end]),[3 3]);
+0098     starmat = starmat(2:end-1,2:end-1);
+0099     <span class="comment">% x = xmin:xmax;</span>
+0100     <span class="comment">% y = ymin:ymax;</span>
+0101     bakgr2 = median( [starmat(1,:) starmat(<span class="keyword">end</span>,:)  starmat(:,end)' starmat(:,1)' ]);
+0102     
+0103     starmat = tbild(ymin:ymax,xmin:xmax);
+0104     figure(fig4)
+0105     hold off
+0106     clf
+0107     pcolor(xmin:xmax,ymin:ymax,starmat-bakgr2),shading(<span class="string">'interp'</span>)
+0108     axis(axis)
+0109     set(gca,<span class="string">'climmode'</span>,<span class="string">'manual'</span>)
+0110     
+0111     startvec = [x0,y0,tbild(round(y0),round(x0))-median(bakgr2(:)),1,.01,1];
+0112     starpar = fminsearch(@(startvec) <a href="../../Starcal/stardiff2.html" class="code" title="function [diff] = stardiff2(fv,xmin,xmax,ymin,ymax,starmat,x0,y0,d_x0y0)">stardiff2</a>(startvec,xmin,xmax,ymin,ymax,starmat-bakgr2,x0,y0),startvec);
+0113     
+0114     fynd = <a href="../../Starcal/starint.html" class="code" title="function [starintens] = starint(fv,xmin,xmax,ymin,ymax)">starint</a>(starpar,xmin,xmax,ymin,ymax);
+0115     star_intm = (starmat-bakgr2).*(fynd&gt;.07*(max(max(fynd))));
+0116     
+0117     set(fig4,<span class="string">'pointer'</span>,<span class="string">'arrow'</span>)
+0118     hold on
+0119     plot(x0,y0,<span class="string">'ko'</span>)
+0120     <span class="keyword">if</span> ( max(max(starmat)) - min(min(starmat)) &gt; .1 )
+0121       contour(xmin:xmax,ymin:ymax,starmat,8,<span class="string">'w'</span>)
+0122     <span class="keyword">end</span>
+0123     <span class="keyword">if</span> ( max(max(fynd)) - min(min(fynd)) &gt; .1 )
+0124       contour(xmin:xmax,ymin:ymax,fynd,8,<span class="string">'m'</span>)
+0125     <span class="keyword">end</span>
+0126     <span class="keyword">if</span> ( exist(<span class="string">'identstars'</span>,<span class="string">'var'</span>) )
+0127       plot(identstars(:,3),identstars(:,4),<span class="string">'g*'</span>)
+0128     <span class="keyword">end</span>
+0129     title(<span class="string">'Autoidentifymode'</span>)
+0130     xlabel(<span class="string">'accept(l) skip(m) repeat(r)'</span>)
+0131     hold off
+0132     
+0133     figure(SkMp.figsky)
+0134     h1 = rectangle(<span class="string">'Position'</span>, [xmin ymin xmax-xmin ymax-ymin], <span class="string">'EdgeColor'</span>, SkMp.prefs.pl_cl_slwn);
+0135     
+0136     figure(figtmp)
+0137     plot(starmat,<span class="string">'b'</span>)
+0138     hold on
+0139     plot(star_intm+bakgr2,<span class="string">'r'</span>)
+0140     plot(fynd+bakgr2,<span class="string">'g'</span>)
+0141     plot((bakgr2+bakgr2.^.5)*ones(size(fynd)),<span class="string">'c'</span>)
+0142     plot((bakgr2-bakgr2.^.5)*ones(size(fynd)),<span class="string">'y'</span>)
+0143     hold off
+0144     title(tstr)
+0145     drawnow
+0146     
+0147     figure(fig4)
+0148     
+0149     <span class="comment">% Allow the user to accept/skip/modify the identification.</span>
+0150     [xin,yin,button] = ginput(1);
+0151     
+0152     <span class="comment">% Accept</span>
+0153     <span class="keyword">if</span> (( button == 1 | lower(char(button)) == <span class="string">'l'</span> ) &amp; <span class="keyword">...</span>
+0154     xmin &lt; starpar(1) &amp; starpar(1) &lt; xmax &amp; ymin &lt; starpar(2) &amp; starpar(2) &lt; ymax )
+0155       
+0156       tbild(ymin:ymax,xmin:xmax) = tbild(ymin:ymax,xmin:xmax)-star_intm;
+0157       star_intt = sum(sum(star_intm));
+0158       star_max = max(max(star_intm));
+0159       idnr = idnr + 1;
+0160       identstars(idnr,1) = plstars(i,1); <span class="comment">%azimuth</span>
+0161       identstars(idnr,2) = plstars(i,2); <span class="comment">%zenith - elevation</span>
+0162       identstars(idnr,3) = starpar(1);     <span class="comment">%starpos in image(x)</span>
+0163       identstars(idnr,4) = starpar(2);     <span class="comment">%starpos in image(y)</span>
+0164       identstars(idnr,5) = star_max;     <span class="comment">%max count from star</span>
+0165       identstars(idnr,6) = star_intt;     <span class="comment">%total counts from star</span>
+0166       identstars(idnr,7) = 1;         <span class="comment">%good gaussian fit</span>
+0167       identstars(idnr,8) = 0;         <span class="comment">%wide circular gausian</span>
+0168       identstars(idnr,9) = plstars(i,3); <span class="comment">%star index</span>
+0169       identstars(idnr,10) = plstars(i,4); <span class="comment">%star magnitude</span>
+0170       stars_par(idnr,:) = starpar;
+0171       clear starpar starmat fynd ;
+0172       
+0173       figure(fig3)
+0174       hold on
+0175       [ua,va] = <a href="../../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(identstars(:,1)',identstars(:,2)',optpar,mode,size(SkMp.img));
+0176       hold on
+0177       plot(ua,va,<span class="keyword">...</span>
+0178        [SkMp.prefs.cl_st_pt,<span class="string">'.'</span>],<span class="keyword">...</span>
+0179        <span class="string">'markersize'</span>,SkMp.prefs.sz_st_pt)
+0180       
+0181       <span class="comment">% Skip</span>
+0182     <span class="keyword">elseif</span> ( button == 2 | lower(char(button)) == <span class="string">'m'</span> )
+0183       
+0184       clear starpar starmat fynd ;
+0185       
+0186       <span class="comment">% Modify</span>
+0187     <span class="keyword">else</span>
+0188       
+0189       varv = 1;
+0190       [xin,yin,button] = ginput(1);
+0191       <span class="keyword">while</span> ( button == 3 | lower(char(button)) == <span class="string">'r'</span> )
+0192     
+0193     x0 = xin;
+0194     y0 = yin;
+0195     <span class="comment">% Determine the part of the image confining the star.</span>
+0196     xmin = floor(min(max(x0-dl/2,1),bx-dl));
+0197     xmax = floor(max(min(x0+dl/2,bx),dl+1));
+0198     ymin = floor(min(max(y0-dl/2,1),by-dl));
+0199     ymax = floor(max(min(y0+dl/2,by),dl+1));
+0200     <span class="keyword">try</span>
+0201           delete(h1);
+0202         <span class="keyword">catch</span>
+0203         <span class="keyword">end</span>
+0204     h1 = rectangle(<span class="string">'Position'</span>, [xmin ymin xmax-xmin ymax-ymin], <span class="string">'EdgeColor'</span>, SkMp.prefs.pl_cl_slwn);
+0205         
+0206     <span class="comment">% Find the star in the region of interest.</span>
+0207     starmat = tbild(ymin:ymax,xmin:xmax);
+0208     bakgr2 = median( [starmat(1,:) starmat(<span class="keyword">end</span>,:)  starmat(:,end)' starmat(:,1)' ]);
+0209     
+0210     figure(fig4)
+0211     hold off
+0212         clf
+0213     pcolor(xmin:xmax,ymin:ymax,starmat),shading(<span class="string">'interp'</span>)
+0214     axis(axis)
+0215         set(gca,<span class="string">'climmode'</span>,<span class="string">'manual'</span>)
+0216     
+0217     <span class="keyword">if</span> ( varv &lt; 3 )
+0218       
+0219       set(fig4,<span class="string">'pointer'</span>,<span class="string">'watch'</span>)
+0220       
+0221       startvec = [x0,y0,tbild(round(y0),round(x0))-bakgr2,1,.01,1];
+0222           starpar = fminsearch(@(startvec) <a href="../../Starcal/stardiff.html" class="code" title="function [diff] = stardiff(fv,xmin,xmax,ymin,ymax,starmat)">stardiff</a> (startvec,xmin,xmax,ymin,ymax,starmat),startvec);
+0223       set(fig4,<span class="string">'pointer'</span>,<span class="string">'arrow'</span>)
+0224       
+0225     <span class="keyword">elseif</span> ( 2 &lt; varv &amp; varv &lt; 6 )
+0226       
+0227       starpar = [x0,y0,abs(tbild(round(y0),round(x0))-bakgr2),.25,0,.25];
+0228       
+0229     <span class="keyword">else</span>
+0230       
+0231       starpar = [x0,y0,abs(tbild(round(y0),round(x0))-bakgr2),.5,0,.5];
+0232       
+0233     <span class="keyword">end</span>
+0234     
+0235     fynd = <a href="../../Starcal/starint.html" class="code" title="function [starintens] = starint(fv,xmin,xmax,ymin,ymax)">starint</a>(starpar,xmin,xmax,ymin,ymax);
+0236     star_intm = (starmat-bakgr2).*(fynd&gt;.07*(max(max(fynd))));
+0237     
+0238     hold on
+0239     <span class="keyword">if</span> ( max(max(starmat)) - min(min(starmat)) &gt; .1 )
+0240       contour(xmin:xmax,ymin:ymax,starmat,8,<span class="string">'w'</span>)
+0241     <span class="keyword">end</span>
+0242     <span class="keyword">if</span> ( max(max(fynd)) - min(min(fynd)) &gt; .1 )
+0243       contour(xmin:xmax,ymin:ymax,fynd,8,<span class="string">'m'</span>)
+0244     <span class="keyword">end</span>
+0245     <span class="keyword">if</span> ( exist(<span class="string">'identstars'</span>,<span class="string">'var'</span>) )
+0246       plot(identstars(:,3),identstars(:,4),<span class="string">'g*'</span>)
+0247     <span class="keyword">end</span>
+0248     title(<span class="string">'Autoidentifymode'</span>)
+0249     xlabel(<span class="string">'accept(l) skip(m) repeat(r)'</span>)
+0250     hold off
+0251     
+0252     figure(figtmp)
+0253     plot(starmat,<span class="string">'b'</span>)
+0254     hold on
+0255     plot(star_intm+bakgr2,<span class="string">'r'</span>)
+0256     plot(fynd+bakgr2,<span class="string">'g'</span>)
+0257     plot((bakgr2+bakgr2.^.5)*ones(size(fynd)),<span class="string">'c'</span>)
+0258     plot((bakgr2-bakgr2.^.5)*ones(size(fynd)),<span class="string">'y'</span>)
+0259     hold off
+0260     title(tstr)
+0261     drawnow
+0262     figure(fig4)
+0263     
+0264     <span class="comment">% Allow the user to accept/skip/modify the identification.</span>
+0265     [xin,yin,button] = ginput(1);
+0266     varv = varv+1;
+0267     
+0268       <span class="keyword">end</span>
+0269       
+0270       <span class="keyword">if</span> ( ( button == 1 | lower(char(button)) == <span class="string">'l'</span> ) &amp; <span class="keyword">...</span>
+0271       xmin &lt; starpar(1) &amp; starpar(1) &lt; xmax &amp; ymin &lt; starpar(2) &amp; starpar(2) &lt; ymax )
+0272     
+0273     tbild(ymin:ymax,xmin:xmax) = tbild(ymin:ymax,xmin:xmax)-fynd;
+0274     star_intt = sum(sum(star_intm));
+0275     star_max = max(max(star_intm));
+0276     idnr = idnr + 1;
+0277     identstars(idnr,1) = plstars(i,1);    <span class="comment">%azimuth</span>
+0278     identstars(idnr,2) = plstars(i,2);    <span class="comment">%zenith - elevation</span>
+0279     identstars(idnr,3) = starpar(1);      <span class="comment">%starpos in image(x)</span>
+0280     identstars(idnr,4) = starpar(2);      <span class="comment">%starpos in image(y)</span>
+0281     identstars(idnr,5) = star_max;        <span class="comment">%max count from star</span>
+0282     identstars(idnr,6) = star_intt;       <span class="comment">%total counts from star</span>
+0283     identstars(idnr,7) = (varv&lt;4);        <span class="comment">%good gaussian fit</span>
+0284     identstars(idnr,8) = (3&lt;varv&amp;varv&lt;7); <span class="comment">%wide circular gausian</span>
+0285     identstars(idnr,9) = plstars(i,3);    <span class="comment">%star index</span>
+0286     identstars(idnr,10) = plstars(i,4);   <span class="comment">%star magnitude</span>
+0287     clear starpar starmat fynd ;
+0288     
+0289     figure(fig3)
+0290     hold on
+0291     [ua,va] = <a href="../../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(identstars(:,1)',identstars(:,2)',optpar,mode,size(SkMp.img));
+0292     hold on
+0293     plot(ua,va,<span class="keyword">...</span>
+0294          [SkMp.prefs.cl_st_pt,<span class="string">'.'</span>],<span class="keyword">...</span>
+0295          <span class="string">'markersize'</span>,SkMp.prefs.sz_st_pt)
+0296     
+0297       <span class="keyword">end</span>
+0298       
+0299     <span class="keyword">end</span>
+0300     
+0301     <span class="keyword">if</span> ( exist( <span class="string">'identstars'</span>,<span class="string">'var'</span> ) )
+0302       
+0303       figure(figtmp)
+0304       tstr = sprintf(<span class="string">'  left    done   identified\n%d      %d      %d'</span>,imax-i,i,size(identstars,1));
+0305       title(tstr)
+0306       
+0307     <span class="keyword">end</span>
+0308     
+0309     figure(SkMp.figsky)
+0310     <span class="keyword">try</span>
+0311       delete(h1);
+0312     <span class="keyword">catch</span>
+0313     <span class="keyword">end</span>
+0314   <span class="keyword">end</span>
+0315   
+0316 <span class="keyword">end</span>
+0317 
+0318 idstarsok = identstars;
+0319 close(figtmp)
+0320 disp(<span class="string">''</span>)
+0321 disp(<span class="string">''</span>)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

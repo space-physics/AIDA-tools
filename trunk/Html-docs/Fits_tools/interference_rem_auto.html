@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of interference_rem_auto</title>
+  <meta name="keywords" content="interference_rem_auto">
+  <meta name="description" content="INTERFERENCE_REM_RAUTO - automatic high frequency interference reduction">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>interference_rem_auto
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>INTERFERENCE_REM_RAUTO - automatic high frequency interference reduction</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function img_out = interference_rem_auto(img_in,if_level,method,wpsm) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> INTERFERENCE_REM_RAUTO - automatic high frequency interference reduction
+   (Still in kind of experimental stage.)
+
+ Calling:
+ img_out = interference_rem_rauto(img_in,if_level)
+
+ INPUT:
+   IMG_IN - 2-D array (double) with image containing interference
+            patterns. This method works for high frequency
+            patterns. Very low frequency patterns are poorly
+            identified. This is because the method relies on that
+            the fourier transform of a wienerfiltered IMG_IN has
+            supressed the interference pattern with a factor
+            IF_LEVEL.
+   IF_LEVEL - cut off level of interference pattern. Fourier terms
+              for which fft(IMG_IN)./wiener2(IMG_IN,WPSM) &gt;
+              IF_LEVEL are removed.
+   METHOD - scaling method for the interference pattern. 
+            [{'flat'}|'interp','weighted']
+   WSPM - window size for wiener2-pre-filtering - [nx ny]</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Imgtools/img_wiener2.html" class="code" title="function [f,noise] = img_wiener2(varargin)">img_wiener2</a>	IMG_WIENER2 - Lee's sigma-filter, local statistics filter</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>	PRE_PROC_IMG - systematic image correction and preprocessing of</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function img_out = interference_rem_auto(img_in,if_level,method,wpsm)</a>
+0002 <span class="comment">% INTERFERENCE_REM_RAUTO - automatic high frequency interference reduction</span>
+0003 <span class="comment">%   (Still in kind of experimental stage.)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">% img_out = interference_rem_rauto(img_in,if_level)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% INPUT:</span>
+0009 <span class="comment">%   IMG_IN - 2-D array (double) with image containing interference</span>
+0010 <span class="comment">%            patterns. This method works for high frequency</span>
+0011 <span class="comment">%            patterns. Very low frequency patterns are poorly</span>
+0012 <span class="comment">%            identified. This is because the method relies on that</span>
+0013 <span class="comment">%            the fourier transform of a wienerfiltered IMG_IN has</span>
+0014 <span class="comment">%            supressed the interference pattern with a factor</span>
+0015 <span class="comment">%            IF_LEVEL.</span>
+0016 <span class="comment">%   IF_LEVEL - cut off level of interference pattern. Fourier terms</span>
+0017 <span class="comment">%              for which fft(IMG_IN)./wiener2(IMG_IN,WPSM) &gt;</span>
+0018 <span class="comment">%              IF_LEVEL are removed.</span>
+0019 <span class="comment">%   METHOD - scaling method for the interference pattern.</span>
+0020 <span class="comment">%            [{'flat'}|'interp','weighted']</span>
+0021 <span class="comment">%   WSPM - window size for wiener2-pre-filtering - [nx ny]</span>
+0022 
+0023 
+0024 
+0025 <span class="comment">%   Copyright � 20050120 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0026 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0027 
+0028 
+0029 <span class="keyword">if</span> nargin &lt; 4 || isempty(wpsm)
+0030 
+0031   wpsm = 3;
+0032   
+0033 <span class="keyword">end</span>
+0034 
+0035 <span class="keyword">if</span> nargin &lt; 3
+0036   
+0037   method = <span class="string">''</span>;
+0038   
+0039 <span class="keyword">end</span>
+0040 
+0041 <span class="comment">% Fourier transform of image with interference pattern</span>
+0042 fftd = fft2(img_in);
+0043 <span class="comment">% Fourier transform of wiener filtered image. This at least reduces</span>
+0044 <span class="comment">% really high frequencies well; possibly we should have some</span>
+0045 <span class="comment">% adjustable parameter for the filter width</span>
+0046 fftwd = fft2(<a href="../Imgtools/img_wiener2.html" class="code" title="function [f,noise] = img_wiener2(varargin)">img_wiener2</a>(img_in, wpsm.*[1,1]));
+0047 
+0048 <span class="comment">% Find the fourier components that are bigger in fftd than in</span>
+0049 <span class="comment">% fftwd. Maybe the cascading filter is no so needed here?</span>
+0050 <span class="comment">%[i,j] = find(wiener2(medfilt2(abs(fftd)./abs(fftwd),[3 3]),[3 3]) &gt; if_level);</span>
+0051 <span class="comment">%[i,j] = find(wiener2(abs(fftd)./abs(fftwd),[3 3]) &gt; if_level);</span>
+0052 [i,j] = find((abs(fftd)./abs(fftwd)) &gt; if_level);
+0053 <span class="comment">% Three parameters out instead? Is that faster</span>
+0054 
+0055 <span class="keyword">if</span> isempty(i)
+0056   img_out = img_in;
+0057   <span class="keyword">return</span>
+0058 <span class="keyword">end</span>
+0059 <span class="comment">% Make linear index out of i,j</span>
+0060 indx = sub2ind(size(img_in),i,j);
+0061 
+0062 <span class="keyword">if</span> strcmp(method,<span class="string">'test'</span>)
+0063   
+0064   hold off
+0065   imagesc(<a href="../Imgtools/img_wiener2.html" class="code" title="function [f,noise] = img_wiener2(varargin)">img_wiener2</a>(abs(fftd)./abs(fftwd),[3 3]))
+0066   caxis([0 if_level])
+0067   hold on
+0068   disp(<span class="string">'push any key'</span>)
+0069   pause
+0070   plot(j,i,<span class="string">'w.'</span>)
+0071   hold off
+0072   
+0073 <span class="keyword">end</span>
+0074 <span class="comment">% Put the interference frequency pattern into fftwd (saving space,</span>
+0075 <span class="comment">% helping speed)</span>
+0076 fftwd = 0*fftwd;
+0077 fftwd(indx) = fftd(indx);
+0078 
+0079 <span class="comment">% Calculate the real interference pattern</span>
+0080 fftwd = real(ifft2(fftwd));
+0081 w = 1;
+0082 <span class="comment">% A weighted version of the interference patter that shold minimize</span>
+0083 <span class="comment">% the variance of the filtered image, according to Gonzales and</span>
+0084 <span class="comment">% Woods.</span>
+0085 <span class="keyword">if</span> strcmp(method,<span class="string">'weighed'</span>)
+0086   
+0087   blksiz = 64;
+0088   <span class="keyword">if</span> min(size(img_in)) &lt;= 128
+0089     blksiz = 32;
+0090   <span class="keyword">end</span>
+0091   w = ( blkproc(img_in.*fftwd,blksiz*[1 1],<span class="string">'mean(x(:))'</span>) - <span class="keyword">...</span>
+0092         blkproc(img_in,blksiz*[1 1],<span class="string">'mean(x(:))'</span>).*<span class="keyword">...</span>
+0093         blkproc(fftwd,blksiz*[1 1],<span class="string">'mean(x(:))'</span>) )./ <span class="keyword">...</span>
+0094       ( blkproc(fftwd,blksiz*[1 1],<span class="string">'mean(x(:).^2)'</span>) - <span class="keyword">...</span>
+0095         blkproc(fftwd,blksiz*[1 1],<span class="string">'mean(x(:))'</span>).^2);
+0096   indxx = sort(repmat(1:size(w,2),[1 blksiz]));
+0097   indxy = sort(repmat(1:size(w,1),[1 blksiz]));
+0098   
+0099   w = w(indxx(:),indxy(:));
+0100   
+0101 <span class="keyword">end</span>
+0102 <span class="comment">% filtered version of the weighting above making the relative</span>
+0103 <span class="comment">% scaling of the interference pattern vary smootly instead of</span>
+0104 <span class="comment">% stepwise from tile to tile.</span>
+0105 <span class="keyword">if</span> strcmp(method,<span class="string">'interp'</span>)
+0106   
+0107   blksiz = 64;
+0108   <span class="keyword">if</span> min(size(img_in)) &lt;= 128
+0109     blksiz = 32;
+0110   <span class="keyword">end</span>
+0111   w = ( blkproc(img_in.*fftwd,blksiz*[1 1],<span class="string">'mean(x(:))'</span>) - <span class="keyword">...</span>
+0112         blkproc(img_in,blksiz*[1 1],<span class="string">'mean(x(:))'</span>).*<span class="keyword">...</span>
+0113         blkproc(fftwd,blksiz*[1 1],<span class="string">'mean(x(:))'</span>) )./ <span class="keyword">...</span>
+0114       ( blkproc(fftwd,blksiz*[1 1],<span class="string">'mean(x(:).^2)'</span>) - <span class="keyword">...</span>
+0115         blkproc(fftwd,blksiz*[1 1],<span class="string">'mean(x(:))'</span>).^2);
+0116   indxx = sort(repmat(1:size(w,2),[1 blksiz]));
+0117   indxy = sort(repmat(1:size(w,1),[1 blksiz]));
+0118   
+0119   w = w(indxx(:),indxy(:));
+0120   fltk = ones(blksiz)/blksiz^2;
+0121   w = filter2(fltk,w,<span class="string">'same'</span>);
+0122   
+0123 <span class="keyword">end</span>
+0124 
+0125 img_out = img_in-w.*fftwd;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

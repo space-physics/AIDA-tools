@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sifread2</title>
+  <meta name="keywords" content="sifread2">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Fits_tools --><!-- menu.html SIF -->
+<h1>sifread2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [data,back,ref]=sifread2(file) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [info,next]=readSection(f)</a></li><li><a href="#_sub2" class="code">function o=readString(f)</a></li><li><a href="#_sub3" class="code">function o=readLine(f)</a></li><li><a href="#_sub4" class="code">function skipBytes(f,N)</a></li><li><a href="#_sub5" class="code">function skipLines(f,N)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [data,back,ref]=sifread2(file)</a>
+0002 f=fopen(file,<span class="string">'r'</span>);
+0003 <span class="keyword">if</span> f &lt; 0
+0004    error(<span class="string">'Could not open the file.'</span>);
+0005 <span class="keyword">end</span>
+0006 <span class="keyword">if</span> ~isequal(fgetl(f),<span class="string">'Andor Technology Multi-Channel File'</span>)
+0007    fclose(f);
+0008    error(<span class="string">'Not an Andor SIF image file.'</span>);
+0009 <span class="keyword">end</span>
+0010 <a href="#_sub5" class="code" title="subfunction skipLines(f,N)">skipLines</a>(f,1);
+0011 [data,next]=<a href="#_sub1" class="code" title="subfunction [info,next]=readSection(f)">readSection</a>(f);
+0012 <span class="keyword">if</span> nargout &gt; 1 &amp; next == 1
+0013    [back,next]=<a href="#_sub1" class="code" title="subfunction [info,next]=readSection(f)">readSection</a>(f);
+0014    <span class="keyword">if</span> nargout &gt; 2 &amp; next == 1
+0015       ref=back;
+0016       back=<a href="#_sub1" class="code" title="subfunction [info,next]=readSection(f)">readSection</a>(f);
+0017    <span class="keyword">else</span>
+0018       ref=struct([]);
+0019    <span class="keyword">end</span>
+0020 <span class="keyword">else</span>
+0021    back=struct([]);
+0022    ref=back;
+0023 <span class="keyword">end</span>
+0024 fclose(f);
+0025 
+0026 <span class="comment">%Read a file section.</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">% f File handle</span>
+0029 <span class="comment">% info Section data</span>
+0030 <span class="comment">% next Flags if another section is available</span>
+0031 <span class="comment">%</span>
+0032 <a name="_sub1" href="#_subfunctions" class="code">function [info,next]=readSection(f)</a>
+0033 o=fscanf(f,<span class="string">'%f'</span>,6);
+0034 info.temperature=o(6);
+0035 <a href="#_sub4" class="code" title="subfunction skipBytes(f,N)">skipBytes</a>(f,10);
+0036 o=fscanf(f,<span class="string">'%f'</span>,5);
+0037 info.exposureTime=o(2);
+0038 info.cycleTime=o(3);
+0039 info.accumulateCycles=o(5);
+0040 info.accumulateCycleTime=o(4);
+0041 <a href="#_sub4" class="code" title="subfunction skipBytes(f,N)">skipBytes</a>(f,2);
+0042 o=fscanf(f,<span class="string">'%f'</span>,2);
+0043 info.stackCycleTime=o(1);
+0044 info.pixelReadoutTime=o(2);
+0045 o=fscanf(f,<span class="string">'%f'</span>,3);
+0046 info.gainDAC=o(3);
+0047 <a href="#_sub5" class="code" title="subfunction skipLines(f,N)">skipLines</a>(f,1);
+0048 info.detectorType=<a href="#_sub3" class="code" title="subfunction o=readLine(f)">readLine</a>(f);
+0049 info.detectorSize=fscanf(f,<span class="string">'%f'</span>,[1 2]);
+0050 info.fileName=<a href="#_sub2" class="code" title="subfunction o=readString(f)">readString</a>(f);
+0051 <a href="#_sub5" class="code" title="subfunction skipLines(f,N)">skipLines</a>(f,3);
+0052 <a href="#_sub4" class="code" title="subfunction skipBytes(f,N)">skipBytes</a>(f,14);
+0053 info.shutterTime=fscanf(f,<span class="string">'%f'</span>,[1 2]);
+0054 <a href="#_sub5" class="code" title="subfunction skipLines(f,N)">skipLines</a>(f,8);
+0055 <span class="keyword">if</span> strmatch(<span class="string">'Luc'</span>,info.detectorType)
+0056    <a href="#_sub5" class="code" title="subfunction skipLines(f,N)">skipLines</a>(f,9); <span class="comment">% Andor Luca</span>
+0057 <span class="keyword">end</span>
+0058 info.frameAxis=<a href="#_sub2" class="code" title="subfunction o=readString(f)">readString</a>(f);
+0059 info.dataType=<a href="#_sub2" class="code" title="subfunction o=readString(f)">readString</a>(f);
+0060 info.imageAxis=<a href="#_sub2" class="code" title="subfunction o=readString(f)">readString</a>(f);
+0061 o=fscanf(f,<span class="string">'65538 %d %d %d %d %d %d %d %d 65538 %d %d %d %d %d %d'</span>,14);
+0062 info.imageArea=[o(1) o(4) o(6);o(3) o(2) o(5)];
+0063 info.frameArea=[o(9) o(12);o(11) o(10)];
+0064 info.frameBins=[o(14) o(13)];
+0065 s=(1 + diff(info.frameArea))./info.frameBins;
+0066 z=1 + diff(info.imageArea(5:6));
+0067 <span class="keyword">if</span> prod(s) ~= o(8) | o(8)*z ~= o(7)
+0068    fclose(f);
+0069    error(<span class="string">'Inconsistent image header.'</span>);
+0070 <span class="keyword">end</span>
+0071 <span class="keyword">for</span> n=1:z
+0072    o=<a href="#_sub2" class="code" title="subfunction o=readString(f)">readString</a>(f);
+0073    <span class="keyword">if</span> numel(o)
+0074       fprintf(<span class="string">'%s\n'</span>,o); <span class="comment">% comments</span>
+0075    <span class="keyword">end</span>
+0076 <span class="keyword">end</span>
+0077 info.timeStamp=fread(f,1,<span class="string">'uint16'</span>);
+0078 <a href="#_sub5" class="code" title="subfunction skipLines(f,N)">skipLines</a>(f,1);
+0079 info.imageData=reshape(fread(f,prod(s)*z,<span class="string">'single=&gt;single'</span>),[s z]);
+0080 next=fscanf(f,<span class="string">'%d'</span>,1);
+0081 
+0082 <span class="comment">%Read a character string.</span>
+0083 <span class="comment">%</span>
+0084 <span class="comment">% f File handle</span>
+0085 <span class="comment">% o String</span>
+0086 <span class="comment">%</span>
+0087 <a name="_sub2" href="#_subfunctions" class="code">function o=readString(f)</a>
+0088 n=fscanf(f,<span class="string">'%d'</span>,1);
+0089 <span class="keyword">if</span> isempty(n) | n &lt; 0 | isequal(fgetl(f),-1)
+0090    fclose(f);
+0091    error(<span class="string">'Inconsistent string.'</span>);
+0092 <span class="keyword">end</span>
+0093 o=fread(f,[1 n],<span class="string">'uint8=&gt;char'</span>);
+0094 
+0095 <span class="comment">%Read a line.</span>
+0096 <span class="comment">%</span>
+0097 <span class="comment">% f File handle</span>
+0098 <span class="comment">% o Read line</span>
+0099 <span class="comment">%</span>
+0100 <a name="_sub3" href="#_subfunctions" class="code">function o=readLine(f)</a>
+0101 o=fgetl(f);
+0102 <span class="keyword">if</span> isequal(o,-1)
+0103    fclose(f);
+0104    error(<span class="string">'Inconsistent image header.'</span>);
+0105 <span class="keyword">end</span>
+0106 o=deblank(o);
+0107 
+0108 <span class="comment">%Skip bytes.</span>
+0109 <span class="comment">%</span>
+0110 <span class="comment">% f File handle</span>
+0111 <span class="comment">% N Number of bytes to skip</span>
+0112 <span class="comment">%</span>
+0113 <a name="_sub4" href="#_subfunctions" class="code">function skipBytes(f,N)</a>
+0114 [s,n]=fread(f,N,<span class="string">'uint8'</span>);
+0115 <span class="keyword">if</span> n &lt; N
+0116    fclose(f);
+0117    error(<span class="string">'Inconsistent image header.'</span>);
+0118 <span class="keyword">end</span>
+0119 
+0120 <span class="comment">%Skip lines.</span>
+0121 <span class="comment">%</span>
+0122 <span class="comment">% f File handle</span>
+0123 <span class="comment">% N Number of lines to skip</span>
+0124 <span class="comment">%</span>
+0125 <a name="_sub5" href="#_subfunctions" class="code">function skipLines(f,N)</a>
+0126 <span class="keyword">for</span> n=1:N
+0127    <span class="keyword">if</span> isequal(fgetl(f),-1)
+0128       fclose(f);
+0129       error(<span class="string">'Inconsistent image header.'</span>);
+0130    <span class="keyword">end</span>
+0131 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

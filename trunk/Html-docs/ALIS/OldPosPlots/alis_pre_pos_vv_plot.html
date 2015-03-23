@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of alis_pre_pos_vv_plot</title>
+  <meta name="keywords" content="alis_pre_pos_vv_plot">
+  <meta name="description" content="Script that plots ALIS predefined observation rotations">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html ALIS --><!-- menu.html OldPosPlots -->
+<h1>alis_pre_pos_vv_plot
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Script that plots ALIS predefined observation rotations</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Script that plots ALIS predefined observation rotations
+ BG 20050111</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Script that plots ALIS predefined observation rotations</span>
+0002 <span class="comment">% BG 20050111</span>
+0003 
+0004 subplot(4,2,1)
+0005 alis_visiblevol(1,225,20,110,60,0);
+0006 alis_visiblevol(2,100 ,14,110,60,0);
+0007 alis_visiblevol(3,45 ,12,110,60,0); 
+0008 alis_visiblevol(4,115 ,15,110,60,0);
+0009 alis_visiblevol(5,30 ,14,110,60,0); 
+0010 alis_visiblevol(6,270 ,20,110,60,0);
+0011 
+0012 xlabel(<span class="string">'surveilance'</span>)
+0013 ylabel(<span class="string">''</span>)           
+0014 title(<span class="string">''</span>)
+0015 
+0016 subplot(4,2,2)                                 
+0017 alis_visiblevol(1,180 ,12,110,60,0);
+0018 alis_visiblevol(2,180 ,12,110,60,0);
+0019 alis_visiblevol(3,180 ,12,110,60,0);
+0020 alis_visiblevol(4,180 ,12,110,60,0);
+0021 alis_visiblevol(5,180 ,12,110,60,0);
+0022 alis_visiblevol(6,180 ,12,110,60,0);
+0023 
+0024 xlabel(<span class="string">'mag\_zen'</span>)    
+0025 ylabel(<span class="string">''</span>)
+0026 title(<span class="string">''</span>)
+0027 
+0028 subplot(4,2,3)
+0029 alis_visiblevol(1,180 ,30,110,60,0);
+0030 alis_visiblevol(2,250 ,23,110,60,0);
+0031 alis_visiblevol(3,215 ,28,110,60,0);
+0032 alis_visiblevol(4,260 ,7,110,60,0);
+0033 alis_visiblevol(5,148 ,31,110,60,0);
+0034 alis_visiblevol(6,135 ,23,110,60,0);
+0035 
+0036 xlabel(<span class="string">'south'</span>)
+0037 ylabel(<span class="string">''</span>)
+0038 title(<span class="string">''</span>)
+0039 
+0040 subplot(4,2,4)
+0041 alis_visiblevol(1,0   , 0,110,60,0);
+0042 alis_visiblevol(2,298 ,24,110,60,0);
+0043 alis_visiblevol(3,249 ,28,110,60,0);
+0044 alis_visiblevol(4,346 ,20,110,60,0);
+0045 alis_visiblevol(5,130 ,24,110,60,0);
+0046 alis_visiblevol(6,90  ,20,110,60,0);
+0047 
+0048 xlabel(<span class="string">'core'</span>)
+0049 ylabel(<span class="string">''</span>)
+0050 title(<span class="string">''</span>)
+0051 
+0052 subplot(4,2,5)
+0053 alis_visiblevol(1,0, 39,110,60,0);
+0054 alis_visiblevol(2,0, 15,110,60,0);
+0055 alis_visiblevol(3,0, 32,110,60,0);
+0056 alis_visiblevol(4,0, 42,110,60,0);
+0057 alis_visiblevol(5,0, 35,110,60,0);
+0058 alis_visiblevol(6,0, 15,110,60,0);
+0059 
+0060 xlabel(<span class="string">'east-west'</span>)
+0061 ylabel(<span class="string">''</span>)
+0062 title(<span class="string">''</span>)
+0063 
+0064 subplot(4,2,6)
+0065 alis_visiblevol(1,0,   30,110,60,0);
+0066 alis_visiblevol(2,330, 33,110,60,0);
+0067 alis_visiblevol(3,311, 25,110,60,0);
+0068 alis_visiblevol(4,355, 33,110,60,0);
+0069 alis_visiblevol(5,85,  22,110,60,0);
+0070 alis_visiblevol(6,44,  26,110,60,0);
+0071 
+0072 xlabel(<span class="string">'north'</span>)
+0073 ylabel(<span class="string">''</span>)
+0074 title(<span class="string">''</span>)
+0075 
+0076 subplot(4,2,7),axis([-300 300 -56.3654 400])
+0077 h1 = alis_visiblevol(1,0,   39,110,60,0);axis([-300 300 -56.3654 400]);
+0078 <span class="comment">%h2 = alis_visiblevol(2,348, 42,110,60,0);axis([-300 300 -56.3654 400]);</span>
+0079 h3 = alis_visiblevol(3,350, 32,110,60,0);axis([-300 300 -56.3654 400]);
+0080 h4 = alis_visiblevol(4,0,   42,110,60,0);axis([-300 300 -56.3654 400]);
+0081 h5 = alis_visiblevol(5,20,  35,110,60,0);axis([-300 300 -56.3654 400]);
+0082 <span class="comment">%h6 = alis_visiblevol(6,15,  42,110,60,0);axis([-300 300 -56.3654 400]);</span>
+0083 
+0084 xlabel(<span class="string">'eiscat'</span>)
+0085 ylabel(<span class="string">''</span>)
+0086 title(<span class="string">''</span>)
+0087 
+0088 subplot(4,2,8),axis([-300 300 -56.3654 400])
+0089 alis_visiblevol(1,346, 37,110,60,0);axis([-300 300 -56.3654 400])
+0090 alis_visiblevol(2,340, 40,110,60,0);axis([-300 300 -56.3654 400])
+0091 alis_visiblevol(3,330, 37,110,60,0);axis([-300 300 -56.3654 400])
+0092 alis_visiblevol(4,345, 44,110,60,0);axis([-300 300 -56.3654 400])
+0093 alis_visiblevol(5,5, 25,110,60,0);axis([-300 300 -56.3654 400])
+0094 alis_visiblevol(6,5, 40,110,60,0);axis([-300 300 -56.3654 400])
+0095 
+0096 xlabel(<span class="string">'heating'</span>)
+0097 ylabel(<span class="string">''</span>)
+0098 title(<span class="string">''</span>)
+0099 
+0100 suptitle(<span class="string">'Approximate field of view at 110 km'</span>)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

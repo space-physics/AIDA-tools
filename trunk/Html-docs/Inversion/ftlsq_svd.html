@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ftlsq_svd</title>
+  <meta name="keywords" content="ftlsq_svd">
+  <meta name="description" content="FTLSQ_SVD filtered truncated least square from SVD decomposition">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Inversion -->
+<h1>ftlsq_svd
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>FTLSQ_SVD filtered truncated least square from SVD decomposition</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [ra,hvals,rd] = ftlsq_svd(U,S,V,d,I) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FTLSQ_SVD filtered truncated least square from SVD decomposition
+ Uses singular decomposition of transfer matrix to calculate
+ reconstructions of RA from D with truncations at Ith eigenvalue.
+ 
+ Calling:
+  [ra,hvals] = ftlsq_svd(U,S,V,d,I)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="dlsq_psf.html" class="code" title="function [rI,d,drI,fitHist] = dlsq_psf(U,S,V,I,p,epsilon_damp)">dlsq_psf</a>	DLSQ_PSF - Damped Least SQuare Point Spread Function calculation</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ra,hvals,rd] = ftlsq_svd(U,S,V,d,I)</a>
+0002 <span class="comment">% FTLSQ_SVD filtered truncated least square from SVD decomposition</span>
+0003 <span class="comment">% Uses singular decomposition of transfer matrix to calculate</span>
+0004 <span class="comment">% reconstructions of RA from D with truncations at Ith eigenvalue.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%  [ra,hvals] = ftlsq_svd(U,S,V,d,I)</span>
+0008 
+0009 
+0010 <span class="comment">%   Copyright � 20050805 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0011 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0012 
+0013 hvals = [];
+0014 j1 = 1;
+0015 <span class="keyword">for</span> i1 = I,
+0016   
+0017   <span class="comment">%Upd = U(:,1:i1)'*d;</span>
+0018   <span class="comment">%iSUpd = inv(S(1:i1,1:i1))*Upd;</span>
+0019   ra = U(:,1:i1)'*d;
+0020   <span class="comment">%ra = inv(S(1:i1,1:i1))*ra;</span>
+0021   ra = S(1:i1,1:i1)\ra;
+0022   ra = V(:,1:i1)*ra;
+0023   <span class="keyword">if</span> nargout &gt; 1 
+0024     rd = V(:,1:i1)'*ra;
+0025     rd = S(1:i1,1:i1)*rd;
+0026     rd = U(:,1:i1)*rd;
+0027     nbins = ceil(sqrt(length(d)));
+0028     hvals(j1,:) = hist((d-rd)./max(rd,1),nbins);
+0029     j1 = j1+1;
+0030   <span class="keyword">end</span>
+0031 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

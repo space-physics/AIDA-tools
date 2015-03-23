@@ -1,0 +1,85 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>spc_sens_hist.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function synopsis</FONT></FONT></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1> [N1,N1p,Chi2_1,N2,N2p,Chi2_2,...] = spc_sens_hist(I_img,I_star,filter_in,hist_range)                                                                </FONT></FONT></P> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function comments</FONT></FONT></P> 
+<pre> 
+% 
+% SPC_SENS_HIST - make histogram with parametrisation and uncertainty 
+% of the sensitivity, from star-in-image-intensity I_IMG and 
+% star-enrgy-flux-from-catalog I_star, FILTER_IN should contain the 
+% filter identity as given from QWE, and hist_range should be the 
+% range over which to calculate the histogram. 
+% 
+% See also HIST, SPC_SORT_OUT_THE_BAD_ONES,  SPEC_CAL_BAD_INTENS 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files that call spc_sens_hist.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="Spec_cal_jobb_mall.htm">Spec_cal_jobb_mall</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of spc_sens_hist.m</FONT></FONT></P> 
+<pre> 
+function [varargout] = spc_sens_hist(I_img,I_star,filter_in,hist_range) 
+% [N1,N1p,Chi2_1,N2,N2p,Chi2_2,...] = spc_sens_hist(I_img,I_star,filter_in,hist_range) 
+% 
+% SPC_SENS_HIST - make histogram with parametrisation and uncertainty 
+% of the sensitivity, from star-in-image-intensity I_IMG and 
+% star-enrgy-flux-from-catalog I_star, FILTER_IN should contain the 
+% filter identity as given from QWE, and hist_range should be the 
+% range over which to calculate the histogram. 
+% 
+% See also HIST, SPC_SORT_OUT_THE_BAD_ONES,  SPEC_CAL_BAD_INTENS 
+ 
+% Copyright Bjorn Gustavsson 20030901 
+ 
+ 
+I1 = []; 
+I2 = []; 
+I3 = []; 
+N1 = []; 
+N2 = []; 
+N3 = []; 
+nP1 = []; 
+nP2 = []; 
+nP3 = []; 
+ 
+filters = sort(unique(filter_in)); 
+ 
+for ii = 1:length(filters), 
+ 
+  for jj = 1:size(I_star,1), 
+ 
+    i_f = find(filter_in(jj,:)== filters(ii)); 
+    if ~isempty(i_f) 
+      I1 = [I_img(jj,i_f)/I_star(jj,1)]; 
+      n1(jj) = length(i_f); 
+      [N1(jj,:),X1] = hist(I1,hist_range); 
+      [nP1(jj,:),Chi21(jj)] = hfitg(I1,length(hist_range),min(hist_range),max(hist_range)); 
+    end 
+ 
+  end 
+ 
+  varargout(1+(ii-1)*3) = {N1}; 
+  varargout(2+(ii-1)*3) = {nP1}; 
+  varargout(3+(ii-1)*3) = {Chi21}; 
+ 
+ 
+end 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 16:26 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

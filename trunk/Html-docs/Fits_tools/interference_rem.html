@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of interference_rem</title>
+  <meta name="keywords" content="interference_rem">
+  <meta name="description" content="INTERFERENCE_REM - manual interference identification (and reduction)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>interference_rem
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>INTERFERENCE_REM - manual interference identification (and reduction)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function img_out = interference_rem(img_in,type,method,nr_readout_regs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> INTERFERENCE_REM - manual interference identification (and reduction)
+   IMG_OUT = INTERFERENCE_REM(IMG_IN) allows the user to identify
+   complex interference patterns in IMG_IN (class:
+   double). 
+   
+   Spatial interference frequecies are identified graphically by
+   zooming in on spikes in the log-abs display of 2-D fourier of
+   IMG_IN. Points are selected by middle-mouse-button, regions
+   showed in axis by right-mouse-button. ZOOMING in is done with
+   the left button (either klick or klick-n-drag). When all
+   interference regions are selected the return-key
+   interupts. Zooming out is done by any key except the
+   return-key.
+ 
+ Calling:
+ img_out = interference_rem(img_in,type,method,nr_readout_regs)
+ 
+   IMG_IN should be a 2-D intensity image of class double.
+   
+   IMG_OUT = INTERFERENCE_REM(IMG_IN,'type') specifies output
+   type. Available outputs are:
+     
+     'pattern' - returns the interference pattern (default)
+     'removal' - returns the image with interference removerd
+     'frequencies' returns the interference ferquencies
+     
+   IMG_OUT = INTERFERENCE_REM(IMG_IN,'removal','method') specifies
+   weighting method to use for the interference removal. Available
+   methods are: 
+     
+     'noscaling' - no wheighting of the interference pattern
+     'weighted' - weighting as suggested by Gonzales and Woods
+     'smoothed' - same as 'weighted' but weights-matrix smoothed
+   
+   IMG_OUT = INTERFERENCE_REM(...,NR_READOUT_REGS) allows
+   automatic splitting of images from imagers with separate
+   readout electronics for separate regions. Each region is then
+   treated in sequence. For a quad-read out image NR_READOUT_REGS
+   should be [2 2] and for a image that is read out in two halves
+   (img = [img_l,img_r]) NR_READOUT_REGS should be [2 1]
+   
+ See also ZINPUT, FFT2
+
+ Ref: Digital image processing, R. C. Gonzales, R. E. Woods,
+      1993, p 289 - 296</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/mysubplot.html" class="code" title="function theAxis = mysubplot(nrows, ncols, thisPlot)">mysubplot</a>	MYSUBPLOT Create axes in tiled positions.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function img_out = interference_rem(img_in,type,method,nr_readout_regs)</a>
+0002 <span class="comment">% INTERFERENCE_REM - manual interference identification (and reduction)</span>
+0003 <span class="comment">%   IMG_OUT = INTERFERENCE_REM(IMG_IN) allows the user to identify</span>
+0004 <span class="comment">%   complex interference patterns in IMG_IN (class:</span>
+0005 <span class="comment">%   double).</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   Spatial interference frequecies are identified graphically by</span>
+0008 <span class="comment">%   zooming in on spikes in the log-abs display of 2-D fourier of</span>
+0009 <span class="comment">%   IMG_IN. Points are selected by middle-mouse-button, regions</span>
+0010 <span class="comment">%   showed in axis by right-mouse-button. ZOOMING in is done with</span>
+0011 <span class="comment">%   the left button (either klick or klick-n-drag). When all</span>
+0012 <span class="comment">%   interference regions are selected the return-key</span>
+0013 <span class="comment">%   interupts. Zooming out is done by any key except the</span>
+0014 <span class="comment">%   return-key.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Calling:</span>
+0017 <span class="comment">% img_out = interference_rem(img_in,type,method,nr_readout_regs)</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   IMG_IN should be a 2-D intensity image of class double.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   IMG_OUT = INTERFERENCE_REM(IMG_IN,'type') specifies output</span>
+0022 <span class="comment">%   type. Available outputs are:</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%     'pattern' - returns the interference pattern (default)</span>
+0025 <span class="comment">%     'removal' - returns the image with interference removerd</span>
+0026 <span class="comment">%     'frequencies' returns the interference ferquencies</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%   IMG_OUT = INTERFERENCE_REM(IMG_IN,'removal','method') specifies</span>
+0029 <span class="comment">%   weighting method to use for the interference removal. Available</span>
+0030 <span class="comment">%   methods are:</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%     'noscaling' - no wheighting of the interference pattern</span>
+0033 <span class="comment">%     'weighted' - weighting as suggested by Gonzales and Woods</span>
+0034 <span class="comment">%     'smoothed' - same as 'weighted' but weights-matrix smoothed</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%   IMG_OUT = INTERFERENCE_REM(...,NR_READOUT_REGS) allows</span>
+0037 <span class="comment">%   automatic splitting of images from imagers with separate</span>
+0038 <span class="comment">%   readout electronics for separate regions. Each region is then</span>
+0039 <span class="comment">%   treated in sequence. For a quad-read out image NR_READOUT_REGS</span>
+0040 <span class="comment">%   should be [2 2] and for a image that is read out in two halves</span>
+0041 <span class="comment">%   (img = [img_l,img_r]) NR_READOUT_REGS should be [2 1]</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">% See also ZINPUT, FFT2</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">% Ref: Digital image processing, R. C. Gonzales, R. E. Woods,</span>
+0046 <span class="comment">%      1993, p 289 - 296</span>
+0047 
+0048 
+0049 <span class="comment">%   Copyright © 20050314 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0050 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0051 
+0052 
+0053 <span class="keyword">if</span> nargin &lt; 1 || isempty(type)
+0054   type = <span class="string">'pattern'</span>; <span class="comment">% ['removal'| {'pattern'} | 'frequencies']</span>
+0055 <span class="keyword">end</span>
+0056 <span class="keyword">if</span> nargin &lt; 2 || isempty(method)
+0057   method = <span class="string">'noscaling'</span>; <span class="comment">% [{'noscaling'} | 'weighted' | 'smoothed']</span>
+0058 <span class="keyword">end</span>
+0059 <span class="keyword">if</span> nargin &lt; 3
+0060   nr_readout_regs = [1 1];
+0061 <span class="keyword">end</span>
+0062 
+0063 img_out = img_in;
+0064 
+0065 <span class="keyword">for</span> ii = 1:nr_readout_regs(2),
+0066   
+0067   y_indx = [1:(size(img_in,1)/nr_readout_regs(2))]+(ii-1)*size(img_in,1)/nr_readout_regs(2);
+0068   <span class="keyword">for</span> jj = 1:nr_readout_regs(1),
+0069     x_indx = [1:(size(img_in,2)/nr_readout_regs(1))]+(jj-1)*size(img_in,2)/nr_readout_regs(1);
+0070     
+0071     cm = fft2(img_in(y_indx,x_indx));
+0072     <a href="../tools/mysubplot.html" class="code" title="function theAxis = mysubplot(nrows, ncols, thisPlot)">mysubplot</a>(1,1,1)
+0073     imagesc(log(abs(cm)))
+0074     i_regs = round(zinput);
+0075     Cm = zeros(size(cm));
+0076     <span class="keyword">for</span> k = 1:size(i_regs,1)
+0077       Cm(i_regs(k,3):i_regs(k,4),i_regs(k,1):i_regs(k,2)) = 1;
+0078       Cm(end+2-[i_regs(k,3):i_regs(k,4)],end+2-[i_regs(k,1):i_regs(k,2)]) = 1;
+0079     <span class="keyword">end</span>
+0080     Cm = Cm(1:(size(img_in,1)/nr_readout_regs(2)),1:(size(img_in,2)/nr_readout_regs(1)));
+0081     <span class="keyword">switch</span> type
+0082      <span class="keyword">case</span> <span class="string">'frequencies'</span>
+0083       img_out(y_indx,x_indx) = Cm;
+0084      
+0085      <span class="keyword">case</span> <span class="string">'pattern'</span>
+0086       img_out(y_indx,x_indx) = ifft2(cm.*Cm);
+0087       
+0088      <span class="keyword">case</span> <span class="string">'removal'</span>
+0089       Cm = real(ifft2(cm.*Cm));
+0090       <span class="keyword">switch</span> method
+0091        <span class="keyword">case</span> <span class="string">'noscaling'</span>
+0092         w = 1;
+0093         
+0094        <span class="keyword">case</span> <span class="string">'weighted'</span>
+0095         <span class="keyword">try</span>
+0096           blksiz = 64;
+0097           <span class="keyword">if</span> min(size(Cm)) &lt;= 128
+0098             blksiz = 32;
+0099           <span class="keyword">end</span>
+0100           <span class="keyword">if</span> min(size(Cm))&gt;1023
+0101             blksiz = 128;
+0102           <span class="keyword">end</span>
+0103           
+0104           cm = img_in(y_indx,x_indx);
+0105           w = ( blkproc(cm.*Cm,blksiz*[1 1],<span class="string">'mean(x(:))'</span>) - <span class="keyword">...</span>
+0106                 blkproc(cm,blksiz*[1 1],<span class="string">'mean(x(:))'</span>).*<span class="keyword">...</span>
+0107                 blkproc(Cm,blksiz*[1 1],<span class="string">'mean(x(:))'</span>) )./ <span class="keyword">...</span>
+0108               ( blkproc(Cm,blksiz*[1 1],<span class="string">'mean(x(:).^2)'</span>) - <span class="keyword">...</span>
+0109                 blkproc(Cm,blksiz*[1 1],<span class="string">'mean(x(:))'</span>).^2);
+0110           indxx = sort(repmat(1:size(w,2),[1 blksiz]));
+0111           indxy = sort(repmat(1:size(w,1),[1 blksiz]));
+0112           
+0113           w = w(indxx(:),indxy(:));
+0114         <span class="keyword">catch</span>
+0115           w = 1;
+0116           warning(<span class="string">'could not find: blkproc'</span>)
+0117         <span class="keyword">end</span>
+0118        <span class="keyword">case</span> <span class="string">'smoothed'</span>
+0119         <span class="keyword">try</span>
+0120           blksiz = 64;
+0121           <span class="keyword">if</span> min(size(Cm)) &lt;= 128
+0122             blksiz = 32;
+0123           <span class="keyword">end</span>
+0124           <span class="keyword">if</span> min(size(Cm))&gt;1023
+0125             blksiz = 128;
+0126           <span class="keyword">end</span>
+0127           cm = img_in(y_indx,x_indx);
+0128           w = ( blkproc(cm.*Cm,blksiz*[1 1],<span class="string">'mean(x(:))'</span>) - <span class="keyword">...</span>
+0129                 blkproc(cm,blksiz*[1 1],<span class="string">'mean(x(:))'</span>).*<span class="keyword">...</span>
+0130                 blkproc(Cm,blksiz*[1 1],<span class="string">'mean(x(:))'</span>) )./ <span class="keyword">...</span>
+0131               ( blkproc(Cm,blksiz*[1 1],<span class="string">'mean(x(:).^2)'</span>) - <span class="keyword">...</span>
+0132                 blkproc(Cm,blksiz*[1 1],<span class="string">'mean(x(:))'</span>).^2);
+0133           indxx = sort(repmat(1:size(w,2),[1 blksiz]));
+0134           indxy = sort(repmat(1:size(w,1),[1 blksiz]));
+0135           
+0136           w = w(indxx(:),indxy(:));
+0137           fltk = ones(blksiz)/blksiz^2;
+0138           w = filter2(fltk,w,<span class="string">'same'</span>);
+0139         <span class="keyword">catch</span>
+0140           w = 1;
+0141           warning(<span class="string">'could not find: blkproc'</span>)
+0142         <span class="keyword">end</span>
+0143        <span class="keyword">otherwise</span>
+0144         w = 1;
+0145       <span class="keyword">end</span>
+0146       img_out(y_indx,x_indx) = img_in(y_indx,x_indx) - w.*Cm;
+0147       
+0148      <span class="keyword">otherwise</span>
+0149       error([<span class="string">'unknown output type requested: '</span>,type])
+0150     <span class="keyword">end</span>
+0151     
+0152   <span class="keyword">end</span>
+0153   
+0154 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

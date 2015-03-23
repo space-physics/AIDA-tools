@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of img_histeq</title>
+  <meta name="keywords" content="img_histeq">
+  <meta name="description" content="img_histeq - histogram equalisation.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>img_histeq
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>img_histeq - histogram equalisation.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function out_img = img_histeq(in_img,hist_lim) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> img_histeq - histogram equalisation. 
+    IMG_IN should be a double array. When HIST_LIM is an integer
+    IMG_HISTEQ makes IMG_IN to have a uniform histogram
+   
+   J = IMG_HISTEQ(I,N) transforms the double array I, returning
+   in J an array with a roughly flat histogram with N bins.
+   NO checks or tests</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/AVOK/alis_img_overview_keos.html" class="code" title="function avok = alis_img_overview_keos(date)">alis_img_overview_keos</a>	ALIS_VIEW_OVERVIEW_KEOS - view ALIS overview keograms</li><li><a href="../ALIS/AVOK/alis_view_overview_keos.html" class="code" title="function avok = alis_view_overview_keos(date)">alis_view_overview_keos</a>	ALIS_VIEW_OVERVIEW_KEOS - view ALIS overview keograms</li><li><a href="../Fits_tools/pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>	PRE_PROC_IMG - systematic image correction and preprocessing of</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function out_img = img_histeq(in_img,hist_lim)</a>
+0002 <span class="comment">% img_histeq - histogram equalisation.</span>
+0003 <span class="comment">%    IMG_IN should be a double array. When HIST_LIM is an integer</span>
+0004 <span class="comment">%    IMG_HISTEQ makes IMG_IN to have a uniform histogram</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   J = IMG_HISTEQ(I,N) transforms the double array I, returning</span>
+0007 <span class="comment">%   in J an array with a roughly flat histogram with N bins.</span>
+0008 <span class="comment">%   NO checks or tests</span>
+0009 
+0010 
+0011 <span class="comment">%   Copyright � 20050109 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0012 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0013 
+0014 <span class="keyword">if</span> nargin == 1
+0015   hist_lim = 100;
+0016 <span class="keyword">end</span>
+0017 
+0018 out_img = in_img;
+0019 <span class="keyword">if</span> max(out_img(:))==min(out_img(:))
+0020   <span class="keyword">return</span>
+0021 <span class="keyword">end</span>
+0022 [qa,qs] = hist(in_img(:),hist_lim);
+0023 
+0024 qs = [min(in_img(:)) qs(1:end-1)/2+qs(2:end)/2 max(in_img(:))];
+0025 
+0026 
+0027 out_img(:) = interp1(qs,<span class="keyword">...</span>
+0028                      min(in_img(:))+(max(in_img(:))-min(in_img(:)))*[0 cumsum(qa)/sum(qa)],<span class="keyword">...</span>
+0029                      in_img(:),<span class="keyword">...</span>
+0030                      <span class="string">'pchip'</span>,<span class="string">'extrap'</span>);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

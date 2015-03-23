@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_read_sst</title>
+  <meta name="keywords" content="ASK_read_sst">
+  <meta name="description" content="ASK_READ_SST -  A procedure to read the start and stop times from a string">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_read_sst
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_READ_SST -  A procedure to read the start and stop times from a string</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [mjs1,mjs2] = ASK_read_sst(a,FormatStr) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_READ_SST -  A procedure to read the start and stop times from a string 
+ used for the lookup table reads.
+ i.e. Converts '31/03/2009 15:47:09 01/04/2009 09:31:21'
+ to two mjs values (mjs1 and mjs2)
+
+ Calling:
+   [mjs1,mjs2] = ASK_read_sst(A,FormatStr)
+ Input:
+  A - a string/char array with date and time information for 2
+      times, it has to contain 2 full date-time times (Y, M, D, h,
+      m, s)
+      corresponding to the format string FormatStr, default:
+      '%d/%d/%d %d:%d:%f %d/%d/%d %d:%d:%f', which obviously
+      corresponds to
+      D1/M1/YYY1 H1:M1:S1.ms D2/M2/YYY2 H2:M2:S2.ms 
+ 
+  FormatStr - (Optional) format string describing how to parse
+              date and time out from A
+ Output:
+  MJS1 - Time in modified Julian seconds of first date in A</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>	ASK_TT_MJS - converts calendar date to modified Julian second</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [mjs1,mjs2] = ASK_read_sst(a,FormatStr)</a>
+0002 <span class="comment">% ASK_READ_SST -  A procedure to read the start and stop times from a string</span>
+0003 <span class="comment">% used for the lookup table reads.</span>
+0004 <span class="comment">% i.e. Converts '31/03/2009 15:47:09 01/04/2009 09:31:21'</span>
+0005 <span class="comment">% to two mjs values (mjs1 and mjs2)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%   [mjs1,mjs2] = ASK_read_sst(A,FormatStr)</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%  A - a string/char array with date and time information for 2</span>
+0011 <span class="comment">%      times, it has to contain 2 full date-time times (Y, M, D, h,</span>
+0012 <span class="comment">%      m, s)</span>
+0013 <span class="comment">%      corresponding to the format string FormatStr, default:</span>
+0014 <span class="comment">%      '%d/%d/%d %d:%d:%f %d/%d/%d %d:%d:%f', which obviously</span>
+0015 <span class="comment">%      corresponds to</span>
+0016 <span class="comment">%      D1/M1/YYY1 H1:M1:S1.ms D2/M2/YYY2 H2:M2:S2.ms</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%  FormatStr - (Optional) format string describing how to parse</span>
+0019 <span class="comment">%              date and time out from A</span>
+0020 <span class="comment">% Output:</span>
+0021 <span class="comment">%  MJS1 - Time in modified Julian seconds of first date in A</span>
+0022 
+0023 <span class="comment">% Modified from read_sst.pro</span>
+0024 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0025 <span class="comment">% GPL 3.0 or later applies</span>
+0026 
+0027 
+0028 <span class="keyword">if</span> nargin == 1 | isempty(FormatStr)
+0029   FormatStr = <span class="string">'%d/%d/%d %d:%d:%f %d/%d/%d %d:%d:%f'</span>;
+0030 <span class="keyword">end</span>
+0031 
+0032 <span class="comment">%[d1,m1,y1,H1,M1,S1,d2,m2,y2,H2,M2,S2] = strread('31/03/2009 15:47:09 01/04/2009 09:31:21','%d/%d/%d %d:%d:%d %d/%d/%d %d:%d:%d');</span>
+0033 [d1,m1,y1,H1,M1,S1,d2,m2,y2,H2,M2,S2] = strread( a, FormatStr);
+0034 
+0035 mjs1 = <a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>([d1,m1,y1,H1,M1,S1]);
+0036 mjs2 = <a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>([d2,m2,y2,H2,M2,S2]);</pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

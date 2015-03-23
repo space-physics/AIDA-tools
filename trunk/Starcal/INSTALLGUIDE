@@ -1,0 +1,26 @@
+Installation
+
+Installation of starcal should be absolutley
+straghtforward on all systems with MATLAB version 5.1 or later.
+
+`Starcal' depends on `Skymap', `Camera' and `Fits_tools'. Further it
+depends on Dr. Erik A. Johnson's <JohnsonE@usc.edu> arrow.m. It also
+loads some data that by default are stored in ~matlab/.data/. Finally
+it benefits from the optimization toolbox and might require the
+image-processing toolbox from Mathworks.
+
+
+For proper working of this tool it is necessary to put all the
+directories listed below into your matlab path:
+
+Camera/
+Fits_tools/
+Starcal/
+Starcal/update/
+Starcal/IOfcns/
+Skymap/
+
+There is for some forgotten reason necessary to put `Starcal' before
+`Skymap' on the path. Otherwise there should be no problems with
+comutating the directories.
+

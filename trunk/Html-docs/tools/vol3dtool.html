@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of vol3dtool</title>
+  <meta name="keywords" content="vol3dtool">
+  <meta name="description" content="Tool to edit color/alpha channels when">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>vol3dtool
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Tool to edit color/alpha channels when</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function vol3dtool(fig_target) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Tool to edit color/alpha channels when 
+ working with vol3d.m function.
+
+ vol3dtool(FIG) Pass in figure handle
+ vol3dtool  Use GCF.
+
+ See example in vol3d.m</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function local_line(h,evd,ax,fig,fig_target)</a></li><li><a href="#_sub2" class="code">function local_mouse_motion(obj,evd,h,ax,fig,fig_target,ind)</a></li><li><a href="#_sub3" class="code">function local_mouse_up(obj,evd,fig)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function vol3dtool(fig_target)</a>
+0002 <span class="comment">% Tool to edit color/alpha channels when</span>
+0003 <span class="comment">% working with vol3d.m function.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% vol3dtool(FIG) Pass in figure handle</span>
+0006 <span class="comment">% vol3dtool  Use GCF.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% See example in vol3d.m</span>
+0009 
+0010 <span class="comment">% Copyright Joe Conti, 2004</span>
+0011 
+0012 <span class="keyword">if</span> nargin==0
+0013     fig_target = gcf;
+0014 <span class="keyword">end</span>
+0015 
+0016 fig = hgload(<span class="string">'vol3dtool.fig'</span>);
+0017 set(fig,<span class="string">'units'</span>,<span class="string">'pixels'</span>);
+0018 set(fig,<span class="string">'Name'</span>,<span class="string">'Color/Alpha Channel Edit'</span>);
+0019 red_ax = findall(fig,<span class="string">'type'</span>,<span class="string">'axes'</span>,<span class="string">'tag'</span>,<span class="string">'red'</span>);
+0020 set(red_ax,<span class="string">'units'</span>,<span class="string">'pixels'</span>);
+0021 green_ax = findall(fig,<span class="string">'type'</span>,<span class="string">'axes'</span>,<span class="string">'tag'</span>,<span class="string">'green'</span>);
+0022 blue_ax = findall(fig,<span class="string">'type'</span>,<span class="string">'axes'</span>,<span class="string">'tag'</span>,<span class="string">'blue'</span>);
+0023 alpha_ax = findall(fig,<span class="string">'type'</span>,<span class="string">'axes'</span>,<span class="string">'tag'</span>,<span class="string">'alpha'</span>);
+0024 
+0025 cmap = get(fig_target,<span class="string">'Colormap'</span>);
+0026 amap = get(fig_target,<span class="string">'Alphamap'</span>);
+0027 
+0028 l_info.xdata = 1:length(cmap(:,1));
+0029 l_info.ydata = cmap(:,1);
+0030 l_info.parent = red_ax;
+0031 l_info.markersize = 5;
+0032 l_info.linewidth = 3;
+0033 l_info.color = <span class="string">'r'</span>;
+0034 l_info.markerfacecolor = <span class="string">'r'</span>;
+0035 l_info.buttondown = {@<a href="#_sub1" class="code" title="subfunction local_line(h,evd,ax,fig,fig_target)">local_line</a>,red_ax,fig,fig_target};
+0036 ylim(red_ax,[-.1,1.1]); 
+0037 xlim(red_ax,[1,length(cmap(:,1))]);
+0038 h = line(l_info);
+0039 
+0040 l_info.ydata = cmap(:,2);
+0041 l_info.parent = green_ax;
+0042 l_info.color = <span class="string">'g'</span>;
+0043 l_info.markerfacecolor = <span class="string">'g'</span>;
+0044 l_info.buttondown = {@<a href="#_sub1" class="code" title="subfunction local_line(h,evd,ax,fig,fig_target)">local_line</a>,green_ax,fig,fig_target};
+0045 ylim(green_ax,[-.1,1.1]); 
+0046 xlim(green_ax,[1,length(cmap(:,1))]);
+0047 h = line(l_info);
+0048 
+0049 l_info.ydata = cmap(:,3);
+0050 l_info.parent = blue_ax;
+0051 l_info.color = <span class="string">'b'</span>;
+0052 l_info.markerfacecolor = <span class="string">'b'</span>;
+0053 l_info.buttondown = {@<a href="#_sub1" class="code" title="subfunction local_line(h,evd,ax,fig,fig_target)">local_line</a>,blue_ax,fig,fig_target};
+0054 ylim(blue_ax,[-.1,1.1]); 
+0055 xlim(blue_ax,[1,length(cmap(:,1))]);
+0056 h = line(l_info);
+0057 
+0058 l_info.xdata = 1:length(amap);
+0059 l_info.ydata = amap;
+0060 l_info.parent = alpha_ax;
+0061 l_info.color = <span class="string">'k'</span>;
+0062 l_info.markerfacecolor = <span class="string">'k'</span>;
+0063 l_info.buttondown = {@<a href="#_sub1" class="code" title="subfunction local_line(h,evd,ax,fig,fig_target)">local_line</a>,alpha_ax,fig,fig_target};
+0064 ylim(alpha_ax,[-.1,1.1]); 
+0065 xlim(alpha_ax,[1,length(amap)]);
+0066 h = line(l_info);
+0067 
+0068 <span class="comment">%--------------------------------------------------------%</span>
+0069 <a name="_sub1" href="#_subfunctions" class="code">function local_line(h,evd,ax,fig,fig_target)</a>
+0070 
+0071 cp = get(ax,<span class="string">'CurrentPoint'</span>);
+0072 
+0073 <span class="comment">% Find closest vertex</span>
+0074 xdata = get(h,<span class="string">'xdata'</span>);
+0075 ydata = get(h,<span class="string">'ydata'</span>);
+0076 xp = cp(1,1);
+0077 yp = cp(2,2);
+0078 dist = (xp-xdata).^2 + (yp-ydata).^2;
+0079 [val,ind] = min(dist);
+0080 
+0081 <span class="keyword">if</span> ~isempty(ind)
+0082   set(fig,<span class="string">'WindowButtonMotionFcn'</span>,{@<a href="#_sub2" class="code" title="subfunction local_mouse_motion(obj,evd,h,ax,fig,fig_target,ind)">local_mouse_motion</a>,h,ax,fig,fig_target,ind});
+0083 <span class="keyword">end</span>
+0084 
+0085 <span class="comment">%--------------------------------------------------------%</span>
+0086 <a name="_sub2" href="#_subfunctions" class="code">function local_mouse_motion(obj,evd,h,ax,fig,fig_target,ind)</a>
+0087 
+0088 set(fig,<span class="string">'WindowButtonUpFcn'</span>,{@<a href="#_sub3" class="code" title="subfunction local_mouse_up(obj,evd,fig)">local_mouse_up</a>,fig});
+0089 cp = get(ax,<span class="string">'CurrentPoint'</span>);
+0090 yp = cp(2,2);
+0091 <span class="keyword">if</span> yp&lt;=0 
+0092     yp = 0;
+0093 <span class="keyword">elseif</span> yp &gt;= 1
+0094     yp = 1;
+0095 <span class="keyword">end</span>
+0096 
+0097 ydata = get(h,<span class="string">'ydata'</span>);
+0098 ydata(ind) = yp;
+0099 
+0100 <span class="keyword">if</span> ind &gt; 0
+0101   ydata(ind-1) = yp;
+0102 <span class="keyword">end</span>
+0103 
+0104 <span class="keyword">if</span> ind &lt; length(ydata)
+0105    ydata(ind+1) = yp;
+0106 <span class="keyword">end</span>
+0107 
+0108 set(h,<span class="string">'ydata'</span>,ydata);
+0109 
+0110 cmap = get(fig_target,<span class="string">'Colormap'</span>);
+0111 amap = get(fig_target,<span class="string">'Alphamap'</span>);
+0112 
+0113 <span class="keyword">switch</span>(get(ax,<span class="string">'tag'</span>))
+0114     <span class="keyword">case</span> <span class="string">'red'</span>
+0115         cmap(:,1) = ydata';
+0116     <span class="keyword">case</span> <span class="string">'green'</span>
+0117         cmap(:,2) = ydata'; 
+0118     <span class="keyword">case</span> <span class="string">'blue'</span>
+0119         cmap(:,3) = ydata';
+0120     <span class="keyword">case</span> <span class="string">'alpha'</span>
+0121         amap = ydata;
+0122 <span class="keyword">end</span>
+0123 
+0124 
+0125 set(fig_target,<span class="string">'Colormap'</span>,cmap);
+0126 set(fig_target,<span class="string">'AlphaMap'</span>,amap);
+0127 
+0128 
+0129 <span class="comment">%--------------------------------------------------------%</span>
+0130 <a name="_sub3" href="#_subfunctions" class="code">function local_mouse_up(obj,evd,fig)</a>
+0131 
+0132 set(fig,<span class="string">'WindowButtonMotionFcn'</span>,<span class="string">''</span>);
+0133 
+0134 
+0135 
+0136</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

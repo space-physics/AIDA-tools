@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of s_preferences</title>
+  <meta name="keywords" content="s_preferences">
+  <meta name="description" content="PREFERENCES - set preferences for starcal and skymap">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>s_preferences
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>PREFERENCES - set preferences for starcal and skymap</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function SkMp = s_preferences(SkMp,whichP) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> PREFERENCES - set preferences for starcal and skymap
+   
+ Calling:
+ SkMp = s_preferences(SkMp,whichP)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Skymap/def_s_preferences.html" class="code" title="function SkMp = def_s_preferences(SkMp)">def_s_preferences</a>	DEF_S_PREFERENCES - default preferences for starcal</li><li><a href="def_s_preferences.html" class="code" title="function SkMp = def_s_preferences(SkMp)">def_s_preferences</a>	DEF_S_PREFERENCES - default preferences for starcal</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function SkMp = s_preferences(SkMp,whichP)</a>
+0002 <span class="comment">% PREFERENCES - set preferences for starcal and skymap</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% SkMp = s_preferences(SkMp,whichP)</span>
+0006 
+0007 <span class="comment">%   Copyright � 2005 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0008 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0009 
+0010 Pzoom = 1;
+0011 Pplot = 2;
+0012 Pcolor= 3;
+0013 Psize = 4;
+0014 Pcalib= 5;
+0015 
+0016 title=<span class="string">'Preferences for starcalibration'</span>;
+0017 lineNo=1;
+0018 PROMPT={<span class="string">'Side length of zoom region [dl] (pixels):'</span>,<span class="keyword">...</span>
+0019     <span class="string">'Plot-size of stars:'</span>,<span class="keyword">...</span>
+0020     <span class="string">'Plot colour of stars:'</span>,<span class="keyword">...</span>
+0021     <span class="string">'Size of star-point-mark:'</span>,<span class="keyword">...</span>
+0022     <span class="string">'Colour of star-point-mark:'</span>,<span class="keyword">...</span>
+0023     <span class="string">'Size of error-point-mark:'</span>,<span class="keyword">...</span>
+0024     <span class="string">'Colour of error-point-mark:'</span>,<span class="keyword">...</span>
+0025     <span class="string">'Length scaling of error arrows:'</span>,<span class="keyword">...</span>
+0026     <span class="string">'Colour of error arrows:'</span>,<span class="keyword">...</span>
+0027     <span class="string">'Penalty scaling of optpar pseudolocking:'</span>,<span class="keyword">...</span>
+0028     <span class="string">'Max number of stars for autocal:'</span>,<span class="keyword">...</span>
+0029     <span class="string">'Size range for stars (pixels) [autocal]:'</span>,<span class="keyword">...</span>
+0030     <span class="string">'Huber-tanh-norm length [autocal]:'</span>};
+0031 DEF={num2str(SkMp.prefs.sz_z_r),<span class="keyword">...</span>
+0032      num2str(SkMp.prefs.pl_sz_st),<span class="keyword">...</span>
+0033      [<span class="string">'['</span>,num2str(SkMp.prefs.pl_cl_st),<span class="string">']'</span>],<span class="keyword">...</span>
+0034      num2str(SkMp.prefs.sz_st_pt),<span class="keyword">...</span>
+0035      SkMp.prefs.cl_st_pt,<span class="keyword">...</span>
+0036      num2str(SkMp.prefs.sz_er_pt),<span class="keyword">...</span>
+0037      SkMp.prefs.cl_er_pt,<span class="keyword">...</span>
+0038      num2str(SkMp.prefs.sc_er_ar),<span class="keyword">...</span>
+0039      SkMp.prefs.cl_er_ar,<span class="keyword">...</span>
+0040      num2str(SkMp.prefs.pscoptlck),<span class="keyword">...</span>
+0041      num2str(SkMp.prefs.mx_nr_st),<span class="keyword">...</span>
+0042      [<span class="string">'['</span>,num2str(SkMp.prefs.sz_rg_st),<span class="string">']'</span>],<span class="keyword">...</span>
+0043      num2str(SkMp.prefs.hu_nm_ln)};
+0044 
+0045 <span class="keyword">switch</span> whichP
+0046  <span class="keyword">case</span> Pzoom
+0047   indx = 1;
+0048   prompt = PROMPT(indx);
+0049   def = DEF(indx);
+0050   answer=inputdlg(prompt,title,lineNo,def);
+0051   SkMp.prefs.sz_z_r = str2num(char(answer{1}));
+0052   
+0053  <span class="keyword">case</span> Pplot
+0054   indx = 2:9;
+0055   prompt = PROMPT(indx);
+0056   def = DEF(indx);
+0057   answer=inputdlg(prompt,title,lineNo,def);
+0058   
+0059   SkMp.prefs.pl_sz_st = str2num(char(answer{1}));
+0060   SkMp.prefs.pl_cl_st = str2num(char(answer{2}));
+0061   SkMp.prefs.sz_st_pt = str2num(char(answer{3}));
+0062   SkMp.prefs.cl_st_pt = (char(answer{4}));
+0063   SkMp.prefs.sz_er_pt = str2num(char(answer{5}));
+0064   SkMp.prefs.cl_er_pt = (char(answer{6}));
+0065   SkMp.prefs.sc_er_ar = str2num(char(answer{7}));
+0066   SkMp.prefs.cl_er_ar = (char(answer{8}));
+0067   
+0068  <span class="keyword">case</span> Pcolor
+0069   indx = [3 5 7 9];
+0070   prompt = PROMPT(indx);
+0071   def = DEF(indx);
+0072   answer=inputdlg(prompt,title,lineNo,def);
+0073   
+0074   SkMp.prefs.pl_cl_st = str2num(char(answer{1}));
+0075   SkMp.prefs.cl_st_pt = (char(answer{2}));
+0076   SkMp.prefs.cl_er_pt = (char(answer{3}));
+0077   SkMp.prefs.cl_er_ar = (char(answer{4}));
+0078   
+0079  <span class="keyword">case</span> Psize
+0080   indx = [2 4 6 8];
+0081   prompt = PROMPT(indx);
+0082   def = DEF(indx);
+0083   answer=inputdlg(prompt,title,lineNo,def);
+0084   
+0085   SkMp.prefs.pl_sz_st = str2num(char(answer{1}));
+0086   SkMp.prefs.sz_st_pt = str2num(char(answer{2}));
+0087   SkMp.prefs.sz_er_pt = str2num(char(answer{3}));
+0088   SkMp.prefs.sc_er_ar = str2num(char(answer{4}));
+0089   
+0090  <span class="keyword">case</span> Pcalib
+0091   prompt = PROMPT([10 11 12 13]);
+0092   def = DEF([10 11 12 13]);
+0093   answer=inputdlg(prompt,title,lineNo,def);
+0094   
+0095   SkMp.prefs.pscoptlck = str2num(char(answer{1}));
+0096   SkMp.prefs.mx_nr_st = str2num(char(answer{2}));
+0097   SkMp.prefs.sz_rg_st = str2num(char(answer{3}));
+0098   SkMp.prefs.hu_nm_ln = str2num(char(answer{4}));
+0099 
+0100  <span class="keyword">otherwise</span>
+0101    SkMp = <a href="def_s_preferences.html" class="code" title="function SkMp = def_s_preferences(SkMp)">def_s_preferences</a>(SkMp);
+0102 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

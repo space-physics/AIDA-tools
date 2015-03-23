@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fitsfindkey_strmhead</title>
+  <meta name="keywords" content="fitsfindkey_strmhead">
+  <meta name="description" content="fitsfindkey_strmhead - Searches a FITS header H for keyword S">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>fitsfindkey_strmhead
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>fitsfindkey_strmhead - Searches a FITS header H for keyword S</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [j_out] = fitsfindkey_strmhead(H,S) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> fitsfindkey_strmhead - Searches a FITS header H for keyword S
+ 
+ Calling:
+  [J] = fitsfindkey_strmhead(H,S)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../EARTH/gtopo2maps.html" class="code" title="function varargout = gtopo2maps(gtopo_file,gtopo_hdr,ops)">gtopo2maps</a>	GTOPO2MAPS - Parse gtopo digital elevation models</li><li><a href="../Fits_tools/File2obs/KoschSBIG_HAARP.html" class="code" title="function [obs] = KoschSBIG_HAARP(img_head)">KoschSBIG_HAARP</a>	KoschSBIG_HAARP parses an fits header for observation info</li><li><a href="../Fits_tools/File2obs/KoschSBIG_HIPAS2007.html" class="code" title="function [obs] = KoschSBIG_HIPAS2007(img_head)">KoschSBIG_HIPAS2007</a>	LANCS_APOGEE_FITS parses an fits header for observation info</li><li><a href="../Fits_tools/File2obs/lancs_apogee_fits.html" class="code" title="function [obs] = lancs_apogee_fits(img_head)">lancs_apogee_fits</a>	LANCS_APOGEE_FITS parses an fits header for observation info</li><li><a href="fits_header2infostruct.html" class="code" title="function info = fits_header2infostruct(header,filename2parseheader)">fits_header2infostruct</a>	FITS_HEADER2INFOSTRUCT - parse fits header, make struct of meta-data</li><li><a href="try_to_be_smart.html" class="code" title="function [obs] = try_to_be_smart(img_head,ALIS_FITS,PO)">try_to_be_smart</a>	TRY_TO_BE_SMART parses an (ALIS) fits header for observation info</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [j_out] = fitsfindkey_strmhead(H,S)</a>
+0002 <span class="comment">% fitsfindkey_strmhead - Searches a FITS header H for keyword S</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  [J] = fitsfindkey_strmhead(H,S)</span>
+0006 
+0007 <span class="comment">% Copyright Peter Rydesaeter</span>
+0008 
+0009 j_out=[];<span class="comment">%if not found return empty</span>
+0010 ji = 1;
+0011 <span class="keyword">for</span> i1 = 1:size(H,1)
+0012   <span class="keyword">if</span> findstr(lower(H(i1,1:12)), lower(S)),
+0013     j_out(ji) = i1;
+0014     ji = ji+1;
+0015   <span class="keyword">end</span>
+0016 <span class="keyword">end</span>
+0017</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

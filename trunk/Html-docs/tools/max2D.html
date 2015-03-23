@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of max2D</title>
+  <meta name="keywords" content="max2D">
+  <meta name="description" content="max2D - maximum element and its indices in a 2-D array">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>max2D
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>max2D - maximum element and its indices in a 2-D array</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [Imax,i1,i2] = max2D(Iin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> max2D - maximum element and its indices in a 2-D array
+
+ Callling:
+   [Imax,i1,i2] = max2D(Iin)
+ Input:
+   Iin - 2-D array [n1 x n2]
+ Output:
+   maxI - maximum value in Iin [1 x 1]
+   i1   - index along dimension 1 of maxI
+   i2   - index along dimension 2 of maxI
+          such that maxI = Iin(i1,i2)
+ Example
+   Iin = randn(29,31);
+   [Imax,i1,i2] = max2D(Iin);
+   max(Iin(:)) == Imax &amp;&amp; Iin(i1,i2) == Imax</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Tomography/tomo_CalSensMat.html" class="code" title="function [CalMtr,stn] = tomo_CalSensMat(stn,Vem,X3D,Y3D,Z3D)">tomo_CalSensMat</a>	tomo_CalSensMat - calibration factors for FASTPROJECTION</li><li><a href="../Tomography/tomo_cal.html" class="code" title="function [CalFactors,stns,calimgs] = tomo_cal(stns,XfI,YfI,ZfI,OPS)">tomo_cal</a>	tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Imax,i1,i2] = max2D(Iin)</a>
+0002 <span class="comment">% max2D - maximum element and its indices in a 2-D array</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Callling:</span>
+0005 <span class="comment">%   [Imax,i1,i2] = max2D(Iin)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%   Iin - 2-D array [n1 x n2]</span>
+0008 <span class="comment">% Output:</span>
+0009 <span class="comment">%   maxI - maximum value in Iin [1 x 1]</span>
+0010 <span class="comment">%   i1   - index along dimension 1 of maxI</span>
+0011 <span class="comment">%   i2   - index along dimension 2 of maxI</span>
+0012 <span class="comment">%          such that maxI = Iin(i1,i2)</span>
+0013 <span class="comment">% Example</span>
+0014 <span class="comment">%   Iin = randn(29,31);</span>
+0015 <span class="comment">%   [Imax,i1,i2] = max2D(Iin);</span>
+0016 <span class="comment">%   max(Iin(:)) == Imax &amp;&amp; Iin(i1,i2) == Imax</span>
+0017 
+0018 <span class="comment">% Very exciting function!</span>
+0019 [maxI1D,i1] = max(Iin);
+0020 [Imax,i2] = max(maxI1D);
+0021 i1 = i1(i2);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

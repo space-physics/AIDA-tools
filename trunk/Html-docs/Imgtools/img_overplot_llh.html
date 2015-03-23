@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of img_overplot_llh</title>
+  <meta name="keywords" content="img_overplot_llh">
+  <meta name="description" content="IMG_OVERPLOT_LLH - longitude-latitude-height points projected">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>img_overplot_llh
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>IMG_OVERPLOT_LLH - longitude-latitude-height points projected</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function h = img_overplot_llh(ImgIn,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblstr,gridstyle) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> IMG_OVERPLOT_LLH - longitude-latitude-height points projected
+ onto image plane. Image projection of longitude-latitude-altitude
+ points calculated with optical parameters OPTPAR for a camera
+ with known position (longitude, latitude, altitude).
+ 
+ This function is written to be a used in a callback to the uimenu
+ reading most recent all-sky images to help with pointing of EISCAT
+ radars (or ALIS etc).
+
+ Calling:
+  h = img_overplot_llh(ImgIn,long0lat0alt0,longlatalt,optpar,titleStr)
+ Input:
+  ImgIn         - Image to plot points onto (n1 x n2) or (n1 x n2 x 3)
+  long0lat0alt0 - [longitude latitude altitude] of camera (degrees, km)
+  longlatalt    - [long lat alt] matrix [n1 x n2] of points (degrees, km)
+  optpar        - optical parameters - as obtained with
+                  geometrical calibration with STARCAL
+  titleStr      - title string [1 x nStr]</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/project_llh2img.html" class="code" title="function [u,v,uG,vG,cG1,cG2] = project_llh2img(longlatalt,long0lat0alt0,optpar,imsiz,gridstyle)">project_llh2img</a>	PROJECT_LLH2IMG - project a point in space LONGLATALT down onto an image</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Aurora/callbackFcn4PointsOverImg.html" class="code" title="function callbackFcn4PointsOverImg(ImgName,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblStrs,gridstyle)">callbackFcn4PointsOverImg</a>	callbackFcn4PointsOverImg - wrapping of 2 functions for ASC image overplotting</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function h = img_overplot_llh(ImgIn,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblstr,gridstyle)</a>
+0002 <span class="comment">% IMG_OVERPLOT_LLH - longitude-latitude-height points projected</span>
+0003 <span class="comment">% onto image plane. Image projection of longitude-latitude-altitude</span>
+0004 <span class="comment">% points calculated with optical parameters OPTPAR for a camera</span>
+0005 <span class="comment">% with known position (longitude, latitude, altitude).</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% This function is written to be a used in a callback to the uimenu</span>
+0008 <span class="comment">% reading most recent all-sky images to help with pointing of EISCAT</span>
+0009 <span class="comment">% radars (or ALIS etc).</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Calling:</span>
+0012 <span class="comment">%  h = img_overplot_llh(ImgIn,long0lat0alt0,longlatalt,optpar,titleStr)</span>
+0013 <span class="comment">% Input:</span>
+0014 <span class="comment">%  ImgIn         - Image to plot points onto (n1 x n2) or (n1 x n2 x 3)</span>
+0015 <span class="comment">%  long0lat0alt0 - [longitude latitude altitude] of camera (degrees, km)</span>
+0016 <span class="comment">%  longlatalt    - [long lat alt] matrix [n1 x n2] of points (degrees, km)</span>
+0017 <span class="comment">%  optpar        - optical parameters - as obtained with</span>
+0018 <span class="comment">%                  geometrical calibration with STARCAL</span>
+0019 <span class="comment">%  titleStr      - title string [1 x nStr]</span>
+0020 
+0021 <span class="comment">% Copyright � (20121013) Bj�n Gustavsson</span>
+0022 <span class="comment">% This is free software, licensed under GNU GPL v 3 or later.</span>
+0023 
+0024 
+0025 
+0026 <span class="comment">% Calculate image coordinate of point projections and</span>
+0027 <span class="comment">% longitude-latitude grid:</span>
+0028 <span class="keyword">if</span> ~isempty(longlatalt)
+0029   [u,v,uG,vG,cG1,cG2] = <a href="../Camera/project_llh2img.html" class="code" title="function [u,v,uG,vG,cG1,cG2] = project_llh2img(longlatalt,long0lat0alt0,optpar,imsiz,gridstyle)">project_llh2img</a>(longlatalt,long0lat0alt0,optpar,size(ImgIn(imReg(3):imReg(4),imReg(1):imReg(2),1)),gridstyle);
+0030 <span class="keyword">else</span>
+0031   [u,v,uG,vG,cG1,cG2] = <a href="../Camera/project_llh2img.html" class="code" title="function [u,v,uG,vG,cG1,cG2] = project_llh2img(longlatalt,long0lat0alt0,optpar,imsiz,gridstyle)">project_llh2img</a>([long0lat0alt0;long0lat0alt0],long0lat0alt0,optpar,size(ImgIn(imReg(3):imReg(4),imReg(1):imReg(2),1)),gridstyle);
+0032   u = [];
+0033   v = [];
+0034 <span class="keyword">end</span>
+0035 <span class="comment">% Show image</span>
+0036 hold off
+0037 imagesc(ImgIn)
+0038 set(gca,<span class="string">'xtick'</span>,[],<span class="string">'ytick'</span>,[],<span class="string">'position'</span>,[0 0 1 1])
+0039 hold on
+0040 
+0041 <span class="keyword">if</span> nargin &gt; 6 &amp; ~isempty(gridstyle)
+0042   <span class="comment">% Possibly plot a grid:</span>
+0043   <span class="keyword">if</span> strcmp(gridstyle,<span class="string">'ll'</span>)
+0044     <span class="comment">% then plot longitude latitude grid:</span>
+0045     plot(uG(1:<span class="keyword">end</span>,1:2:end)+imReg(1),vG(1:<span class="keyword">end</span>,1:2:end)+imReg(3),<span class="string">'w:'</span>)
+0046     plot(uG(1:2:<span class="keyword">end</span>,1:end)'+imReg(1),vG(1:2:<span class="keyword">end</span>,1:end)'+imReg(3),<span class="string">'w:'</span>)
+0047     <span class="comment">% Labels of the grid</span>
+0048     text(10,30,<span class="string">'Lat grid:'</span>,<span class="string">'fontsize'</span>,14,<span class="string">'color'</span>,<span class="string">'w'</span>)
+0049     <span class="keyword">for</span> i1 = 1:2:length(cG2)
+0050       text(10,35+8*i1,sprintf(<span class="string">'%4.1f'</span>,cG2(i1)),<span class="string">'fontsize'</span>,14,<span class="string">'color'</span>,<span class="string">'w'</span>)
+0051     <span class="keyword">end</span>
+0052     text(size(ImgIn,2)-70,30,<span class="string">'Long grid:'</span>,<span class="string">'fontsize'</span>,14,<span class="string">'color'</span>,<span class="string">'w'</span>)
+0053     <span class="keyword">for</span> i1 = 1:2:length(cG1)
+0054       text(size(ImgIn,2)-35,35+8*i1,sprintf(<span class="string">'%4.1f'</span>,cG1(i1)),<span class="string">'fontsize'</span>,14,<span class="string">'color'</span>,<span class="string">'w'</span>)
+0055     <span class="keyword">end</span>
+0056   <span class="keyword">else</span>
+0057     <span class="comment">% the grid should be an azimuth-zenith grid:</span>
+0058     plot(uG'+imReg(1),vG'+imReg(3),<span class="string">'w:'</span>)
+0059     plot(uG(:,1:45:end)+imReg(1),vG(:,1:45:end)+imReg(3),<span class="string">'w:'</span>)
+0060     <span class="comment">% Labels of the grid</span>
+0061     text(10,30,<span class="string">'Zenith grid:'</span>,<span class="string">'fontsize'</span>,14,<span class="string">'color'</span>,<span class="string">'w'</span>)
+0062     <span class="keyword">for</span> i1 = 1:length(cG2)
+0063       text(10,35+20*i1,sprintf(<span class="string">'%4.1f'</span>,cG2(i1)*180/pi),<span class="string">'fontsize'</span>,14,<span class="string">'color'</span>,<span class="string">'w'</span>)
+0064     <span class="keyword">end</span>
+0065     text(size(ImgIn,2)-70,30,<span class="string">'Azimuth grid:'</span>,<span class="string">'fontsize'</span>,14,<span class="string">'color'</span>,<span class="string">'w'</span>)
+0066     <span class="keyword">for</span> i1 = 1:45:(length(cG1)-1)
+0067       text(size(ImgIn,2)-35,50+i1/45*20,sprintf(<span class="string">'%3.0f'</span>,cG1(i1)*180/pi),<span class="string">'fontsize'</span>,14,<span class="string">'color'</span>,<span class="string">'w'</span>)
+0068     <span class="keyword">end</span>
+0069   <span class="keyword">end</span>
+0070 <span class="keyword">end</span>
+0071 
+0072 <span class="comment">% Plot the image points:</span>
+0073 <span class="keyword">for</span> i1 = 1:length(u),
+0074   h(i1) = plot(u(i1)+imReg(1),v(i1)+imReg(3),<span class="string">'.'</span>,<span class="string">'markersize'</span>,15);
+0075 <span class="keyword">end</span>
+0076 <span class="comment">% Color the image points:</span>
+0077 cmlines(h)
+0078 <span class="comment">% Label the points:</span>
+0079 <span class="keyword">for</span> i1 = 1:length(h),
+0080 <span class="comment">% $$$   text(u(i1)+0.03*size(ImgIn,2)+imReg(1),...</span>
+0081 <span class="comment">% $$$        v(i1)+0.03*size(ImgIn,1)+imReg(3),...</span>
+0082 <span class="comment">% $$$        num2str(i1),...</span>
+0083 <span class="comment">% $$$        'color',get(h(i1),'color'),...</span>
+0084 <span class="comment">% $$$        'FontWeight','bold',...</span>
+0085 <span class="comment">% $$$        'fontsize',14)</span>
+0086   text(u(i1)+0.03*size(ImgIn,2)+imReg(1),<span class="keyword">...</span>
+0087        v(i1)+0.03*size(ImgIn,1)+imReg(3),<span class="keyword">...</span>
+0088        lblstr{i1},<span class="keyword">...</span>
+0089        <span class="string">'color'</span>,get(h(i1),<span class="string">'color'</span>),<span class="keyword">...</span>
+0090        <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>,<span class="keyword">...</span>
+0091        <span class="string">'fontsize'</span>,14)
+0092 <span class="keyword">end</span>
+0093 <span class="comment">% If there is a title string then decorate the image a bit:</span>
+0094 <span class="keyword">if</span> nargin &gt; 4
+0095   updStr = clock;
+0096   set(gcf,<span class="string">'name'</span>,titleStr)
+0097   text(5,size(ImgIn,1)-10,<span class="keyword">...</span>
+0098        sprintf(<span class="string">'Updated %4d%02d%02d %02d:%02d:%02d'</span>,floor(clock)),<span class="keyword">...</span>
+0099        <span class="string">'fontsize'</span>,14,<span class="keyword">...</span>
+0100        <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>,<span class="keyword">...</span>
+0101        <span class="string">'color'</span>,<span class="string">'w'</span>)
+0102 <span class="keyword">end</span>
+0103 
+0104 <span class="comment">% Maximize the image frame in the figure:</span>
+0105 set(gca,<span class="string">'position'</span>,[0 0 1 1])</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

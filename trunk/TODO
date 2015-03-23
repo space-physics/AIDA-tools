@@ -1,0 +1,72 @@
+Find all configurations that should be done!
+
+
+StarCalResDir i typical_pre_proc_ops.m
+AIDA_startup.m 
+
+ASK_site_setup.m:
+videodir = '/data/ASK'; % Here it is OK to have!
+HDIR     = '/export/data/bjg1c10/ASK/';
+ASK_read_asklut('/data/ASK/setup/ask.lut');
+
+ASK_enable_datadir.m
+ASK_read_asklut('/stp/raid2/ask/data/setup/ask.lut');
+
+
+ASK_filterCorrectionFactors.m:
+ C_filter7774 = 0.7;
+ C_filter6370 = 0.76;
+ C_filter5620 = 0.0633;
+
+
+TODOs remaining after 20120711
+
+Tomography:
+* Make the scaling-magical-constant-thingy!
+
+Documentation
+
+* Make more extensive documentation
+* Check how to make documentation included into matlab's internal docs.
+* Update Contents.m
+
+Fits_tools
+* Check how to do the byte-swapping in READ_AFRL_KEO for the header
+  pixels
+
+* Include AKAIKE!
+
+##### These are for later: #####
+
+Spectral_cal:
+*  Later: Make functions that use Pickles!
+
+Starcal:
+* Later: Come up with some quality measure of a geometric star calibration
+  to make it possible to choose the best for cases where several has
+  been done. According to number of identified stars and total error
+  or something like that.
+
+Imgtools:
+ *  Later: deconvcrude - fix this one up with damping and bells and whistles!
+
+##### Next major rewrite: #####
+
+Change structure of optpar/acc to:
+
+[StnNr CmNr img_date long lat az ze optmod rot1 rot2 rot3 f1 f2 du dv alpha1 ...]
+
+This would make it less problematic to use optical parameters with
+varying number of parameters in camera models. The downside is that
+the structure of the star-fitting optimisation functions has to be
+rewritten with the fcnnmn(VarPar,vpIdx,AllPar,restInputVars...)
+pattern, with the inputting of the variable parameters, VarPar into
+the "all parameters array", AllPar (i.e. AllPar(vpIdx) = VarPar;). 
+This is a fairly major rewrite since it will also include changing all
+functions that use the optical parameters and call most of the
+functions in the Camera directory. What files needs to be modified,
+with the lines containing optpar listed, are given in the file
+optp.files. This might be a tedious refactoring task and requires a large
+programming effort to pay off - it might be a good task for someone
+trying to learn AIDA_TOOLS in depth. I estimate this to be about a 2-3
+month task, including proper testing.

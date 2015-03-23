@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_TT_MJS</title>
+  <meta name="keywords" content="ASK_TT_MJS">
+  <meta name="description" content="ASK_TT_MJS - converts calendar date to modified Julian second">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_TT_MJS
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_TT_MJS - converts calendar date to modified Julian second</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function TT_MJS = ASK_TT_MJS(date_vec) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_TT_MJS - converts calendar date to modified Julian second
+   (seconds elapsed since 00:00 UT on Jan 1, 1950)
+
+ Calling: 
+   TT_MJS = ASK_TT_MJS(date_vec)
+ Input:
+   date_vec - array with rows of: [yyyy,mm,dd,(hh,mm,ss.ms)]
+ Output:
+   TT_MJS - seconds since 00:00 UT on Jan 1, 1950</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_enable_datadir.html" class="code" title="function ASK_enable_datadir(datadir,smartdark,flat_tromso)">ASK_enable_datadir</a>	ASK_ENABLE_DATADIR - short routine to automatically enable</li><li><a href="ASK_get_dark_name.html" class="code" title="function [dark_name,dark_short] = ASK_get_dark_name(dpath,BeforeOrAfter)">ASK_get_dark_name</a>	ASK_GET_DARK_NAME - get the name of the dark megablock corresponding to the</li><li><a href="ASK_mjs_dy.html" class="code" title="function date_out = ASK_mjs_dy(MJStime)">ASK_mjs_dy</a>	ASK_MJS_DY -  convert mjs time to decimal years</li><li><a href="ASK_read_asklut.html" class="code" title="function asklut = ASK_read_asklut(filename)">ASK_read_asklut</a>	ASK_READ_ASKLUT - reads ASK meta-datafrom look up tables</li><li><a href="ASK_read_cnvlut.html" class="code" title="function [cnv_t1,cnv_t2,cnv_data] = ASK_read_cnvlut(filename)">ASK_read_cnvlut</a>	ASK_READ_CNVLUT - reads the camera parameter lookup table</li><li><a href="ASK_read_sst.html" class="code" title="function [mjs1,mjs2] = ASK_read_sst(a,FormatStr)">ASK_read_sst</a>	ASK_READ_SST -  A procedure to read the start and stop times from a string</li><li><a href="ASK_read_vs.html" class="code" title="function vs = ASK_read_vs(num,filename,quiet)">ASK_read_vs</a>	ASK_READ_VS -  the procedure to read the videoevent setup - the new version</li><li><a href="ASK_time_tick.html" class="code" title="function [ticks,tickn,tickv,tickm] = ASK_time_tick(StartTimeMJS,dTime,less)">ASK_time_tick</a>	ASK_TIME_AXIS - suitable settings for time tick marks and labels.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function TT_MJS = ASK_TT_MJS(date_vec)</a>
+0002 <span class="comment">% ASK_TT_MJS - converts calendar date to modified Julian second</span>
+0003 <span class="comment">%   (seconds elapsed since 00:00 UT on Jan 1, 1950)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%   TT_MJS = ASK_TT_MJS(date_vec)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%   date_vec - array with rows of: [yyyy,mm,dd,(hh,mm,ss.ms)]</span>
+0009 <span class="comment">% Output:</span>
+0010 <span class="comment">%   TT_MJS - seconds since 00:00 UT on Jan 1, 1950</span>
+0011 
+0012 
+0013 <span class="comment">% Modified from TT_MJS.pro</span>
+0014 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0015 <span class="comment">% GPL 3.0 or later applies</span>
+0016 
+0017 <span class="comment">% Let mathworks date-functions do the heavy lifting:</span>
+0018 TT_MJS = (double(datenum(date_vec)) - double(datenum([1950,1,1])))*24*3600;</pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

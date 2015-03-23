@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of inv_project_directions</title>
+  <meta name="keywords" content="inv_project_directions">
+  <meta name="description" content="INV_PROJECT_DIRECTIONS - pixels line-of-sight to azimuth and zenith angles">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>inv_project_directions
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>INV_PROJECT_DIRECTIONS - pixels line-of-sight to azimuth and zenith angles</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [az,ze] = inv_project_directions(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> INV_PROJECT_DIRECTIONS - pixels line-of-sight to azimuth and zenith angles
+ 
+            in an image inimg taken from point R with a camera
+            model OPTMOD and rotation and optical transfer
+            function caracterised by OPTPAR on a plane with a
+            normal E_N at distance L_O. CMTR is an optional
+            correction rotation matrix.
+ Calling:
+ [az,ze] = inv_project_directions(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)
+
+ Input:
+  PX,PY - arrays of horizontal and vertical pixel coordinates.
+  INIMG - image needed to provide its size.
+  R     - camera location 1x3 array. unused,
+  OPTMOD - number for optical characteristics/optical model of the
+           camera.
+  OPTPAR - optical parameters. 
+  E_N    - Unused, unit vector perpendicular to a plane.
+  L_0    - Unused, length to a plane.
+  CMTR   - Optional correction matrix, for camera rotation.
+
+       See also <a href="camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">camera_model</a>, camera_inv_model</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>	CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA</li><li><a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>	CAMERA_ROT - determines the coordinate system of the camera</li><li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Spectral_cal/spc_make_theta.html" class="code" title="function [theta_out,ze_out,ff_out,costheta] = spc_make_theta(gX,gY,optpar,sis,sz_img)">spc_make_theta</a>	SPC_MAKE_THETA - Calculate the angle from the optical axis,</li><li><a href="../Tomography/tomo_CalSensMat.html" class="code" title="function [CalMtr,stn] = tomo_CalSensMat(stn,Vem,X3D,Y3D,Z3D)">tomo_CalSensMat</a>	tomo_CalSensMat - calibration factors for FASTPROJECTION</li><li><a href="../Tomography/tomo_setup4reduced2D.html" class="code" title="function [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS)">tomo_setup4reduced2D</a>	tomo_setup4reduced2D - Set up coordinates and projection matrices</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [az,ze] = inv_project_directions(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)</a>
+0002 <span class="comment">% INV_PROJECT_DIRECTIONS - pixels line-of-sight to azimuth and zenith angles</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%            in an image inimg taken from point R with a camera</span>
+0005 <span class="comment">%            model OPTMOD and rotation and optical transfer</span>
+0006 <span class="comment">%            function caracterised by OPTPAR on a plane with a</span>
+0007 <span class="comment">%            normal E_N at distance L_O. CMTR is an optional</span>
+0008 <span class="comment">%            correction rotation matrix.</span>
+0009 <span class="comment">% Calling:</span>
+0010 <span class="comment">% [az,ze] = inv_project_directions(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% Input:</span>
+0013 <span class="comment">%  PX,PY - arrays of horizontal and vertical pixel coordinates.</span>
+0014 <span class="comment">%  INIMG - image needed to provide its size.</span>
+0015 <span class="comment">%  R     - camera location 1x3 array. unused,</span>
+0016 <span class="comment">%  OPTMOD - number for optical characteristics/optical model of the</span>
+0017 <span class="comment">%           camera.</span>
+0018 <span class="comment">%  OPTPAR - optical parameters.</span>
+0019 <span class="comment">%  E_N    - Unused, unit vector perpendicular to a plane.</span>
+0020 <span class="comment">%  L_0    - Unused, length to a plane.</span>
+0021 <span class="comment">%  CMTR   - Optional correction matrix, for camera rotation.</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%       See also camera_model, camera_inv_model</span>
+0024 
+0025 
+0026 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0027 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0028 
+0029 
+0030 bxy = size(<a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>);
+0031 
+0032 <span class="comment">% Calculate the camera rotation</span>
+0033 <span class="keyword">if</span> optmod &lt; 0
+0034   rotmtr = <a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>(optpar.rot(1),optpar.rot(2),optpar.rot(3));
+0035 <span class="keyword">elseif</span> optmod ~= 11
+0036   rotmtr = <a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>(optpar(3),optpar(4),optpar(5));
+0037 <span class="keyword">else</span>
+0038   rotmtr = eye(3);
+0039 <span class="keyword">end</span>
+0040 <span class="comment">% Correct for the rotation relative the &quot;central-station&quot; of the</span>
+0041 <span class="comment">% local coordinate system:</span>
+0042 <span class="keyword">if</span> nargin&gt;8
+0043   rotmtr = cmtr*rotmtr;
+0044 <span class="keyword">end</span>
+0045 
+0046 <span class="comment">% Calculate the pixel line-of-sigh directions in the camera</span>
+0047 <span class="comment">% coordinate system:</span>
+0048 [phi,theta] = <a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>(px,py,optpar,optmod,bxy);
+0049 epix = [sin(theta).*sin(phi); sin(theta).*cos(phi); cos(theta)];
+0050 <span class="comment">% Rotate/Transform them with the rotation matrix:</span>
+0051 epix = rotmtr*epix;
+0052 epix = epix';
+0053 epix(imag(epix(:,1))~=0,:) = nan;
+0054 epix(imag(epix(:,2))~=0,:) = nan;
+0055 epix(imag(epix(:,3))~=0,:) = nan;
+0056 
+0057 <span class="comment">% Calculate the zenith and azimuthal angles:</span>
+0058 ze = acos(epix(:,3));
+0059 az = atan2(epix(:,1),epix(:,2));</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

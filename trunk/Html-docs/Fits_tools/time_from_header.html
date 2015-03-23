@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of time_from_header</title>
+  <meta name="keywords" content="time_from_header">
+  <meta name="description" content="TIME_FROM_HEADER parses a ALIS header for time">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>time_from_header
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TIME_FROM_HEADER parses a ALIS header for time</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [time,timestr] = time_from_header(header) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TIME_FROM_HEADER parses a ALIS header for time
+ Usually/hopefully compatible with all ALIS versions.
+
+ Calling:
+  [time] = time_from_header(header)
+ 
+ Input:
+  HEADER - fits header</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>	FITSFINDINHEADER finds string S in fitsheader H</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Imgtools/img_stack2keo.html" class="code" title="function [Keo] = img_stack2keo(Imstack,locnrs,line_not_columns,optp,PO)">img_stack2keo</a>	imgs_stack2keo - make keograms from stack of images</li><li><a href="../Imgtools/imgs_keograms.html" class="code" title="function [varargout] = imgs_keograms(files,locnrs,line_not_columns,optp,PO)">imgs_keograms</a>	imgs_keograms - make keograms from sequence of image files.</li><li><a href="../Imgtools/imgs_keograms_r3.html" class="code" title="function [Keo,exptimes,Tstrs,filters] = imgs_keograms_r3(files,rs,r,optpar,PO)">imgs_keograms_r3</a>	imgs_keogram_r3 - make keogram of R3's projection in the image.</li><li><a href="../Imgtools/imgs_rgb_keograms_r3.html" class="code" title="function [Keo,exptimes,Tstrs,filters] = imgs_rgb_keograms_r3(files,rs,r,optpar,PO)">imgs_rgb_keograms_r3</a>	imgs_keogram_r3 - make keogram of R3's projection in the image.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [time,timestr] = time_from_header(header)</a>
+0002 <span class="comment">% TIME_FROM_HEADER parses a ALIS header for time</span>
+0003 <span class="comment">% Usually/hopefully compatible with all ALIS versions.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%  [time] = time_from_header(header)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%  HEADER - fits header</span>
+0010 
+0011 
+0012 <span class="comment">%   Copyright � 2001-2005 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0013 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0014 
+0015 delimiters = [9:13 32];
+0016 delimiters = [delimiters,<span class="string">'~=+*/^()[]{}&lt;&gt;,;:'''</span>];
+0017 
+0018 
+0019 H = header;
+0020 
+0021 hindx = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(H,<span class="string">'DATE-OBS'</span>);
+0022 
+0023 <span class="keyword">if</span> ~isempty(hindx)
+0024   delimiters = [delimiters,<span class="string">'-T'</span>];
+0025   timestr = H(hindx,12:end);
+0026   [year,timestr] = strtok(timestr,delimiters);
+0027   [month,timestr] = strtok(timestr,delimiters);
+0028   [day,timestr] = strtok(timestr,delimiters);
+0029   [hour,timestr] = strtok(timestr,delimiters);
+0030   [minute,timestr] = strtok(timestr,delimiters);
+0031   [sec,timestr] = strtok(timestr,delimiters);
+0032   time = str2num([year,month,day,hour,minute,sec]);
+0033   
+0034 <span class="keyword">else</span>
+0035   
+0036   <span class="comment">% Didn't find 'DATE-OBS' keyword now looking for old nonstandard</span>
+0037   <span class="comment">% time keyword used by 'ALIS' pre 1998 something...</span>
+0038   hindx = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(H,<span class="string">'ALIS-UTC'</span>);
+0039   <span class="keyword">if</span> ~isempty(hindx)
+0040     timestr = H(hindx,12:end);
+0041     [gps_class,timestr] = strtok(timestr,<span class="string">':'</span>);
+0042     [year,timestr] = strtok(timestr,delimiters);
+0043     [month,timestr] = strtok(timestr,delimiters);
+0044     [day,timestr] = strtok(timestr,delimiters);
+0045     [hour,timestr] = strtok(timestr,delimiters);
+0046     [minute,timestr] = strtok(timestr,delimiters);
+0047     [sec,timestr] = strtok(timestr,delimiters);
+0048     time = 1900 + str2num([year,month,day,hour,minute,sec]);
+0049     
+0050   <span class="keyword">else</span>
+0051     <span class="comment">% when everything else fails ask...</span>
+0052     datestr = <span class="string">'Date of observation (YYYY , MM , DD)'</span>;
+0053     timestr = <span class="string">'Time of observation (UT) (HH , MM , SS.dd)'</span>;
+0054     defll = {<span class="string">'1990 12 24'</span>,<span class="string">'15  07  12'</span>};
+0055     title = <span class="string">'OBSERVATION TIME?'</span>;
+0056     lineNo=1;
+0057     answer=inputdlg({datestr,timestr},title,lineNo,defll);
+0058     time = [ str2num(answer{1}) str2num(answer{2})];
+0059     
+0060   <span class="keyword">end</span>
+0061   
+0062 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

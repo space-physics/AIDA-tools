@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_megablockviewer</title>
+  <meta name="keywords" content="ASK_megablockviewer">
+  <meta name="description" content="ASK_MEGABLOCKVIEWER - Utility callback function for zooming around">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_megablockviewer
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_MEGABLOCKVIEWER - Utility callback function for zooming around</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function ASK_megablockviewer(ASKaction) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_MEGABLOCKVIEWER - Utility callback function for zooming around
+    in a ASK keogram-overlayed. This function is used in the
+    callbacks for the ASK-menu items: zoom-in, zoom-out and
+    zoom-Out-all-the-way
+ 
+ Calling:
+   ASK_megablockviewer(ASKaction)
+ Input:
+  ASKaction - [1 | 2 | 3], where 1 makes it zoom in to
+              ginput-selected time-interval, 2 makes it zoom back
+              out one step, and 3 makes it zoom out to the full
+              mega-block time-interval.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_MJS_TT.html" class="code" title="function varargout = ASK_MJS_TT(MJS)">ASK_MJS_TT</a>	ASK_MJS_TT - convert modified Julian second to calender date</li><li><a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li><li><a href="ASK_time2indx.html" class="code" title="function i1 = ASK_time2indx(timevec)">ASK_time2indx</a>	ASK_TIME2INDX - returns the imasge index for a time-vector</li><li><a href="../../tools/subplot_dx_Squeezer.html" class="code" title="function ph = subplot_dx_Squeezer(sph,spp_org)">subplot_dx_Squeezer</a>	SUBPLOT_DX_SQUEEZER - Squeeze out space between subplot-axes</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ASK_megablockviewer(ASKaction)</a>
+0002 <span class="comment">% ASK_MEGABLOCKVIEWER - Utility callback function for zooming around</span>
+0003 <span class="comment">%    in a ASK keogram-overlayed. This function is used in the</span>
+0004 <span class="comment">%    callbacks for the ASK-menu items: zoom-in, zoom-out and</span>
+0005 <span class="comment">%    zoom-Out-all-the-way</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%   ASK_megablockviewer(ASKaction)</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%  ASKaction - [1 | 2 | 3], where 1 makes it zoom in to</span>
+0011 <span class="comment">%              ginput-selected time-interval, 2 makes it zoom back</span>
+0012 <span class="comment">%              out one step, and 3 makes it zoom out to the full</span>
+0013 <span class="comment">%              mega-block time-interval.</span>
+0014 
+0015 <span class="comment">% Copyright B Gustavsson 20101119 &lt;bjorn@irf.se&gt;</span>
+0016 <span class="comment">% This is free software, licensed under GNU GPL version 2 or later</span>
+0017 
+0018 
+0019 <span class="keyword">global</span> vs
+0020 <span class="keyword">persistent</span> indxStack
+0021 
+0022 <span class="comment">% Make good options for the overlayed-keogram:</span>
+0023 ops4k = <a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>;
+0024 <span class="comment">% Cascade filtering with Lee's sigma filter and 2-D median filter:</span>
+0025 ops4k.filtertype = {<span class="string">'sigma'</span>  <span class="string">'median'</span>};
+0026 ops4k.filterArgs =  {{[3,3]}  {[3,3],<span class="string">'symmetric'</span>}};
+0027 <span class="comment">% Only display the RGB-composite image in the image row:</span>
+0028 ops4k.oneImg = 4;
+0029 <span class="comment">% Make it show 9 images in that row:</span>
+0030 ops4k.subplot4imgs = [5 9 10];
+0031 
+0032 qweT = <a href="ASK_MJS_TT.html" class="code" title="function varargout = ASK_MJS_TT(MJS)">ASK_MJS_TT</a>(vs.vmjs(vs.vsel));
+0033 <span class="keyword">if</span> ASKaction == 1 <span class="comment">% Then zoom in</span>
+0034   [tG,yG,bG] = ginput(2);
+0035   tZoom = [qweT(1:3),tG(1),0,0;qweT(1:3),tG(2),0,0];
+0036   iZ = sort(<a href="ASK_time2indx.html" class="code" title="function i1 = ASK_time2indx(timevec)">ASK_time2indx</a>(tZoom));
+0037   
+0038   <span class="keyword">if</span> ~isempty(indxStack)
+0039     indxStack(end+1,:) = iZ;
+0040   <span class="keyword">else</span>
+0041     axT = axis;
+0042     tZoom = [qweT(1:3),axT(1),0,0;qweT(1:3),axT(2),0,0];
+0043     <span class="keyword">try</span>
+0044       i1 = <a href="ASK_time2indx.html" class="code" title="function i1 = ASK_time2indx(timevec)">ASK_time2indx</a>(tZoom(1,:));
+0045     <span class="keyword">catch</span>
+0046       i1 = 1;
+0047     <span class="keyword">end</span>
+0048     <span class="keyword">try</span>
+0049       i2 = <a href="ASK_time2indx.html" class="code" title="function i1 = ASK_time2indx(timevec)">ASK_time2indx</a>(tZoom(2,:));
+0050     <span class="keyword">catch</span>
+0051       i2 = vs.vnl(vs.vsel);
+0052     <span class="keyword">end</span>
+0053     indxStack(1,:) = sort([i1,i2]);
+0054     indxStack(2,:) = iZ;
+0055   <span class="keyword">end</span>
+0056 <span class="keyword">elseif</span> ASKaction == 3 &amp; size(indxStack,1) &gt; 1 <span class="comment">% Zoom all the way</span>
+0057   <span class="comment">% reset the zoom-stack (scrap all of it except the first item):</span>
+0058   iZ = indxStack(1,:);
+0059   indxStack = indxStack(1,:);
+0060 <span class="keyword">elseif</span> size(indxStack,1) &gt; 1
+0061   <span class="comment">% Zoom back out one step:</span>
+0062   iZ = indxStack(end-1,:);
+0063   indxStack = indxStack(1:end-1,:);
+0064 <span class="keyword">end</span>
+0065 <span class="comment">% Make the keograms for the current time-frame:</span>
+0066 <span class="comment">%Was; [keo,imstack,timeV] = ASK_keogram_overlayed(iZ(1),iZ(2),max(round(diff(iZ)/500),1),[0,0,0],7,128,128,90,ops4k);</span>
+0067 <a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>(iZ(1),iZ(2),max(round(diff(iZ)/500),1),[0,0,0],7,128,128,90,ops4k);
+0068 
+0069 
+0070 <span class="keyword">for</span> i1 = 1:ops4k.subplot4imgs(2),
+0071   sph(i1) = subplot(ops4k.subplot4imgs(1),<span class="keyword">...</span>
+0072                     ops4k.subplot4imgs(2),<span class="keyword">...</span>
+0073                     ops4k.subplot4imgs(3)-1+i1);
+0074 <span class="keyword">end</span>
+0075 <span class="comment">% And squeeze out the empty space between the images by making them</span>
+0076 <span class="comment">% bigger:</span>
+0077 <a href="../../tools/subplot_dx_Squeezer.html" class="code" title="function ph = subplot_dx_Squeezer(sph,spp_org)">subplot_dx_Squeezer</a>(sph)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

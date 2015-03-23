@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sort_bckgr</title>
+  <meta name="keywords" content="sort_bckgr">
+  <meta name="description" content="SORT_BCKGR - sorts the local image maxima in I(i,j)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>sort_bckgr
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SORT_BCKGR - sorts the local image maxima in I(i,j)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [sI,indx] = sort_bckgr(i,j,I,bild) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SORT_BCKGR - sorts the local image maxima in I(i,j)
+ according to how much they are above the local average
+ intensity. 
+
+ Calling:
+ [sI,indx] = sort_bckgr(i,j,I,bild)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="find_the_stars.html" class="code" title="function [out_i,out_j,out_I] = find_the_stars(img_in)">find_the_stars</a>	FIND_THE_STARS - finds stars in images.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [sI,indx] = sort_bckgr(i,j,I,bild)</a>
+0002 <span class="comment">% SORT_BCKGR - sorts the local image maxima in I(i,j)</span>
+0003 <span class="comment">% according to how much they are above the local average</span>
+0004 <span class="comment">% intensity.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% [sI,indx] = sort_bckgr(i,j,I,bild)</span>
+0008 
+0009 <span class="comment">%   Copyright � 1998 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0010 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0011 
+0012 
+0013 b = size(bild);
+0014 bx = b(2);
+0015 by = b(1);
+0016 tbild = bild-min(min(bild));
+0017 
+0018 <span class="comment">%for k = 1:max(size(I)),</span>
+0019 <span class="keyword">for</span> k = max(size(I)):-1:1,
+0020   
+0021   x0 = i(k);
+0022   y0 = j(k);
+0023   <span class="keyword">if</span> ( ( 5 &lt; x0 &amp; x0 &lt; bx-5 ) &amp; ( 5 &lt; y0 &amp; y0 &lt; by-5 ) )
+0024     
+0025     <span class="comment">% Determine the part of the image confining the star.</span>
+0026     xmin = floor(min(max(x0-5,1),bx-10));
+0027     xmax = floor(max(min(x0+5,bx),11));
+0028     ymin = floor(min(max(y0-5,1),by-10));
+0029     ymax = floor(max(min(y0+5,by),11));
+0030     
+0031     starmat = tbild(ymin:ymax,xmin:xmax);
+0032     
+0033     bakgr2 = median( [starmat(1,:) starmat(11,:)  starmat(:,11)' starmat(:,1)' ]);
+0034     
+0035     startvec(k) = tbild(y0,x0)-bakgr2;
+0036     
+0037   <span class="keyword">end</span>
+0038 
+0039 <span class="keyword">end</span>
+0040 [sI,indx] = sort(startvec);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

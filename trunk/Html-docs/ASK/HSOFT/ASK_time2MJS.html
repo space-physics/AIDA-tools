@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_time2MJS</title>
+  <meta name="keywords" content="ASK_time2MJS">
+  <meta name="description" content="ASK_time2MJS - converts calendar date to modified Julian second">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_time2MJS
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_time2MJS - converts calendar date to modified Julian second</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function TT_MJS = ASK_time2MJS(date_vec) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_time2MJS - converts calendar date to modified Julian second
+   (seconds elapsed since 00:00 UT on Jan 1, 1950)
+
+ Calling: 
+   MJS_time = ASK_time2MJS(date_vec)
+ Input:
+   date_vec - array with rows of: [yyyy,mm,dd,(hh,mm,ss.ms)]
+ Output:
+   MJS_time - seconds since 00:00 UT on Jan 1, 1950</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li><li><a href="ASK_time2indx.html" class="code" title="function i1 = ASK_time2indx(timevec)">ASK_time2indx</a>	ASK_TIME2INDX - returns the imasge index for a time-vector</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function TT_MJS = ASK_time2MJS(date_vec)</a>
+0002 <span class="comment">% ASK_time2MJS - converts calendar date to modified Julian second</span>
+0003 <span class="comment">%   (seconds elapsed since 00:00 UT on Jan 1, 1950)</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%   MJS_time = ASK_time2MJS(date_vec)</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%   date_vec - array with rows of: [yyyy,mm,dd,(hh,mm,ss.ms)]</span>
+0009 <span class="comment">% Output:</span>
+0010 <span class="comment">%   MJS_time - seconds since 00:00 UT on Jan 1, 1950</span>
+0011 
+0012 <span class="comment">% Modified from TT_MJS.pro</span>
+0013 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0014 <span class="comment">% GPL 3.0 or later applies</span>
+0015 
+0016 <span class="comment">% Let mathworks date-functions do the heavy lifting:</span>
+0017 TT_MJS = (double(datenum(date_vec)) - double(datenum([1950,1,1])))*24*3600;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

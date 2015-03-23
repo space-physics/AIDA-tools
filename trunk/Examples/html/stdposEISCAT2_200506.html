@@ -1,0 +1,263 @@
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>Designing an ALIS position</title>
+      <meta name="generator" content="MATLAB 7.1">
+      <meta name="date" content="2006-03-01">
+      <meta name="m-file" content="stdposEISCAT2_200506"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows.  On Gecko-based browsers, the shrink-to-fit doesn't work. */ 
+p,h1,h2,div.content div {
+  /* for MATLAB's browser */
+  width: 600px;
+  /* for Mozilla, but the "width" tag overrides it anyway */
+  max-width: 600px;
+  /* for IE */
+  width:expression(document.body.clientWidth > 620 ? "600px": "auto" );
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h1>Designing an ALIS position</h1>
+         <introduction></introduction>
+         <h2>Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#1">Looking at one thing with ALIS</a></li>
+               <li><a href="#2">Set the options.</a></li>
+               <li><a href="#6">Background map</a></li>
+               <li><a href="#7">The common volume</a></li>
+               <li><a href="#13">Finalized common field-of-view</a></li>
+            </ul>
+         </div>
+         <h2>Looking at one thing with ALIS<a name="1"></a></h2>
+         <p>In order to make good use of ALIS multi-view-point imaging it is sometimes necessary to have the cameras look at the same
+            portion of the sky. To get as good an overlap as possible there is some tweaking involved. But we are not left alone to toil
+            away with pen and paper (and eraser) scribbling away geometry and trigonometry. The ALIS toolbox contain a function <tt>alis_visiblevol</tt> that calculates the approximate field of view of the ALIS stations with any camera rotation at any selected altitude.
+         </p>
+         <h2>Set the options.<a name="2"></a></h2>
+         <p>(As most functions will eventually) <tt>alis_visiblevol</tt> produces a struct with the default options when called with no input parameters and one output.
+         </p><pre class="codeinput">OPS = alis_visiblevol;
+</pre><p><tt>OPS.LL</tt> make the plot in Latitude-Longitude when 1. Otherwise the plot will be in km relative Kiruna.
+         </p><pre class="codeinput">OPS.LL = 1;
+</pre><p><tt>OPS.linewidth</tt> is the linewidth of the plot. If it is kept at its default value (1) it looks a little bit skinny in plots with the background
+            map.
+         </p><pre class="codeinput">OPS.linewidth = 2;
+OP = OPS;
+</pre><p>Here we remove the field <tt>clrs</tt> - most stations have a designated color and then it is unnecessary to include this.
+         </p><pre class="codeinput">OP = rmfield(OP,<span class="string">'clrs'</span>);
+</pre><h2>Background map<a name="6"></a></h2>
+         <p>This is a good thing to include, it helps the eye when it comes to judging the field-of-view and comparing it to possible
+            satellite passes.
+         </p><pre class="codeinput">clf
+PH = nscand_map(<span class="string">'l'</span>);
+axis([15 26 67 71])
+set(gca,<span class="string">'fontsize'</span>,12)
+xlabel(<span class="string">'Longitude'</span>,<span class="string">'fontsize'</span>,16)
+ylabel(<span class="string">'Latitude'</span>,<span class="string">'fontsize'</span>,16)
+hold <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="stdposEISCAT2_200506_01.png"> <h2>The common volume<a name="7"></a></h2>
+         <p>as seen by the ALIS stations. The input parameters and working of alis_visible_vol are well explained by the help of the function:</p><pre class="codeinput">help <span class="string">alis_visiblevol</span>
+</pre><pre class="codeoutput">  ALIS_VISIBLEVOL - Calculates the field of view from an ALIS   \  |  /
+  station with a slightly simplified optical transfer            \ | /
+  function.                                                       \|/
+  
+  Calling:
+  hndl = alis_visiblevol(stnr,azim,zenit,alt,camfov,edge,OPS);
+  
+  INPUTPARAMETERS - STNR is the station number 1-6 currently.
+                    AZIM is the azimuthal angle of the camera rotation 
+                    in degrees.
+                    ZENIT is the zenith angle of the rotation, degrees.
+                    ALT is the altitude to plot the field of view on.
+                    CAMFOV is the camera field-of-view,
+                    side-to-side (degrees)
+                    EDGE 1 for plotting the edges of the field of view cone
+                    OPS struct with field 'clrs' control the colour
+                    used in plotting
+
+
+
+</pre><p>Stations are given by the "depreciated" numbers:</p>
+         <div>
+            <ul>
+               <li>1 - Kiruna</li>
+               <li>2 - Merasjarvi</li>
+               <li>3 - Silkkimuotka</li>
+               <li>4 - Tjautjas</li>
+               <li>5 - Abisko</li>
+               <li>6 - Nikkaluokta</li>
+               <li>10 - Skibotn</li>
+               <li>11 - Ramfjordmoen (EISCAT)</li>
+            </ul>
+         </div><pre class="codeinput">OPS.clrs = [0 0 0];
+h3 = alis_visiblevol(3,340, 40,100,60,0,OP);
+h4 = alis_visiblevol(4,0,   45,100,60,0,OP);
+h5 = alis_visiblevol(5,20,  35,100,60,0,OP);
+axis([15 26 67 71])
+</pre><img vspace="5" hspace="5" src="stdposEISCAT2_200506_02.png"> <p>Set the color of station 10 (Skibotn) to deep purple</p><pre class="codeinput">OPS.clrs = [.6 0 1];
+h10 = alis_visiblevol(10,180,0,100,90,0,OPS);
+axis([15 26 67 71])
+</pre><img vspace="5" hspace="5" src="stdposEISCAT2_200506_03.png"> <p>And Kiruna to black</p><pre class="codeinput">OPS.clrs = [0 0 0];
+h1 = alis_visiblevol(1,0,   41,100,60,0,OPS);
+axis([15 26 67 71])
+</pre><img vspace="5" hspace="5" src="stdposEISCAT2_200506_04.png"> <p>Set the color of station number 11 (Ramfjord) to orange</p><pre class="codeinput">OPS.clrs = [.9 .6 0];
+</pre><p>And call the function with a field-of-view of 1 degree. Roughly corresponding of EISCAT UHF</p><pre class="codeinput">h10 = alis_visiblevol(11,0,0,1,90,0,OPS);
+axis([15 26 67 71])
+set(gca,<span class="string">'fontsize'</span>,12)
+xlabel(<span class="string">'Longitude'</span>,<span class="string">'fontsize'</span>,16)
+ylabel(<span class="string">'Latitude'</span>,<span class="string">'fontsize'</span>,16)
+</pre><img vspace="5" hspace="5" src="stdposEISCAT2_200506_05.png"> <h2>Finalized common field-of-view<a name="13"></a></h2>
+         <p>The final fields-of-view overlap well. It might take some tweaking and adjustments before a good enough overlap is obtained.
+            But in al with this script as basis it should not take more than a few 10s of minutes - at the most.
+         </p>
+         <p class="footer"><br>
+            Published with MATLAB&reg; 7.1<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Designing an ALIS position
+
+%% Looking at one thing with ALIS
+%
+% In order to make good use of ALIS multi-view-point imaging it is
+% sometimes necessary to have the cameras look at the same portion
+% of the sky. To get as good an overlap as possible there is some
+% tweaking involved. But we are not left alone to toil away with
+% pen and paper (and eraser) scribling away geometry and
+% trigonometry. The ALIS toolbox contain a function
+% |alis_visiblevol| that calculates the approximate field of view
+% of the ALIS stations with any camera rotation at any selected
+% altitude.
+
+%% Set the options.
+% (As most functions will eventually) |alis_visiblevol| produces a
+% struct with the default options when called with no input
+% parameters and one output.
+OPS = alis_visiblevol;
+%%
+% |OPS.LL| make the plot in Latitude-Longitude when 1. Otherwise
+% the plot will be in km relative Kiruna.
+OPS.LL = 1;
+%% 
+% |OPS.linewidth| is the linewidth of the plot. If it is kept at
+% its default value (1) it looks a little bit skinny in plots with
+% the background map.
+OPS.linewidth = 2;
+OP = OPS;
+%%
+% Here we remove the field |clrs| - most stations have a designated
+% color and then it is unnecessary to include this.
+OP = rmfield(OP,'clrs');
+%% Background map
+% This is a good thing to include, it helps the eye when it comes
+% to judging the field-of-view and comparing it to possible
+% stellite passes.
+clf
+PH = nscand_map('l');
+axis([15 26 67 71])
+set(gca,'fontsize',12)
+xlabel('Longitude','fontsize',16)
+ylabel('Latitude','fontsize',16) 
+hold on
+%% The common volume
+% as seen by the ALIS stations. The input parameters and working of
+% alis_visible_vol are well explained by the help of the function:
+help alis_visiblevol
+%%
+% Stations are given by the "depreciated" numbers:
+%
+% * 1 - Kiruna
+% * 2 - Merasjarvi
+% * 3 - Silkkimuotka
+% * 4 - Tjautjas
+% * 5 - Abisko
+% * 6 - Nikkaluokta
+% * 10 - Skibotn
+% * 11 - Ramfjordmoen (EISCAT)
+OPS.clrs = [0 0 0];
+h3 = alis_visiblevol(3,340, 40,100,60,0,OP);
+h4 = alis_visiblevol(4,0,   45,100,60,0,OP);
+h5 = alis_visiblevol(5,20,  35,100,60,0,OP);
+axis([15 26 67 71])
+%%
+% Set the color of station 10 (Skibotn) to deep purple
+OPS.clrs = [.6 0 1]; 
+h10 = alis_visiblevol(10,180,0,100,90,0,OPS);
+axis([15 26 67 71])
+%%
+% And Kiruna to black
+OPS.clrs = [0 0 0];  
+h1 = alis_visiblevol(1,0,   41,100,60,0,OPS);
+axis([15 26 67 71])
+%%
+% Set the color of station number 11 (Ramfjord) to orange
+OPS.clrs = [.9 .6 0];
+%%
+% And call the function with a field-of-view of 1 degree. Roughly
+% corresponding of EISCAT UHF
+h10 = alis_visiblevol(11,0,0,1,90,0,OPS);
+axis([15 26 67 71])
+set(gca,'fontsize',12)
+xlabel('Longitude','fontsize',16)
+ylabel('Latitude','fontsize',16) 
+%% Finalized common field-of-view
+% The final fields-of-view overlap well. It might take some
+% tweaking and adjustments before a good enough overlap is
+% obtained. But in al with this script as basis it should not take
+% more than a few 10s of minutes - at the most.
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

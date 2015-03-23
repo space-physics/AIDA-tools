@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of inimg</title>
+  <meta name="keywords" content="inimg">
+  <meta name="description" content="INIMG - reads and pre-process an image.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>inimg
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>INIMG - reads and pre-process an image.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> INIMG - reads and pre-process an image.
+ 
+ Calling:
+ [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)
+ 
+ INPUT:
+   FILENAME is a string with the filename to load.
+   PREPRO_OPS is a struct with preprocess options:
+   Possible fields are:
+    filetype           - image format to read [{'fits'}|'sbig'|'afrl-raw']
+    LE/BE              - File in little or big endian
+    defaultccd6        - Default unwrapping of ALIS camera 6
+    quadfix            - Quadrant balancing with over-scan-strips
+    quadfixsize        - size of overscan strip
+    bias_correction    - Remove zero level bias -  requires bias file
+                       - OK for some ALIS camera-binning combinations
+    replaceborder      - Replace outermost line/columns
+    C_cam              - pixel sensitivity, either scalar or size of image
+    badpixfix          - Fix bad pixels
+    imreg              - cut to region of interest in image
+    remove_these_stars - remove stars (cmp bad pixels)
+                       - requires optpar as well
+    size_r_t_s         - size (pixels) of removed stars
+    v_interf_notches   - remove vertical interference pattern
+    medianfilter       - medfilt2/wiener2/gen_susan filter image: 2-D
+                         med [sx sx] if positive, wiener if
+                         negative [-sx -sx], susan if complex,
+                         real part half-one-over-e-width of
+                         spatial Gaussian filter kernel
+                         (~exp(-Du^2/real(sx^2))), imaginary
+                         part scaling of intensity width
+                         (~exp(dI^2/(|im(sx)|*I))), if real(sx)&lt;0
+                         include the center point -&gt; similar to
+                         wiener, real(sx)&gt;0 dont include center
+                         point: similar to median filtering
+    psf                - psf to deconvolve with (preferably not done here)
+    imreg              - cut from total image [xmin xmax ymin ymax]
+    outimgsize         - post-binning/resampling image
+    log2obs            - optional field that should be a function
+                         that takes an image header and makes an
+                         &quot;obs-struct&quot; with fields for obs-time
+                         [yyyy,mm,dd,hh,mm,ss], exposure time,
+                         wavelength, azimuth, zenith (degrees)
+                         latitude, longitude of the observation.
+    your_try_to_be_smart - optional field that should be a function
+                           that takes an image file-name and makes an
+                           &quot;obs-struct&quot; with fields for obs-time
+                           [yyyy,mm,dd,hh,mm,ss], exposure time,
+                           wavelength, azimuth, zenith (degrees)
+                           latitude, longitude of the observation.
+    (The last two is useful for files that not give enough
+    information in a (FITS-)header). Example functions can be
+    found in AIDA_tools/Fits_tools/File2obs/.
+    read_data_fcn - function handle to function to use for reading
+                    file if the file is neither a fits-file, a
+                    matlab-loadable file nor an imread-readable
+                    file. 
+ 
+  See also <a href="read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">READ_IMG</a>, <a href="pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">PRE_PROC_IMG</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="AIDAstationize.html" class="code" title="function obs = AIDAstationize(obs,central_stn_nr)">AIDAstationize</a>	AIDAstationize - calculate station lat-long and xyz positions</li><li><a href="inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>	PRE_PROC_IMG - systematic image correction and preprocessing of</li><li><a href="read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>	READ_IMG - reads image data and process header info.</li><li><a href="typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>	TYPICAL_PRE_PROC_OPS - Typical ALIS-fits preprocessing options</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/ALIS_auto_overview.html" class="code" title="function dOPS = ALIS_auto_overview(ops4AAO)">ALIS_auto_overview</a>	ALIS_AUTO_OVERVIEW - automated fits data to png image conversion</li><li><a href="../ALIS/ALIS_image_sequence.html" class="code" title="function varargout = ALIS_image_sequence(files,PO,OPS)">ALIS_image_sequence</a>	ALIS_IMAGE_SEQUENCE - to display an ALIS image sequence as movie</li><li><a href="../ALIS/AVOK/alis_img_overview.html" class="code" title="function [scrhndl] = alis_img_overview(ov_filename,f_filename,PO,print_or_what)">alis_img_overview</a>	ALIS_IMG_OVERVIEW - make ALIS data overview-plots by scanning OVERVIEW-files and INDEX-files</li><li><a href="../ALIS/AVOK/alis_mk_db_keo_imgs.html" class="code" title="function ok = alis_mk_db_keo_imgs()">alis_mk_db_keo_imgs</a>	ALIS_MK_DB_KEOS - Update ALIS Keogram-database</li><li><a href="../ALIS/AVOK/alis_mk_db_keos.html" class="code" title="function ok = alis_mk_db_keos()">alis_mk_db_keos</a>	ALIS_MK_DB_KEOS - Update ALIS Keogram-database</li><li><a href="../ALIS/AVOK/alis_overview.html" class="code" title="function [M,filters,Times,I_minmax] = alis_overview(files,POs,OPS)">alis_overview</a>	ALIS_OVERVIEW - Overviews of alis data, movie or image-mosaics</li><li><a href="../ALIS/AVOK/alis_overviewmovie.html" class="code" title="function OK = alis_overviewmovie(moviename,Filenames,POs,mOpts)">alis_overviewmovie</a>	ALIS_OVERVIEWMOVIE - Makes movies of images in files</li><li><a href="../ALIS/AVOK/avok_makin_movies.html" class="code" title="function AvOk = avok_makin_movies(AvOk)">avok_makin_movies</a>	AVOK_MAKIN_MOVIES - Makes movies of images from a night</li><li><a href="../ALIS/alis_imgs2keos.html" class="code" title="function [keo,wl_emi,t_obs,optps,filenames,exptimes] = alis_imgs2keos(filenames,PO)">alis_imgs2keos</a>	ALIS_IMGS2KEOS - make overview-keograms</li><li><a href="../ALIS/alis_imgs_movie_r.html" class="code" title="function [M,Tstrs,caxout,exptimes,wl] = alis_imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,rgbFilters)">alis_imgs_movie_r</a>	ALIS_IMGS_MOVIE_R - produce a matlab movie M from a series of image files.</li><li><a href="../ALIS/alis_imgs_movie_rgb.html" class="code" title="function [M] = alis_imgs_movie_rgb(files,reg,cax,opptp,PREPROC_OPS,rgbFilters)">alis_imgs_movie_rgb</a>	ALIS_IMGS_MOVIE_RGB - produce a matlab movie M from a series of image files.</li><li><a href="../Camera/inv_project_LineOfSightVectors.html" class="code" title="function epix = inv_project_LineOfSightVectors(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_LineOfSightVectors</a>	INV_PROJECT_LineOfSightVectors - pixels coordinates to line-of-sight vectors</li><li><a href="../Camera/inv_project_directions.html" class="code" title="function [az,ze] = inv_project_directions(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_directions</a>	INV_PROJECT_DIRECTIONS - pixels line-of-sight to azimuth and zenith angles</li><li><a href="inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="../Imgtools/img_stack2keo.html" class="code" title="function [Keo] = img_stack2keo(Imstack,locnrs,line_not_columns,optp,PO)">img_stack2keo</a>	imgs_stack2keo - make keograms from stack of images</li><li><a href="../Imgtools/imgs_keograms.html" class="code" title="function [varargout] = imgs_keograms(files,locnrs,line_not_columns,optp,PO)">imgs_keograms</a>	imgs_keograms - make keograms from sequence of image files.</li><li><a href="../Imgtools/imgs_keograms_r3.html" class="code" title="function [Keo,exptimes,Tstrs,filters] = imgs_keograms_r3(files,rs,r,optpar,PO)">imgs_keograms_r3</a>	imgs_keogram_r3 - make keogram of R3's projection in the image.</li><li><a href="../Imgtools/imgs_movie_r.html" class="code" title="function [M,Tstrs,caxout,exptimes,wl] = imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,movie_ops,avi_ops)">imgs_movie_r</a>	imgs_movie_r - produce a matlab movie M from a series of image files.</li><li><a href="../Imgtools/imgs_plot.html" class="code" title="function out_var = imgs_plot(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot</a>	imgs_plot - Plot a row of images</li><li><a href="../Imgtools/imgs_plot_bg_red.html" class="code" title="function out_var = imgs_plot_bg_red(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot_bg_red</a>	imgs_plot_bg_red - Plot a row of images with background reduction</li><li><a href="../Imgtools/imgs_plot_bg_red1l.html" class="code" title="function out_var = imgs_plot_bg_red1l(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot_bg_red1l</a>	imgs_plot_bg_red1l - Plot a row of  background reduced images, one colorlabel</li><li><a href="../Imgtools/imgs_plot_bg_red_clall.html" class="code" title="function out_var = imgs_plot_bg_red_clall(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot_bg_red_clall</a>	imgs_plot_bg_red - Plot a row of background reduced images with colorbars</li><li><a href="../Imgtools/imgs_regs_mmmm.html" class="code" title="function [I_max,I_mean,I_median,I_min,Tr_time,expt,filters] = imgs_regs_mmmm(files,regs,OPS,PO)">imgs_regs_mmmm</a>	imgs_regs_mmmm - max, mean, median and min from regions in an image-serie</li><li><a href="../Imgtools/imgs_rgb_keograms_r3.html" class="code" title="function [Keo,exptimes,Tstrs,filters] = imgs_rgb_keograms_r3(files,rs,r,optpar,PO)">imgs_rgb_keograms_r3</a>	imgs_keogram_r3 - make keogram of R3's projection in the image.</li><li><a href="../Imgtools/imgs_stereo.html" class="code" title="function [X,Y,Z,U1,V1,U2,V2,minL] = imgs_stereo(file1,PO1,optp1,r1,file2,PO2,optp2,r2,corr1,corr2,OPS)">imgs_stereo</a>	imgs_stereo - Triangulate from 2 series of images</li><li><a href="../Imgtools/mk_imgkeos_db.html" class="code" title="function ok = mk_imgkeos_db(root_data_dirs,overview_dir)">mk_imgkeos_db</a>	MK_IMGKEOS_DB - Make keogram data-base from images.</li><li><a href="../Spectral_cal/check_scan_for_stars.html" class="code" title="function [ok] = check_scan_for_stars(files,pos,optpar,IDENTSTARS,STARPARS,PO,OPS)">check_scan_for_stars</a>	CHECK_SCAN_FOR_STARS  Check the result of spc_scan_for_stars.</li><li><a href="../Spectral_cal/pixel2pixel.html" class="code" title="function [C,sigma2C] = pixel2pixel(files,m_size,PO)">pixel2pixel</a>	PIXEL2PIXEL - p-2-p variation in photo responce non uniformity</li><li><a href="../Spectral_cal/spc_scan_for_stars.html" class="code" title="function [IDSTARS,STARPARS,filtnr,Stime,extime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops)">spc_scan_for_stars</a>	SPC_SCAN_FOR_STARS - Scan images for stars in the Pulkovo</li><li><a href="../Starcal/star_enhancer.html" class="code" title="function Df = star_enhancer(files,PO,i0,nr_imgs,filtersizes)">star_enhancer</a>	STAR_ENHANCER - average background-removed images to enhance stars</li><li><a href="../Starcal/starcal.html" class="code" title="function [SkMp] = starcal(varargin)">starcal</a>	STARCAL - startpoint for optical camera calibration.</li><li><a href="../Tomography/GACT_snippet.html" class="code" title="">GACT_snippet</a>	</li><li><a href="../Tomography/tomo20061212ariel3.html" class="code" title="">tomo20061212ariel3</a>	TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</li><li><a href="../Tomography/tomo20080305FinalIR_082011.html" class="code" title="">tomo20080305FinalIR_082011</a>	TOMO20080305FinalIR_082011 - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="../Tomography/tomo_inp_images.html" class="code" title="function stns = tomo_inp_images(file_list,stns,img_ops)">tomo_inp_images</a>	TOMO_INP_IMAGES - Preprocessing of images for tomography plus</li><li><a href="../tools/ImageViewer.html" class="code" title="">ImageViewer</a>	</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)</a>
+0002 <span class="comment">% INIMG - reads and pre-process an image.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% INPUT:</span>
+0008 <span class="comment">%   FILENAME is a string with the filename to load.</span>
+0009 <span class="comment">%   PREPRO_OPS is a struct with preprocess options:</span>
+0010 <span class="comment">%   Possible fields are:</span>
+0011 <span class="comment">%    filetype           - image format to read [{'fits'}|'sbig'|'afrl-raw']</span>
+0012 <span class="comment">%    LE/BE              - File in little or big endian</span>
+0013 <span class="comment">%    defaultccd6        - Default unwrapping of ALIS camera 6</span>
+0014 <span class="comment">%    quadfix            - Quadrant balancing with over-scan-strips</span>
+0015 <span class="comment">%    quadfixsize        - size of overscan strip</span>
+0016 <span class="comment">%    bias_correction    - Remove zero level bias -  requires bias file</span>
+0017 <span class="comment">%                       - OK for some ALIS camera-binning combinations</span>
+0018 <span class="comment">%    replaceborder      - Replace outermost line/columns</span>
+0019 <span class="comment">%    C_cam              - pixel sensitivity, either scalar or size of image</span>
+0020 <span class="comment">%    badpixfix          - Fix bad pixels</span>
+0021 <span class="comment">%    imreg              - cut to region of interest in image</span>
+0022 <span class="comment">%    remove_these_stars - remove stars (cmp bad pixels)</span>
+0023 <span class="comment">%                       - requires optpar as well</span>
+0024 <span class="comment">%    size_r_t_s         - size (pixels) of removed stars</span>
+0025 <span class="comment">%    v_interf_notches   - remove vertical interference pattern</span>
+0026 <span class="comment">%    medianfilter       - medfilt2/wiener2/gen_susan filter image: 2-D</span>
+0027 <span class="comment">%                         med [sx sx] if positive, wiener if</span>
+0028 <span class="comment">%                         negative [-sx -sx], susan if complex,</span>
+0029 <span class="comment">%                         real part half-one-over-e-width of</span>
+0030 <span class="comment">%                         spatial Gaussian filter kernel</span>
+0031 <span class="comment">%                         (~exp(-Du^2/real(sx^2))), imaginary</span>
+0032 <span class="comment">%                         part scaling of intensity width</span>
+0033 <span class="comment">%                         (~exp(dI^2/(|im(sx)|*I))), if real(sx)&lt;0</span>
+0034 <span class="comment">%                         include the center point -&gt; similar to</span>
+0035 <span class="comment">%                         wiener, real(sx)&gt;0 dont include center</span>
+0036 <span class="comment">%                         point: similar to median filtering</span>
+0037 <span class="comment">%    psf                - psf to deconvolve with (preferably not done here)</span>
+0038 <span class="comment">%    imreg              - cut from total image [xmin xmax ymin ymax]</span>
+0039 <span class="comment">%    outimgsize         - post-binning/resampling image</span>
+0040 <span class="comment">%    log2obs            - optional field that should be a function</span>
+0041 <span class="comment">%                         that takes an image header and makes an</span>
+0042 <span class="comment">%                         &quot;obs-struct&quot; with fields for obs-time</span>
+0043 <span class="comment">%                         [yyyy,mm,dd,hh,mm,ss], exposure time,</span>
+0044 <span class="comment">%                         wavelength, azimuth, zenith (degrees)</span>
+0045 <span class="comment">%                         latitude, longitude of the observation.</span>
+0046 <span class="comment">%    your_try_to_be_smart - optional field that should be a function</span>
+0047 <span class="comment">%                           that takes an image file-name and makes an</span>
+0048 <span class="comment">%                           &quot;obs-struct&quot; with fields for obs-time</span>
+0049 <span class="comment">%                           [yyyy,mm,dd,hh,mm,ss], exposure time,</span>
+0050 <span class="comment">%                           wavelength, azimuth, zenith (degrees)</span>
+0051 <span class="comment">%                           latitude, longitude of the observation.</span>
+0052 <span class="comment">%    (The last two is useful for files that not give enough</span>
+0053 <span class="comment">%    information in a (FITS-)header). Example functions can be</span>
+0054 <span class="comment">%    found in AIDA_tools/Fits_tools/File2obs/.</span>
+0055 <span class="comment">%    read_data_fcn - function handle to function to use for reading</span>
+0056 <span class="comment">%                    file if the file is neither a fits-file, a</span>
+0057 <span class="comment">%                    matlab-loadable file nor an imread-readable</span>
+0058 <span class="comment">%                    file.</span>
+0059 <span class="comment">%</span>
+0060 <span class="comment">%  See also READ_IMG, PRE_PROC_IMG</span>
+0061 
+0062 
+0063 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0064 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0065 
+0066 
+0067 <span class="keyword">if</span> nargin == 0
+0068   
+0069   help <a href="inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>
+0070   disp(<span class="string">'possible preprocessing steps:'</span>)
+0071   disp(<span class="string">'LE/BE              % File in little or big endian'</span>)
+0072   disp(<span class="string">'defaultccd6        % Default unwrapping of ALIS camera 6'</span>)
+0073   disp(<span class="string">'quadfix            % Quadrant balancing with over-scan-strips'</span>)
+0074   disp(<span class="string">'quadfixsize        % size of overscan strip'</span>)
+0075   disp(<span class="string">'bias_correction    % Remove zero level bias -  requires bias file'</span>)
+0076   disp(<span class="string">'                   % OK for some ALIS camera-binning combinations'</span>)
+0077   disp(<span class="string">'replaceborder      % Replace outermost line/columns'</span>)
+0078   disp(<span class="string">'C_cam              % pixel sensitivity, either scalar or size of image'</span>)
+0079   disp(<span class="string">'badpixfix          % Fix bad pixels'</span>)
+0080   disp(<span class="string">'imreg              % cut to region of interest in image'</span>)
+0081   disp(<span class="string">'remove_these_stars % remove stars (cmp bad pixels)'</span>)
+0082   disp(<span class="string">'                   % requires optpar as well'</span>)
+0083   disp(<span class="string">'size_r_t_s         % size (pixels) of removed stars'</span>)
+0084   disp(<span class="string">'v_interf_notches   % remove vertical interference pattern'</span>)
+0085   disp(<span class="string">'medianfilter       % median/wiener filter image'</span>)
+0086   disp(<span class="string">'psf                % psf to deconvolve with (preferably not done here)'</span>)
+0087   disp(<span class="string">'imreg              % cut from total image [xmin xmax ymin ymax]'</span>)
+0088   disp(<span class="string">'outimgsize         % post-binning/resampling image'</span>)
+0089   disp(<span class="string">' '</span>)
+0090   <span class="comment">% If no input arguments give a default PO-struct</span>
+0091   img_out = <a href="typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>;
+0092   <span class="keyword">return</span>
+0093   
+0094 <span class="keyword">end</span>
+0095 
+0096 <span class="keyword">if</span> nargin == 1
+0097   [img_out,img_head,obs] = <a href="read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>(filename);
+0098 <span class="keyword">else</span>
+0099   [img_out,img_head,obs] = <a href="read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>(filename,PREPRO_OPS);
+0100 <span class="keyword">end</span>
+0101 <span class="keyword">if</span> isempty(img_out)
+0102   <span class="comment">% img_out is empty -&gt; no image to preprocess</span>
+0103   <span class="keyword">return</span>
+0104 <span class="keyword">end</span>
+0105 
+0106 <span class="keyword">if</span> isfield(obs,<span class="string">'station'</span>) &amp; ~isempty(obs.station)
+0107   <span class="keyword">if</span> nargin &gt; 1 &amp; isfield(PREPRO_OPS,<span class="string">'central_station'</span>)
+0108     obs = <a href="AIDAstationize.html" class="code" title="function obs = AIDAstationize(obs,central_stn_nr)">AIDAstationize</a>(obs,PREPRO_OPS.central_station);
+0109   <span class="keyword">else</span>
+0110     obs = <a href="AIDAstationize.html" class="code" title="function obs = AIDAstationize(obs,central_stn_nr)">AIDAstationize</a>(obs);
+0111   <span class="keyword">end</span>
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">% no preprocess option -&gt; do no pre processing - duh!</span>
+0115 <span class="keyword">if</span> nargin &gt; 1
+0116   
+0117   <span class="comment">% Do pre-processing</span>
+0118   im_sz = size(img_out);
+0119   <span class="keyword">if</span> length(im_sz) &gt; 2
+0120     img_tmp = img_out;
+0121     img_out = <a href="pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>(img_tmp(:,:,1),obs,PREPRO_OPS);
+0122     <span class="keyword">for</span> i1 = im_sz(3):-1:2,
+0123       img_out(:,:,i1) = <a href="pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>(img_tmp(:,:,i1),obs,PREPRO_OPS);
+0124     <span class="keyword">end</span>
+0125   <span class="keyword">else</span>
+0126     img_out = <a href="pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>(img_out,obs,PREPRO_OPS);
+0127   <span class="keyword">end</span>
+0128 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

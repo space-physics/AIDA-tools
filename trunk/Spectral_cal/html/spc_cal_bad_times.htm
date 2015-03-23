@@ -1,0 +1,89 @@
+<HTML>                                              
+<HEAD>                                              
+  <TITLE>/</TITLE>                                  
+  <META NAME="GENERATOR" CONTENT="HTML-TOOLBOX ">   
+</HEAD>                                             
+<BODY bgcolor="#FFFFF0"> 
+<HR WIDTH="100%"></P> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+3>Cross-linked m-file</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1></FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+2>spc_cal_bad_times.m</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>Located in:</FONT></FONT></P></CENTER> 
+<CENTER><P><FONT COLOR="#000000"><FONT SIZE=+1>/home/bjorn/matlab/Spectral_cal</FONT></FONT></P></CENTER> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function synopsis</FONT></FONT></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1> [BT,sis] = spc_cal_bad_times(IDSTARS,time_s,filtnr,optpar,OPTS)                                                                                     </FONT></FONT></P> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+2>Function comments</FONT></FONT></P> 
+<pre> 
+% 
+% SPC_CAL_BAD_TIMES  Find bad time periods for each star 
+% 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>m-files that call spc_cal_bad_times.m</FONT></FONT></P> 
+<UL> 
+<LI><A HREF ="Spec_cal_jobb_mall.htm">Spec_cal_jobb_mall</A></LI> 
+</UL> 
+<P><HR WIDTH="100%"></P> 
+<P><FONT COLOR="#000000"><FONT SIZE=+1>All the cross references in the source m-code of spc_cal_bad_times.m</FONT></FONT></P> 
+<pre> 
+function [BT,sis] = spc_cal_bad_times(IDSTARS,time_s,filtnr,optpar,OPTS) 
+% [BT,sis] = spc_cal_bad_times(IDSTARS,time_s,filtnr,optpar,OPTS) 
+% 
+% SPC_CAL_BAD_TIMES  Find bad time periods for each star 
+% 
+ 
+% Copyright Bjorn Gustavsson 20030901 
+ 
+B = unique(IDSTARS(:,9)); 
+sis = []; 
+clrs = ['g','r','m','m','k','b','c','c','c','c']; 
+if nargin>=5 & isfield(OPTS,'clrs') 
+  clrs = OPTS.clrs; 
+end 
+ 
+for si = 1:length(B), 
+ 
+  clf 
+  subplot(3,1,1) 
+  title(num2str(B(si))) 
+  hold on 
+  subplot(3,1,2) 
+  hold on 
+  subplot(3,1,3) 
+  hold on 
+  is = find(IDSTARS(:,9)==B(si)&IDSTARS(:,4)>0); 
+ 
+  % just plotting commands 
+  for iii = 1:(length(is)-1), 
+    subplot(3,1,1) 
+    plot(time_s(IDSTARS(is(iii),1)),IDSTARS(is(iii),5),[clrs(1+filtnr(IDSTARS(is(iii),1))),'h']) 
+    subplot(3,1,2) 
+    plot(time_s(IDSTARS(is(iii),1)),IDSTARS(is(iii),6),[clrs(1+filtnr(IDSTARS(is(iii),1))),'h']) 
+    subplot(3,1,3) 
+    plot(time_s(IDSTARS(is(iii),1)),IDSTARS(is(iii),7),[clrs(1+filtnr(IDSTARS(is(iii),1))),'h']) 
+  end 
+  subplot(3,1,1) 
+  grid on 
+  timetick 
+  subplot(3,1,2) 
+  grid on 
+  timetick 
+  subplot(3,1,3) 
+  grid on 
+  timetick 
+  xlabel(['B = ',num2str(si),' BSNR(?) = ',num2str(B(si))]) 
+  pause 
+  % just plotting commands 
+ 
+  [qwt,qwey,qweb] = ginput; 
+  BT(si,1:length(qwt)) = qwt'; 
+  if all(qweb == 1) 
+    sis = [sis si]; 
+  end 
+end 
+</pre> 
+<P><HR WIDTH="100%"></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>Written by  B. Gustavsson 16:26 3/9 2003 <IMG SRC = "file:/home/bjorn/matlab/Local/Tools/htmltool/gifs/copyright.gif" ></FONT></FONT></I></P> 
+<P><I><FONT COLOR="#0000FF"><FONT SIZE=+1>E-mail:</B><A HREF = "mailto:bjorn@irf.se">bjorn@irf.se</A></H4></FONT></FONT></I></P> 

@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_mjs_dy</title>
+  <meta name="keywords" content="ASK_mjs_dy">
+  <meta name="description" content="ASK_MJS_DY -  convert mjs time to decimal years">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_mjs_dy
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_MJS_DY -  convert mjs time to decimal years</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function date_out = ASK_mjs_dy(MJStime) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_MJS_DY -  convert mjs time to decimal years
+   
+ Calling:
+   date_out = ASK_mjs_dy(MJStime)
+ Input:
+   MJStime - time in modified Julian second (since 1950 1 1 00:00)
+             Currently only functioning for scalar MJStime
+ Output:
+   date_out - date in fractional years</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_MJS_TT.html" class="code" title="function varargout = ASK_MJS_TT(MJS)">ASK_MJS_TT</a>	ASK_MJS_TT - convert modified Julian second to calender date</li><li><a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>	ASK_TT_MJS - converts calendar date to modified Julian second</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function date_out = ASK_mjs_dy(MJStime)</a>
+0002 <span class="comment">% ASK_MJS_DY -  convert mjs time to decimal years</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   date_out = ASK_mjs_dy(MJStime)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%   MJStime - time in modified Julian second (since 1950 1 1 00:00)</span>
+0008 <span class="comment">%             Currently only functioning for scalar MJStime</span>
+0009 <span class="comment">% Output:</span>
+0010 <span class="comment">%   date_out - date in fractional years</span>
+0011 
+0012 <span class="comment">% Written to mimic MJS_TT.pro</span>
+0013 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0014 <span class="comment">% GPL 3.0 or later applies</span>
+0015 
+0016 isodd = @(x) mod(x,2);
+0017 isleap = @(x) isodd(sum(0 == mod(x, [4 100 400 4000])));
+0018 <span class="comment">% Leap years are years evenly divisible with 4 and 400, but not 100</span>
+0019 <span class="comment">% or 4000 - now 4000 I personally dont think I'll need to worry</span>
+0020 <span class="comment">% about, but such an attitude is what put people's knickers in such</span>
+0021 <span class="comment">% a twist in the late 1990s...</span>
+0022 
+0023 <span class="comment">% Convert date to year et al:</span>
+0024 [yr,mo,da,hr,mi,se] = <a href="ASK_MJS_TT.html" class="code" title="function varargout = ASK_MJS_TT(MJS)">ASK_MJS_TT</a>(MJStime);
+0025 <span class="comment">% Calculate MJS-time of first of January that year</span>
+0026 [mjsYearstart] = <a href="ASK_TT_MJS.html" class="code" title="function TT_MJS = ASK_TT_MJS(date_vec)">ASK_TT_MJS</a>([yr,1,1,0,0,0]);
+0027 <span class="comment">% Day number of the date is difference in number of seconds divided</span>
+0028 <span class="comment">% by 3600*24...</span>
+0029 dayNR = ( MJStime -  mjsYearstart )/3600/24;
+0030 <span class="comment">% Date of date as fractional year</span>
+0031 date_out = yr + dayNR/(365 + double(isleap(yr)));</pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

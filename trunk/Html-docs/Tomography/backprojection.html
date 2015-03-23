@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of backprojection</title>
+  <meta name="keywords" content="backprojection">
+  <meta name="description" content="BACKPROJECTION - Function that projects the localized ratios">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>backprojection
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>BACKPROJECTION - Function that projects the localized ratios</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function dVem = backprojection(b,p,uv,l_cl,bfk,indx,tomoptions) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> BACKPROJECTION - Function that projects the localized ratios
+ of B and P  in radial direction into DVEM. For iterative tomography
+ B is the observed image and P is a current projection of the
+ volume emission. UV is the projection matix from 3D space to
+ the image space such that P(:) = UV*DVEM(:). L_CL is a cell-array
+ holding indexes for 3D base functions in the corresponding
+ size-class. BFK is the base-function-fotprint. 
+ 
+ Calling:
+ dVem = backprojection(b,p,uv,l_cl,bfk)
+ 
+ See also <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">FASTPROJECTION</a>,
+
+ Based on the algorithm of Peter Rydesäter</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="tomo_steps.html" class="code" title="function [Vem,stns] = tomo_steps(Vem,stns,tomo_ops,nr_laps)">tomo_steps</a>	TOMO_STEPS - tomographic itterative step(s).</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function dVem = backprojection(b,p,uv,l_cl,bfk,indx,tomoptions)</a>
+0002 <span class="comment">% BACKPROJECTION - Function that projects the localized ratios</span>
+0003 <span class="comment">% of B and P  in radial direction into DVEM. For iterative tomography</span>
+0004 <span class="comment">% B is the observed image and P is a current projection of the</span>
+0005 <span class="comment">% volume emission. UV is the projection matix from 3D space to</span>
+0006 <span class="comment">% the image space such that P(:) = UV*DVEM(:). L_CL is a cell-array</span>
+0007 <span class="comment">% holding indexes for 3D base functions in the corresponding</span>
+0008 <span class="comment">% size-class. BFK is the base-function-fotprint.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Calling:</span>
+0011 <span class="comment">% dVem = backprojection(b,p,uv,l_cl,bfk)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% See also FASTPROJECTION,</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% Based on the algorithm of Peter Rydesäter</span>
+0016 
+0017 
+0018 <span class="comment">%   Copyright � 2001 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0019 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0020 
+0021 
+0022 <span class="comment">% Todo: get size of dVem into this function!</span>
+0023 error(nargchk(6,7,nargin));
+0024 
+0025 <span class="keyword">if</span> nargin == 7;
+0026   
+0027   <span class="keyword">if</span> isfield(tomoptions,<span class="string">'alpha'</span>)
+0028     alpha_power = tomoptions(indx).alpha;
+0029   <span class="keyword">else</span>
+0030     alpha_power = 1;
+0031   <span class="keyword">end</span>
+0032   
+0033   quiet_borderx1 = tomoptions(indx).qb(1);
+0034   quiet_borderx2 = tomoptions(indx).qb(2);
+0035   quiet_bordery1 = tomoptions(indx).qb(3);
+0036   quiet_bordery2 = tomoptions(indx).qb(4);
+0037   norm_regx1 = tomoptions(indx).renorm(1);
+0038   norm_regx2 = tomoptions(indx).renorm(2);
+0039   norm_regy1 = tomoptions(indx).renorm(3);
+0040   norm_regy2 = tomoptions(indx).renorm(4);
+0041   
+0042   <span class="keyword">if</span> ( alpha_power~=1 )
+0043     
+0044     q = (b./p).^alpha_power;
+0045     
+0046   <span class="keyword">else</span>
+0047     
+0048     q = b./p;
+0049     
+0050   <span class="keyword">end</span>
+0051   <span class="comment">%i1 = find(~isfinite(q));</span>
+0052   <span class="comment">%q(i1) = 1;</span>
+0053   q(~isfinite(q)) = 1;
+0054   <span class="keyword">if</span> ~isnan(norm_regx1(1))
+0055     
+0056     q = q/mean(mean(q(norm_regy1:norm_regy2,norm_regx1:norm_regx2)));
+0057     
+0058   <span class="keyword">end</span>
+0059   
+0060   <span class="comment">%q([1:quiet_borderx1 quiet_borderx2:end],:) = 1;</span>
+0061   <span class="comment">%q(:,[1:quiet_bordery1 quiet_bordery2:end]) = 1;</span>
+0062   <span class="keyword">for</span> i1 = 1:quiet_borderx1,
+0063     <span class="comment">%q(:,i1) = max(0,q(:,quiet_borderx1+1)).^(alpha_power/2);</span>
+0064     q(:,i1) = max(1e-18,q(:,quiet_borderx1+1)).^(alpha_power/2);
+0065   <span class="keyword">end</span>
+0066   <span class="keyword">for</span> i1 = quiet_borderx2:size(q,2),
+0067     <span class="comment">%q(:,i1) = max(0,q(:,quiet_borderx1+1)).^(alpha_power/2);</span>
+0068     q(:,i1) = max(1e-18,q(:,quiet_borderx2-1)).^(alpha_power/2);
+0069   <span class="keyword">end</span>
+0070   <span class="keyword">for</span> i1 = 1:quiet_bordery1,
+0071     <span class="comment">%q(:,i1) = max(0,q(:,quiet_borderx1+1)).^(alpha_power/2);</span>
+0072     q(i1,:) = max(1e-18,q(quiet_bordery1+1,:)).^(alpha_power/2);
+0073   <span class="keyword">end</span>
+0074   <span class="keyword">for</span> i1 = quiet_bordery2:size(q,1),
+0075     <span class="comment">%q(:,i1) = max(0,q(:,quiet_borderx1+1)).^(alpha_power/2);</span>
+0076     q(i1,:) = max(1e-18,q(quiet_bordery2-1,:)).^(alpha_power/2);
+0077   <span class="keyword">end</span>
+0078   
+0079 <span class="keyword">else</span>
+0080   
+0081   q = b./p;
+0082   
+0083 <span class="keyword">end</span>
+0084 
+0085 q(~isfinite(q)) = 1;
+0086 
+0087 <span class="keyword">for</span> i1 = 1:length(l_cl),
+0088   
+0089   <span class="keyword">if</span> min(size(l_cl{i1}))
+0090     
+0091     dq = conv2(q([ones(1,floor(length(bfk{i1})/2))<span class="keyword">...</span>
+0092                   1:<span class="keyword">end</span><span class="keyword">...</span>
+0093                   end*ones(1,floor(length(bfk{i1})/2))],:),bfk{i1}',<span class="string">'same'</span>);
+0094     dq = conv2(dq(:,[ones(1,floor(length(bfk{i1})/2))<span class="keyword">...</span>
+0095                   1:<span class="keyword">end</span><span class="keyword">...</span>
+0096                   end*ones(1,floor(length(bfk{i1})/2))]),bfk{i1},<span class="string">'same'</span>);
+0097     dq = dq(ceil(length(bfk{i1})/2):end-ceil(length(bfk{i1})/2-1),<span class="keyword">...</span>
+0098             ceil(length(bfk{i1})/2):end-ceil(length(bfk{i1})/2-1));
+0099     
+0100     dVem(l_cl{i1}) = uv(:,l_cl{i1})'*dq(:);
+0101     
+0102   <span class="keyword">end</span>
+0103   
+0104 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

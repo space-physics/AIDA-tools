@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of infov2</title>
+  <meta name="keywords" content="infov2">
+  <meta name="description" content="INFOV2 finds stars inside a specified field of view">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>infov2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>INFOV2 finds stars inside a specified field of view</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [infovstars,SkMp] = infov2(possiblestars,az0,ze0,rot0,fov,SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> INFOV2 finds stars inside a specified field of view
+ specified by AZ0, ZE0, ROT0 (degrees) and FOV (radians). 
+ &quot;Private&quot; function called through the skymap/starcal GUI. Not
+ much use for user to call this function manually
+ 
+ Calling:
+ [infovstars] = infov2(possiblestars,az0,ze0,rot0,fov)
+ 
+ See also PLOTTABLESTARS, LOADSTARS.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="starbas.html" class="code" title="function [e1,e2,e3] = starbas(az,el,roll)">starbas</a>	STARBAS calculates untit vectors of a rotated coordinate system.</li><li><a href="starbestaemft2.html" class="code" title="function [fi,taeta] = starbestaemft2(az,el,e1,e2,e3)">starbestaemft2</a>	STARBESTAEMFT2 determines the possition of stars relative to axis</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="checkisok.html" class="code" title="function [SkMp] = checkisok(SkMp)">checkisok</a>	</li><li><a href="updstrpl.html" class="code" title="function [SkMp] = updstrpl(SkMp)">updstrpl</a>	</li><li><a href="updstrplOld.html" class="code" title="function [SkMp] = updstrplOld(SkMp)">updstrplOld</a>	</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [infovstars,SkMp] = infov2(possiblestars,az0,ze0,rot0,fov,SkMp)</a>
+0002 <span class="comment">% INFOV2 finds stars inside a specified field of view</span>
+0003 <span class="comment">% specified by AZ0, ZE0, ROT0 (degrees) and FOV (radians).</span>
+0004 <span class="comment">% &quot;Private&quot; function called through the skymap/starcal GUI. Not</span>
+0005 <span class="comment">% much use for user to call this function manually</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">% [infovstars] = infov2(possiblestars,az0,ze0,rot0,fov)</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% See also PLOTTABLESTARS, LOADSTARS.</span>
+0011 
+0012 
+0013 <span class="comment">%   Copyright � 1997 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0014 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0015 
+0016 
+0017 <span class="comment">%imax = size( possiblestars );</span>
+0018 
+0019 [e1,e2,e3] = <a href="starbas.html" class="code" title="function [e1,e2,e3] = starbas(az,el,roll)">starbas</a>(az0,ze0,rot0);
+0020 
+0021 SkMp.e1 = e1;
+0022 SkMp.e2 = e2;
+0023 SkMp.e3 = e3;
+0024 
+0025 az = possiblestars(:,1);
+0026 el = pi/2 - possiblestars(:,2);
+0027 [phi,theta] = <a href="starbestaemft2.html" class="code" title="function [fi,taeta] = starbestaemft2(az,el,e1,e2,e3)">starbestaemft2</a>(180*az/pi,180*el/pi,e1,e2,e3);
+0028 
+0029 fov_scale = 2-isempty(SkMp.img);
+0030 [indx] = find(theta&lt;abs(fov)*fov_scale^.5);
+0031 infovstars = possiblestars(indx,:);
+0032 infovstars(:,8) = possiblestars(indx,6);
+0033 infovstars(:,5) = phi(indx)';
+0034 infovstars(:,6) = theta(indx)';</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

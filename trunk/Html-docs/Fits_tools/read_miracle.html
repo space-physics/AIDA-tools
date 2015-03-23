@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of read_miracle</title>
+  <meta name="keywords" content="read_miracle">
+  <meta name="description" content="READ_miracle - reads MIRACLE ASC jpg or png images">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>read_miracle
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>READ_miracle - reads MIRACLE ASC jpg or png images</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [d,h,o] = read_miracle(filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> READ_miracle - reads MIRACLE ASC jpg or png images
+ Calling:
+   [d,h,o] = read_miracle(filename)
+ Input:
+   filename - filename either a string with name of file (either
+              relative of full path to file) or a struct from the
+              'dir' command (then care have to be taken that the
+              filename.name points to the file i.e. give the full path)
+ Output:
+   d - data, [NxN] sized double array
+   o - observation details (time, filter, station position,
+       exposure time, camera and station number)
+       structure
+   h - header containing the metadata for png files 
+
+% CFE 20100326, 2012</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/File2obs/miracle_emccd_obs.html" class="code" title="function [obs]=miracle_emccd_obs(h)">miracle_emccd_obs</a>	MIRACLE_EMCCD_OBS - build obs-struct for MIRACLE eMCCD images</li><li><a href="../Fits_tools/File2obs/miracle_iccd_obs.html" class="code" title="function obs = miracle_iccd_obs(fn);">miracle_iccd_obs</a>	Cut out details from filename, it's the only metadata available for JPGs</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>	READ_IMG - reads image data and process header info.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [d,h,o] = read_miracle(filename)</a>
+0002 <span class="comment">% READ_miracle - reads MIRACLE ASC jpg or png images</span>
+0003 <span class="comment">% Calling:</span>
+0004 <span class="comment">%   [d,h,o] = read_miracle(filename)</span>
+0005 <span class="comment">% Input:</span>
+0006 <span class="comment">%   filename - filename either a string with name of file (either</span>
+0007 <span class="comment">%              relative of full path to file) or a struct from the</span>
+0008 <span class="comment">%              'dir' command (then care have to be taken that the</span>
+0009 <span class="comment">%              filename.name points to the file i.e. give the full path)</span>
+0010 <span class="comment">% Output:</span>
+0011 <span class="comment">%   d - data, [NxN] sized double array</span>
+0012 <span class="comment">%   o - observation details (time, filter, station position,</span>
+0013 <span class="comment">%       exposure time, camera and station number)</span>
+0014 <span class="comment">%       structure</span>
+0015 <span class="comment">%   h - header containing the metadata for png files</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%% CFE 20100326, 2012</span>
+0018 
+0019 
+0020 <span class="keyword">if</span> isstruct(filename) 
+0021   filename=filename.name; 
+0022 <span class="keyword">end</span> 
+0023 
+0024 fi=imfinfo(filename);
+0025 d=imread(filename);
+0026 d=double(d);
+0027 
+0028 <span class="keyword">switch</span> fi.Format
+0029   <span class="keyword">case</span> <span class="string">'png'</span>
+0030     <span class="comment">%Only EMCCD for now, add colour camera routines</span>
+0031  
+0032     h=fi.OtherText;
+0033     o=<a href="../Fits_tools/File2obs/miracle_emccd_obs.html" class="code" title="function [obs]=miracle_emccd_obs(h)">miracle_emccd_obs</a>(h); 
+0034     
+0035   <span class="keyword">case</span> <span class="string">'jpg'</span>
+0036  
+0037     h=[]; <span class="comment">%JPG files have no headers</span>
+0038     o=<a href="../Fits_tools/File2obs/miracle_iccd_obs.html" class="code" title="function obs = miracle_iccd_obs(fn);">miracle_iccd_obs</a>(filename);
+0039  
+0040     <span class="comment">%Remove the text field, it is of no use for starcal</span>
+0041     wd=size(d,2);
+0042     <span class="keyword">if</span> size(d,1)&gt;wd
+0043 
+0044         <span class="comment">%text field</span>
+0045         ho=22; <span class="comment">%remove grayscale bar</span>
+0046         vc=420; <span class="comment">%cut &quot;compass&quot;</span>
+0047         textfield=d(wd+ho:<span class="keyword">end</span>,1:vc);
+0048         
+0049         <span class="comment">%image area</span>
+0050         d=d(1:wd,:); <span class="comment">%assumes height should be equal to width</span>
+0051     
+0052     <span class="keyword">end</span>
+0053         
+0054     <span class="comment">% Try character recognition on text field</span>
+0055     [ex,ocrcmd]=system(<span class="string">'which gocr'</span>);
+0056     <span class="keyword">if</span>(ex==0) <span class="comment">% GOCR is installed</span>
+0057  
+0058         <span class="comment">%Write to PGM file with black text on white</span>
+0059         imwrite(255-uint8(textfield),<span class="string">'tmp_txt.pgm'</span>); 
+0060         
+0061         <span class="comment">%Extract the text</span>
+0062         <span class="comment">%Cheating: gocr sees the colons in UT time as = signs</span>
+0063         [ex,htxt]=system(<span class="string">'gocr tmp_txt.pgm -s 10 | sed s/=/:/g'</span>); 
+0064         <span class="comment">%Cut out time, date, filter and exposure time</span>
+0065         ht=regexp(htxt,<span class="string">'(.* UTC)'</span>,<span class="string">'match'</span>,<span class="string">'once'</span>);
+0066         hd=regexp(htxt,<span class="string">'(\d\d \w+ \d\d\d\d)'</span>,<span class="string">'match'</span>,<span class="string">'once'</span>);
+0067         hf=regexp(htxt,<span class="string">'(Filter: .* nm)'</span>,<span class="string">'match'</span>,<span class="string">'once'</span>);
+0068         he=regexp(htxt,<span class="string">'(Exposure: .* ms)'</span>,<span class="string">'match'</span>,<span class="string">'once'</span>);
+0069         
+0070         h=sprintf(<span class="string">'Date: %s\nTime: %s\n%s\n%s\n'</span>,hd,ht,hf,he);
+0071         delete(<span class="string">'tmp_txt.pgm'</span>)
+0072 
+0073         <span class="comment">%Uncomment to use these instead of metadata from filename</span>
+0074         <span class="comment">%It is not reliable at this stage</span>
+0075         <span class="comment">% o.exptime=str2num(regexp(he,'(\d+)','match','once'));</span>
+0076         <span class="comment">% o.filter=str2num(regexp(hf,'(\d+)','match','once'));</span>
+0077         <span class="comment">% dd=datenum([hd,' ',ht]);</span>
+0078         <span class="comment">% o.date=datevec(dd);</span>
+0079     <span class="keyword">end</span>
+0080     
+0081   <span class="keyword">otherwise</span>
+0082     error(<span class="string">'File not in MIRACLE format'</span>)
+0083 <span class="keyword">end</span>
+0084 
+0085 <span class="comment">%%%EOF</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

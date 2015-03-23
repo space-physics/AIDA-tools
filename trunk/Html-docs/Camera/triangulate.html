@@ -1,0 +1,489 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of triangulate</title>
+  <meta name="keywords" content="triangulate">
+  <meta name="description" content="TRIANGULATE - stereoscopic triangulation from a pair of images">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>triangulate
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TRIANGULATE - stereoscopic triangulation from a pair of images</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [xtr,ytr,ztr,tu1,tv1,tu2,tv2,minl] = triangulate(img1,r1,img2,r2,cm1,cm2,PO,Opts) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TRIANGULATE - stereoscopic triangulation from a pair of images
+ TRIANGULATE is a function for determination of 3D positions of
+ objects imaged in 2 images (IMG1 and IMG2) from different
+ locations (R1 and R2). The optical transfer function are
+ described in PO(1).optpar and PO(2).optpar, CM1 and CM2 are
+ optional correction matrices to transform the coordinate systems
+ of the cameras. Opts is an options struct. The user is to
+ identify the same spatial structure (points) in both images, the
+ 3-D coordinates of the structure is calculated as the mid-point
+ on the shortest intersection between the lines-of-sight to the
+ two points.
+
+ Calling:
+ [xtr,ytr,ztr,tu1,tv1,tu2,tv2] = triangulate(img1,r1,img2,r2,checktmp,cm1,cm2,PO,OPS)
+ OPS = triangulate
+ 
+ Input:
+  img1  - Image 1 to use to identify common points.
+  r1    - 1x3 array of coordinates for camera 1
+  img2  - Image 2 to use to identify common points.
+  r2    - 1x3 array of coordinates for camera 2
+  cm1   - additional rotation matrix, allowing correcting between
+          local coordinate system 1 and the common coordinates
+  cm2   - additional rotation matrix, allowing correcting between
+          local coordinate system 2 and the common coordinates
+  PO    - array [1 x 2] with fields PO([1,2]).optpar for the
+          optical parameters of the cameras, and optionally
+          PO([1,2]).flipimage [0,1] with 0 (default) for pixel
+          (1,1) in the lower left corner 1 for displaying the 
+          image with pixel (1,1) in the upper left
+          corner. Typically produced with typical_pre_proc_ops
+  Opts  - options structure with fields  
+          ax1 (default [1 256 1 256]) image-1 region to display
+          ax2 (default [1 256 1 256]) image-2 region to display
+          cx1 (default 'auto') image-1 caxis range
+          cx2 (default 'auto') image-2 caxis range
+          SubplotsNotFigs (default 1) display images in
+                subplots in one figure or in two eparate figures 
+          epipolar_lines (default 0) set to 1 to overlay epi-polar
+                lines.
+          epipolar_range (default [80,20,500]) range of epi-polar
+                line [ Z0, dZ, Zmax] (km).
+          checktmp (default 0) set to 1 to display triangulation
+                result lines-of-sight and shortest intersection
+                line.
+
+ Output: 
+  xtr  - x-position of triangulated points
+  ytr  - y-position of triangulated points
+  ztr  - z-position of triangulated points
+  tu1  - horisontal image coordinates of triangulated points (img1)
+  tv1  - vertical image coordinates of triangulated points (img1)
+  tu2  - horisontal image coordinates of triangulated points (img2)
+  tv2  - vertical image coordinates of triangulated points (img2)
+  minl - lengths of the shortest intersections.
+ 
+ Overly briefly, and maybe not all that clarifying about the
+ optpar field necessary i the PO struct:
+  optpar - is a vector caracterising the optical
+           transfer function, or an OPTPAR struct, with fields:
+           sinzecosaz, sinzesinaz, u, v that define the horizontal
+           components of a pixel l-o-s, and the pixel coordinates
+           for the corresponding horizontal l-o-s components,,Opts
+           respectively, and optionally a field rot (when used a
+           vector with 3 Tait-Bryant rotaion angles)
+
+ See also <a href="camera_model.html" class="code" title="function [u,w] = camera_model(az,ze,e1,e2,e3,optpar,optmod,imsiz)">CAMERA_MODEL</a>, <a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">CAMERA_INVMODEL</a>, <a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">CAMERA_ROT</a>, <a href="camera_base.html" class="code" title="function [e1,e2,e3] = camera_base(alfa,beta,fi,order)">CAMERA_BASE</a>.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>	CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA</li><li><a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>	CAMERA_ROT - determines the coordinate system of the camera</li><li><a href="inv_project_points.html" class="code" title="function [xx,yy,zz] = inv_project_points(px,py,img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_points</a>	INV_PROJECT_POINTS - maps points (PX,PY) in image IMG_IN to a plane</li><li><a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>	PROJECT_POINT - project a point in space R down onto an image</li><li><a href="../Geometry/diff2_ps_on_ls.html" class="code" title="function [diff2] = diff2_ps_on_ls(l,r1,e1,r2,e2)">diff2_ps_on_ls</a>	DIFF2_PS_ON_LS calculates squared distance between points on 2 different lines.</li><li><a href="../tools/catstruct.html" class="code" title="function A = catstruct(varargin)">catstruct</a>	CATSTRUCT - concatenate structures</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Imgtools/imgs_stereo.html" class="code" title="function [X,Y,Z,U1,V1,U2,V2,minL] = imgs_stereo(file1,PO1,optp1,r1,file2,PO2,optp2,r2,corr1,corr2,OPS)">imgs_stereo</a>	imgs_stereo - Triangulate from 2 series of images</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [xtr,ytr,ztr,tu1,tv1,tu2,tv2,minl] = triangulate(img1,r1,img2,r2,cm1,cm2,PO,Opts)</a>
+0002 <span class="comment">% TRIANGULATE - stereoscopic triangulation from a pair of images</span>
+0003 <span class="comment">% TRIANGULATE is a function for determination of 3D positions of</span>
+0004 <span class="comment">% objects imaged in 2 images (IMG1 and IMG2) from different</span>
+0005 <span class="comment">% locations (R1 and R2). The optical transfer function are</span>
+0006 <span class="comment">% described in PO(1).optpar and PO(2).optpar, CM1 and CM2 are</span>
+0007 <span class="comment">% optional correction matrices to transform the coordinate systems</span>
+0008 <span class="comment">% of the cameras. Opts is an options struct. The user is to</span>
+0009 <span class="comment">% identify the same spatial structure (points) in both images, the</span>
+0010 <span class="comment">% 3-D coordinates of the structure is calculated as the mid-point</span>
+0011 <span class="comment">% on the shortest intersection between the lines-of-sight to the</span>
+0012 <span class="comment">% two points.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Calling:</span>
+0015 <span class="comment">% [xtr,ytr,ztr,tu1,tv1,tu2,tv2] = triangulate(img1,r1,img2,r2,checktmp,cm1,cm2,PO,OPS)</span>
+0016 <span class="comment">% OPS = triangulate</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Input:</span>
+0019 <span class="comment">%  img1  - Image 1 to use to identify common points.</span>
+0020 <span class="comment">%  r1    - 1x3 array of coordinates for camera 1</span>
+0021 <span class="comment">%  img2  - Image 2 to use to identify common points.</span>
+0022 <span class="comment">%  r2    - 1x3 array of coordinates for camera 2</span>
+0023 <span class="comment">%  cm1   - additional rotation matrix, allowing correcting between</span>
+0024 <span class="comment">%          local coordinate system 1 and the common coordinates</span>
+0025 <span class="comment">%  cm2   - additional rotation matrix, allowing correcting between</span>
+0026 <span class="comment">%          local coordinate system 2 and the common coordinates</span>
+0027 <span class="comment">%  PO    - array [1 x 2] with fields PO([1,2]).optpar for the</span>
+0028 <span class="comment">%          optical parameters of the cameras, and optionally</span>
+0029 <span class="comment">%          PO([1,2]).flipimage [0,1] with 0 (default) for pixel</span>
+0030 <span class="comment">%          (1,1) in the lower left corner 1 for displaying the</span>
+0031 <span class="comment">%          image with pixel (1,1) in the upper left</span>
+0032 <span class="comment">%          corner. Typically produced with typical_pre_proc_ops</span>
+0033 <span class="comment">%  Opts  - options structure with fields</span>
+0034 <span class="comment">%          ax1 (default [1 256 1 256]) image-1 region to display</span>
+0035 <span class="comment">%          ax2 (default [1 256 1 256]) image-2 region to display</span>
+0036 <span class="comment">%          cx1 (default 'auto') image-1 caxis range</span>
+0037 <span class="comment">%          cx2 (default 'auto') image-2 caxis range</span>
+0038 <span class="comment">%          SubplotsNotFigs (default 1) display images in</span>
+0039 <span class="comment">%                subplots in one figure or in two eparate figures</span>
+0040 <span class="comment">%          epipolar_lines (default 0) set to 1 to overlay epi-polar</span>
+0041 <span class="comment">%                lines.</span>
+0042 <span class="comment">%          epipolar_range (default [80,20,500]) range of epi-polar</span>
+0043 <span class="comment">%                line [ Z0, dZ, Zmax] (km).</span>
+0044 <span class="comment">%          checktmp (default 0) set to 1 to display triangulation</span>
+0045 <span class="comment">%                result lines-of-sight and shortest intersection</span>
+0046 <span class="comment">%                line.</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">% Output:</span>
+0049 <span class="comment">%  xtr  - x-position of triangulated points</span>
+0050 <span class="comment">%  ytr  - y-position of triangulated points</span>
+0051 <span class="comment">%  ztr  - z-position of triangulated points</span>
+0052 <span class="comment">%  tu1  - horisontal image coordinates of triangulated points (img1)</span>
+0053 <span class="comment">%  tv1  - vertical image coordinates of triangulated points (img1)</span>
+0054 <span class="comment">%  tu2  - horisontal image coordinates of triangulated points (img2)</span>
+0055 <span class="comment">%  tv2  - vertical image coordinates of triangulated points (img2)</span>
+0056 <span class="comment">%  minl - lengths of the shortest intersections.</span>
+0057 <span class="comment">%</span>
+0058 <span class="comment">% Overly briefly, and maybe not all that clarifying about the</span>
+0059 <span class="comment">% optpar field necessary i the PO struct:</span>
+0060 <span class="comment">%  optpar - is a vector caracterising the optical</span>
+0061 <span class="comment">%           transfer function, or an OPTPAR struct, with fields:</span>
+0062 <span class="comment">%           sinzecosaz, sinzesinaz, u, v that define the horizontal</span>
+0063 <span class="comment">%           components of a pixel l-o-s, and the pixel coordinates</span>
+0064 <span class="comment">%           for the corresponding horizontal l-o-s components,,Opts</span>
+0065 <span class="comment">%           respectively, and optionally a field rot (when used a</span>
+0066 <span class="comment">%           vector with 3 Tait-Bryant rotaion angles)</span>
+0067 <span class="comment">%</span>
+0068 <span class="comment">% See also CAMERA_MODEL, CAMERA_INVMODEL, CAMERA_ROT, CAMERA_BASE.</span>
+0069 
+0070 
+0071 <span class="comment">%   Copyright � 2001-2010 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0072 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0073 
+0074 <span class="comment">% Default Options</span>
+0075 dOpts.ax1 = [1 256 1 256];
+0076 dOpts.ax2 = [1 256 1 256];
+0077 dOpts.cx1 = <span class="string">'auto'</span>;
+0078 dOpts.cx2 = <span class="string">'auto'</span>;
+0079 dOpts.SubplotsNotFigs = 1;
+0080 dOpts.epipolar_lines = 0;
+0081 dOpts.epipolar_range = [80,20,500];
+0082 dOpts.checktmp = 0;
+0083 
+0084 <span class="comment">% If triangulate is called without input arguments just return the</span>
+0085 <span class="comment">% default options</span>
+0086 <span class="keyword">if</span> nargin == 0;
+0087   xtr = dOpts;
+0088   <span class="keyword">return</span>
+0089 <span class="keyword">end</span>
+0090 <span class="comment">% Else merge the two options structs, with the user-Opts</span>
+0091 <span class="comment">% overwriting the defaults</span>
+0092 <span class="keyword">if</span> nargin &gt; 7 &amp; ~isempty(Opts)
+0093   dOpts = <a href="../tools/catstruct.html" class="code" title="function A = catstruct(varargin)">catstruct</a>(dOpts,Opts);
+0094 <span class="keyword">end</span>
+0095 
+0096 <span class="comment">% Extract the optical parameters</span>
+0097 optp1 = PO(1).optpar;
+0098 optp2 = PO(2).optpar;
+0099 
+0100 <span class="comment">% Determine if we're plotting in one or two figures</span>
+0101 <span class="keyword">if</span> isfield(dOpts,<span class="string">'SubplotsNotFigs'</span>)
+0102   SubplotsNotFigs = dOpts.SubplotsNotFigs;
+0103 <span class="keyword">end</span>
+0104 <span class="comment">% Get figure for image display and optionally figure for the</span>
+0105 <span class="comment">% temporary triangulation display.</span>
+0106 fig1 = gcf;
+0107 <span class="keyword">if</span> ( dOpts.checktmp )
+0108   figtmp = figure;
+0109 <span class="keyword">end</span>
+0110 
+0111 bxy1 = size(img1);
+0112 bx1 = bxy1(2);
+0113 by1 = bxy1(1);
+0114 
+0115 bxy2 = size(img2);
+0116 bx2 = bxy2(2);
+0117 by2 = bxy2(1);
+0118 
+0119 <span class="comment">% Calculate the camera rotation matrix for camera 1</span>
+0120 <span class="keyword">if</span> isstruct(optp1)
+0121   rot1 = <a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>(optp1.rot(1),optp1.rot(2),optp1.rot(3));
+0122   optmod1 = optp1.mod;
+0123 <span class="keyword">else</span>
+0124   rot1 = <a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>(optp1(3),optp1(4),optp1(5));
+0125   optmod1 = optp1(9);
+0126 <span class="keyword">end</span>
+0127 
+0128 <span class="comment">% Calculate the camera rotation matrix for camera 1</span>
+0129 <span class="keyword">if</span> isstruct(optp2)
+0130   rot2 = <a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>(optp2.rot(1),optp2.rot(2),optp2.rot(3));
+0131   optmod2 = optp2.mod;
+0132 <span class="keyword">else</span>
+0133   rot2 = <a href="camera_rot.html" class="code" title="function [rmat] = camera_rot(alfa,beta,gamma,order)">camera_rot</a>(optp2(3),optp2(4),optp2(5));
+0134   optmod2 = optp2(9);
+0135 <span class="keyword">end</span>
+0136 
+0137 <span class="comment">% correct for the curvature of the earth between the 2 camera</span>
+0138 <span class="comment">% positions R1 and R2</span>
+0139 <span class="keyword">if</span> (nargin&gt;4) &amp; ~isempty(cm1)
+0140   rot1 = cm1*rot1;
+0141 <span class="keyword">else</span>
+0142   cm1 = eye(3);
+0143 <span class="keyword">end</span>
+0144 <span class="keyword">if</span> (nargin&gt;5) &amp; ~isempty(cm2)
+0145   rot2 = cm2*rot2;
+0146 <span class="keyword">else</span>
+0147   cm2 = eye(3);
+0148 <span class="keyword">end</span>
+0149 
+0150 <span class="comment">%% Display the images</span>
+0151 <span class="comment">%% First image 1</span>
+0152 figure(fig1)
+0153 clf
+0154 <span class="keyword">if</span> SubplotsNotFigs
+0155   ax1 = subplot(1,2,1);
+0156 <span class="keyword">end</span>
+0157 <span class="keyword">if</span> isfield(PO(1), <span class="string">'flipimage'</span>)
+0158   <span class="comment">% Respect the FMI-image flipping preferences</span>
+0159   <span class="keyword">if</span> PO(1).flipimage == 1
+0160     imagesc(img1), axis image
+0161   <span class="keyword">else</span> 
+0162     imagesc(img1),axis xy
+0163   <span class="keyword">end</span>
+0164 <span class="keyword">else</span>
+0165   imagesc(img1),axis xy
+0166 <span class="keyword">end</span>
+0167 <span class="comment">% Zoom to the desired image region</span>
+0168 <span class="keyword">if</span> isfield(dOpts,<span class="string">'ax1'</span>)
+0169   axis(dOpts.ax1)
+0170 <span class="keyword">end</span>
+0171 <span class="comment">% Set the intensity scale</span>
+0172 <span class="keyword">if</span> isfield(dOpts,<span class="string">'cx1'</span>)
+0173   caxis(dOpts.cx1)
+0174 <span class="keyword">end</span>
+0175 xlabel(<span class="string">'add point | enough points |     '</span>,<span class="string">'fontsize'</span>,14)
+0176 hold on
+0177 
+0178 <span class="comment">%% And then image 2</span>
+0179 <span class="keyword">if</span> SubplotsNotFigs
+0180   ax2 = subplot(1,2,2);
+0181 <span class="keyword">else</span>
+0182   fig2 = figure;
+0183 <span class="keyword">end</span>
+0184 <span class="keyword">if</span> isfield(PO(2), <span class="string">'flipimage'</span>)
+0185   <span class="comment">% Respect the FMI-image flipping preferences</span>
+0186   <span class="keyword">if</span> PO(2).flipimage == 1
+0187     imagesc(img2), axis image
+0188   <span class="keyword">else</span> 
+0189     imagesc(img2),axis xy
+0190   <span class="keyword">end</span>
+0191 <span class="keyword">else</span>
+0192   imagesc(img2),axis xy
+0193 <span class="keyword">end</span>
+0194 <span class="comment">% Zoom to the desired image region</span>
+0195 <span class="keyword">if</span> isfield(dOpts,<span class="string">'ax2'</span>)
+0196   axis(dOpts.ax2)
+0197 <span class="keyword">end</span>
+0198 <span class="comment">% Set the intensity scale</span>
+0199 <span class="keyword">if</span> isfield(dOpts,<span class="string">'cx2'</span>)
+0200   caxis(dOpts.cx2)
+0201 <span class="keyword">end</span>
+0202 <span class="comment">% If we're going to overlay epi-polar lines get the range here</span>
+0203 <span class="keyword">if</span> isfield(dOpts,<span class="string">'epipolar_range'</span>)
+0204   epi_lmin = dOpts.epipolar_range(1);
+0205   epi_dl = dOpts.epipolar_range(2);
+0206   epi_lmax = dOpts.epipolar_range(3);
+0207 <span class="keyword">end</span>
+0208 
+0209 xlabel(<span class="string">'add point (l)| enough points (m)| skip point (r)'</span>,<span class="string">'fontsize'</span>,14)
+0210 hold on
+0211 iPoint = 1;
+0212 button = 1;
+0213 
+0214 <span class="comment">%% Loop until user have gotten enough triangulation points.</span>
+0215 <span class="keyword">while</span> ( button ~= 2 &amp; lower(char(button)) ~= <span class="string">'m'</span>)
+0216   
+0217   <span class="comment">% First identify a point in image 1</span>
+0218   figure(fig1)
+0219   <span class="keyword">if</span> SubplotsNotFigs
+0220     title(<span class="string">''</span>)
+0221     axes(ax1)
+0222     title(<span class="string">'identify point in this image'</span>)
+0223   <span class="keyword">end</span>
+0224   [x1,y1,button] = ginput(1);
+0225   <span class="comment">% If point identified (left button or &quot;l&quot;-key)</span>
+0226   <span class="keyword">if</span> ( button == 1 | lower(char(button)) == <span class="string">'l'</span>)
+0227     
+0228     <span class="comment">% Then identify a point in image 2</span>
+0229     <span class="keyword">if</span> SubplotsNotFigs
+0230       title(<span class="string">''</span>)
+0231       axes(ax2)
+0232       title(<span class="string">'identify point in this image'</span>)
+0233     <span class="keyword">else</span>
+0234       figure(fig2);
+0235     <span class="keyword">end</span>
+0236     hold on
+0237     <span class="comment">% Plot epi-polar lines if that's wanted...</span>
+0238     <span class="keyword">if</span> isfield(dOpts,<span class="string">'epipolar_lines'</span>) 
+0239       <span class="keyword">if</span> dOpts.epipolar_lines
+0240         [xx1,yy1,zz1] = <a href="inv_project_points.html" class="code" title="function [xx,yy,zz] = inv_project_points(px,py,img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_points</a>(x1,y1,img1,<span class="keyword">...</span>
+0241                                            r1,optmod1,optp1,<span class="keyword">...</span>
+0242                                            [0,0,1],[epi_lmin:epi_dl:epi_lmax],cm1);
+0243         <span class="comment">%£££ Above here we should in with cm1 or cm1'</span>
+0244         r_epi = [xx1;yy1;zz1];
+0245         <span class="comment">%£££ And here we should in with cm2! (cm2'?)</span>
+0246         [u2,v2] = <a href="project_point.html" class="code" title="function [u,v,l] = project_point(rs,optpar,r,cmtr,imsiz)">project_point</a>(r2,optp2,r_epi,cm2,size(img2));
+0247         tmp_ph = plot(u2,v2,<span class="string">'k-'</span>,<span class="string">'linewidth'</span>,1.5);
+0248         [x2,y2,button] = ginput(1);
+0249         delete(tmp_ph)
+0250       <span class="keyword">end</span>
+0251     <span class="keyword">else</span>
+0252       [x2,y2,button] = ginput(1);
+0253     <span class="keyword">end</span>
+0254     <span class="comment">% If the point is selected in both images</span>
+0255     <span class="keyword">if</span> ( button == 1 | lower(char(button)) == <span class="string">'l'</span>)
+0256       <span class="comment">% Then calculate the corresponding pixel lines-of-sight by</span>
+0257       <span class="comment">% first calculating the polar coordinates in the</span>
+0258       <span class="comment">% camera-rotated system</span>
+0259       [fi,taeta] = <a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>(x1,y1,optp1,optmod1,[by1 bx1]);
+0260       <span class="comment">% Then make it a unit vector</span>
+0261       epix = [sin(taeta).*sin(fi); sin(taeta).*cos(fi); cos(taeta)];
+0262       <span class="comment">% Then rotate it to the local horizontal coordinate system</span>
+0263       epix = rot1*epix;
+0264       e1 = epix';
+0265       
+0266       <span class="comment">% Same thing for the pixel identified in camera 2</span>
+0267       <span class="comment">%bx = bx2;</span>
+0268       <span class="comment">%by = by2;</span>
+0269       [fi,taeta] = <a href="camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>(x2,y2,optp2,optmod2,[by2 bx2]);
+0270       epixf = [sin(taeta).*sin(fi); sin(taeta).*cos(fi); cos(taeta)];
+0271       epix = rot2*epixf;
+0272       e2 = epix';
+0273       <span class="comment">%% The best 3-D point to choose is the mid-point on the</span>
+0274       <span class="comment">%  shortest line separation between the two points. (There is</span>
+0275       <span class="comment">%  no guarantee that 2 lines in 3-D intersects exactly). The</span>
+0276       <span class="comment">%  requirement for a shortest intersection is that the</span>
+0277       <span class="comment">%  intersecting line is perpendicular to both lines-of-sight.</span>
+0278       <span class="comment">%  That is (with r_l being the difference vector between 2</span>
+0279       <span class="comment">%  points on the lines-of-sight):</span>
+0280       <span class="comment">%    r_l.e1 = 0</span>
+0281       <span class="comment">%    r_l.e2 = 0</span>
+0282       <span class="comment">%  when r_l is written out to r1+e1*l1 - (r2 + e2*l2) it turns into</span>
+0283       <span class="comment">%    e1.r1+ e1.e1*l1 - e1.r2 + e1.e2*l2 = 0</span>
+0284       <span class="comment">%    e2.r1+ e2.e1*l1 - e2.r2 + e2.e2*l2 = 0</span>
+0285       <span class="comment">%  Which is a nice system of linear equations that we solve with</span>
+0286       <span class="comment">%  direct matrix inversion!!!</span>
+0287       rhs = [dot(r2,e1)-dot(r1,e1) dot(r2,e2)-dot(r1,e2)];
+0288       M = [1 -dot(e1,e2);dot(e1,e2) -1];
+0289       <span class="comment">% lmatr = (inv(M)*rhs')';</span>
+0290       lmatr = (M\rhs')';
+0291       
+0292       minlength = <a href="../Geometry/diff2_ps_on_ls.html" class="code" title="function [diff2] = diff2_ps_on_ls(l,r1,e1,r2,e2)">diff2_ps_on_ls</a>(lmatr,r1,e1,r2,e2);
+0293       
+0294       <span class="comment">% temporary plot for control of triangulation result |</span>
+0295       <span class="comment">% ---------------------------------------------------v</span>
+0296       <span class="keyword">if</span> ( dOpts.checktmp )
+0297     figure(figtmp);
+0298     hold on
+0299     plot3(r1(1),r1(2),r1(3),<span class="string">'r+'</span>)
+0300     plot3(r2(1),r2(2),r2(3),<span class="string">'r+'</span>)
+0301     xp(1) = r1(1);
+0302     yp(1) = r1(2);
+0303     zp(1) = r1(3);
+0304     qw = lmatr(1)*e1;
+0305     xp(2) = r1(1)+qw(1);
+0306     yp(2) = r1(2)+qw(2);
+0307     zp(2) = r1(3)+qw(3);
+0308     plot3(xp,yp,zp,<span class="string">'g'</span>)
+0309     xp(1) = r2(1);
+0310     yp(1) = r2(2);
+0311     zp(1) = r2(3);
+0312     qw = lmatr(2)*e2;
+0313     xp(2) = r2(1)+qw(1);
+0314     yp(2) = r2(2)+qw(2);
+0315     zp(2) = r2(3)+qw(3);
+0316     plot3(xp,yp,zp,<span class="string">'b'</span>)
+0317     
+0318     rmin = .5*(r1+lmatr(1)*e1+r2+lmatr(2)*e2);
+0319     plot3(rmin(1),rmin(2),rmin(3),<span class="string">'k*'</span>)
+0320     disp(<span class="string">'  lmin'</span>)
+0321     disp(lmatr)
+0322     drawnow
+0323     view(30,30)
+0324     grid on
+0325     rotate3d on
+0326     xlabel(<span class="string">'    i       minlength'</span>)
+0327     disp([ iPoint       minlength])
+0328     qwas = gca;
+0329     set(qwas,<span class="string">'Projection'</span>,<span class="string">'perspective'</span>);
+0330     
+0331     title(<span class="string">'add point | enough points | skip point '</span>)
+0332     [x3,y3,button] = ginput(1);
+0333     <span class="comment">%-------------------------------------------------^</span>
+0334       <span class="keyword">else</span>
+0335         disp([iPoint minlength])
+0336     rmin = .5*(r1+lmatr(1)*e1+r2+lmatr(2)*e2);
+0337       <span class="keyword">end</span> <span class="comment">% if ( dOpts.checktmp )</span>
+0338       <span class="comment">% If the selected point is considered good</span>
+0339       <span class="keyword">if</span> ( button == 1 | lower(char(button)) == <span class="string">'l'</span>)
+0340     <span class="comment">% Then assign the next output points</span>
+0341     xtr(iPoint) = rmin(1);
+0342     ytr(iPoint) = rmin(2);
+0343     ztr(iPoint) = rmin(3);
+0344     tu1(iPoint) = x1;
+0345     tv1(iPoint) = y1;
+0346     tu2(iPoint) = x2;
+0347     tv2(iPoint) = y2;
+0348         minl(iPoint) = minlength;
+0349         iPoint = iPoint+1;
+0350         figure(fig1)
+0351         <span class="keyword">if</span> SubplotsNotFigs
+0352           axes(ax1)
+0353           hold on
+0354           plot(x1,y1,<span class="string">'w+'</span>)
+0355           axes(ax2)
+0356           hold on
+0357           plot(x2,y2,<span class="string">'w+'</span>)
+0358         <span class="keyword">else</span>
+0359           hold on
+0360           plot(x1,y1,<span class="string">'w+'</span>)
+0361           figure(fig2)
+0362           hold on
+0363           plot(x2,y2,<span class="string">'w+'</span>)
+0364         <span class="keyword">end</span>
+0365     
+0366       <span class="keyword">end</span> <span class="comment">% if ( button == 1 )</span>
+0367       
+0368     <span class="keyword">end</span>
+0369       
+0370   <span class="keyword">end</span>
+0371   
+0372 <span class="keyword">end</span>
+0373 
+0374 <span class="keyword">if</span> ( dOpts.checktmp )
+0375   close(figtmp)
+0376 <span class="keyword">end</span>
+0377 
+0378 <span class="keyword">if</span> ~SubplotsNotFigs
+0379   close(fig2)
+0380 <span class="keyword">end</span>
+0381 hold off</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

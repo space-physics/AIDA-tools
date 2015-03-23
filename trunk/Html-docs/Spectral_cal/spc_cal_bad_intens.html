@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of spc_cal_bad_intens</title>
+  <meta name="keywords" content="spc_cal_bad_intens">
+  <meta name="description" content="SPC_CAL_BAD_INTENS - Select intensity limits for each star, and">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Spectral_cal -->
+<h1>spc_cal_bad_intens
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SPC_CAL_BAD_INTENS - Select intensity limits for each star, and</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [gI1,gI2,gI3,gT,gX,gY,gFilter] = spc_cal_bad_intens(inI1,inI2,inI3,inT,inX,inY,inFilter,checkfilters,OPTS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SPC_CAL_BAD_INTENS - Select intensity limits for each star, and
+ sort out the outliers. This is done manually, which is slightly
+ time-consuming (== becommes tedious and boring)
+ 
+ Calling:
+  [GI1,GI2,GI3,GT,GX,GY,Gfilter] = spc_cal_bad_intens(inI1,inI2,inI3,inT,inX,inY,inFilter,checkfilters)
+ Inputs:
+   inI1 - stellar intensity (counts) as produced by
+   inI2 - stellar intensity (counts) as produced by
+   inI3 - stellar intensity (counts) as produced by
+   inT  - Times for the corresponding INI[1-3]
+   inX  - Horisontal image coordinate of stars
+   inY  - Vertical image coordinate of stars
+   inFilter - Filter index for images
+   checkfilters - Filter to select for output
+
+ Outputs:
+   GI1  - Cleaned up stellar intensity
+   GI2  - Cleaned up stellar intensity
+   GI3  - Cleaned up stellar intensity
+   GT   - Times for the corresponding GIn
+   GX   - Corresponding horisontal image coordinates
+   GY   - Corresponding vertical image coordinates
+   Gfilter - Corresponding filter indexes</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>	ISCHAR - return true if STR is a char-array</li><li><a href="../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>	TIMETICK - change axis-labels to time/date format. Clever choice</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="Spec_cal_jobb_Miracle.html" class="code" title="">Spec_cal_jobb_Miracle</a>	Spec_cal_jobb_Miracle - Example of spectral camera sensitivity calibration</li><li><a href="Spec_cal_jobb_exmplCell.html" class="code" title="">Spec_cal_jobb_exmplCell</a>	Spec_cal_jobb_exmplCell - Example of spectral camera sensitivity calibration</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function ok = ints_plot(T,I1,I2,I3,clr)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [gI1,gI2,gI3,gT,gX,gY,gFilter] = spc_cal_bad_intens(inI1,inI2,inI3,inT,inX,inY,inFilter,checkfilters,OPTS)</a>
+0002 <span class="comment">% SPC_CAL_BAD_INTENS - Select intensity limits for each star, and</span>
+0003 <span class="comment">% sort out the outliers. This is done manually, which is slightly</span>
+0004 <span class="comment">% time-consuming (== becommes tedious and boring)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%  [GI1,GI2,GI3,GT,GX,GY,Gfilter] = spc_cal_bad_intens(inI1,inI2,inI3,inT,inX,inY,inFilter,checkfilters)</span>
+0008 <span class="comment">% Inputs:</span>
+0009 <span class="comment">%   inI1 - stellar intensity (counts) as produced by</span>
+0010 <span class="comment">%   inI2 - stellar intensity (counts) as produced by</span>
+0011 <span class="comment">%   inI3 - stellar intensity (counts) as produced by</span>
+0012 <span class="comment">%   inT  - Times for the corresponding INI[1-3]</span>
+0013 <span class="comment">%   inX  - Horisontal image coordinate of stars</span>
+0014 <span class="comment">%   inY  - Vertical image coordinate of stars</span>
+0015 <span class="comment">%   inFilter - Filter index for images</span>
+0016 <span class="comment">%   checkfilters - Filter to select for output</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Outputs:</span>
+0019 <span class="comment">%   GI1  - Cleaned up stellar intensity</span>
+0020 <span class="comment">%   GI2  - Cleaned up stellar intensity</span>
+0021 <span class="comment">%   GI3  - Cleaned up stellar intensity</span>
+0022 <span class="comment">%   GT   - Times for the corresponding GIn</span>
+0023 <span class="comment">%   GX   - Corresponding horisontal image coordinates</span>
+0024 <span class="comment">%   GY   - Corresponding vertical image coordinates</span>
+0025 <span class="comment">%   Gfilter - Corresponding filter indexes</span>
+0026 
+0027 <span class="comment">%   Copyright � 20030901 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0028 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0029 
+0030 clrs = [<span class="string">'g'</span>,<span class="string">'r'</span>,<span class="string">'m'</span>,<span class="string">'c'</span>,<span class="string">'k'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'m'</span>,<span class="string">'c'</span>,<span class="string">'c'</span>]';
+0031 <span class="keyword">if</span> nargin&gt;=9 &amp; isfield(OPTS,<span class="string">'clrs'</span>)
+0032   clrs = OPTS.clrs;
+0033 <span class="keyword">end</span>
+0034 <span class="comment">% Adapt for colours defined as char-array or rgb-array.</span>
+0035 <span class="keyword">if</span> <a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(clrs(1))
+0036   clrsIDX = 1;
+0037 <span class="keyword">else</span>
+0038   clrsIDX = 1:3;
+0039 <span class="keyword">end</span>
+0040 
+0041 <span class="keyword">for</span> si = 1:size(inI1,1),
+0042   
+0043   <span class="keyword">for</span> iF = 1:length(checkfilters),
+0044     
+0045     <span class="keyword">if</span> numel(inI1{si,iF})
+0046       <span class="comment">% If there are intensities for star with index &quot;si&quot; in filter</span>
+0047       <span class="comment">% &quot;iF&quot; start with assigning:</span>
+0048       gI1{si,iF} = inI1{si,iF};
+0049       gI2{si,iF} = inI2{si,iF};
+0050       gI3{si,iF} = inI3{si,iF};
+0051       gT{si,iF} =  inT{si,iF};
+0052       gX{si,iF} =  inX{si,iF};
+0053       gY{si,iF} =  inY{si,iF};
+0054       gfilter{si,iF} = inFilter{si,iF};
+0055       <span class="comment">% Then plot the identied stars:</span>
+0056       <a href="#_sub1" class="code" title="subfunction ok = ints_plot(T,I1,I2,I3,clr)">ints_plot</a>(inT{si,iF},inI1{si,iF},inI2{si,iF},inI3{si,iF},clrs(iF,clrsIDX));
+0057       title([num2str(si),<span class="string">' '</span>,num2str(si/size(inI1,1))])
+0058       
+0059       <span class="comment">%xlabel('press any button...')</span>
+0060       <span class="comment">% pause % Just cut this one out?</span>
+0061       
+0062       title(<span class="string">'If there is intensity outliers select the min and max intensity in'</span>,<span class="string">'fontsize'</span>,14,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+0063       xlabel(<span class="string">'...panel 1 with left mouse button, skip with middle or right.'</span>,<span class="string">'fontsize'</span>,14,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+0064       ylabel(sprintf(<span class="string">'Star nr %d out of %d, %4.2f'</span>,si,size(inI1,1),si/size(inI1,1)))
+0065       subplot(2,1,1)
+0066       [qwt,Ilim1,ButtonSelected] = ginput(1);
+0067       
+0068       <span class="keyword">if</span> all(ButtonSelected==[1])
+0069         [qwt,Ilim2] = ginput(1);
+0070         <span class="comment">% sort out point lying outside any of the limits.</span>
+0071         ii = find( min([Ilim1,Ilim2]) &lt; inI1{si,iF} &amp; inI1{si,iF} &lt; max([Ilim1,Ilim2]) );
+0072         gI1{si,iF} = inI1{si,iF}(ii);
+0073         gI2{si,iF} = inI2{si,iF}(ii);
+0074         gI3{si,iF} = inI3{si,iF}(ii);
+0075         gT{si,iF} =  inT{si,iF}(ii);
+0076         gX{si,iF} =  inX{si,iF}(ii);
+0077         gY{si,iF} =  inY{si,iF}(ii);
+0078         gFilter{si,iF} = inFilter{si,iF}(ii);
+0079       <span class="keyword">end</span>
+0080       
+0081     <span class="keyword">end</span>
+0082     
+0083   <span class="keyword">end</span>
+0084   
+0085 <span class="keyword">end</span>
+0086 
+0087 <span class="comment">%i = find(gX(:)==0);</span>
+0088 <span class="comment">%Gfilter(i) = -2;</span>
+0089 <span class="comment">% TODO: Figure out what this is supposed to achieve, and then fix it!</span>
+0090 <span class="comment">% Gfilter(gX(:)==0) = -2;</span>
+0091 
+0092 
+0093 <a name="_sub1" href="#_subfunctions" class="code">function ok = ints_plot(T,I1,I2,I3,clr)</a>
+0094 <span class="comment">% INTS_PLOT -</span>
+0095 <span class="comment">%</span>
+0096 
+0097 clf
+0098 
+0099 <span class="keyword">if</span> ~isempty (I1)
+0100   subplot(2,1,2)
+0101   plot(T,I2,<span class="string">'h'</span>,<span class="string">'color'</span>,clr )
+0102   grid on
+0103   <span class="keyword">try</span>
+0104     <a href="../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>
+0105   <span class="keyword">catch</span>
+0106   <span class="keyword">end</span>
+0107 <span class="comment">% $$$   subplot(3,1,3)</span>
+0108 <span class="comment">% $$$   plot(T,I3,'h','color',clr )</span>
+0109 <span class="comment">% $$$   grid on</span>
+0110 <span class="comment">% $$$     try</span>
+0111 <span class="comment">% $$$     timetick</span>
+0112 <span class="comment">% $$$   catch</span>
+0113 <span class="comment">% $$$   end</span>
+0114 
+0115   subplot(2,1,1)
+0116   plot(T,I1,<span class="string">'h'</span>,<span class="string">'color'</span>,clr )
+0117   grid on
+0118   <span class="keyword">try</span>
+0119     <a href="../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>
+0120   <span class="keyword">catch</span>
+0121   <span class="keyword">end</span>
+0122 <span class="keyword">end</span>
+0123 ok = 1;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

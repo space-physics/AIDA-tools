@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of Spec_cal_jobb_exmplCell</title>
+  <meta name="keywords" content="Spec_cal_jobb_exmplCell">
+  <meta name="description" content="Spec_cal_jobb_exmplCell - Example of spectral camera sensitivity calibration">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Spectral_cal -->
+<h1>Spec_cal_jobb_exmplCell
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>Spec_cal_jobb_exmplCell - Example of spectral camera sensitivity calibration</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Spec_cal_jobb_exmplCell - Example of spectral camera sensitivity calibration</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>	FFS_CORRECTION2 - flat-field variation for optical transfer</li><li><a href="../Camera/ffs_correction_raw.html" class="code" title="function [ff] = ffs_correction_raw(imgsize,optpar,optmod)">ffs_correction_raw</a>	FFS_CORRECTION_RAW - flat-field variation for optical transfer</li><li><a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>	TYPICAL_PRE_PROC_OPS - Typical ALIS-fits preprocessing options</li><li><a href="check_scan_for_stars.html" class="code" title="function [ok] = check_scan_for_stars(files,pos,optpar,IDENTSTARS,STARPARS,PO,OPS)">check_scan_for_stars</a>	CHECK_SCAN_FOR_STARS  Check the result of spc_scan_for_stars.</li><li><a href="spc_cal_bad_intens.html" class="code" title="function [gI1,gI2,gI3,gT,gX,gY,gFilter] = spc_cal_bad_intens(inI1,inI2,inI3,inT,inX,inY,inFilter,checkfilters,OPTS)">spc_cal_bad_intens</a>	SPC_CAL_BAD_INTENS - Select intensity limits for each star, and</li><li><a href="spc_cal_bad_times.html" class="code" title="function [BadTimes,sis] = spc_cal_bad_times(IDSTARS,time_s,filtnr,optpar,OPTS)">spc_cal_bad_times</a>	SPC_CAL_BAD_TIMES - Screen out bad time periods for each star</li><li><a href="spc_make_theta.html" class="code" title="function [theta_out,ze_out,ff_out,costheta] = spc_make_theta(gX,gY,optpar,sis,sz_img)">spc_make_theta</a>	SPC_MAKE_THETA - Calculate the angle from the optical axis,</li><li><a href="spc_save_bad_intens.html" class="code" title="function err = spc_save_bad_intens(gI1,gI2,gI3,gT,gX,gY,gfilter, filename)">spc_save_bad_intens</a>	SPC_SAVE_BAD_INTENS - saves bad times for spectral calibration</li><li><a href="spc_save_bad_times.html" class="code" title="function err = spc_save_bad_times(sis, BT, filename)">spc_save_bad_times</a>	SPC_SAVE_BAD_TIMES - saves bad times for spectral calibration</li><li><a href="spc_save_stars.html" class="code" title="function err = spc_save_stars(PO, OPTS, IDENTSTARS, STARPARS, filtnr, Stime, files,saveFileName)">spc_save_stars</a>	SPC_SAVE_STARS - save scanned star data for spec cal scripts</li><li><a href="spc_scan_for_stars.html" class="code" title="function [IDSTARS,STARPARS,filtnr,Stime,extime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops)">spc_scan_for_stars</a>	SPC_SCAN_FOR_STARS - Scan images for stars in the Pulkovo</li><li><a href="spc_sens_hist.html" class="code" title="function [N_all,nP_all,Chi2_all] = spc_sens_hist(I_img,I_star,filter_in,filter2wl_order,hist_range)">spc_sens_hist</a>	SPC_SENS_HIST - make histogram with parametrisation and uncertainty</li><li><a href="spc_sens_pdf.html" class="code" title="function N = spc_sens_pdf(I_img,I_star,filter_in,filter2wl_order,hist_range)">spc_sens_pdf</a>	SPC_SENS_PDF - Estimate PDF of the sensitivity, from</li><li><a href="spc_sort_out_the_bad_ones.html" class="code" title="function [GI1,GI2,GI3,GT,GX,GY,GFilter,BSC_NR,sortindx,uniqueFilters] = spc_sort_out_the_bad_ones(I_allt,all_t,all_filter,bad_times,sis,OPTS)">spc_sort_out_the_bad_ones</a>	SPC_SORT_OUT_THE_BAD_ONES  Remove stars that are "bad"</li><li><a href="spc_spectral_int_conv.html" class="code" title="function [I,dI] = spc_spectral_int_conv(wl_center,delta_wl,BSCNR,dispOPS)">spc_spectral_int_conv</a>	SPC_SPECTRAL_INT_CONV - convert Pulkovo intensity to #/cm^2/s/fw</li><li><a href="spc_typical_ops.html" class="code" title="function OPTS = spc_typical_ops">spc_typical_ops</a>	SPC_TYPICAL_OPS - Provides a struct with typical options</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Spec_cal_jobb_exmplCell - Example of spectral camera sensitivity calibration</span>
+0002 
+0003 
+0004 <span class="comment">%   Copyright � 20110605 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0005 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0006 
+0007 <span class="comment">% global bx by</span>
+0008 
+0009 <span class="comment">%%% Somehow make the image size known</span>
+0010 <span class="comment">%</span>
+0011 imgsiz = [256 256];
+0012 bx = imgsiz(2);
+0013 by = imgsiz(1);
+0014 
+0015 <span class="comment">%%% Load the names of the files to scan through</span>
+0016 <span class="comment">%</span>
+0017 load files0310.mat
+0018 files = files0310(15:<span class="keyword">end</span>,:);
+0019 
+0020 <span class="comment">%%% Filename-base for saving (temporary) results in:</span>
+0021 saveFilename = <span class="string">'Skibotn2002'</span>;
+0022 
+0023 <span class="comment">%%% Set the optical parameters</span>
+0024 <span class="comment">%</span>
+0025 load S010_S10_191827_0.acc
+0026 optpar = S010_S10_191827_0([7:14 6 15]);
+0027 
+0028 <span class="comment">%%% Set the long,lat position of the camera</span>
+0029 <span class="comment">%</span>
+0030 pos = [20.36 69.35];
+0031 
+0032 <span class="comment">%%%%%%%</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">% Start of phase 1: Finding stars in images</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%%%%%%%</span>
+0037 
+0038 <span class="comment">%%% Make a structure of what typical image pre-processing options</span>
+0039 <span class="comment">%%% to use</span>
+0040 PO = <a href="../Fits_tools/typical_pre_proc_ops.html" class="code" title="function PO = typical_pre_proc_ops(pp_type)">typical_pre_proc_ops</a>(<span class="string">'alis'</span>)
+0041 PO.medianfilter = 0;
+0042 <span class="comment">%%% Make a structure of options for the star search</span>
+0043 <span class="comment">%</span>
+0044 OPTS = <a href="spc_typical_ops.html" class="code" title="function OPTS = spc_typical_ops">spc_typical_ops</a>;
+0045 
+0046 <span class="comment">%%% Automatic search of stars from `Pulkovo Spectrophotometric</span>
+0047 <span class="comment">%%% Catalog' in all images</span>
+0048 <span class="comment">%</span>
+0049 [IDENTSTARS,STARPARS,filtnr,Stime,extimes] = <a href="spc_scan_for_stars.html" class="code" title="function [IDSTARS,STARPARS,filtnr,Stime,extime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops)">spc_scan_for_stars</a>(files,pos,optpar,PO,OPTS);
+0050 <span class="comment">% Then save away the identified stellar intensities for later</span>
+0051 <span class="comment">% re-loading:</span>
+0052 <a href="spc_save_stars.html" class="code" title="function err = spc_save_stars(PO, OPTS, IDENTSTARS, STARPARS, filtnr, Stime, files,saveFileName)">spc_save_stars</a>(PO, OPTS, IDENTSTARS, STARPARS, filtnr, Stime, files,[saveFileName,<span class="string">'-IDS'</span>])
+0053 time_s = Stime(:,1)+Stime(:,2)/60+Stime(:,3)/3600;
+0054 
+0055 
+0056 <span class="comment">%%% Check of the results - tedious and boooring</span>
+0057 <span class="comment">%</span>
+0058 CheckItAll = 0;
+0059 <span class="keyword">if</span> CheckItAll
+0060   [ok] = <a href="check_scan_for_stars.html" class="code" title="function [ok] = check_scan_for_stars(files,pos,optpar,IDENTSTARS,STARPARS,PO,OPS)">check_scan_for_stars</a>(files,pos,optpar,IDENTSTARS,STARPARS,PO,OPTS);
+0061 <span class="keyword">end</span>
+0062 
+0063 
+0064 <span class="comment">%%%%%%%</span>
+0065 <span class="comment">%</span>
+0066 <span class="comment">% Start of phase 2: Removal of bad star-identification</span>
+0067 <span class="comment">%                   or `weed out the weaklings'</span>
+0068 <span class="comment">%%%%%%%</span>
+0069 
+0070 cloudy = 1;
+0071 <span class="keyword">if</span> cloudy
+0072   <span class="comment">% Determine bad time intervals for each star (due to clouds)</span>
+0073   [BT,sis] = <a href="spc_cal_bad_times.html" class="code" title="function [BadTimes,sis] = spc_cal_bad_times(IDSTARS,time_s,filtnr,optpar,OPTS)">spc_cal_bad_times</a>(IDENTSTARS,time_s,filtnr,optpar);
+0074   <span class="comment">% Thes save the selected time-intervalls away for later re-loading</span>
+0075   <a href="spc_save_bad_times.html" class="code" title="function err = spc_save_bad_times(sis, BT, filename)">spc_save_bad_times</a>(sis, BT, [saveFilename,<span class="string">'_bt'</span>])
+0076   
+0077 <span class="keyword">else</span>
+0078   
+0079   sis = 1:length(unique(IDENTSTARS(:,9)));
+0080   BT = cell(1,length(unique(IDENTSTARS(:,9))));
+0081   
+0082 <span class="keyword">end</span>
+0083 <span class="comment">% Sort out the bad time periods and star-fits which are `off</span>
+0084 <span class="comment">% course', and split IDENTSTARS into more specific matrixes.</span>
+0085 [gI1,gI2,gI3,gT,gX,gY,gfilter,BSC_nr,sindx,uFilters] = <a href="spc_sort_out_the_bad_ones.html" class="code" title="function [GI1,GI2,GI3,GT,GX,GY,GFilter,BSC_NR,sortindx,uniqueFilters] = spc_sort_out_the_bad_ones(I_allt,all_t,all_filter,bad_times,sis,OPTS)">spc_sort_out_the_bad_ones</a>(IDENTSTARS,time_s,filtnr,BT,sis,OPTS);
+0086 
+0087 bad_noise_stats = 1; <span class="comment">% to reject intensity outliers</span>
+0088 <span class="keyword">if</span> bad_noise_stats
+0089   <span class="comment">% remove clearly bad outliers in intensity.</span>
+0090   [gI1,gI2,gI3,gT,gX,gY,gfilter] = <span class="keyword">...</span>
+0091       <a href="spc_cal_bad_intens.html" class="code" title="function [gI1,gI2,gI3,gT,gX,gY,gFilter] = spc_cal_bad_intens(inI1,inI2,inI3,inT,inX,inY,inFilter,checkfilters,OPTS)">spc_cal_bad_intens</a>(gI1(1:length(sis),:),<span class="keyword">...</span>
+0092                          gI2(1:length(sis),:),<span class="keyword">...</span>
+0093                          gI3(1:length(sis),:),<span class="keyword">...</span>
+0094                          gT(1:length(sis),:),<span class="keyword">...</span>
+0095                          gX(1:length(sis),:),<span class="keyword">...</span>
+0096                          gY(1:length(sis),:),<span class="keyword">...</span>
+0097                          gfilter(1:length(sis),:),<span class="keyword">...</span>
+0098                          uFilters);
+0099   <span class="comment">% Thes save the intensity cropped intensities away for later re-loading</span>
+0100   <a href="spc_save_bad_intens.html" class="code" title="function err = spc_save_bad_intens(gI1,gI2,gI3,gT,gX,gY,gfilter, filename)">spc_save_bad_intens</a>(gI1,gI2,gI3,gT,gX,gY,gfilter, [saveFilename,<span class="string">'_bi'</span>]);
+0101   
+0102 <span class="keyword">end</span>
+0103 disp(<span class="string">'BLAH'</span>)
+0104 <span class="comment">%%%%%%%</span>
+0105 <span class="comment">%</span>
+0106 <span class="comment">% Start of phase 3: Finally Physics</span>
+0107 <span class="comment">%</span>
+0108 <span class="comment">%%%%%%%</span>
+0109 
+0110 <span class="comment">% flat-field-correction matrixes</span>
+0111 ffc_raw = <a href="../Camera/ffs_correction_raw.html" class="code" title="function [ff] = ffs_correction_raw(imgsize,optpar,optmod)">ffs_correction_raw</a>([bx by],optpar,optpar(9))/bx/by;
+0112 ffc = <a href="../Camera/ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>([bx by],optpar,optpar(9));
+0113 
+0114 [theta_out,gZe,gffc,costheta] = <a href="spc_make_theta.html" class="code" title="function [theta_out,ze_out,ff_out,costheta] = spc_make_theta(gX,gY,optpar,sis,sz_img)">spc_make_theta</a>(gX,gY,optpar,sis,size(d));
+0115 <span class="comment">%costheta = cos(theta_out);</span>
+0116 
+0117 exp_t = o.exptime;
+0118 
+0119 <span class="comment">% TODO: Check where to put exposure time!</span>
+0120 <span class="comment">%I1 = gI1 ./ gffc / exp_t;</span>
+0121 <span class="comment">%I2 = gI2 ./ gffc / exp_t;</span>
+0122 <span class="comment">%I2 = gI2 ./ costheta / exp_t;</span>
+0123 <span class="keyword">for</span> i1 = size(gI2,1):-1:1,
+0124   <span class="keyword">for</span> i2 = size(gI2,2):-1:1,
+0125     <span class="keyword">if</span> ~isempty(gI2{i1,i2})
+0126       I2{i1,i2} = gI2{i1,i2} ./ costheta{i1,i2}; 
+0127     <span class="keyword">end</span>
+0128   <span class="keyword">end</span>
+0129 <span class="keyword">end</span>
+0130 
+0131 <span class="comment">% Set the centre-wavelengths of the filters</span>
+0132 wl_center = [428.5 559.0 631.0 845.5]; <span class="comment">% nm</span>
+0133 <span class="comment">% and the bandwidths</span>
+0134 delta_wl = [5.0 4.0 4.0 4.0]; <span class="comment">% nm</span>
+0135 
+0136 <span class="comment">% This needs modification, to tie the filter identifiers in Gfilter</span>
+0137 <span class="comment">% to the corresponding wavelengths (those above in wl_center)</span>
+0138 filter2wl = [5       0     1     4];
+0139 filter2wl = [4278,   5577, 6300, 8446];
+0140 
+0141 <span class="comment">%%% Calculate the stellar intensities in (photons/m^2/s)?</span>
+0142 [I_sis,dI] = <a href="spc_spectral_int_conv.html" class="code" title="function [I,dI] = spc_spectral_int_conv(wl_center,delta_wl,BSCNR,dispOPS)">spc_spectral_int_conv</a>(wl_center,delta_wl,BSC_nr);
+0143 
+0144 
+0145 
+0146 <span class="comment">%%% Commented to here</span>
+0147 <span class="comment">% TODO: finish the documentation</span>
+0148 hist_range = [0:.01:5]/10;
+0149 
+0150 <span class="comment">%[N5,nP5,Chi2_5,N0,nP0,Chi2_0,N1,nP1,Chi2_1,N4,nP4,Chi2_4] = spc_sens_hist(I2,I_sis,gfilter,filter2wl,hist_range);</span>
+0151 <span class="comment">% Estimate the distribution for the sensitivity in the different</span>
+0152 <span class="comment">% filters. This should be in (counts/(photon/m^2/s))</span>
+0153 N_all = <a href="spc_sens_pdf.html" class="code" title="function N = spc_sens_pdf(I_img,I_star,filter_in,filter2wl_order,hist_range)">spc_sens_pdf</a>(I2,I_sis,gfilter,filter2wl,hist_range);
+0154 
+0155 
+0156 <span class="comment">% Then to get to surface brightness (photons/m^2/s/ster) take:</span>
+0157 <span class="keyword">for</span> i1 = size(N_all):-1:1,
+0158   Brigthness_per_count(i1) = 1./mode(N_all{i1})/max(fcc_raw);
+0159 <span class="keyword">end</span>
+0160 
+0161 <span class="comment">% Finaly convert to column emission rate/count:</span>
+0162 Rayleighs_per_count = 1e-10*4*pi*Brigthness_per_count;
+0163 
+0164 
+0165 <span class="comment">%%% example for the SP-ASI</span>
+0166 exp_t = 16;
+0167 
+0168 [N_hists,nP1_Gaussparams,Chi2_vals] = <a href="spc_sens_hist.html" class="code" title="function [N_all,nP_all,Chi2_all] = spc_sens_hist(I_img,I_star,filter_in,filter2wl_order,hist_range)">spc_sens_hist</a>(I2,I_sis,gfilter,hist_range);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

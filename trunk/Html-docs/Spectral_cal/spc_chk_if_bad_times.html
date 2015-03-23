@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of spc_chk_if_bad_times</title>
+  <meta name="keywords" content="spc_chk_if_bad_times">
+  <meta name="description" content="SPC_CHK_IF_BAD_TIMES - Screen out bad time periods for each star">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Spectral_cal -->
+<h1>spc_chk_if_bad_times
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SPC_CHK_IF_BAD_TIMES - Screen out bad time periods for each star</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [BT,sis] = spc_chk_if_bad_times(IDSTARS,time_s,filtnr,optpar,OPTS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SPC_CHK_IF_BAD_TIMES - Screen out bad time periods for each star
+ due to clouds or other problems.
+ 
+ Calling:
+  [BT,sis] = spc_cal_bad_times(IDSTARS,time_s,filtnr,optpar,OPTS)
+ Inputs:
+  IDSTARS - Identified stars, as produced by SPC_SCAN_FOR_STARS
+  TIME_S  - Times for corresponding stars
+  FILTNR  - Filter index for corresponding stars
+  OPTPAR  - Optical parameters of imager (See CAMERA)
+  OPTS    - Options struct, filed 'clrs', default 'grmmkbcccc'
+ Output:
+  BT - bad time periods for each star,
+  SIS - star index (?) for corresponding stars</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>	TIMETICK - change axis-labels to time/date format. Clever choice</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [BT,sis] = spc_chk_if_bad_times(IDSTARS,time_s,filtnr,optpar,OPTS)</a>
+0002 <span class="comment">% SPC_CHK_IF_BAD_TIMES - Screen out bad time periods for each star</span>
+0003 <span class="comment">% due to clouds or other problems.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%  [BT,sis] = spc_cal_bad_times(IDSTARS,time_s,filtnr,optpar,OPTS)</span>
+0007 <span class="comment">% Inputs:</span>
+0008 <span class="comment">%  IDSTARS - Identified stars, as produced by SPC_SCAN_FOR_STARS</span>
+0009 <span class="comment">%  TIME_S  - Times for corresponding stars</span>
+0010 <span class="comment">%  FILTNR  - Filter index for corresponding stars</span>
+0011 <span class="comment">%  OPTPAR  - Optical parameters of imager (See CAMERA)</span>
+0012 <span class="comment">%  OPTS    - Options struct, filed 'clrs', default 'grmmkbcccc'</span>
+0013 <span class="comment">% Output:</span>
+0014 <span class="comment">%  BT - bad time periods for each star,</span>
+0015 <span class="comment">%  SIS - star index (?) for corresponding stars</span>
+0016 
+0017 
+0018 <span class="comment">%   Copyright � 20030901 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0019 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0020 
+0021 B = unique(IDSTARS(:,9));
+0022 sis = [];
+0023 clrs = [<span class="string">'g'</span>,<span class="string">'r'</span>,<span class="string">'m'</span>,<span class="string">'c'</span>,<span class="string">'k'</span>,<span class="string">'b'</span>,<span class="string">'y'</span>,<span class="string">'c'</span>,<span class="string">'c'</span>,<span class="string">'c'</span>];
+0024 <span class="keyword">if</span> nargin&gt;=5 &amp; isfield(OPTS,<span class="string">'clrs'</span>)
+0025   clrs = OPTS.clrs;
+0026 <span class="keyword">end</span>
+0027 clf
+0028 
+0029 <span class="keyword">for</span> si = 1:length(B),
+0030   
+0031   title(num2str(B(si)))
+0032   hold on
+0033   is = find(IDSTARS(:,9)==B(si)&amp;IDSTARS(:,4)&gt;0);
+0034   
+0035   <span class="comment">% just plotting commands</span>
+0036   this_star = IDSTARS(is,6);
+0037   this_time = time_s(IDSTARS(is,1));
+0038   this_filters = filtnr(IDSTARS(is,1));
+0039   this_uniq_filters = unique(this_filters);
+0040   <span class="keyword">for</span> iii = 1:length(this_uniq_filters),
+0041     plot(this_time(this_filters==this_uniq_filters(iii)),<span class="keyword">...</span>
+0042          this_star(this_filters==this_uniq_filters(iii))/median(this_star(this_filters==this_uniq_filters(iii))),<span class="keyword">...</span>
+0043          [clrs(1+this_uniq_filters(iii)),<span class="string">'h'</span>])
+0044   <span class="keyword">end</span>
+0045   grid on
+0046   <a href="../tools/timetick.html" class="code" title="function timetick(x)">timetick</a>
+0047   xlabel([<span class="string">'B = '</span>,num2str(si),<span class="string">' BSNR(?) = '</span>,num2str(B(si))])
+0048   <span class="comment">% just plotting commands</span>
+0049   sis = [sis si];
+0050   
+0051 <span class="keyword">end</span>
+0052 
+0053 [qwt,qwey,qweb] = ginput;
+0054 
+0055 <span class="keyword">for</span> i = 1:length(sis)
+0056   BT(i,:) = qwt';
+0057 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

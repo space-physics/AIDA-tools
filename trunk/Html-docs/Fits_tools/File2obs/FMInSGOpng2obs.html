@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of FMInSGOpng2obs</title>
+  <meta name="keywords" content="FMInSGOpng2obs">
+  <meta name="description" content="FMInSGOpng2obs - Build obs-struct for FMI/SGO-png images">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Fits_tools --><!-- menu.html File2obs -->
+<h1>FMInSGOpng2obs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>FMInSGOpng2obs - Build obs-struct for FMI/SGO-png images</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function obs = FMInSGOpng2obs(filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FMInSGOpng2obs - Build obs-struct for FMI/SGO-png images</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Fits_tools/read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>	READ_IMG - reads image data and process header info.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function obs = FMInSGOpng2obs(filename)</a>
+0002 <span class="comment">% FMInSGOpng2obs - Build obs-struct for FMI/SGO-png images</span>
+0003 
+0004 h = imfinfo(filename);
+0005 
+0006 long = str2num(h.OtherText{strncmp({h.OtherText{:,1}},<span class="string">'Longitude'</span>,9),2});
+0007 lat = str2num(h.OtherText{strncmp({h.OtherText{:,1}},<span class="string">'Latitude'</span>,8),2});
+0008 
+0009 str_date = h.OtherText{strncmp({h.OtherText{:,1}},<span class="string">'Date'</span>,4),2};
+0010 str_date = strrep(str_date,<span class="string">'-'</span>,<span class="string">' '</span>);
+0011 str_time = h.OtherText{strncmp({h.OtherText{:,1}},<span class="string">'TimeStart1'</span>,10),2};
+0012 str_time = strrep(str_time,<span class="string">':'</span>,<span class="string">' '</span>);
+0013 obs.time = [str2num(str_date),str2num(str_time)];
+0014 obs.pos= [long,lat];
+0015 obs.longlat = [long,lat];
+0016 
+0017 obs.station = [123]; <span class="comment">% Arbitrary station identifier, should be</span>
+0018                      <span class="comment">% phased out</span>
+0019 obs.alpha = []; <span class="comment">% Useless</span>
+0020 obs.beta = [];  <span class="comment">% Useless</span>
+0021 obs.az = [0];   <span class="comment">% Azimuth angle of camera rotation clock-wise from</span>
+0022                 <span class="comment">% north</span>
+0023 obs.ze = [0];   <span class="comment">% Zenith angle of camera rotation</span>
+0024 obs.camnr = [-1];
+0025 obs.exptime = 1; <span class="comment">% TBD</span>
+0026 obs.filter = []; <span class="comment">% TBD</span>
+0027 obs.imreg = [];  
+0028 obs.BZERO = 0; <span class="comment">% TBD</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

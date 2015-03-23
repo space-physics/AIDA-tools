@@ -1,0 +1,309 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of genqt_statfilt</title>
+  <meta name="keywords" content="genqt_statfilt">
+  <meta name="description" content="genqt_statfilt - Filtering until regional residues are statisticaly acceptable">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>genqt_statfilt
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>genqt_statfilt - Filtering until regional residues are statisticaly acceptable</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [J,res] = genqt_statfilt(I,alpha,fK,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> genqt_statfilt - Filtering until regional residues are statisticaly acceptable
+   I_GQT_SF make a generalized quad-tree decomposition filtering
+   with arbitrary 2-D polynomial fits to the input image until the
+   statistical criteria is met, composed-from-decomposed image are
+   filtered with filter kernel FK.
+
+ Calling:
+  [J,res] = genqt_statfilt(I,alpha,fK,OPS)
+
+ Input:
+  I - Intensity/grayscalle image to filter
+  ALPHA - signifficance level for statistic of noise distribution
+          (the difference between input image I and filtered image J,
+          assumed to be normal distributed N(0,J.^0.5)). Default
+          is 0.1
+  FK - filter kernel to filter image regions, defaults to 9x9
+       Gaussian window with 4 pixels FWHM. If an empty matrix, [],
+       is given filtering is not performed.
+  OPS - options structure. The default is returned when
+        GENQT_STATFILT is called without input parameters. Fields
+        are: OPS.minregsize - minimum size of the quad-tree size,
+        partitioning stops at the given size, defaults to 4
+        pixels. OPS.model_depmat is a 2-D matrix describing the
+        2-D polynomial to fit the intensities in the partitioned
+        image region to. Default is [0 0], which corresponds to
+        one constant intensity inside the image region. Any 2-D
+        polynomial can be used, for example C+Ax+By+Dxy^2 is
+        [0 0;1 0;0 1;1 2]. OPS.demo, [ {0} | 1 ], if one the
+        proceedings of the computations is shown with intermediate
+        plots. OPS.tests_for_OK number of statistical test
+        required for accepting the filtered fit to be
+        statistically good [{3} | 2 | 1 ]
+ 
+ The function uses ESTIMATE_MODEL, and EVALUATE_MODEL to
+ respectively determine a least square fitting polynomial to the
+ raw image in each partitioned region. The fit is deemed
+ statistically good if 3 (or 2, or 1 of) chi2test_normpdf,gtest
+ mtest does not reject the hypothesis that the difference, D,
+ between the raw image I and the filtered J is N(0,J.^0.5).
+ 
+ See also ESTIMATE_MODEL, EVALUATE_MODEL, CHI2TEST_NORMPDF, GTEST, MTEST</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/mysubplot.html" class="code" title="function theAxis = mysubplot(nrows, ncols, thisPlot)">mysubplot</a>	MYSUBPLOT Create axes in tiled positions.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function plotsquare(r_llc,dxy,clr)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [J,res] = genqt_statfilt(I,alpha,fK,OPS)</a>
+0002 <span class="comment">% genqt_statfilt - Filtering until regional residues are statisticaly acceptable</span>
+0003 <span class="comment">%   I_GQT_SF make a generalized quad-tree decomposition filtering</span>
+0004 <span class="comment">%   with arbitrary 2-D polynomial fits to the input image until the</span>
+0005 <span class="comment">%   statistical criteria is met, composed-from-decomposed image are</span>
+0006 <span class="comment">%   filtered with filter kernel FK.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">%  [J,res] = genqt_statfilt(I,alpha,fK,OPS)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Input:</span>
+0012 <span class="comment">%  I - Intensity/grayscalle image to filter</span>
+0013 <span class="comment">%  ALPHA - signifficance level for statistic of noise distribution</span>
+0014 <span class="comment">%          (the difference between input image I and filtered image J,</span>
+0015 <span class="comment">%          assumed to be normal distributed N(0,J.^0.5)). Default</span>
+0016 <span class="comment">%          is 0.1</span>
+0017 <span class="comment">%  FK - filter kernel to filter image regions, defaults to 9x9</span>
+0018 <span class="comment">%       Gaussian window with 4 pixels FWHM. If an empty matrix, [],</span>
+0019 <span class="comment">%       is given filtering is not performed.</span>
+0020 <span class="comment">%  OPS - options structure. The default is returned when</span>
+0021 <span class="comment">%        GENQT_STATFILT is called without input parameters. Fields</span>
+0022 <span class="comment">%        are: OPS.minregsize - minimum size of the quad-tree size,</span>
+0023 <span class="comment">%        partitioning stops at the given size, defaults to 4</span>
+0024 <span class="comment">%        pixels. OPS.model_depmat is a 2-D matrix describing the</span>
+0025 <span class="comment">%        2-D polynomial to fit the intensities in the partitioned</span>
+0026 <span class="comment">%        image region to. Default is [0 0], which corresponds to</span>
+0027 <span class="comment">%        one constant intensity inside the image region. Any 2-D</span>
+0028 <span class="comment">%        polynomial can be used, for example C+Ax+By+Dxy^2 is</span>
+0029 <span class="comment">%        [0 0;1 0;0 1;1 2]. OPS.demo, [ {0} | 1 ], if one the</span>
+0030 <span class="comment">%        proceedings of the computations is shown with intermediate</span>
+0031 <span class="comment">%        plots. OPS.tests_for_OK number of statistical test</span>
+0032 <span class="comment">%        required for accepting the filtered fit to be</span>
+0033 <span class="comment">%        statistically good [{3} | 2 | 1 ]</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">% The function uses ESTIMATE_MODEL, and EVALUATE_MODEL to</span>
+0036 <span class="comment">% respectively determine a least square fitting polynomial to the</span>
+0037 <span class="comment">% raw image in each partitioned region. The fit is deemed</span>
+0038 <span class="comment">% statistically good if 3 (or 2, or 1 of) chi2test_normpdf,gtest</span>
+0039 <span class="comment">% mtest does not reject the hypothesis that the difference, D,</span>
+0040 <span class="comment">% between the raw image I and the filtered J is N(0,J.^0.5).</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% See also ESTIMATE_MODEL, EVALUATE_MODEL, CHI2TEST_NORMPDF, GTEST, MTEST</span>
+0043 
+0044 
+0045 <span class="comment">%   Copyright � 20050225 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0046 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0047 
+0048 <span class="comment">% Check in-parameters</span>
+0049 
+0050 <span class="keyword">if</span> nargin == 0 <span class="comment">% Then produce the default OPS-struct</span>
+0051   
+0052   J.minregsize = 4; <span class="comment">% any power of 2, should be kept at reasonable</span>
+0053                     <span class="comment">% size with respect to MODEL_DEPMAT</span>
+0054   J.model_depmat = [0 0]; <span class="comment">% 2-D polynonmial to fit intensities in</span>
+0055                           <span class="comment">% regions, C+Ax+By+Dxy^2 &lt;-&gt; [0 0;1 0;0 1;1 2]</span>
+0056   J.demo = 0; <span class="comment">% [{0}| 1] show proceding of computation.</span>
+0057   J.test_fcn = [];
+0058   J.tests_for_OK = 3;
+0059   <span class="keyword">return</span>
+0060   
+0061 <span class="keyword">end</span>
+0062 <span class="keyword">if</span> nargin &lt; 3
+0063   
+0064   fK = conv2(conv2(conv2(ones(3)/9,ones(3)/9,<span class="string">'full'</span>),ones(3)/9,<span class="string">'full'</span>),ones(3)/9,<span class="string">'full'</span>);
+0065   
+0066 <span class="keyword">end</span>
+0067 minregsize = 4;
+0068 model_depmat = [0 0];
+0069 do_demo = 0;
+0070 tests_for_OK = 3;
+0071 <span class="keyword">if</span> nargin == 4
+0072   <span class="keyword">if</span> isfield(OPS,<span class="string">'minregsize'</span>)
+0073     minregsize = OPS.minregsize;
+0074   <span class="keyword">end</span>
+0075   <span class="keyword">if</span> isfield(OPS,<span class="string">'model_depmat'</span>)
+0076     model_depmat = OPS.model_depmat;
+0077   <span class="keyword">end</span>
+0078   <span class="keyword">if</span> isfield(OPS,<span class="string">'demo'</span>)
+0079     do_demo = OPS.demo;
+0080   <span class="keyword">end</span>
+0081   <span class="keyword">if</span> isfield(OPS,<span class="string">'tests_for_OK'</span>)
+0082     tests_for_OK = OPS.tests_for_OK;
+0083   <span class="keyword">end</span>
+0084 <span class="keyword">end</span>
+0085 
+0086 reg = size(fK);
+0087 <span class="keyword">if</span> nargin &lt; 2 || isempty(alpha)
+0088   
+0089   alpha = 0.1;
+0090   
+0091 <span class="keyword">end</span>
+0092 
+0093 regpos = [1;1];
+0094 regsiz = size(I)';
+0095 regok = 0;
+0096 
+0097 J = zeros(size(I));
+0098 <span class="keyword">while</span> 1
+0099   
+0100   regs_notok = find(regok==0);
+0101   <span class="keyword">for</span> i = regs_notok,<span class="comment">%1:size(regpos,2),</span>
+0102     
+0103     <span class="keyword">if</span> all(model_depmat==0)
+0104       
+0105       J(regpos(1,i):(regpos(1,i)+regsiz(1,i)-1),<span class="keyword">...</span>
+0106         regpos(2,i):(regpos(2,i)+regsiz(2,i)-1)) = mean( mean( I(regpos(1,i):(regpos(1,i)+regsiz(1,i)-1),<span class="keyword">...</span>
+0107                                                         regpos(2,i):(regpos(2,i)+regsiz(2,i)-1))));
+0108     <span class="keyword">else</span>
+0109       
+0110       d = I(regpos(1,i):(regpos(1,i)+regsiz(1,i)-1),<span class="keyword">...</span>
+0111             regpos(2,i):(regpos(2,i)+regsiz(2,i)-1));
+0112       x = 1:size(d,2);
+0113       y = 1:size(d,1);
+0114       [x,y] = meshgrid(x,y);
+0115       m = estimate_model([x(:)-mean(x(:)) y(:)-mean(y(:))],d(:),model_depmat);
+0116       
+0117       d(:) = evaluate_model([x(:)-mean(x(:)) y(:)-mean(y(:))],m);
+0118       J(regpos(1,i):(regpos(1,i)+regsiz(1,i)-1),<span class="keyword">...</span>
+0119         regpos(2,i):(regpos(2,i)+regsiz(2,i)-1)) = d;
+0120       
+0121     <span class="keyword">end</span>
+0122     
+0123   <span class="keyword">end</span>
+0124   
+0125   <span class="keyword">if</span> ~isempty(fK)
+0126     Jtmp = filter2(fK,<span class="keyword">...</span>
+0127                    J([ones(1,ceil((reg(1)-1)/2)) 1:end size(I,1)*ones(1,(reg(1)-1)/2)],<span class="keyword">...</span>
+0128                      [ones(1,ceil((reg(2)-1)/2)) 1:end size(I,1)*ones(1,(reg(2)-1)/2)]),<span class="string">'same'</span>);
+0129     Jtmp = Jtmp(ceil((reg(1)-1)/2)+1:ceil((reg(1)-1)/2)+size(I,1),<span class="keyword">...</span>
+0130                 ceil((reg(2)-1)/2)+1:ceil((reg(2)-1)/2)+size(I,2));
+0131   <span class="keyword">else</span>
+0132     Jtmp = J;
+0133   <span class="keyword">end</span>
+0134   lregpos = size(regpos,2);
+0135   <span class="keyword">for</span> i = regs_notok,
+0136     
+0137     Jr = Jtmp(regpos(1,i):(regpos(1,i)+regsiz(1,i)-1),<span class="keyword">...</span>
+0138               regpos(2,i):(regpos(2,i)+regsiz(2,i)-1));
+0139     Ir = I(regpos(1,i):(regpos(1,i)+regsiz(1,i)-1),<span class="keyword">...</span>
+0140            regpos(2,i):(regpos(2,i)+regsiz(2,i)-1));
+0141     D = (Ir(:)-Jr(:))./(max(Jr(:),1)).^.5;
+0142     <span class="keyword">if</span> ( ( sum([chi2test_normpdf(D',alpha),gtest(D',alpha),mtest(D',max(0.001,min(0.1,alpha)))]) &lt; tests_for_OK ) &amp; <span class="keyword">...</span>
+0143          ( regsiz(1,i) &gt; minregsize ) )
+0144       
+0145       regok(end+1:end+4) = 0;
+0146       regsiz(1,end+1:end+4) = regsiz(1,i)/2; 
+0147       regsiz(2,end-3:end)   = regsiz(2,i)/2; 
+0148       regpos(:,end+1) = regpos(:,i);
+0149       regpos(:,end+1) = regpos(:,i)+regsiz(:,end).*[0;1];
+0150       regpos(:,end+1) = regpos(:,i)+regsiz(:,end).*[1;1];
+0151       regpos(:,end+1) = regpos(:,i)+regsiz(:,end).*[1;0];
+0152       regpos(:,i) = [];
+0153       regsiz(:,i) = [];
+0154       regok(i) = [];
+0155       
+0156     <span class="keyword">elseif</span> regsiz(1,i) == minregsize
+0157       
+0158       regok(i) = 2;
+0159       
+0160     <span class="keyword">else</span>
+0161       
+0162       regok(i) = 1;
+0163       
+0164     <span class="keyword">end</span>
+0165     
+0166   <span class="keyword">end</span>
+0167   <span class="keyword">if</span>  size(regpos,2) == lregpos
+0168     
+0169     J = Jtmp;
+0170     <span class="keyword">if</span> nargout == 2
+0171       res.regpos = regpos;
+0172       res.regsiz = regsiz;
+0173       res.regok = regok;
+0174       
+0175     <span class="keyword">end</span>
+0176     <span class="keyword">return</span>
+0177     
+0178   <span class="keyword">end</span>
+0179   <span class="keyword">if</span> do_demo
+0180     <a href="../tools/mysubplot.html" class="code" title="function theAxis = mysubplot(nrows, ncols, thisPlot)">mysubplot</a>(2,2,1)
+0181     imagesc(I),colorbar
+0182     <a href="../tools/mysubplot.html" class="code" title="function theAxis = mysubplot(nrows, ncols, thisPlot)">mysubplot</a>(2,2,2)
+0183     imagesc(Jtmp),colorbar
+0184     regs_ok = find(regok==1);
+0185     hold on
+0186     <span class="keyword">for</span> i = regs_ok
+0187       <a href="#_sub1" class="code" title="subfunction plotsquare(r_llc,dxy,clr)">plotsquare</a>(regpos(:,i),regsiz(:,i))
+0188     <span class="keyword">end</span>
+0189     hold off
+0190     <a href="../tools/mysubplot.html" class="code" title="function theAxis = mysubplot(nrows, ncols, thisPlot)">mysubplot</a>(2,2,3)
+0191     imagesc(I-Jtmp),colorbar
+0192     hold on
+0193     <span class="keyword">for</span> i = regs_ok
+0194       <a href="#_sub1" class="code" title="subfunction plotsquare(r_llc,dxy,clr)">plotsquare</a>(regpos(:,i),regsiz(:,i))
+0195     <span class="keyword">end</span>
+0196     hold off
+0197     <a href="../tools/mysubplot.html" class="code" title="function theAxis = mysubplot(nrows, ncols, thisPlot)">mysubplot</a>(4,2,6)
+0198     plot(regok,<span class="string">'.'</span>)
+0199     <a href="../tools/mysubplot.html" class="code" title="function theAxis = mysubplot(nrows, ncols, thisPlot)">mysubplot</a>(4,2,8)
+0200     ok_indx = find(regok==1);
+0201     <span class="keyword">if</span> ~isempty(ok_indx)
+0202       plot(ok_indx,regsiz(1,ok_indx),<span class="string">'b.'</span>)
+0203       hold on
+0204     <span class="keyword">end</span>
+0205     ok_indx = find(regok==0);
+0206     <span class="keyword">if</span> ~isempty(ok_indx)
+0207       plot(ok_indx,regsiz(1,ok_indx),<span class="string">'r.'</span>)
+0208     <span class="keyword">end</span>
+0209     hold off
+0210     drawnow
+0211   <span class="keyword">end</span>
+0212   
+0213 <span class="keyword">end</span>
+0214 
+0215 
+0216 <a name="_sub1" href="#_subfunctions" class="code">function plotsquare(r_llc,dxy,clr)</a>
+0217 <span class="comment">% PLOTSQUARE - plot a black square</span>
+0218 <span class="comment">%</span>
+0219 
+0220 <span class="keyword">if</span> nargin == 2
+0221   clr = rand([1 3]);
+0222 <span class="keyword">end</span>
+0223 h = plot(r_llc(2)+[0 dxy(2) dxy(2) 0 0],<span class="keyword">...</span>
+0224          r_llc(1)+[0 0 dxy(1) dxy(1) 0]);
+0225 set(h,<span class="string">'color'</span>,clr)</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

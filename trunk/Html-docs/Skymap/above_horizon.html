@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of above_horizon</title>
+  <meta name="keywords" content="above_horizon">
+  <meta name="description" content="ABOVE_HORIZON - finds stars above the horizon at place and time,">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>above_horizon
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ABOVE_HORIZON - finds stars above the horizon at place and time,</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [az,ze,apze,i_abh] = above_horizon(ra,decl,pos0,date,time0) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ABOVE_HORIZON - finds stars above the horizon at place and time,
+ (longitude,latitude, in degrees) at time TIME0 (UTC) on the day
+ DATE. 
+ 
+ Calling:
+ [possiblestars] = above_horizon(pos0,date,time0)
+ 
+ See also INFOV, PLOTTABLESTARS.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>	STARPOS2 gives the azimuth, zenith and apparent zenith angles</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [az,ze,apze,i_abh] = above_horizon(ra,decl,pos0,date,time0)</a>
+0002 <span class="comment">% ABOVE_HORIZON - finds stars above the horizon at place and time,</span>
+0003 <span class="comment">% (longitude,latitude, in degrees) at time TIME0 (UTC) on the day</span>
+0004 <span class="comment">% DATE.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">% [possiblestars] = above_horizon(pos0,date,time0)</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% See also INFOV, PLOTTABLESTARS.</span>
+0010 
+0011 
+0012 <span class="comment">%   Copyright � 2002 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0013 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0014 
+0015 <span class="comment">%i1 = 1;</span>
+0016 
+0017 
+0018 long = pos0(1);
+0019 lat = pos0(2);
+0020 
+0021 [az,ze,apze] = <a href="starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>(ra,decl,date,time0,lat,long);
+0022 [i1] = find(ze&lt;pi/2);
+0023 
+0024 az = az(i1);
+0025 ze = ze(i1);
+0026 i_abh = i1;
+0027 apze = apze(i1);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

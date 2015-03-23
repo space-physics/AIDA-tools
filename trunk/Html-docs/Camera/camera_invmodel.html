@@ -1,0 +1,308 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of camera_invmodel</title>
+  <meta name="keywords" content="camera_invmodel">
+  <meta name="description" content="CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Camera -->
+<h1>camera_invmodel
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA
+ relative to the optical axis of the camera.
+
+ Calling:
+ [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)
+
+ Input:
+  [U,V]  - is the position in the image of the pixel. 
+  OPTPAR - is a vector caracterising the optical
+           transfer function, or an OPTPAR struct, with fields:
+           sinzecosaz, sinzesinaz, u, v that define the horizontal
+           components of a pixel l-o-s, and the pixel coordinates
+           for the corresponding horizontal l-o-s components,
+           respectively, and optionally a field rot (when used a
+           vector with 3 Tait-Bryant rotaion angles)
+  OPTMOD - is the optical model/transfer function to use:
+           1 - f*tan(theta),
+           2 - f*sin(alfa*theta),
+           3 - f(alfa*theta + (1-alfa)*tan(theta))
+           4 - f*theta 5 - f*tan(alfa*theta)
+           5 - f*tan(alfa*theta)
+          -1 - non-parametric, unrotated from zenith, with look-up
+               tables,
+          -2 - non-parametric, rotated from zenith, with look-up
+               tables,
+          11 - ASK camera model...
+  IMSIZ  - image size in pixels. 
+
+                   See also CAMERAMODEL</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_camera_invmodel.html" class="code" title="function [az,el] = ASK_camera_invmodel(x,y,a)">ASK_camera_invmodel</a>	ASK_camera_invmodel - the inverse camera model for the ASK instrument.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ASK/HSOFT/ASK_draw_north.html" class="code" title="function ph = ASK_draw_north(optpar,imsiz,ArrowLength,Colour,ArrowWidth,Start_uv,EastOrNorthOrUp)">ASK_draw_north</a>	ASK_DRAW_NORTH -  Draws the north direction on an image, from the centre.</li><li><a href="auto_p_triang.html" class="code" title="function [xtr,ytr,ztr,tu1,tv1,tu2,tv2] = auto_p_triang(img1,r1,optp1,img2,r2,optp2,checktmp,cm1,cm2)">auto_p_triang</a>	AUTO_P_TRIANG - triangulation of 3D positions of imaged objects</li><li><a href="camera_mim_test.html" class="code" title="">camera_mim_test</a>	£££ Obsolete, perhaps, untested for such a long time it is</li><li><a href="determine_fov.html" class="code" title="function fov = determine_fov(imgsiz,optpar,optmod)">determine_fov</a>	DETERMINE_FOV - determine field-of-view of optics</li><li><a href="ffs_correction.html" class="code" title="function [img_out,ff] = ffs_correction(img,optpar,optmod)">ffs_correction</a>	FFS_CORRECTION - flat-field variation for optical transfer</li><li><a href="ffs_correction2.html" class="code" title="function [ff] = ffs_correction2(imgsize,optpar,optmod)">ffs_correction2</a>	FFS_CORRECTION2 - flat-field variation for optical transfer</li><li><a href="ffs_correction_raw.html" class="code" title="function [ff] = ffs_correction_raw(imgsize,optpar,optmod)">ffs_correction_raw</a>	FFS_CORRECTION_RAW - flat-field variation for optical transfer</li><li><a href="inv_project_LineOfSightVectors.html" class="code" title="function epix = inv_project_LineOfSightVectors(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_LineOfSightVectors</a>	INV_PROJECT_LineOfSightVectors - pixels coordinates to line-of-sight vectors</li><li><a href="inv_project_directions.html" class="code" title="function [az,ze] = inv_project_directions(px,py,inimg,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_directions</a>	INV_PROJECT_DIRECTIONS - pixels line-of-sight to azimuth and zenith angles</li><li><a href="inv_project_img.html" class="code" title="function [xx,yy,zz] = inv_project_img(img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_img</a>	INV_PROJECT_IMG - maps an image IMG_IN to a plane.</li><li><a href="inv_project_points.html" class="code" title="function [xx,yy,zz] = inv_project_points(px,py,img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_points</a>	INV_PROJECT_POINTS - maps points (PX,PY) in image IMG_IN to a plane</li><li><a href="triangulate.html" class="code" title="function [xtr,ytr,ztr,tu1,tv1,tu2,tv2,minl] = triangulate(img1,r1,img2,r2,cm1,cm2,PO,Opts)">triangulate</a>	TRIANGULATE - stereoscopic triangulation from a pair of images</li><li><a href="../Skymap/updstrpl.html" class="code" title="function [SkMp] = updstrpl(SkMp)">updstrpl</a>	</li><li><a href="../Skymap/updstrplOld.html" class="code" title="function [SkMp] = updstrplOld(SkMp)">updstrplOld</a>	</li><li><a href="../Spectral_cal/spc_make_theta.html" class="code" title="function [theta_out,ze_out,ff_out,costheta] = spc_make_theta(gX,gY,optpar,sis,sz_img)">spc_make_theta</a>	SPC_MAKE_THETA - Calculate the angle from the optical axis,</li><li><a href="../Tomography/tomo_CalSensMat.html" class="code" title="function [CalMtr,stn] = tomo_CalSensMat(stn,Vem,X3D,Y3D,Z3D)">tomo_CalSensMat</a>	tomo_CalSensMat - calibration factors for FASTPROJECTION</li><li><a href="../Tomography/tomo_cal.html" class="code" title="function [CalFactors,stns,calimgs] = tomo_cal(stns,XfI,YfI,ZfI,OPS)">tomo_cal</a>	tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</li><li><a href="../Tomography/tomo_cal0.html" class="code" title="function [CalFactors,stns,calimgs] = tomo_cal0(stns,XfI,YfI,ZfI,OPS)">tomo_cal0</a>	tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</li><li><a href="../tools/atm_attenuation.html" class="code" title="function [atten_matr] = atm_attenuation(imgsize,optpar,optmod,wavelength,airpressure)">atm_attenuation</a>	atm_attenuation - Atmospheric attenuation</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [theta] = m3roftheta(alpha, theta, r )</a></li><li><a href="#_sub2" class="code">function [dm3] = dm3roftheta( alpha, theta )</a></li><li><a href="#_sub3" class="code">function [theta] = newrap1( r, alpha, tol )</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)</a>
+0002 <span class="comment">% CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA</span>
+0003 <span class="comment">% relative to the optical axis of the camera.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">% [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%  [U,V]  - is the position in the image of the pixel.</span>
+0010 <span class="comment">%  OPTPAR - is a vector caracterising the optical</span>
+0011 <span class="comment">%           transfer function, or an OPTPAR struct, with fields:</span>
+0012 <span class="comment">%           sinzecosaz, sinzesinaz, u, v that define the horizontal</span>
+0013 <span class="comment">%           components of a pixel l-o-s, and the pixel coordinates</span>
+0014 <span class="comment">%           for the corresponding horizontal l-o-s components,</span>
+0015 <span class="comment">%           respectively, and optionally a field rot (when used a</span>
+0016 <span class="comment">%           vector with 3 Tait-Bryant rotaion angles)</span>
+0017 <span class="comment">%  OPTMOD - is the optical model/transfer function to use:</span>
+0018 <span class="comment">%           1 - f*tan(theta),</span>
+0019 <span class="comment">%           2 - f*sin(alfa*theta),</span>
+0020 <span class="comment">%           3 - f(alfa*theta + (1-alfa)*tan(theta))</span>
+0021 <span class="comment">%           4 - f*theta 5 - f*tan(alfa*theta)</span>
+0022 <span class="comment">%           5 - f*tan(alfa*theta)</span>
+0023 <span class="comment">%          -1 - non-parametric, unrotated from zenith, with look-up</span>
+0024 <span class="comment">%               tables,</span>
+0025 <span class="comment">%          -2 - non-parametric, rotated from zenith, with look-up</span>
+0026 <span class="comment">%               tables,</span>
+0027 <span class="comment">%          11 - ASK camera model...</span>
+0028 <span class="comment">%  IMSIZ  - image size in pixels.</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%                   See also CAMERAMODEL</span>
+0031 
+0032 
+0033 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0034 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0035 
+0036 
+0037 <span class="keyword">if</span> nargin &gt;= 5
+0038   bx = imsiz(2);
+0039   by = imsiz(1);
+0040 <span class="keyword">else</span>
+0041   
+0042   disp(<span class="string">'Calling: camera_model without ''imsiz'' argument this is _OBSOLETE_ and will no longer be supported'</span>)
+0043   disp(<span class="string">'Here is where it happened:'</span>)
+0044   dbstack
+0045   
+0046 <span class="keyword">end</span>
+0047 
+0048 U = u/bx;
+0049 V =  v/by;
+0050 
+0051 <span class="keyword">if</span> optmod == -1 || optmod == -2
+0052   
+0053   <span class="comment">% Non-parametric surfaces approximations applied. Full</span>
+0054   <span class="comment">% interpolation-lookup table implementation. Used for assymetric</span>
+0055   <span class="comment">% (off-centered) mirror imaging and other assymetric</span>
+0056   <span class="comment">% imaging set ups.</span>
+0057   <span class="comment">% The normalized image coordinates are cnostrained to the</span>
+0058   <span class="comment">% interval [0-1]</span>
+0059   u_i = linspace(0,1,50);
+0060   v_i = linspace(0,1,50);
+0061   sinzecosaz = interp2(u_i,v_i,optpar.sinzecosaz,U,V);
+0062   sinzesinaz = interp2(u_i,v_i,optpar.sinzesinaz,U,V);
+0063   theta = acos(interp2(u_i,v_i,optpar.cosze,U,V));
+0064   phi = atan2(sinzesinaz,sinzecosaz);
+0065   
+0066 <span class="keyword">elseif</span> optmod == -3
+0067   
+0068   <span class="comment">% Non-parametric surfaces approximations applied. Full</span>
+0069   <span class="comment">% interpolation-lookup table implementation. Used for assymetric</span>
+0070   <span class="comment">% (off-centered) mirror imaging and other assymetric</span>
+0071   <span class="comment">% imaging set ups.</span>
+0072   <span class="comment">% The normalized image coordinates are cnostrained to the</span>
+0073   <span class="comment">% interval [0-1]</span>
+0074   sinzecosaz = griddata(optpar.u(:),<span class="keyword">...</span>
+0075                         optpar.v(:),<span class="keyword">...</span>
+0076                         sin(optpar.ze(:)).*cos(optpar.az(:)),<span class="keyword">...</span>
+0077                         U,V);
+0078   sinzesinaz = griddata(optpar.u(:),optpar.v(:),<span class="keyword">...</span>
+0079                         sin(optpar.ze(:)).*sin(optpar.az(:)),<span class="keyword">...</span>
+0080                         U,V);
+0081   
+0082   theta = acos(griddata(optpar.u(:),optpar.v(:),<span class="keyword">...</span>
+0083                         cos(optpar.ze(:)),<span class="keyword">...</span>
+0084                             U,V));
+0085   phi = atan2(sinzesinaz,sinzecosaz);
+0086   
+0087 <span class="keyword">else</span>
+0088 
+0089   f1 = optpar(1);
+0090   f2 = optpar(2);
+0091   du = optpar(6);
+0092   dv = optpar(7);
+0093   alpha = optpar(8);
+0094   
+0095   <span class="keyword">switch</span> optmod
+0096    <span class="keyword">case</span> 1
+0097     <span class="comment">% U = f*tan(theta)</span>
+0098     theta = ( atan( ( ( (U-.50-du ) / f1 ).^2 + ( ( V-.50-dv ) / f2 ).^2 ).^.5 ) );
+0099     phi = atan2((U-.50-du)/(f1),(V-.50-dv)/(f2));
+0100     
+0101 <span class="comment">% $$$     if ( max(abs(( V-.50-dv ) )) &gt; 1e-12 | max(abs( U-.50-du )) &gt; 1e-12 )</span>
+0102 <span class="comment">% $$$</span>
+0103 <span class="comment">% $$$       phi = atan2((U-.50-du)/(f1),(V-.50-dv)/(f2));</span>
+0104 <span class="comment">% $$$</span>
+0105 <span class="comment">% $$$     else</span>
+0106 <span class="comment">% $$$</span>
+0107 <span class="comment">% $$$       phi = (0);</span>
+0108 <span class="comment">% $$$</span>
+0109 <span class="comment">% $$$     end</span>
+0110    <span class="keyword">case</span> 2  
+0111     <span class="comment">% ( u^2 + w^2 )^1/2 = f*sin(theta*alpha)</span>
+0112     <span class="comment">% theta = 1/alpha*asin(1/f*( u^2 + w^2 )^1/2)</span>
+0113     r = ( ( ( U-.50-du ) / f1 ).^2 + ( ( V-.50-dv ) / f2 ).^2 ).^.5;
+0114     theta = (asin( r )/alpha );
+0115     <span class="comment">% £££ Looks dodgy with the 2.0 factor, should be 1/alpha ?</span>
+0116     <span class="comment">% Leave it as it is for the moment...</span>
+0117     phi = atan2((U-0.50-du)/(f1),(V-0.50-dv)/(f2));
+0118 <span class="comment">% $$$     if ( max(abs(( 2.0*V-0.50-dv ) )) &gt; 1e-12 | max(abs( 2.0*U-0.50-du )) &gt; 1e-12 )</span>
+0119 <span class="comment">% $$$</span>
+0120 <span class="comment">% $$$       phi = atan2((U-0.50-du)/(f1),(V-0.50-dv)/(f2));</span>
+0121 <span class="comment">% $$$</span>
+0122 <span class="comment">% $$$     else</span>
+0123 <span class="comment">% $$$</span>
+0124 <span class="comment">% $$$       phi = (0);</span>
+0125 <span class="comment">% $$$</span>
+0126 <span class="comment">% $$$     end</span>
+0127    <span class="keyword">case</span> 3
+0128     <span class="comment">% U = f*(1-a)*tan(theta)+f*a*tan(theta)</span>
+0129     r = ( ( ( U-.50-du ) / f1 ).^2 + ( ( V-.50-dv ) / f2 ).^2 ).^.5;
+0130     
+0131     theta = <a href="#_sub3" class="code" title="subfunction [theta] = newrap1( r, alpha, tol )">newrap1</a>(r,alpha,1e-10);
+0132     phi = atan2((U-.50-du)/(f1),(V-.50-dv)/(f2));
+0133 <span class="comment">% $$$     if ( max(abs(( V-.50-dv ) )) &gt; 1e-12 | max(abs( U-.50-du )) &gt; 1e-12 )</span>
+0134 <span class="comment">% $$$</span>
+0135 <span class="comment">% $$$       phi = atan2((U-.50-du)/(f1),(V-.50-dv)/(f2));</span>
+0136 <span class="comment">% $$$</span>
+0137 <span class="comment">% $$$     else</span>
+0138 <span class="comment">% $$$</span>
+0139 <span class="comment">% $$$       phi = (0);</span>
+0140 <span class="comment">% $$$</span>
+0141 <span class="comment">% $$$     end</span>
+0142    <span class="keyword">case</span> 4
+0143     <span class="comment">% U = f*theta^alpha -&gt; theta = (U/f)^(1/alpha)</span>
+0144     theta = ( ( ( (U-.50-du ) / f1 ).^2 + <span class="keyword">...</span>
+0145                 ( ( V-.50-dv ) / f2 ).^2 ).^.5 ).^(1/alpha);
+0146     phi = atan2((U-.50-du)/(f1),(V-.50-dv)/(f2));
+0147 <span class="comment">% $$$     if ( max(abs(( V-.50-dv ) )) &gt; 1e-12 | max(abs( U-.50-du )) &gt; 1e-12 )</span>
+0148 <span class="comment">% $$$</span>
+0149 <span class="comment">% $$$       phi = atan2((U-.50-du)/(f1),(V-.50-dv)/(f2));</span>
+0150 <span class="comment">% $$$</span>
+0151 <span class="comment">% $$$     else</span>
+0152 <span class="comment">% $$$</span>
+0153 <span class="comment">% $$$       phi = (0);</span>
+0154 <span class="comment">% $$$</span>
+0155 <span class="comment">% $$$     end</span>
+0156     
+0157    <span class="keyword">case</span> 5
+0158     
+0159     <span class="comment">% ( u^2 + w^2 )^1/2 = f*tan(theta*alpha)</span>
+0160     <span class="comment">% theta = 1/alpha*atan(1/f*( u^2 + w^2 )^1/2)</span>
+0161     r = ( ( ( U-.50-du ) / f1 ).^2 + ( ( V-.50-dv ) / f2 ).^2 ).^.5;
+0162     theta = (atan( r )/alpha );
+0163     phi = atan2((U-0.50-du)/(f1),(V-0.50-dv)/(f2));
+0164 <span class="comment">% $$$     if ( max(abs(( 2.0*V-0.50-dv ) )) &gt; 1e-12 | max(abs( 2.0*U-0.50-du )) &gt; 1e-12 )</span>
+0165 <span class="comment">% $$$</span>
+0166 <span class="comment">% $$$       phi = atan2((U-0.50-du)/(f1),(V-0.50-dv)/(f2));</span>
+0167 <span class="comment">% $$$</span>
+0168 <span class="comment">% $$$     else</span>
+0169 <span class="comment">% $$$</span>
+0170 <span class="comment">% $$$       phi = (0);</span>
+0171 <span class="comment">% $$$</span>
+0172 <span class="comment">% $$$     end</span>
+0173    
+0174    <span class="keyword">case</span> 6
+0175     <span class="comment">% Optical transfer of the all sky camera in Kiruna.</span>
+0176     r0 = .25*(bx+by);
+0177     xmp = bx/2;
+0178     ymp = by/2;
+0179     alpha = 180;
+0180     beta = 4.35;
+0181     rnmp = .002;
+0182     a(5) = 89.997;
+0183     a(1) = -74.956;
+0184     a(2) = -21.581;
+0185     a(3) = 34.321;
+0186     a(4) = -27.562;
+0187     
+0188     xnmp = xmp +rnmp*r0*cos(3*pi/2-alpha*pi/180);
+0189     ynmp = ymp +rnmp*r0*sin(3*pi/2-alpha*pi/180);
+0190     rn = ((u-xnmp).^2+(v-ynmp).^2).^.5/r0;
+0191     rn = min(rn,1);
+0192     h = a(1)*rn+a(2)*rn.^2+a(3)*rn.^3+a(4)*rn.^4+a(5);
+0193     h = max(h,5);
+0194     h = h*pi/180;
+0195     
+0196     theta = pi/2-h;
+0197     
+0198     phi = atan2(u-xnmp,v-ynmp)-beta*pi/180;
+0199    <span class="keyword">case</span> 11
+0200     <span class="comment">% ASK camera model</span>
+0201     [phi,el] = <a href="ASK_camera_invmodel.html" class="code" title="function [az,el] = ASK_camera_invmodel(x,y,a)">ASK_camera_invmodel</a>(u,v,optpar);
+0202     theta = pi/2-el;
+0203     
+0204    <span class="keyword">otherwise</span>
+0205     
+0206   <span class="keyword">end</span>
+0207 
+0208 <span class="keyword">end</span>
+0209 
+0210 <a name="_sub1" href="#_subfunctions" class="code">function [theta] = m3roftheta(alpha, theta, r )</a>
+0211 
+0212 theta = ( alpha * theta + ( 1 - alpha ) * tan( theta ) - r );
+0213 
+0214 
+0215 <a name="_sub2" href="#_subfunctions" class="code">function [dm3] = dm3roftheta( alpha, theta )</a>
+0216 
+0217 dm3 = ( alpha + ( 1 - alpha ) * ( 1 + (tan(theta)).*tan(theta) ) );
+0218 
+0219 
+0220 <span class="comment">% Newton - Rapson solution for optical model 2 ( r = f*a*theta + f*(1-a)*tan(theta) )</span>
+0221 <span class="comment">% The method converges fast for 0&lt;r&lt;.81 to give errors less than 1e-17 within 5</span>
+0222 <span class="comment">% itterations. ( B. G. 1996 04 20 )</span>
+0223 
+0224 <a name="_sub3" href="#_subfunctions" class="code">function [theta] = newrap1( r, alpha, tol )</a>
+0225 
+0226 thetaout = atan(r);
+0227 diff = <a href="#_sub1" class="code" title="subfunction [theta] = m3roftheta(alpha, theta, r )">m3roftheta</a>(alpha,thetaout,r);
+0228 
+0229 <span class="keyword">while</span> ( any(abs(diff) &gt; tol) )
+0230   
+0231   thetaout = thetaout - diff./<a href="#_sub2" class="code" title="subfunction [dm3] = dm3roftheta( alpha, theta )">dm3roftheta</a>(alpha,thetaout);
+0232   diff = <a href="#_sub1" class="code" title="subfunction [theta] = m3roftheta(alpha, theta, r )">m3roftheta</a>(alpha,thetaout,r);
+0233   
+0234 <span class="keyword">end</span>
+0235 
+0236 theta = thetaout;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

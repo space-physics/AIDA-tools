@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of interference_red</title>
+  <meta name="keywords" content="interference_red">
+  <meta name="description" content="INTERFERENCE_RED - Interference reduction">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>interference_red
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>INTERFERENCE_RED - Interference reduction</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function img_out = interference_red(img_in,lines,columns,points) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> INTERFERENCE_RED - Interference reduction
+   
+ Calling:
+ img_out = interference_red(img_in,lines,columns,points)
+ 
+ Input:
+   IMG_IN - 2-D double array from which interference is to be
+            removed.
+   LINES - Line-nr array [(1xN) or (Nx1)] for lines in the
+           fft-plane to be removed 
+   COLUMNS - column-nr array for columns in the fft-plane to be
+             removed.
+   POINTS - point coordinates for frquencies to be removed (not yet?)
+ 
+ Obsolete, replaced by INTERFERENCE_REM_RAUTO
+ See also</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function img_out = interference_red(img_in,lines,columns,points)</a>
+0002 <span class="comment">% INTERFERENCE_RED - Interference reduction</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% img_out = interference_red(img_in,lines,columns,points)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%   IMG_IN - 2-D double array from which interference is to be</span>
+0009 <span class="comment">%            removed.</span>
+0010 <span class="comment">%   LINES - Line-nr array [(1xN) or (Nx1)] for lines in the</span>
+0011 <span class="comment">%           fft-plane to be removed</span>
+0012 <span class="comment">%   COLUMNS - column-nr array for columns in the fft-plane to be</span>
+0013 <span class="comment">%             removed.</span>
+0014 <span class="comment">%   POINTS - point coordinates for frquencies to be removed (not yet?)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% Obsolete, replaced by INTERFERENCE_REM_RAUTO</span>
+0017 <span class="comment">% See also</span>
+0018 
+0019 
+0020 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0021 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0022 
+0023 
+0024 <span class="keyword">if</span> numel(lines) &gt; 0
+0025   <span class="comment">% Mask selected lines in the Fourier transform of the image...</span>
+0026   fk = fft(img_in(1:end/2,1:end/2));
+0027   fk(lines,:) = 0;
+0028   ifk = real(ifft(fk));
+0029   img_in(1:end/2,1:end/2) = ifk;
+0030   <span class="comment">% ...quadrant...</span>
+0031   fk = fft(img_in(end/2+1:<span class="keyword">end</span>,1:end/2));
+0032   fk(lines,:) = 0;
+0033   ifk = real(ifft(fk));
+0034   img_in(end/2+1:<span class="keyword">end</span>,1:end/2) = ifk;
+0035   <span class="comment">% ...by...</span>
+0036   fk = fft(img_in(1:end/2,end/2+1:end));
+0037   fk(lines,:) = 0;
+0038   ifk = real(ifft(fk));
+0039   img_in(1:end/2,end/2+1:end) = ifk;
+0040   <span class="comment">%  ...quadrant</span>
+0041   fk = fft(img_in(end/2+1:<span class="keyword">end</span>,end/2+1:end));
+0042   fk(lines,:) = 0;
+0043   ifk = real(ifft(fk));
+0044   img_in(end/2+1:<span class="keyword">end</span>,end/2+1:end) = ifk;
+0045   
+0046 <span class="keyword">end</span>
+0047 
+0048 <span class="keyword">if</span> nargin &gt; 3 &amp;&amp; numel(columns)
+0049   <span class="comment">% do the same thing with the interference-dominated columns...</span>
+0050   fk = fft(img_in(1:end/2,1:end/2)');
+0051   fk(lines,:) = 0;
+0052   ifk = real(ifft(fk'));
+0053   img_in(1:end/2,1:end/2) = ifk;
+0054   <span class="comment">% ...quadrant...</span>
+0055   fk = fft(img_in(end/2+1:<span class="keyword">end</span>,1:end/2)');
+0056   fk(lines,:) = 0;
+0057   ifk = real(ifft(fk'));
+0058   img_in(end/2+1:<span class="keyword">end</span>,1:end/2) = ifk;
+0059   <span class="comment">% ...by...</span>
+0060   fk = fft(img_in(1:end/2,end/2+1:end)');
+0061   fk(lines,:) = 0;
+0062   ifk = real(ifft(fk'));
+0063   img_in(1:end/2,end/2+1:end) = ifk;
+0064   <span class="comment">% ...quadrant.</span>
+0065   fk = fft(img_in(end/2+1:<span class="keyword">end</span>,end/2+1:end)');
+0066   fk(lines,:) = 0;
+0067   ifk = real(ifft(fk'));
+0068   img_in(end/2+1:<span class="keyword">end</span>,end/2+1:end) = ifk;
+0069   
+0070 <span class="keyword">end</span>
+0071 img_out = img_in;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

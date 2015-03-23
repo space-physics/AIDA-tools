@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotgrid</title>
+  <meta name="keywords" content="plotgrid">
+  <meta name="description" content="PLOTGRID - plots Azimuth-Zenith or Rect acsention-Declination grid.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>plotgrid
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>PLOTGRID - plots Azimuth-Zenith or Rect acsention-Declination grid.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [ok] = plotgrid(az0,ze0,rot0,date,utc,lat,long,radecl_or_azze) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> PLOTGRID - plots Azimuth-Zenith or Rect acsention-Declination grid. 
+ This function sure show some strange features. 
+ &quot;Private&quot; function called automatically from the skymap GUI.
+ radecl_or_azze == 1 gives az-zenith grid.
+ 
+ Calling
+ [ok] = plotgrid(az0,ze0,rot0,date,utc,lat,long,radecl_or_azze)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="starbas.html" class="code" title="function [e1,e2,e3] = starbas(az,el,roll)">starbas</a>	STARBAS calculates untit vectors of a rotated coordinate system.</li><li><a href="starbestaemft2.html" class="code" title="function [fi,taeta] = starbestaemft2(az,el,e1,e2,e3)">starbestaemft2</a>	STARBESTAEMFT2 determines the possition of stars relative to axis</li><li><a href="starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>	STARPOS2 gives the azimuth, zenith and apparent zenith angles</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="updstrpl.html" class="code" title="function [SkMp] = updstrpl(SkMp)">updstrpl</a>	</li><li><a href="updstrplOld.html" class="code" title="function [SkMp] = updstrplOld(SkMp)">updstrplOld</a>	</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ok] = plotgrid(az0,ze0,rot0,date,utc,lat,long,radecl_or_azze)</a>
+0002 <span class="comment">% PLOTGRID - plots Azimuth-Zenith or Rect acsention-Declination grid.</span>
+0003 <span class="comment">% This function sure show some strange features.</span>
+0004 <span class="comment">% &quot;Private&quot; function called automatically from the skymap GUI.</span>
+0005 <span class="comment">% radecl_or_azze == 1 gives az-zenith grid.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling</span>
+0008 <span class="comment">% [ok] = plotgrid(az0,ze0,rot0,date,utc,lat,long,radecl_or_azze)</span>
+0009 
+0010 
+0011 <span class="comment">%   Copyright � 19990222 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0012 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0013 
+0014 ok = 0;
+0015 unhold = 0;
+0016 
+0017 <span class="keyword">if</span> ( ~ishold )
+0018   
+0019   hold on
+0020   unhold = 1;
+0021   
+0022 <span class="keyword">end</span>
+0023 hold on
+0024 
+0025 [e1,e2,e3] = <a href="starbas.html" class="code" title="function [e1,e2,e3] = starbas(az,el,roll)">starbas</a>(az0,-ze0,-rot0);
+0026 
+0027 <span class="keyword">if</span> ( radecl_or_azze == 1 )
+0028   
+0029   az = 0:10:360;                                
+0030   ze = 0:10:80;
+0031   [az,ze] = meshgrid(az,ze);
+0032   
+0033 <span class="keyword">else</span>
+0034   
+0035   ra = 0:24;
+0036   decl = -90:10:90;
+0037   [ra,decl] = meshgrid(ra,decl);
+0038   <span class="comment">%for i = 1:size(ra,1),</span>
+0039   <span class="keyword">for</span> i = size(ra,1):-1:1,  
+0040     [az(:,i),ze(:,i)] = <a href="starpos2.html" class="code" title="function [az,ze,apze] = starpos2(ra,decl,date,utc,lat,long)">starpos2</a>(ra(i,:)',decl(i,:)',date,utc,lat,long);
+0041   <span class="keyword">end</span>
+0042   az = az'*180/pi;
+0043   ze = ze'*180/pi;
+0044   [I,J] = find(ze&gt;85);
+0045   <span class="keyword">for</span> i = 1:length(I);
+0046     ze(I(i),J(i)) = nan;
+0047   <span class="keyword">end</span>
+0048   
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">%for i = 1:size(az,1)</span>
+0052 <span class="keyword">for</span> i = size(az,1):-1:1,
+0053   [gfi(i,:),gtaeta(i,:)] = <a href="starbestaemft2.html" class="code" title="function [fi,taeta] = starbestaemft2(az,el,e1,e2,e3)">starbestaemft2</a>(az(i,:)',ze(i,:)'-90,e1,e2,e3);
+0054 <span class="keyword">end</span>
+0055 [qwi,qwj] = find(del2(gtaeta*180/pi)&gt;15);
+0056 <span class="comment">%for i = 1:length(qwi),</span>
+0057 <span class="keyword">for</span> i = length(qwi):-1:1,
+0058   gtaeta(qwi(i),qwj(i)) = nan;
+0059   gfi(qwi(i),qwj(i)) = nan;
+0060 <span class="keyword">end</span>
+0061 as = text(-1e5,-1e5,<span class="string">'qw'</span>);
+0062 C = get(as,<span class="string">'color'</span>);
+0063 as = sum(C);
+0064 <span class="keyword">if</span> ( as &lt; .5 )
+0065   c = <span class="string">'k'</span>;
+0066 <span class="keyword">else</span>
+0067   c = <span class="string">'w'</span>;
+0068 <span class="keyword">end</span>
+0069 polar(real(gfi(2:<span class="keyword">end</span>,:)),real(gtaeta(2:<span class="keyword">end</span>,:))*180/pi,c)
+0070 polar(real(gfi'),real(gtaeta')*180/pi,c)
+0071 
+0072 ax = axis;
+0073 
+0074 <span class="keyword">if</span> ( radecl_or_azze == 1 )
+0075   
+0076   polar(real(gfi(2:<span class="keyword">end</span>,1)),real(gtaeta(2:<span class="keyword">end</span>,1))*180/pi,<span class="string">'r'</span>)
+0077   tx = 180/pi*gtaeta(:,ceil(3*end/4)).*cos(gfi(:,ceil(3*end/4)))-1;
+0078   ty = 180/pi*gtaeta(:,ceil(3*end/4)).*sin(gfi(:,ceil(3*end/4)))-1;
+0079   txtstr = num2str(ze(:,ceil(3*end/4)));
+0080   I = find(ty&gt;ax(3));
+0081   
+0082   tx = tx(I);
+0083   ty = ty(I);
+0084   txtstr = txtstr(I,:);
+0085   I = find(ty&lt;ax(4));
+0086   tx = tx(I);
+0087   ty = ty(I);
+0088   txtstr = txtstr(I,:);
+0089   I = find(tx&gt;ax(1));
+0090   tx = tx(I);
+0091   ty = ty(I);
+0092   txtstr = txtstr(I,:);
+0093   I = find(tx&lt;ax(2));
+0094   tx = tx(I);
+0095   ty = ty(I);
+0096   txtstr = txtstr(I,:);
+0097   text(tx(3:end),ty(3:end),txtstr(3:<span class="keyword">end</span>,:),<span class="string">'color'</span>,c,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+0098   <span class="keyword">if</span> max(size(tx)&gt;1)
+0099     text(tx(2),ty(2),num2str(az(2,ceil(3*end/4))),<span class="string">'color'</span>,c,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+0100   <span class="keyword">end</span>
+0101   
+0102   tx = 180/pi*gtaeta(:,ceil(end/4)).*cos(gfi(:,ceil(end/4)))+1;
+0103   ty = 180/pi*gtaeta(:,ceil(end/4)).*sin(gfi(:,ceil(end/4)))+1;
+0104   txtstr = num2str(ze(:,ceil(end/4)));
+0105   I = find(ty&gt;ax(3));
+0106   tx = tx(I);
+0107   ty = ty(I);
+0108   txtstr = txtstr(I,:);
+0109   I = find(ty&lt;ax(4));
+0110   tx = tx(I);
+0111   ty = ty(I);
+0112   txtstr = txtstr(I,:);
+0113   I = find(tx&gt;ax(1));
+0114   tx = tx(I);
+0115   ty = ty(I);
+0116   txtstr = txtstr(I,:);
+0117   I = find(tx&lt;ax(2));
+0118   tx = tx(I);
+0119   ty = ty(I);
+0120   txtstr = txtstr(I,:);
+0121   text(tx(3:end),ty(3:end),txtstr(3:<span class="keyword">end</span>,:),<span class="string">'color'</span>,c,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+0122   <span class="keyword">if</span> max(size(tx)&gt;1)
+0123     text(tx(2),ty(2),num2str(az(2,ceil(end/4))),<span class="string">'color'</span>,c,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+0124   <span class="keyword">end</span>
+0125   
+0126   tx = 180/pi*gtaeta(:,ceil(end/2)).*cos(gfi(:,ceil(end/2)))+1;
+0127   ty = 180/pi*gtaeta(:,ceil(end/2)).*sin(gfi(:,ceil(end/2)))+1;
+0128   txtstr = num2str(ze(:,ceil(end/2)));
+0129   I = find(ty&gt;ax(3));
+0130   tx = tx(I);
+0131   ty = ty(I);
+0132   txtstr = txtstr(I,:);
+0133   I = find(ty&lt;ax(4));
+0134   tx = tx(I);
+0135   ty = ty(I);
+0136   txtstr = txtstr(I,:);
+0137   I = find(tx&gt;ax(1));
+0138   tx = tx(I);
+0139   ty = ty(I);
+0140   txtstr = txtstr(I,:);
+0141   I = find(tx&lt;ax(2));
+0142   tx = tx(I);
+0143   ty = ty(I);
+0144   txtstr = txtstr(I,:);
+0145   text(tx(3:end),ty(3:end),txtstr(3:<span class="keyword">end</span>,:),<span class="string">'color'</span>,c,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+0146   <span class="keyword">if</span> max(size(tx)&gt;1)
+0147     text(tx(2),ty(2),num2str(az(2,ceil(end/2))),<span class="string">'color'</span>,c,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+0148   <span class="keyword">end</span>
+0149 
+0150   tx = 180/pi*gtaeta(:,ceil(1)).*cos(gfi(:,ceil(1)))+1;
+0151   ty = 180/pi*gtaeta(:,ceil(1)).*sin(gfi(:,ceil(1)))+1;
+0152   txtstr = num2str(ze(:,ceil(1)));
+0153   I = find(ty&gt;ax(3));
+0154   tx = tx(I);
+0155   ty = ty(I);
+0156   txtstr = txtstr(I,:);
+0157   I = find(ty&lt;ax(4));
+0158   tx = tx(I);
+0159   ty = ty(I);
+0160   txtstr = txtstr(I,:);
+0161   I = find(tx&gt;ax(1));
+0162   tx = tx(I);
+0163   ty = ty(I);
+0164   txtstr = txtstr(I,:);
+0165   I = find(tx&lt;ax(2));
+0166   tx = tx(I);
+0167   ty = ty(I);
+0168   txtstr = txtstr(I,:);
+0169   
+0170   text(tx(3:end),ty(3:end),txtstr(3:<span class="keyword">end</span>,:),<span class="string">'color'</span>,c,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+0171   <span class="keyword">if</span> max(size(tx)&gt;1)
+0172     text(tx(2),ty(2),num2str(az(2,ceil(1))),<span class="string">'color'</span>,c,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+0173   <span class="keyword">end</span>
+0174   
+0175 <span class="keyword">end</span>
+0176 
+0177 <span class="keyword">if</span> ( unhold )
+0178     
+0179   hold off
+0180   
+0181 <span class="keyword">end</span>
+0182 ok = 1;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

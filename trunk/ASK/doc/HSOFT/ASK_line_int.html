@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_line_int</title>
+  <meta name="keywords" content="ASK_line_int">
+  <meta name="description" content="ASK_LINE_INT - make intensity line plots from an image sequence.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_line_int
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_LINE_INT - make intensity line plots from an image sequence.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [line_I,timeOut,mjsT0] = ASK_line_int(Nstart,Num4itter,x0,y0,r,step) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_LINE_INT - make intensity line plots from an image sequence.
+ Averages the intensity in a circular mask applied over the image.
+ 
+ Calling:
+  line_I = ASK_line_int(Nstart,Num4itter,x0,y0,r,step)
+ Inputs:
+  Nstart - First frame number
+  Num4itter - Number of frames to consider (ignoring the effect of
+              the step) 
+  x0,y0 - The centre of the circular mask in pixel coordinates.
+  r     - The radius of the mask, in pixels.
+  step  - step size, instead of plotting every image value
+ Outputs:
+  line_I  - The total intensity within the circular mask, an array with one
+            value for each time.
+  timeOut - Array of times, in seconds since mjs. This is the time axis for
+            the resulting line.
+  mjsT0   - mjs of first data point.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>	ASK_READ_V -</li><li><a href="ASK_roundmask.html" class="code" title="function RoundMask = ASK_roundmask( sx,sy, xc, yc, r )">ASK_roundmask</a>	ASK_ROUNDMASK - "circular" mask with ones in image sized [sy,sx]</li><li><a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>	ASK_TIME_V - returns time since the start of the sequence</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [line_I,timeOut,mjsT0] = ASK_line_int(Nstart,Num4itter,x0,y0,r,step)</a>
+0002 <span class="comment">% ASK_LINE_INT - make intensity line plots from an image sequence.</span>
+0003 <span class="comment">% Averages the intensity in a circular mask applied over the image.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Calling:</span>
+0006 <span class="comment">%  line_I = ASK_line_int(Nstart,Num4itter,x0,y0,r,step)</span>
+0007 <span class="comment">% Inputs:</span>
+0008 <span class="comment">%  Nstart - First frame number</span>
+0009 <span class="comment">%  Num4itter - Number of frames to consider (ignoring the effect of</span>
+0010 <span class="comment">%              the step)</span>
+0011 <span class="comment">%  x0,y0 - The centre of the circular mask in pixel coordinates.</span>
+0012 <span class="comment">%  r     - The radius of the mask, in pixels.</span>
+0013 <span class="comment">%  step  - step size, instead of plotting every image value</span>
+0014 <span class="comment">% Outputs:</span>
+0015 <span class="comment">%  line_I  - The total intensity within the circular mask, an array with one</span>
+0016 <span class="comment">%            value for each time.</span>
+0017 <span class="comment">%  timeOut - Array of times, in seconds since mjs. This is the time axis for</span>
+0018 <span class="comment">%            the resulting line.</span>
+0019 <span class="comment">%  mjsT0   - mjs of first data point.</span>
+0020 <span class="comment">%</span>
+0021 
+0022 <span class="comment">% global hities</span>
+0023 <span class="keyword">global</span> vs
+0024 
+0025 nx = vs.dimx(vs.vsel);
+0026 ny = vs.dimy(vs.vsel);
+0027 
+0028 <span class="keyword">if</span> nargin &lt; 3 | isempty(x0)
+0029   x0 = nx/2;
+0030 <span class="keyword">end</span>
+0031 <span class="keyword">if</span> nargin &lt; 4 | isempty(y0)
+0032   y0 = ny/2;
+0033 <span class="keyword">end</span>
+0034 <span class="keyword">if</span> nargin &lt; 5 | isempty(r)
+0035   r = ny/40;
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="comment">%</span>
+0039 <span class="comment">% added to handle the steps</span>
+0040 <span class="comment">%</span>
+0041 nstep = vs.vnstep(vs.vsel);
+0042 num_ = Num4itter * nstep;
+0043 
+0044 <span class="comment">% Make sure that the last image # is less than or equal to the</span>
+0045 <span class="comment">% number of images in the sequence (mega-block?)</span>
+0046 <span class="keyword">if</span> ( Nstart + num_) &lt; vs.vnl(vs.vsel)
+0047   nla = Nstart + num_-1;
+0048 <span class="keyword">else</span>
+0049   nla = vs.vnl(vs.vsel);
+0050 <span class="keyword">end</span>
+0051 num_new = (nla-Nstart)/nstep;
+0052 
+0053 <span class="keyword">if</span> nargin &lt; 6 | isempty(step) 
+0054   step = 1;
+0055 <span class="keyword">end</span>
+0056 
+0057 line_I = zeros(1,( num_new + 1 )/step);
+0058 timeOut = zeros(1,( num_new + 1 )/step);
+0059 mjsT0  = <a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>(Nstart, 1);
+0060 
+0061 mask = double(<a href="ASK_roundmask.html" class="code" title="function RoundMask = ASK_roundmask( sx,sy, xc, yc, r )">ASK_roundmask</a>( nx,ny,x0,y0,r));
+0062 nmask = sum(mask(:));
+0063 
+0064 count = 1;
+0065 oldpercent = 0;
+0066 
+0067 <span class="keyword">for</span> i1 = Nstart:step*nstep:nla,
+0068   
+0069 <span class="comment">% $$$   percent = i1*100/(nla-Nstart);</span>
+0070 <span class="comment">% $$$   if (percent-oldpercent) &gt; 5</span>
+0071 <span class="comment">% $$$     disp(sprintf('(%2.2f, done)',percent))</span>
+0072 <span class="comment">% $$$     oldpercent = percent;</span>
+0073 <span class="comment">% $$$   end</span>
+0074   timeOut(count)  =  <a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>(i1)-<a href="ASK_time_v.html" class="code" title="function t = ASK_time_v(i1,fullMJS)">ASK_time_v</a>(Nstart)+vs.vres(vs.vsel)*step/2;
+0075   <span class="keyword">for</span> j2 = i1:nstep:i1+step*nstep-1,
+0076     
+0077     img_out = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(j2);<span class="comment">% noImCal, RGBout, nocnv); % read_v,j,im</span>
+0078     line_I(count) = line_I(count) + sum(img_out(logical(mask(:))))/nmask;
+0079     
+0080   <span class="keyword">end</span>
+0081   line_I(count) = line_I(count)/step; <span class="comment">%remove the division by step, and you get the added intensity instead, added over time (step = 10 would then mean add 10 images together to one data point)</span>
+0082   count = count+1;
+0083   
+0084 <span class="keyword">end</span>
+0085 line_I = line_I(1:count-1);
+0086 timeOut = timeOut(1:count-1);</pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of symnin_filter</title>
+  <meta name="keywords" content="symnin_filter">
+  <meta name="description" content="SYMNIN_FILTER - symmetric nearest intensity neighbour filter">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>symnin_filter
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SYMNIN_FILTER - symmetric nearest intensity neighbour filter</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function img_out = symnin_filter(img_in,n,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SYMNIN_FILTER - symmetric nearest intensity neighbour filter
+ is a filter that compares each pixel to its neighbors in an
+ N-by-N region. The neighbors are inspected in symmetric 
+ pairs around the center, i.e. N S, W E, NW SE, and NE SW. Select
+ half the number of pixels in a square window by selecting one
+ pixel nearest in gray value to the center pixel from each unique
+ pair of pixels. From all unique pairs in the N-by-N window
+ centered at the pixel(x,y) in the image,
+ take I(x+i,y+j),if |I(x+i,y+j) - I(x,y)| &lt; |I(x-i,y-j) - I(x,y)|
+ take I(x-i,y-j),if |I(x+i,y+j) - I(x,y)| &gt; |I(x-i,y-j) - I(x,y)|
+ otherwise, take I(x-j,y+j) and I(x-i,y-j).
+ Then calculate the mean (or median) of the selected pixel
+ intensities. This filter has a characteristic between a 2-D
+ median filter and a 2-D linear filter
+
+ Calling:
+   img_out = symnin_filter(img_in,n,OPS)
+ Input:
+   img_in - input image, [Ny x Nx] (double)
+   n      - size of negihbourhood region (odd integer)
+   OPS    - options struct with fields &quot;.type&quot; |{'mean'}|'median'|
+            for selecting between calculating the mean or median
+            of the nearest (intensity-wise) neighbours;
+            and &quot;.include_centre&quot; | { 1 } | 0 | for choosing to
+            include the central pixel at [x,y] in the averaging
+            When SYMNIN_FILTER is called with no input arguments
+            the default option is returned.
+ The border-regions is treated as if the image intensities
+ extrapolates with the border pixel intensities.
+
+ See also: WIENER2, MEDFILT2, FILTER2, <a href="symnin_filter.html" class="code" title="function img_out = symnin_filter(img_in,n,OPS)">SYMNIN_FILTER</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/catstruct.html" class="code" title="function A = catstruct(varargin)">catstruct</a>	CATSTRUCT - concatenate structures</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function img_out = symnin_filter(img_in,n,OPS)</a>
+0002 <span class="comment">% SYMNIN_FILTER - symmetric nearest intensity neighbour filter</span>
+0003 <span class="comment">% is a filter that compares each pixel to its neighbors in an</span>
+0004 <span class="comment">% N-by-N region. The neighbors are inspected in symmetric</span>
+0005 <span class="comment">% pairs around the center, i.e. N S, W E, NW SE, and NE SW. Select</span>
+0006 <span class="comment">% half the number of pixels in a square window by selecting one</span>
+0007 <span class="comment">% pixel nearest in gray value to the center pixel from each unique</span>
+0008 <span class="comment">% pair of pixels. From all unique pairs in the N-by-N window</span>
+0009 <span class="comment">% centered at the pixel(x,y) in the image,</span>
+0010 <span class="comment">% take I(x+i,y+j),if |I(x+i,y+j) - I(x,y)| &lt; |I(x-i,y-j) - I(x,y)|</span>
+0011 <span class="comment">% take I(x-i,y-j),if |I(x+i,y+j) - I(x,y)| &gt; |I(x-i,y-j) - I(x,y)|</span>
+0012 <span class="comment">% otherwise, take I(x-j,y+j) and I(x-i,y-j).</span>
+0013 <span class="comment">% Then calculate the mean (or median) of the selected pixel</span>
+0014 <span class="comment">% intensities. This filter has a characteristic between a 2-D</span>
+0015 <span class="comment">% median filter and a 2-D linear filter</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Calling:</span>
+0018 <span class="comment">%   img_out = symnin_filter(img_in,n,OPS)</span>
+0019 <span class="comment">% Input:</span>
+0020 <span class="comment">%   img_in - input image, [Ny x Nx] (double)</span>
+0021 <span class="comment">%   n      - size of negihbourhood region (odd integer)</span>
+0022 <span class="comment">%   OPS    - options struct with fields &quot;.type&quot; |{'mean'}|'median'|</span>
+0023 <span class="comment">%            for selecting between calculating the mean or median</span>
+0024 <span class="comment">%            of the nearest (intensity-wise) neighbours;</span>
+0025 <span class="comment">%            and &quot;.include_centre&quot; | { 1 } | 0 | for choosing to</span>
+0026 <span class="comment">%            include the central pixel at [x,y] in the averaging</span>
+0027 <span class="comment">%            When SYMNIN_FILTER is called with no input arguments</span>
+0028 <span class="comment">%            the default option is returned.</span>
+0029 <span class="comment">% The border-regions is treated as if the image intensities</span>
+0030 <span class="comment">% extrapolates with the border pixel intensities.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">% See also: WIENER2, MEDFILT2, FILTER2, SYMNIN_FILTER</span>
+0033 
+0034 
+0035 <span class="comment">%   Copyright � 20100104 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0036 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0037 
+0038 <span class="comment">% The default options structure</span>
+0039 dOPS.type = <span class="string">'mean'</span>;
+0040 dOPS.include_center = 1;
+0041 
+0042 <span class="keyword">if</span> nargin == 0
+0043   <span class="comment">% If there is no input arguments, return the default</span>
+0044   <span class="comment">% option-struct</span>
+0045   img_out = dOPS;
+0046   <span class="keyword">return</span>
+0047 <span class="keyword">elseif</span> nargin &gt; 2
+0048   <span class="comment">% if there is more than 2 input arguments then &quot;over-cat&quot; the</span>
+0049   <span class="comment">% user-supplied options struct.</span>
+0050   dOPS = <a href="../tools/catstruct.html" class="code" title="function A = catstruct(varargin)">catstruct</a>(dOPS,OPS);
+0051 <span class="keyword">end</span>
+0052 <span class="comment">% Ensure that &quot;n&quot; produces an ODD-sized region.</span>
+0053 N = ceil((n-1)/2);
+0054 
+0055 class0 = class(img_in);
+0056 img_in = double(img_in);
+0057 
+0058 <span class="comment">% Make a padded version of the input image - to make it easier to</span>
+0059 <span class="comment">% index over a region centered at any pixel in the original image.</span>
+0060 img_internal = img_in([ones(1,N) 1:end size(img_in,1)*ones(1,N)],<span class="keyword">...</span>
+0061                       [ones(1,N) 1:end size(img_in,2)*ones(1,N)]);
+0062 
+0063 
+0064 <span class="comment">% Indicies to half the region pixels</span>
+0065 [I1,J2] = meshgrid(-N:N,1:N);
+0066 i1 = 1:N;
+0067 j2 = 0*i1;
+0068 I1 = [i1';I1(:)];
+0069 J2 = [j2';J2(:)];
+0070 
+0071 
+0072 <span class="comment">% Image size:</span>
+0073 sz = size(img_in);
+0074 <span class="keyword">if</span> strcmp(dOPS.type,<span class="string">'mean'</span>)
+0075   <span class="comment">% Central image</span>
+0076   img_out = dOPS.include_center*img_in;
+0077   
+0078 <span class="keyword">else</span>
+0079   <span class="comment">% If we want the median we calculate the nearest-intensities</span>
+0080   <span class="comment">% for all neighbour pairs first, then we calculate their median.</span>
+0081   img_out = zeros([size(img_in),1+length(I1)]);
+0082   img_out(:,:,1) = img_in;
+0083   dimg_out = zeros(size(img_in));  
+0084 <span class="keyword">end</span>
+0085 <span class="keyword">for</span> i1 = 1:length(I1)
+0086   <span class="keyword">if</span> i1 == 0 &amp; j2 == 0
+0087     <span class="comment">% Do nothing! Central pixel already taken care of</span>
+0088   <span class="keyword">else</span>
+0089     <span class="comment">% if dOPS.display</span>
+0090     <span class="comment">%   iP(i1,:) = [N+I1(i1),N+J2(i1)]-(1);</span>
+0091     <span class="comment">%   iM(i1,:) = [N-I1(i1),N-J2(i1)]-(1);</span>
+0092     <span class="comment">%   [pI,pJ] = meshgrid(N+I1(i1)+[1:sz(1)],N+J2(i1)+[1:sz(2)]);</span>
+0093     <span class="comment">%   [mI,mJ] = meshgrid(N-I1(i1)+[1:sz(1)],N-J2(i1)+[1:sz(2)]);</span>
+0094     <span class="comment">%   plot(pJ(1,1),pI(1,1),'b.')</span>
+0095     <span class="comment">%   hold on</span>
+0096     <span class="comment">%   plot(mJ(1,1),mI(1,1),'ro'),axis([0 n+1 0 n+1]),grid on,pause</span>
+0097     <span class="comment">% end</span>
+0098     <span class="comment">% Take the symmetric pixel pair</span>
+0099     img_internalp = img_internal(N+I1(i1)+[1:sz(1)],N+J2(i1)+[1:sz(2)]);
+0100     img_internalm = img_internal(N-I1(i1)+[1:sz(1)],N-J2(i1)+[1:sz(2)]);
+0101     <span class="comment">% Calculate the absolute intensity differences</span>
+0102     ap = abs(img_in - img_internalp);
+0103     am = abs(img_in - img_internalm);
+0104     <span class="comment">% If we take the mean it is just to add all the nearest</span>
+0105     <span class="comment">% intensities and divide the total intensity at the end</span>
+0106     <span class="keyword">if</span> strcmp(dOPS.type,<span class="string">'mean'</span>)
+0107       <span class="comment">% take the pixel with the nearest intensity</span>
+0108       img_out(am&lt;ap) = img_out(am&lt;ap) + img_internalm(am&lt;ap);
+0109       img_out(am&gt;ap) = img_out(am&gt;ap) + img_internalp(am&gt;ap);
+0110       <span class="comment">% unless both pixels are at the same intensity difference,</span>
+0111       <span class="comment">% then take their average</span>
+0112       img_out(am==ap) = img_out(am==ap) + ( img_internalm(am==ap)/2 + <span class="keyword">...</span>
+0113                                             img_internalp(am==ap)/2 );
+0114     <span class="keyword">else</span>
+0115       <span class="comment">% If we want the median, then we save all the shifted</span>
+0116       <span class="comment">% nearest-intensity-neighbour images, and then take the</span>
+0117       <span class="comment">% median at the end.</span>
+0118       dimg_out = 0*dimg_out;
+0119       dimg_out(am&lt;ap) = img_internalm(am&lt;ap);
+0120       dimg_out(am&gt;ap) = dimg_out(am&gt;ap) + img_internalp(am&gt;ap);
+0121       dimg_out(am==ap) = dimg_out(am==ap) + ( img_internalm(am==ap)/2 + <span class="keyword">...</span>
+0122                                               img_internalp(am==ap)/2 );
+0123       img_out(:,:,i1+1) = dimg_out;
+0124     <span class="keyword">end</span>
+0125   <span class="keyword">end</span>
+0126 <span class="keyword">end</span>
+0127 
+0128 <span class="keyword">if</span> strcmp(dOPS.type,<span class="string">'mean'</span>)
+0129   <span class="comment">% (i1+dOPS.include_center) is the number of pixel pairs plus the</span>
+0130   <span class="comment">% central pixel, that is the number we should divide with.</span>
+0131   img_out = img_out / (i1+dOPS.include_center);
+0132 <span class="keyword">else</span>
+0133   <span class="comment">% If we want the median, make it so.</span>
+0134   img_out = median(img_out(:,:,(dOPS.include_center+1):end),3);
+0135 <span class="keyword">end</span>
+0136 
+0137 img_out = cast(img_out,class0);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

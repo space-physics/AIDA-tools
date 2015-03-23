@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_altmaxIscaling</title>
+  <meta name="keywords" content="tomo_altmaxIscaling">
+  <meta name="description" content="TOMO_ALTMAXISCALING - tomographic itterative step(s).">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_altmaxIscaling
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TOMO_ALTMAXISCALING - tomographic itterative step(s).</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [Vem,stns] = tomo_altmaxIscaling(Vem,stns,tomo_ops,X3,Y3,Z3) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TOMO_ALTMAXISCALING - tomographic itterative step(s).
+ VEM is the current 3D distribution STNS are the struct that
+ contain the images and camera set up. TOMO_OPS is the struct
+ containing the options controling the processing of the
+ itteration, NR_LAPS are the number of steps to itterate. 
+ 
+ Calling:
+ [Vem,stns] = tomo_altmaxIscaling(Vem,stns,tomo_ops,X3,Y3,Z3)
+
+ See also TOMO_INP_CAMERA, <a href="camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">CAMERA_SET_UP_SC</a>, <a href="make_tomo_ops.html" class="code" title="function tomo_ops = make_tomo_ops(stns)">MAKE_TOMO_OPS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/inv_project_img_surf.html" class="code" title="function [Im_proj] = inv_project_img_surf(img_in,r,optmod,optpar,Xs,Ys,Zs,cmtr)">inv_project_img_surf</a>	INV_PROJECT_IMG_SURF - map IMG_IN - onto an arbitrary surface</li><li><a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>	FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</li><li><a href="../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>	INPAINT_NANS: in-paints over nans in an array</li><li><a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>	MEDFILT2 - 2 dimensional sliding median filter</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Vem,stns] = tomo_altmaxIscaling(Vem,stns,tomo_ops,X3,Y3,Z3)</a>
+0002 <span class="comment">% TOMO_ALTMAXISCALING - tomographic itterative step(s).</span>
+0003 <span class="comment">% VEM is the current 3D distribution STNS are the struct that</span>
+0004 <span class="comment">% contain the images and camera set up. TOMO_OPS is the struct</span>
+0005 <span class="comment">% containing the options controling the processing of the</span>
+0006 <span class="comment">% itteration, NR_LAPS are the number of steps to itterate.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">% [Vem,stns] = tomo_altmaxIscaling(Vem,stns,tomo_ops,X3,Y3,Z3)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% See also TOMO_INP_CAMERA, CAMERA_SET_UP_SC, MAKE_TOMO_OPS</span>
+0012 <span class="comment">%</span>
+0013 
+0014 
+0015 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0016 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0017 
+0018 <span class="comment">%i = 0;</span>
+0019 
+0020 <span class="comment">%art</span>
+0021 <span class="keyword">for</span> j1 = 1:3
+0022   io = find( [tomo_ops(:).randorder] == j1);
+0023   junk = rand([1 length(io)]);
+0024   [junk,order] = sort(junk);
+0025   <span class="keyword">for</span> k = 1:length(order),
+0026     stns(io(order(k))).proj = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(Vem, <span class="keyword">...</span>
+0027                                              stns(io(order(k))).uv, <span class="keyword">...</span>
+0028                                              stns(io(order(k))).d, <span class="keyword">...</span>
+0029                                              stns(io(order(k))).l_cl, <span class="keyword">...</span>
+0030                                              stns(io(order(k))).bfk, <span class="keyword">...</span>
+0031                                              size(stns(io(order(k))).img));
+0032     [imax3,imax3] = nanmax(Vem,[],3);
+0033     X2 = imax3;
+0034     Y2 = imax3;
+0035     Z2 = imax3;
+0036     
+0037     <span class="keyword">for</span> i1 = 1:size(imax3,1),
+0038       <span class="keyword">for</span> i2 = 1:size(imax3,2),
+0039         X2(i1,i2) = squeeze(X3(i1,i2,imax3(i1,i2)));
+0040         Y2(i1,i2) = squeeze(Y3(i1,i2,imax3(i1,i2)));
+0041         Z2(i1,i2) = squeeze(Z3(i1,i2,imax3(i1,i2)));
+0042       <span class="keyword">end</span>
+0043     <span class="keyword">end</span>
+0044     Im_proj = imax3;
+0045     Im_proj(:) = <a href="../Camera/inv_project_img_surf.html" class="code" title="function [Im_proj] = inv_project_img_surf(img_in,r,optmod,optpar,Xs,Ys,Zs,cmtr)">inv_project_img_surf</a>(stns(io(order(k))).img./stns(io(order(k))).proj,<span class="keyword">...</span>
+0046                                       stns(io(order(k))).obs.xyz,<span class="keyword">...</span>
+0047                                       stns(io(order(k))).optpar(9),<span class="keyword">...</span>
+0048                                       stns(io(order(k))).optpar,<span class="keyword">...</span>
+0049                                       X2(:),Y2(:),Z2(:));
+0050     <span class="comment">%sum(~isfinite(Im_proj(:)))</span>
+0051     Im_proj(1,:) = 1;
+0052     Im_proj(:,1) = 1;
+0053     Im_proj(<span class="keyword">end</span>,:) = 1;
+0054     Im_proj(:,end) = 1;
+0055     Im_proj = <a href="../tools/inpaint_nans.html" class="code" title="function B=inpaint_nans(A,method)">inpaint_nans</a>(Im_proj);
+0056     Im_proj(~isfinite(Im_proj(:))) = 1;
+0057     Im_proj(Im_proj(:)==0) = 1;
+0058     Im_proj = <a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(Im_proj,[5 5]); 
+0059     <span class="keyword">for</span> i1 = 1:size(Im_proj,1),
+0060       <span class="keyword">for</span> i2 = 1:size(Im_proj,2),
+0061         
+0062         Vem(i1,i2,:) = Vem(i1,i2,:).*max(0,Im_proj(i1,i2)).^0.5;
+0063         
+0064       <span class="keyword">end</span>
+0065     <span class="keyword">end</span>
+0066     <span class="comment">%Infindx = find(~isfinite(Vem(:)));</span>
+0067     <span class="comment">%Vem(Infindx) = 0;</span>
+0068     Vem(~isfinite(Vem(:))) = 0;
+0069   <span class="keyword">end</span>
+0070 <span class="keyword">end</span>
+0071 
+0072 <span class="comment">% Here, after the itteration, we do filtering to suppress noise</span>
+0073 <span class="keyword">switch</span> tomo_ops(1).filtertype
+0074  <span class="keyword">case</span> 1 <span class="comment">% horizontal 2D averaging</span>
+0075   <span class="keyword">for</span> k = size(Vem,3),
+0076     Vem(:,:,k) = conv2(squeeze(Vem(:,:,k)),tomo_ops(1).filterkernel,<span class="string">'same'</span>);
+0077   <span class="keyword">end</span>
+0078  <span class="keyword">case</span> 2 <span class="comment">% horizontal 2D median</span>
+0079   <span class="keyword">for</span> k = size(Vem,3),
+0080     Vem(:,:,k) = <a href="../tools/medfilt2.html" class="code" title="function outM = medfilt2(inM,fc,varagin)">medfilt2</a>(squeeze(Vem(:,:,k)),tomo_ops(1).filterkernel);
+0081   <span class="keyword">end</span>
+0082  <span class="keyword">case</span> 3 <span class="comment">% proximity filtering</span>
+0083   fiel_align_int = sum(Vem,3);
+0084   filt_f_a_i = conv2(fiel_align_int,tomo_ops(1).filterkernel,<span class="string">'same'</span>);
+0085   <span class="keyword">for</span> k = size(Vem,3),
+0086     Vem(:,:,k) = conv2(squeeze(Vem(:,:,k)),tomo_ops(1).filterkernel,<span class="string">'same'</span>).*fiel_align_int./filt_f_a_i;
+0087   <span class="keyword">end</span>
+0088   <span class="comment">%Infindx = find(~isfinite(Vem(:)));</span>
+0089   <span class="comment">%Vem(Infindx) = 0;</span>
+0090   Vem(~isfinite(Vem(:))) = 0;
+0091  <span class="keyword">case</span> 4 <span class="comment">% proximity sharpening, Lucy-Richardson deconvolution-like</span>
+0092   fiel_align_int = sum(Vem,3);
+0093   filt_f_a_i = conv2(fiel_align_int,tomo_ops(:).filterkernel,<span class="string">'same'</span>);
+0094   <span class="keyword">for</span> k = size(Vem,3),
+0095     Vem(:,:,k) = squeeze(Vem(:,:,k)).*fiel_align_int./filt_f_a_i;
+0096   <span class="keyword">end</span>
+0097   <span class="comment">%Infindx = find(~isfinite(Vem(:)));</span>
+0098   Vem(~isfinite(Vem(:))) = 0;
+0099  <span class="keyword">otherwise</span>
+0100   <span class="comment">% no filtering</span>
+0101 <span class="keyword">end</span> <span class="comment">% switch filtertype</span>
+0102 
+0103 <span class="keyword">for</span> j1 = 1:length(stns),
+0104   stns(j1).proj = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(Vem, <span class="keyword">...</span>
+0105                 stns(j1).uv, <span class="keyword">...</span>
+0106                 stns(j1).d, <span class="keyword">...</span>
+0107                 stns(j1).l_cl, <span class="keyword">...</span>
+0108                 stns(j1).bfk, <span class="keyword">...</span>
+0109                 size(stns(j1).img));
+0110 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

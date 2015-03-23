@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fix_ra_decl</title>
+  <meta name="keywords" content="fix_ra_decl">
+  <meta name="description" content="FIX_RA_DECL - Extract rect ascension and declination from star">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>fix_ra_decl
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>FIX_RA_DECL - Extract rect ascension and declination from star</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function star_list = fix_ra_decl(star_list) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FIX_RA_DECL - Extract rect ascension and declination from star
+ catalogs. 
+ 
+ Private function, not much use for user, should be called in next
+ version of SKYMAP.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Spectral_cal/check_scan_for_stars.html" class="code" title="function [ok] = check_scan_for_stars(files,pos,optpar,IDENTSTARS,STARPARS,PO,OPS)">check_scan_for_stars</a>	CHECK_SCAN_FOR_STARS  Check the result of spc_scan_for_stars.</li><li><a href="../Spectral_cal/spc_scan_for_stars.html" class="code" title="function [IDSTARS,STARPARS,filtnr,Stime,extime] = spc_scan_for_stars(files,pos,optpar,PO,OPTS,disp_ops)">spc_scan_for_stars</a>	SPC_SCAN_FOR_STARS - Scan images for stars in the Pulkovo</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function star_list = fix_ra_decl(star_list)</a>
+0002 <span class="comment">% FIX_RA_DECL - Extract rect ascension and declination from star</span>
+0003 <span class="comment">% catalogs.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% Private function, not much use for user, should be called in next</span>
+0006 <span class="comment">% version of SKYMAP.</span>
+0007 
+0008 
+0009 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0010 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0011 
+0012 <span class="keyword">if</span> isfield(star_list,<span class="string">'DEd'</span>)
+0013   
+0014   DE = [[star_list(:).DEd]'  [star_list(:).DEm]'];
+0015   RA = [[star_list(:).RAh]'  [star_list(:).RAm]' [star_list(:).RAs]'];
+0016   
+0017   de_sign = [star_list(:).DE_];
+0018   de_sign = 2*(.5-[[de_sign]==<span class="string">'-'</span>]);
+0019   
+0020   decl = de_sign'.*([DE(:,1)]+[DE(:,2)]/60);
+0021   <span class="keyword">if</span> isfield(star_list,<span class="string">'DEs'</span>)
+0022     decl = decl+[star_list(:).DEs]'/3600;
+0023   <span class="keyword">end</span>
+0024   ra = RA(:,1) + RA(:,2)/60 + RA(:,3)/3600;
+0025   <span class="keyword">for</span> i = 1:length(decl),
+0026     
+0027     star_list(i).decl = decl(i);
+0028     star_list(i).ra = ra(i);
+0029     
+0030   <span class="keyword">end</span>
+0031   
+0032   star_list = rmfield(star_list,{<span class="string">'RAh'</span>,<span class="string">'RAm'</span>,<span class="string">'RAs'</span>,<span class="string">'DE_'</span>,<span class="string">'DEd'</span>,<span class="string">'DEm'</span>});
+0033   
+0034   <span class="keyword">if</span> isfield(star_list,<span class="string">'DEs'</span>)
+0035     star_list = rmfield(star_list,{<span class="string">'DEs'</span>});
+0036   <span class="keyword">end</span>
+0037   
+0038 <span class="keyword">elseif</span> isfield(star_list,<span class="string">'DEd1900'</span>)
+0039   
+0040   DE = cell2mat([[{star_list(:).DEd1900}]'  [{star_list(:).DEm1900}]']);
+0041   RA = cell2mat([[{star_list(:).RAh1900}]'  [{star_list(:).RAm1900}]' [{star_list(:).RAs1900}]']);
+0042   
+0043   de_sign = cell2mat([{star_list(:).DE_1900}]);
+0044   de_sign = 2*(.5-[[de_sign(:)]==<span class="string">'-'</span>]);
+0045   
+0046   decl = de_sign'.*([DE(:,1)]+[DE(:,2)]/60);
+0047   <span class="keyword">if</span> isfield(star_list,<span class="string">'DEs1900'</span>)
+0048     decl = decl+[star_list(:).DEs1900]'/3600;
+0049   <span class="keyword">end</span>
+0050   ra = RA(:,1) + RA(:,2)/60 + RA(:,3)/3600;
+0051   <span class="keyword">for</span> i = 1:length(decl),
+0052     
+0053     star_list(i).decl = decl(i);
+0054     star_list(i).ra = ra(i);
+0055     
+0056   <span class="keyword">end</span>
+0057   
+0058   star_list = rmfield(star_list,{<span class="string">'RAh1900'</span>,<span class="string">'RAm1900'</span>,<span class="string">'RAs1900'</span>,<span class="string">'DE_1900'</span>,<span class="string">'DEd1900'</span>,<span class="string">'DEm1900'</span>});
+0059   
+0060   <span class="keyword">if</span> isfield(star_list,<span class="string">'DEs1900'</span>)
+0061     star_list = rmfield(star_list,{<span class="string">'DEs1900'</span>});
+0062   <span class="keyword">end</span>
+0063   
+0064 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

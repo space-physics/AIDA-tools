@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of Torsten_test_obs</title>
+  <meta name="keywords" content="Torsten_test_obs">
+  <meta name="description" content="Torsten_test_obs - make Observation struct from file-struct">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Fits_tools --><!-- menu.html File2obs -->
+<h1>Torsten_test_obs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Torsten_test_obs - make Observation struct from file-struct</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function obs = Torsten_test_obs(filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Torsten_test_obs - make Observation struct from file-struct
+   Everything hard-coded, except it takes the observation-time
+   from the date of the file creation.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function obs = Torsten_test_obs(filename)</a>
+0002 <span class="comment">% Torsten_test_obs - make Observation struct from file-struct</span>
+0003 <span class="comment">%   Everything hard-coded, except it takes the observation-time</span>
+0004 <span class="comment">%   from the date of the file creation.</span>
+0005 <span class="comment">%</span>
+0006 
+0007 file = dir(filename);
+0008 obs.time = file.date;<span class="comment">%[2007 3 16 19 32 67];</span>
+0009 obs.pos = [69.5 18.0];
+0010 obs.longlat = [69.5 18.0];
+0011 obs.station = 0;
+0012 obs.alpha = [];
+0013 obs.beta = [];
+0014 obs.az = [0];
+0015 obs.ze = [0];
+0016 obs.camnr = [39];
+0017 obs.exptime = 2;
+0018 obs.filter = [];
+0019 obs.imreg = [];
+0020 obs.BZERO = 0;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

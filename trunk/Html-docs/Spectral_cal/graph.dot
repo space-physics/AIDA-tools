@@ -1,0 +1,54 @@
+/* Created by mdot for Matlab */
+digraph m2html {
+  Spec_cal_jobb_Miracle -> spc_cal_bad_intens;
+  Spec_cal_jobb_Miracle -> spc_cal_bad_times;
+  Spec_cal_jobb_Miracle -> spc_make_theta;
+  Spec_cal_jobb_Miracle -> spc_save_bad_intens;
+  Spec_cal_jobb_Miracle -> spc_save_bad_times;
+  Spec_cal_jobb_Miracle -> spc_scan_for_stars;
+  Spec_cal_jobb_Miracle -> spc_sens_hist;
+  Spec_cal_jobb_Miracle -> spc_sort_out_the_bad_ones;
+  Spec_cal_jobb_Miracle -> spc_spectral_int_conv;
+  Spec_cal_jobb_Miracle -> spc_typical_ops;
+  Spec_cal_jobb_exmplCell -> check_scan_for_stars;
+  Spec_cal_jobb_exmplCell -> spc_cal_bad_intens;
+  Spec_cal_jobb_exmplCell -> spc_cal_bad_times;
+  Spec_cal_jobb_exmplCell -> spc_make_theta;
+  Spec_cal_jobb_exmplCell -> spc_save_bad_intens;
+  Spec_cal_jobb_exmplCell -> spc_save_bad_times;
+  Spec_cal_jobb_exmplCell -> spc_save_stars;
+  Spec_cal_jobb_exmplCell -> spc_scan_for_stars;
+  Spec_cal_jobb_exmplCell -> spc_sens_hist;
+  Spec_cal_jobb_exmplCell -> spc_sens_pdf;
+  Spec_cal_jobb_exmplCell -> spc_sort_out_the_bad_ones;
+  Spec_cal_jobb_exmplCell -> spc_spectral_int_conv;
+  Spec_cal_jobb_exmplCell -> spc_typical_ops;
+  check_scan_for_stars -> star_int_model;
+  spc_sort_out_the_bad_ones -> spec_cal_good_xy;
+
+  Contents [URL="Contents.html"];
+  Spec_cal_jobb_Miracle [URL="Spec_cal_jobb_Miracle.html"];
+  Spec_cal_jobb_exmplCell [URL="Spec_cal_jobb_exmplCell.html"];
+  atm_att_est [URL="atm_att_est.html"];
+  check_scan_for_stars [URL="check_scan_for_stars.html"];
+  pixel2pixel [URL="pixel2pixel.html"];
+  spc_cal_bad_intens [URL="spc_cal_bad_intens.html"];
+  spc_cal_bad_times [URL="spc_cal_bad_times.html"];
+  spc_chk_if_bad_times [URL="spc_chk_if_bad_times.html"];
+  spc_make_theta [URL="spc_make_theta.html"];
+  spc_save_bad_intens [URL="spc_save_bad_intens.html"];
+  spc_save_bad_times [URL="spc_save_bad_times.html"];
+  spc_save_stars [URL="spc_save_stars.html"];
+  spc_scan_for_stars [URL="spc_scan_for_stars.html"];
+  spc_sens_distr [URL="spc_sens_distr.html"];
+  spc_sens_hist [URL="spc_sens_hist.html"];
+  spc_sens_pdf [URL="spc_sens_pdf.html"];
+  spc_sort_out_the_bad_ones [URL="spc_sort_out_the_bad_ones.html"];
+  spc_spectral_filter_int_conv [URL="spc_spectral_filter_int_conv.html"];
+  spc_spectral_int_conv [URL="spc_spectral_int_conv.html"];
+  spc_spectral_int_conv2 [URL="spc_spectral_int_conv2.html"];
+  spc_typical_ops [URL="spc_typical_ops.html"];
+  spec_cal_good_xy [URL="spec_cal_good_xy.html"];
+  star_int_model [URL="star_int_model.html"];
+  star_int_search_as [URL="star_int_search_as.html"];
+}

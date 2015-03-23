@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of alis_find_data</title>
+  <meta name="keywords" content="alis_find_data">
+  <meta name="description" content="ALIS_FIND_DATA - search for ALIS data from station STN at DATE">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>alis_find_data
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ALIS_FIND_DATA - search for ALIS data from station STN at DATE</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function filenames = alis_find_data(STN,date,start_time,stop_time) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ALIS_FIND_DATA - search for ALIS data from station STN at DATE
+ taken between START_TIME and STOP_TIME. Function returns
+ FILENAMES a cell array with full filenames to the images.
+ 
+ Current BUG/FEATURE - assumes that the ALIS data are located
+ under: /home/DATA/ALIS/stdnames. Edit to set to the appropriate
+ location. 
+ 
+ Example:
+   STN = 'S';
+   Date = [1999 02 16];
+   Start_t = [16 25 0];
+   Stop_t = [18 25 0];
+   Files_Silki = alis_find_data(STN,Date,start_t,stop_t);</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function filenames = alis_find_data(STN,date,start_time,stop_time)</a>
+0002 <span class="comment">% ALIS_FIND_DATA - search for ALIS data from station STN at DATE</span>
+0003 <span class="comment">% taken between START_TIME and STOP_TIME. Function returns</span>
+0004 <span class="comment">% FILENAMES a cell array with full filenames to the images.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Current BUG/FEATURE - assumes that the ALIS data are located</span>
+0007 <span class="comment">% under: /home/DATA/ALIS/stdnames. Edit to set to the appropriate</span>
+0008 <span class="comment">% location.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% Example:</span>
+0011 <span class="comment">%   STN = 'S';</span>
+0012 <span class="comment">%   Date = [1999 02 16];</span>
+0013 <span class="comment">%   Start_t = [16 25 0];</span>
+0014 <span class="comment">%   Stop_t = [18 25 0];</span>
+0015 <span class="comment">%   Files_Silki = alis_find_data(STN,Date,start_t,stop_t);</span>
+0016 
+0017 
+0018 <span class="comment">%   Copyright © 2007 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0019 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0020 
+0021 <span class="comment">% Scan through this tree</span>
+0022 ALIS_data_dir = <span class="string">'/home/DATA/ALIS/stdnames'</span>;
+0023 
+0024 
+0025 
+0026 <span class="comment">% This is the data-naming-set</span>
+0027 stn_keys = {<span class="string">'*0K.fits'</span>,<span class="string">'*0M.fits'</span>,<span class="string">'*0S.fits'</span>,<span class="string">'*0T.fits'</span>,<span class="string">'*0A.fits'</span>,<span class="string">'*0N.fits'</span>,<span class="string">'*0O.fits'</span>,<span class="string">'*0B.fits'</span>};
+0028 <span class="comment">% For putting the output into their corresponding place</span>
+0029 keys2stnnr = [7            2         3           4         5          6          1         10];
+0030 
+0031 m_d = [31 28 31 30 31 30 31 31 30 31 30 31];
+0032 m_n = [ 1  2  3  4  5  6  7  8  9 10 11 12];
+0033 
+0034 years  = date(1);<span class="comment">%start_time(1):stop_time(1);</span>
+0035 months = date(2);<span class="comment">%start_time(2):stop_time(2);</span>
+0036 days   = date(3);<span class="comment">%start_time(3):stop_time(3);</span>
+0037 hours  = start_time(4):stop_time(4);
+0038 
+0039 <span class="comment">% Start climbing the directory tree with ALIS data.</span>
+0040 cd(ALIS_data_dir)
+0041 filenames = {};
+0042 
+0043 <span class="keyword">for</span> i_y = years,
+0044   
+0045   y_str = num2str(i_y,<span class="string">'%02d'</span>);
+0046   <span class="keyword">try</span>
+0047     cd(y_str)
+0048     <span class="keyword">for</span> i_m = months,
+0049       
+0050       m_str = num2str(i_m,<span class="string">'%02d'</span>);
+0051       <span class="keyword">try</span>
+0052         cd(m_str)
+0053         <span class="keyword">for</span> i_d = days,
+0054           
+0055           d_str = num2str(i_d,<span class="string">'%02d'</span>);
+0056           <span class="keyword">try</span>
+0057             cd(d_str)
+0058             <span class="keyword">for</span> i_h = hours,
+0059               
+0060               h_str = num2str(i_h,<span class="string">'%02d'</span>);
+0061               <span class="keyword">try</span>
+0062                 cd(h_str)
+0063                 
+0064                 files = dir([<span class="string">'*'</span>,STN,<span class="string">'.fits'</span>]);
+0065                 [i_n,i_n] = sort({files.name});
+0066                 files = files(i_n);
+0067                 i_found = 1;
+0068                 <span class="keyword">while</span> i_found &lt; length(files) &amp;&amp; str2num(files(i_found).name(1:14)) &lt; str2num(num2str(start_time,<span class="string">'%02d'</span>))
+0069                   i_found = i_found + 1;
+0070                 <span class="keyword">end</span>
+0071                 <span class="keyword">while</span>  i_found &lt; length(files) &amp;&amp; str2num(files(i_found).name(1:14)) &lt; str2num(num2str(stop_time,<span class="string">'%02d'</span>))
+0072                   <span class="comment">%filenames = {filenames{:},fullfile(ALIS_data_dir,y_str,m_str,d_str,h_str,files(i_found).name)};</span>
+0073                   filenames = [filenames,{fullfile(ALIS_data_dir,y_str,m_str,d_str,h_str,files(i_found).name)}];
+0074                   i_found = i_found + 1;
+0075                 <span class="keyword">end</span>
+0076                 
+0077                 cd(<span class="string">'..'</span>)
+0078               <span class="keyword">catch</span>
+0079               <span class="keyword">end</span>
+0080             <span class="keyword">end</span>
+0081             
+0082             cd(<span class="string">'..'</span>)
+0083           <span class="keyword">catch</span>
+0084           <span class="keyword">end</span>
+0085           
+0086         <span class="keyword">end</span>
+0087         cd(<span class="string">'..'</span>)
+0088       <span class="keyword">catch</span>
+0089       <span class="keyword">end</span>
+0090       
+0091     <span class="keyword">end</span>
+0092     cd(<span class="string">'..'</span>)
+0093   <span class="keyword">catch</span>
+0094   <span class="keyword">end</span>
+0095 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

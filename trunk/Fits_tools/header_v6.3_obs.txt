@@ -1,0 +1,9 @@
+station: SITENO  =  str2num(strtok(img_head(hindx,11:end),'/')) 0 / Station number. DEPRECIATED!                   
+site:    SITENAME=  header2site_v5(img_head(hindx,11:end))    'Ramfjordmoen'       / name of measurement site                       
+az:      AZIMUTH =  str2num(strtok(img_head(hindx,11:end),'/')) 270. / [DEG] Azimuth (Deg. east from north)
+ze:      ZENITANG=  str2num(strtok(img_head(hindx,11:end),'/')) 0.025 / [Deg] Zenith angle (Deg. from zenith)
+camnr:   INSTRUME=  str2num(img_head(hindx,16))                           'mima3 ' / name of instrument
+filter:  FPSEMI  =  10*str2num(strtok(img_head(hindx,11:end),'/')) 557.7 / [nm] observed center wavelength
+sx:      NAXIS1  =  str2num(strtok(img_head(hindx,11:end),'/'))                132
+sy:      NAXIS2  =  str2num(strtok(img_head(hindx,11:end),'/'))                128
+sz:      NAXIS3  =  str2num(strtok(img_head(hindx,11:end),'/'))                128

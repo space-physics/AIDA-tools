@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_arcpeakfinderinslice</title>
+  <meta name="keywords" content="tomo_arcpeakfinderinslice">
+  <meta name="description" content="tomo_arcpeakfinderinslice - Finds peaks of emission along [U,V]">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_arcpeakfinderinslice
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>tomo_arcpeakfinderinslice - Finds peaks of emission along [U,V]</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [I_cuts,iPeaks] = tomo_arcpeakfinderinslice(stns,U,V,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> tomo_arcpeakfinderinslice - Finds peaks of emission along [U,V]
+  TOMO_ARCPEAKFINDERINSLICE extracts image intensities along curve
+  of image projection of plane between stations and parallell to
+  B, and finds signifficantly intensive local maxima in those.
+ 
+ Calling:
+   [I_cuts,iPeaks] = tomo_arcpeakfinderinslice(stns,U,V,OPS)
+   OPS = tomo_arcpeakfinderinslice
+ Input:
+   stns - AIDA_tools tomo-station-struct. The two first elements
+          is used
+   U    - cell array with horizontal image coordinates of image
+          points of plane between STNS(1).r and STNS(2).r
+          (STNS(1).obs.xyz?) 
+   V    - cell array with vertical image coordinates, as above.
+   OPS  - options structure, default options is returned when
+          function is called without input arguments. Fields are:
+          OPS.iplot - [ 0 | {1} ] to plot the intensity cuts and
+                      the located maxima
+          OPS.ipng - [ {0} | 1 ] to save that plot as a png or not
+                     (default)
+          OPS.analys_dir - path to directory where png-files will
+                           be saved.
+          OPS.filterKernel - 1-D low-pass filter-kernel. Defaults
+                             to [0.25 0.72 1 1 1 0.75 0.25]/5
+          OPS.histlim      - 0.65 lower limit of intensity of
+          accepeted maxima, worked for one set of images...
+
+ This is a work in process...</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="tomo20080305NewBeginnings.html" class="code" title="">tomo20080305NewBeginnings</a>	TOMO20080305NewBeginnings - script for tomographing ALIS 20080305 event, 18:40 UT</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [I_cuts,iPeaks] = tomo_arcpeakfinderinslice(stns,U,V,OPS)</a>
+0002 <span class="comment">% tomo_arcpeakfinderinslice - Finds peaks of emission along [U,V]</span>
+0003 <span class="comment">%  TOMO_ARCPEAKFINDERINSLICE extracts image intensities along curve</span>
+0004 <span class="comment">%  of image projection of plane between stations and parallell to</span>
+0005 <span class="comment">%  B, and finds signifficantly intensive local maxima in those.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%   [I_cuts,iPeaks] = tomo_arcpeakfinderinslice(stns,U,V,OPS)</span>
+0009 <span class="comment">%   OPS = tomo_arcpeakfinderinslice</span>
+0010 <span class="comment">% Input:</span>
+0011 <span class="comment">%   stns - AIDA_tools tomo-station-struct. The two first elements</span>
+0012 <span class="comment">%          is used</span>
+0013 <span class="comment">%   U    - cell array with horizontal image coordinates of image</span>
+0014 <span class="comment">%          points of plane between STNS(1).r and STNS(2).r</span>
+0015 <span class="comment">%          (STNS(1).obs.xyz?)</span>
+0016 <span class="comment">%   V    - cell array with vertical image coordinates, as above.</span>
+0017 <span class="comment">%   OPS  - options structure, default options is returned when</span>
+0018 <span class="comment">%          function is called without input arguments. Fields are:</span>
+0019 <span class="comment">%          OPS.iplot - [ 0 | {1} ] to plot the intensity cuts and</span>
+0020 <span class="comment">%                      the located maxima</span>
+0021 <span class="comment">%          OPS.ipng - [ {0} | 1 ] to save that plot as a png or not</span>
+0022 <span class="comment">%                     (default)</span>
+0023 <span class="comment">%          OPS.analys_dir - path to directory where png-files will</span>
+0024 <span class="comment">%                           be saved.</span>
+0025 <span class="comment">%          OPS.filterKernel - 1-D low-pass filter-kernel. Defaults</span>
+0026 <span class="comment">%                             to [0.25 0.72 1 1 1 0.75 0.25]/5</span>
+0027 <span class="comment">%          OPS.histlim      - 0.65 lower limit of intensity of</span>
+0028 <span class="comment">%          accepeted maxima, worked for one set of images...</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">% This is a work in process...</span>
+0031 
+0032 <span class="comment">% Copyright Cyril Simon-Wedlund 2012</span>
+0033 
+0034 dOPS.iplot = 1;  <span class="comment">% plots or not</span>
+0035 dOPS.ipng = 0;   <span class="comment">%saves png files in folder</span>
+0036 dOPS.analys_dir = pwd;
+0037 dOPS.filterKernel = [.25 .75 1 1 1 .75 .25]/5;
+0038 dOPS.histlim = 0.65;
+0039 
+0040 <span class="keyword">if</span> nargin == 0
+0041   I_cuts = dOPS;
+0042   <span class="keyword">return</span>
+0043 <span class="keyword">elseif</span> nargin == 4
+0044   dOPS = <a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0045 <span class="keyword">end</span>
+0046 
+0047 
+0048 <span class="keyword">for</span> i3 = 1:length(stns),
+0049   <span class="comment">% Cuts out curve in image that is in the plane between the</span>
+0050   <span class="comment">% stations and is || B</span>
+0051   I_cuts{i3} = interp2(stns(i3).img,U{i3},V{i3});
+0052   <span class="comment">% Filters the cuts curve and smooths it out</span>
+0053   filtIntCut_stn{i3} = filtfilt(dOPS.filterKernel,1,[I_cuts{i3}]);
+0054 <span class="keyword">end</span>
+0055 
+0056 result.filtIntCut_stns = {filtIntCut_stn{1} filtIntCut_stn{2}};
+0057 
+0058 <span class="keyword">for</span> ist = 1:2,
+0059   <span class="comment">% find all peaks and their corresponding indices</span>
+0060   fc1 = result.filtIntCut_stns{ist}(1:end-2);
+0061   fc2 = result.filtIntCut_stns{ist}(2:end-1);
+0062   fc3 = result.filtIntCut_stns{ist}(3:end);
+0063   <span class="comment">% Indices to realy strict local maxima!</span>
+0064   result.iMax{ist} = find(fc1 &lt; fc2 &amp; fc2 &gt; fc3) + 1;
+0065   <span class="comment">% Makes histogram of distribution of points in a certain interval</span>
+0066   fc = result.filtIntCut_stns{ist};
+0067   [result.hist{ist},result.index{ist}] = hist(fc,linspace(min(fc),max(fc),101));
+0068   
+0069 <span class="keyword">end</span>
+0070 
+0071 <span class="comment">%percentofcdffic = interp1(hH2,cumsum(hH1)/sum(hH1),fIC1(iMax));</span>
+0072 
+0073 <span class="comment">% Filters out the remaining minor non-significant peaks.</span>
+0074 <span class="comment">% here, threshold put at 62% in the normalised ratio, so that</span>
+0075 <span class="comment">% everything that is right off the blue peak in the middle panel</span>
+0076 <span class="comment">% disappears. The cumulative distribution cumsum serves as the</span>
+0077 <span class="comment">% criterion. Filter is [1 1 1]/3.</span>
+0078 <span class="comment">% The 'unique' function to prevent that some unpopulated pixel bins</span>
+0079 <span class="comment">% might end up making the CDF flat making the cut-off tricky.</span>
+0080 <span class="keyword">for</span> ist = 1:2,
+0081   
+0082   cs = cumsum(result.hist{ist}); <span class="comment">% Cumulative histogram of pixel</span>
+0083                                  <span class="comment">% intensity distribution/intensity CDF</span>
+0084   sm = sum(result.hist{ist});    <span class="comment">% total number of pixels?</span>
+0085   [Ucs,uindx] = unique(cs);      
+0086   ind = result.index{ist};
+0087   Uind = ind(uindx);
+0088   <span class="comment">% This should be a good value for intensity threshold for image</span>
+0089   <span class="comment">% intensity to be considered &quot;arc&quot;-y in the start-guess sense.</span>
+0090   result.IntThresh(ist) = interp1(filtfilt([1,1,1]/3,1,Ucs/sm),Uind,dOPS.histlim);
+0091   
+0092 <span class="keyword">end</span>
+0093 fc = result.filtIntCut_stns{1};
+0094 ic = result.iMax{1};        
+0095 in1 = find(fc(ic) &gt; result.IntThresh(1));
+0096 fc = result.filtIntCut_stns{2};
+0097 ic = result.iMax{2};
+0098 in2 = find(fc(ic) &gt; result.IntThresh(2));
+0099 
+0100 <span class="comment">%% Here we have it!</span>
+0101 result.IndexPeaks = {in1 in2};
+0102 iPeaks = {result.iMax{1}(in1),result.iMax{2}(in2)};
+0103 
+0104 <span class="comment">% Plots of the slice and the singling out of the main auroral peaks</span>
+0105 <span class="keyword">if</span> dOPS.iplot ==1,
+0106   figure(2);
+0107   
+0108   <span class="keyword">for</span> ist=1:2,
+0109     subplot(3,2,ist);
+0110     plot(I_cuts{ist},<span class="string">'b'</span>); hold on;
+0111     fc = result.filtIntCut_stns{ist};
+0112     ic = result.iMax{ist};
+0113     ind = result.index{ist};
+0114     pks = result.hist{ist};
+0115     plot(fc,<span class="string">'r.'</span>);
+0116     plot(ic,fc(ic),<span class="string">'g*'</span>);
+0117     ii = result.IndexPeaks{ist};  <span class="comment">% find all peaks above threshold</span>
+0118     plot(ic(ii),fc(ic(ii)),<span class="string">'bo'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'b'</span>,<span class="string">'MarkerSize'</span>,9); hold off;
+0119     <span class="comment">%plot(fIC1(iMax),percentofcdffic*256,'g*');</span>
+0120     subplot(3,2,ist+2);
+0121     <span class="comment">%            bar(peaks{ist}/max(peaks{ist})); hold on;</span>
+0122     stairs(ind,pks/max(pks)); hold on;
+0123     <span class="comment">%plot([1,257],[1.1,1.1]*min(filtIntCut_stns{ist}),'k');</span>
+0124     stairs(ind,cumsum(pks)/max(cumsum(pks)),<span class="string">'r'</span>); hold off;
+0125     axis([0 max(ind) 0 1 ]);
+0126     
+0127     subplot(3,2,ist+4);
+0128     imagesc(stns(ist).img); hold on;
+0129     plot(U{ist},V{ist},<span class="string">'k'</span>);
+0130     plot(U{ist},V{ist},<span class="string">'w--'</span>); hold off;
+0131   <span class="keyword">end</span>
+0132   ha = axes(<span class="string">'Position'</span>,[0 0 1 1],<span class="string">'Xlim'</span>,[0,1],<span class="string">'Ylim'</span>,[0 1],<span class="keyword">...</span>
+0133             <span class="string">'Box'</span>,<span class="string">'off'</span>,<span class="string">'Visible'</span>,<span class="string">'off'</span>,<span class="string">'Units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+0134             <span class="string">'clipping'</span>,<span class="string">'off'</span>);
+0135   text(0.5,1,sprintf(<span class="string">'ALIS image cuts %dA %dh%dm%ds'</span>,<span class="keyword">...</span>
+0136                      stns(1).obs.filter,stns(1).obs.time(4:end)),<span class="keyword">...</span>
+0137        <span class="string">'HorizontalAlignment'</span>,<span class="string">'center'</span>,<span class="keyword">...</span>
+0138        <span class="string">'VerticalAlignment'</span>,<span class="string">'top'</span>,<span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+0139   <span class="keyword">if</span> dOPS.ipng == 1,
+0140     cd(dOPS.analys_dir);
+0141     print(<span class="string">'-dpng'</span>,[<span class="string">'Cuts_peaks_'</span>,sprintf(<span class="string">'%dA_%dh%dm%ds'</span>,<span class="keyword">...</span>
+0142                                          stns(1).obs.filter,stns(1).obs.time(4:end)),<span class="string">'.png'</span>]);
+0143   <span class="keyword">end</span>
+0144 <span class="keyword">end</span>
+0145</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

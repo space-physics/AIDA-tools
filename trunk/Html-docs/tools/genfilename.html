@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of genfilename</title>
+  <meta name="keywords" content="genfilename">
+  <meta name="description" content="GENFILENAME - generates starcal formated filenames">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>genfilename
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>GENFILENAME - generates starcal formated filenames</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function filename = genfilename(SkMp, n) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> GENFILENAME - generates starcal formated filenames
+  either according to ALIS or Miracle standards. This function
+  generates a filename with full path with a station identifier at
+  the beginning. For ALIS that is the single character station
+  identifier [ABKNOST], for Miracle the three character
+  identifier. If the filename belongs to an ALIS or a Miracle
+  station is determined from the SkMp.obs.station
+  number. Filenames for saving optical parameters (.acc),
+  temporary parameters - identified stars, optpar (_param.mat) or
+  error parameters (_error.mat) can be generated.
+  
+ SYNOPSIS
+   filename = genfilename(SkMp, n)
+
+ DESCRIPTION
+ input:
+   SkMp = skymap
+   n = mode number
+     valid values:
+     1 - acc
+     2 - preliminary optical parameters &amp; identified stars
+     3 - error file
+
+ output:
+   filename - generated filename</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Starcal/loaderrordata.html" class="code" title="function [SkMp] = loaderrordata(SkMp)">loaderrordata</a>	LOADERRORDATA - loads error data</li><li><a href="../Starcal/loadparam.html" class="code" title="function SkMp = loadparam(SkMp, model, stnn)">loadparam</a>	LOADPARAM - loads parameters for lens model tests and</li><li><a href="../Starcal/saveacc.html" class="code" title="function saveok = saveacc(SkMp)">saveacc</a>	SAVEACC - save optical parameters as ACC-file</li><li><a href="../Starcal/saveerrordata.html" class="code" title="function  [SkMp] = saveerrordata(SkMp)">saveerrordata</a>	SAVEERRORDATA - saves error data</li><li><a href="../Starcal/saveoptident.html" class="code" title="function err = saveoptident(SkMp)">saveoptident</a>	SAVEOPTIDENT - writes preliminary optical parameters and identified stars</li><li><a href="../Starcal/stargui.html" class="code" title="">stargui</a>	STARGUI - sets up the GUI for starcal</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function filename = genfilename(SkMp, n)</a>
+0002 <span class="comment">% GENFILENAME - generates starcal formated filenames</span>
+0003 <span class="comment">%  either according to ALIS or Miracle standards. This function</span>
+0004 <span class="comment">%  generates a filename with full path with a station identifier at</span>
+0005 <span class="comment">%  the beginning. For ALIS that is the single character station</span>
+0006 <span class="comment">%  identifier [ABKNOST], for Miracle the three character</span>
+0007 <span class="comment">%  identifier. If the filename belongs to an ALIS or a Miracle</span>
+0008 <span class="comment">%  station is determined from the SkMp.obs.station</span>
+0009 <span class="comment">%  number. Filenames for saving optical parameters (.acc),</span>
+0010 <span class="comment">%  temporary parameters - identified stars, optpar (_param.mat) or</span>
+0011 <span class="comment">%  error parameters (_error.mat) can be generated.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% SYNOPSIS</span>
+0014 <span class="comment">%   filename = genfilename(SkMp, n)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% DESCRIPTION</span>
+0017 <span class="comment">% input:</span>
+0018 <span class="comment">%   SkMp = skymap</span>
+0019 <span class="comment">%   n = mode number</span>
+0020 <span class="comment">%     valid values:</span>
+0021 <span class="comment">%     1 - acc</span>
+0022 <span class="comment">%     2 - preliminary optical parameters &amp; identified stars</span>
+0023 <span class="comment">%     3 - error file</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">% output:</span>
+0026 <span class="comment">%   filename - generated filename</span>
+0027 <span class="comment">%</span>
+0028 
+0029 <span class="comment">% Copyright � M V</span>
+0030 
+0031 <span class="comment">% Separate the filename:</span>
+0032 [fdir,fname,fextenstion] = fileparts(SkMp.obs.filename);
+0033 
+0034 <span class="comment">% Determine the station identifier, and set it first in the</span>
+0035 <span class="comment">% filename:</span>
+0036 FilenameWithStationFirst = fname;
+0037 <span class="keyword">if</span> isfield(SkMp,<span class="string">'obs'</span>)
+0038   <span class="keyword">if</span> ( isfield(SkMp.obs,<span class="string">'station'</span>) &amp; <span class="keyword">...</span>
+0039        0 &lt; SkMp.obs.station &amp; SkMp.obs.station &lt; 20 )
+0040     <span class="comment">% ... for ALIS version the station identifier is found as the</span>
+0041     <span class="comment">% last character in the filename (excluding the extensions)</span>
+0042     FilenameWithStationFirst = [fname(end), fname(1:end-1)];
+0043     FilenameWithStationFirst = SkMp.obs.filename;
+0044   <span class="keyword">elseif</span> ( isfield(SkMp.obs,<span class="string">'station'</span>) &amp; <span class="keyword">...</span>
+0045        700 &lt; SkMp.obs.station &amp; SkMp.obs.station &lt; 800 )
+0046     <span class="comment">% For Miracle version the station identifier is found as the</span>
+0047     <span class="comment">% First 3 character in the filename</span>
+0048     stn = fname(1:3);
+0049     FilenameWithStationFirst = [stn, <span class="string">'_'</span>, fname(4:end)];
+0050   <span class="keyword">else</span>
+0051     <span class="comment">% Here the function can be extended for other naming conventions:</span>
+0052   <span class="keyword">end</span>
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="comment">% Attach the selected ending+extension:</span>
+0056 <span class="keyword">switch</span>(n)
+0057  <span class="keyword">case</span> 1
+0058   <span class="comment">% Filename for saving optical parameters in .acc format:</span>
+0059   fstr = [FilenameWithStationFirst, <span class="string">'.acc'</span>];
+0060  <span class="keyword">case</span> 2
+0061   <span class="comment">% Filename for saving identified stars and optical parameters in</span>
+0062   <span class="comment">% .mat format:</span>
+0063   fstr = [FilenameWithStationFirst, <span class="string">'_param.mat'</span>];
+0064  <span class="keyword">case</span> 3
+0065   <span class="comment">% Filename for saving error parameters in .mat format:</span>
+0066   fstr = [FilenameWithStationFirst, <span class="string">'_error.mat'</span>];
+0067  <span class="keyword">otherwise</span>
+0068   <span class="comment">% Here to things can be extended if needed:</span>
+0069   fstr = [FilenameWithStationFirst];
+0070 <span class="keyword">end</span>
+0071 
+0072 <span class="comment">% Set the path of the file to the desired out-put directory:</span>
+0073 <span class="keyword">if</span> isfield(SkMp,<span class="string">'StarCalResDir'</span>)
+0074   filename = fullfile(SkMp.StarCalResDir,fstr);
+0075 <span class="keyword">else</span>
+0076   filename = fullfile(fstr);
+0077 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

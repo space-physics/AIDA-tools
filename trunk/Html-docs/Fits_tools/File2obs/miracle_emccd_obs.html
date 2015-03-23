@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of miracle_emccd_obs</title>
+  <meta name="keywords" content="miracle_emccd_obs">
+  <meta name="description" content="MIRACLE_EMCCD_OBS - build obs-struct for MIRACLE eMCCD images">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Fits_tools --><!-- menu.html File2obs -->
+<h1>miracle_emccd_obs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>MIRACLE_EMCCD_OBS - build obs-struct for MIRACLE eMCCD images</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [obs]=miracle_emccd_obs(h) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MIRACLE_EMCCD_OBS - build obs-struct for MIRACLE eMCCD images</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Fits_tools/station_reader.html" class="code" title="function [long,lat,alts,StnNames,stnNR] = station_reader()">station_reader</a>	STATION_READER - collects station number, name, long, lat</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Fits_tools/read_miracle.html" class="code" title="function [d,h,o] = read_miracle(filename)">read_miracle</a>	READ_miracle - reads MIRACLE ASC jpg or png images</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [obs]=miracle_emccd_obs(h)</a>
+0002 <span class="comment">% MIRACLE_EMCCD_OBS - build obs-struct for MIRACLE eMCCD images</span>
+0003 
+0004 <span class="comment">%Build struct header.keyword='value' (NB: strings)</span>
+0005 <span class="comment">%In this way sorting and searching can be avoided.</span>
+0006 vals = {h{:,2}};
+0007 keywords = {h{:,1}};
+0008 <span class="comment">%workaround: no &quot;operators&quot; or brackets allowed in struct field names</span>
+0009 keywords = strrep(keywords,<span class="string">'('</span>,<span class="string">''</span>);
+0010 keywords = strrep(keywords,<span class="string">')'</span>,<span class="string">''</span>);
+0011 keywords = strrep(keywords,<span class="string">'-'</span>,<span class="string">''</span>);
+0012 header = cell2struct(vals,keywords,2);
+0013 
+0014 <span class="comment">%Time: array [yyyy,mo,dd,hh,mm,ss.ms], average of start and stop times</span>
+0015 start = datenum([header.Date,header.TimeStart1],<span class="string">'yyyy-mm-ddHH:MM:SS.FFF'</span>);
+0016 <span class="keyword">if</span> ~isempty(str2num(header.TimeStop2))
+0017   stop = datenum([header.Date,header.TimeStop2],<span class="string">'yyyy-mm-ddHH:MM:SS.FFF'</span>);
+0018 <span class="keyword">else</span>
+0019   stop = datenum([header.Date,header.TimeStop1],<span class="string">'yyyy-mm-ddHH:MM:SS.FFF'</span>);
+0020 <span class="keyword">end</span>
+0021 obs.time = str2num(datestr(mean([start stop]),<span class="string">'yyyy mm dd HH MM SS.FFF'</span>));
+0022 
+0023 <span class="comment">%remember, brackets were stripped, so it's Filternm, not Filter(nm)</span>
+0024 obs.filter = header.Filternm; <span class="comment">%character string!</span>
+0025 <span class="comment">%Exposure time, from string (n*BaseExp)</span>
+0026 <span class="comment">%Likewise Exposures, not Exposure(s)</span>
+0027 obs.exptime = eval(header.Exposures); <span class="comment">%value!</span>
+0028 
+0029 
+0030 <span class="comment">%station and camera number - for now both numbers are the same</span>
+0031 <span class="comment">%NB:KIL location changed fall 2009 -&gt; station number changes from 740 to 741</span>
+0032 stn_name = {<span class="string">'SOD'</span>,<span class="string">'SGO'</span>,<span class="string">'MUO'</span>,<span class="string">'ABK'</span>,<span class="string">'KIL1'</span>,<span class="string">'KIL2'</span>,<span class="string">'KEV'</span>,<span class="string">'LYR'</span>,<span class="string">'NAL'</span>};
+0033 stn_num = [710,711,720,730,740,741,750,760,770];
+0034 
+0035 sn=header.Station;
+0036 
+0037 <span class="comment">%Kilpis station move</span>
+0038 <span class="keyword">if</span> strcmp(sn,<span class="string">'KIL'</span>) &amp; obs.time(1) == 2009 &amp; obs.time(2) &lt; 6
+0039   sn = <span class="string">'KIL1'</span>;
+0040 <span class="keyword">elseif</span> strcmp(sn,<span class="string">'KIL'</span>) &amp; obs.time(1) ==2009 &amp; obs.time(2) &gt; 8
+0041   sn = <span class="string">'KIL2'</span>;
+0042 <span class="keyword">end</span>
+0043 
+0044 isn = strcmp(sn,stn_name);
+0045 obs.station = stn_num(isn);
+0046 obs.camnr = stn_num(isn); 
+0047 
+0048 <span class="comment">%Read in the .stations files (Reports full station names)</span>
+0049 [long,lat,alts,StnNames,stnNR] = <a href="../../Fits_tools/station_reader.html" class="code" title="function [long,lat,alts,StnNames,stnNR] = station_reader()">station_reader</a>();
+0050 
+0051 isn = find(stnNR == obs.station);
+0052 
+0053 obs.longlat = [long(isn) lat(isn)];
+0054 obs.pos = [long(isn) lat(isn)];
+0055 
+0056 obs.beta = [];
+0057 obs.alfa = [];
+0058 <span class="comment">%Could search for usual rotation angles here as well...</span>
+0059 obs.az = 0.;
+0060 obs.ze = 0.;
+0061 
+0062 <span class="comment">%Guess optical parameters: ASC no rotations</span>
+0063 obs.optpar = [0.25 -0.25 0 0 0 0 0 0.5];
+0064 obs.optmod = 2;
+0065 <span class="comment">%%%%</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

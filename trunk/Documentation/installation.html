@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>What to do next! not: What to do next?</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+  </head>
+
+  <body class="section-1" bgcolor="#FFFFF0">
+    <ul id="menu">
+      <li id="nav-1"><a href="../Documentation/index.html">AIDA-home</a>
+	<ul id="subnav-1">
+	  <li><a href="index.html#overview">Overview</a></li>
+	  <li><a href="installation.html">Installation</a></li>
+	  <li><a href="getting-started.html">Getting started</a></li>
+	  <li><a href="intros.html">Introductions</a></li>
+	  <li><a href="index.html#links">Links</a></li>
+	</ul>
+      </li>
+      <li id="nav-2"><a href="../Documentation/intros.html">Image analysis (introductions)</a>
+	<ul id="subnav-2">
+	  <li><a href="BBH.pdf">Tutorial</a></li>
+	  <li><a href="optics.html">Camera</a></li>
+	  <li><a href="starcal.html">Starcal</a></li>
+	  <li><a href="Skymap/index.html">Skymap</a></li>
+	</ul>
+      </li>
+      <li id="nav-3"><a href="../Html-exmpls/index.html">Examples</a>
+	<ul id="subnav-3">
+	  <li><a href="#imgs-ex">Imgtools</a></li>
+	  <li><a href="#tomo">Tomography</a></li>
+	  <li><a href="#alis">ALIS</a></li>
+	  <li><a href="#links">Links</a></li>
+	</ul>
+      </li>
+      <li id="nav-4"><a href="../Html-docs/index.html">Matlab-src-tree</a>
+      </li>
+    </ul>
+    <div id="contents">
+      <h1>Installation of Auroral Image Data Analysis tools</h1>
+      <p>
+	To install it all you need to do is to:
+      <ul>
+	<li>a) Unpack it in the directory where you have your matlab files. (This
+	  should be different from the matlab installation
+	  directory. Prefereably in a directory "matlab" in your home
+	  directory.)
+	  <pre>
+ > tar -xzvf AIDA-###.tgz
+	  </pre>
+	  <a href="#AIDA-by-svn">OR if you want the last svn revision...</a>
+	
+	  <li>b) copy AIDA_startup from AIDA_tools/ to your matlab
+	  directory. By putting  "startup files in a ~/matlab
+	  directory they always are in the matlab path (where matlab
+	  automatically looks for functions and scripts), this makes
+	  it possible to add the necessary paths to AIDA_tools from
+	  wherever you start matlab, be it the home directory, or any
+	  data directory. 
+	
+	  <li>c) In the AIDA_startup.m copy, edit the third line:
+	  <pre>
+ AIDA_root = fullfile('/home','bjorn','matlab');
+	  </pre>
+	  For those working in Unix-like OSes you should just change the
+	  directories to point to where you have your matlab directory (I
+	  obviously have it in /home/bjorn/matlab/). For those that work under
+	  non-unix OSes I think that you would have to modify the '/home' part
+	  above - but I have no such experience, so I cant help out.
+      </ul>
+      <p>
+	IMPORTANT NOTE: You should not install or write matlab-files to the
+	directories that hold matlab itself (matlabroot). Matlab keeps track
+	of which functions needs to be reread, and the files under the
+	matlabroot are assumed to be updated only when the matlab version
+	changes. Thus you realy should have your own matlab directory where
+	you have the matlab files related to your own projects.
+      </p>
+      <h2> "STARTING" AIDA_TOOLS</h2>
+	To start using functions from AIDA-tools you need to make sure
+	that the paths to the AIDA-toold directories is added to the
+	matlab path. To do this just run AIDA_startup by simply
+	typing:
+	<pre>
+ >> AIDA_startup
+      </pre>
+      at the matlab command line prompt. This will set all paths in
+      the right order, without any obnoxious questions or troubles. If it
+      works as intended it will also adjust the setup according to which matlab
+      version it is running in ( at least 6.X and 7.X) - some function calls are
+      modified between those releases.
+      <h2>Requirements</h2>
+      AIDA-tools require a working matlab installation, it benefits
+      from the image processing toolbox and the signal processing
+      toolbox for some filtering functions (medfilt2.m, and
+      medfilt1.m) and blockproc.m. There are also a possibility that
+      dependencies on other toolboxes have penetrated into the code,
+      but I have not heard anything about that. AIDA-tools work best
+      under more recent versions of matlab (7.x) but it has been run
+      without flaws in matlab 6.5 and 6.2. Originaly AIDA-tools was
+      developed on matlab 4.2 and 5.x. Most functions in AIDA-tools
+      should work also in Ocatave, except the "Starcalibration"
+      graphical user interface.
+      
+      <h2>Modifications</h2>
+      When you realize that some function in AIDA-tools needs to be
+      modified/extended/changed to suit your needs the best way to go
+      about it is to copy the file to the
+      <strong>MyAIDA</strong>-directory and modify that copy. The
+      <strong>MyAIDA</strong>-directory is before the rest of the
+      AIDA-tools directories in the matlab path, therefore matlab will
+      find and use the edited file. The original copy of the function
+      will still reside in its original location in case you'd need to
+      revert to that. Also, when installing a newer version of
+      AIDA-tools the edited version will survive without being
+      overwritten. 
+      <h3>SVN-installation</h3>
+      <a name="AIDA-by-svn"></a>If you want the latest svn
+      revision (and have a svn client installed) 
+      <pre>
+ > svn co "https://aniara.irf.se/svn/AIDA_tools/trunk" AIDA_tools
+      </pre>
+      If you are asked about a self-signed certificate, accept it permanetly.<br>
+      <ul>
+	<li>Q: What is svn? 
+	<li>A: See <a href="http://svnbook.red-bean.com">http://svnbook.red-bean.com</a>
+	<li>Q: How do I get a svn client?
+	<li>A: svn clients for various operating systems can be found here<br>
+	  <a href="http://subversion.apache.org/packages.html">http://subversion.apache.org/packages.html</a> 
+	  but are usually installed on decent computers.
+	  <li>Q: I changed AIDA_tools and wish to commit my changes?<br>
+	  <li>A<ol>
+	    <li>Obtain a username, a password for the svn repository at 
+	      <a href="https:aniara.irf.se/svn">https:aniara.irf.se/svn</a> (contact <a href="mailto:urban.brandstrom@irf.se">urban.brandstrom@irf.se</a>)
+	      You also need at least a very basic knowledge of svn.
+	    <li>from the AIDA_tools directory
+	      <pre>
+ > svn commit -m "what you did and why"
+	      </pre>
+	      you will be asked for password
+	      
+	      should your username be different, try this instead:
+<pre>
+ > svn --username foo commit -m "what you did and why"
+</pre>
+
+      </p>
+    </div>
+    <address><a href="mailto:bjorn@irf.se">Bj&ouml;rn Gustavsson</a></address>
+    <!-- Created: Tue Apr  9 22:46:13 JST 2002 -->
+    <!-- hhmts start -->Last modified: Mon Apr 15 00:20:18 CEST 2013 <!-- hhmts end -->
+  </body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of I3d_p_dI3D2</title>
+  <meta name="keywords" content="I3d_p_dI3D2">
+  <meta name="description" content="I3d_p_dI3D2 - Integration of continuity equation with sources">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html I3D -->
+<h1>I3d_p_dI3D2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>I3d_p_dI3D2 - Integration of continuity equation with sources</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [I3D] = I3d_p_dI3D2(var_pars,indx_v_p,fix_par,X,Y,Z,ds,dt,tau,I3d,dI3d,convection_m,conv_pars) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> I3d_p_dI3D2 - Integration of continuity equation with sources
+ loss-rates, drifts and diffusion, a pseudo-analytical scheme is
+ used. This version models convection in a mode selected with the
+ convection_model input parameter.
+ 
+ Calling: 
+   [I3D] = I3d_p_dI3D2(var_pars ,indx_v_p,fix_par,X,Y,Z,dt,tau,I3d,dI3d,convection_model)
+ Input:
+  var_pars - free parameters for the convection, depending on the
+             convection model the parameterization is different
+  indx_v_p - the index for free parameters, 
+  fix_par - the fixed parameters for convection, fix_par(1) is a
+         diffusion coefficient, the other parameters depend on the
+         convection model, see below.
+  X - spatial position of 3-D blobbs in first dimension [NxMxn]
+  Y - spatial position of 3-D blobbs in second dimension [NxMxn]
+  Z - spatial position of 3-D blobbs in third dimension [NxMxn]
+  dt - time step to integrate the continuity equation over, (s)
+  tau - lifetime of the species, same sized as X, Y, Z, (s)
+  I3d - concentration of speices at the beginning of the
+        current integration interval, at time t, same size as tau
+  dI3d - production of species in the inteval [t, t+dt], same size
+         as tau.
+  convection_model - I3d_p_dI3D2 can calculate convection in three
+                     different modes:
+  1 - one constant convection in the entire volume, arbitrary wind
+      direction. fix_par(2:4) = [vx,vy,vz]
+  2 - 2 regions separated by plane (parallel with e_z) with one
+      constant drift in each region || to plane of
+      separation. fix_par(2:5) = [phi,l,v1,v2], where:
+      phi - azimuth angle of the normal to the separating plane,
+      l - the shortest distance from the origin to the separating
+      plane ([X,Y]*e_n(phi) == l)
+      v1 - magnitude of convection on side where e_n*[X Y] &lt;= l
+      v2 - magnitude of convection on side where e_n*[X Y] &gt; l
+  3 - 2 regions separated by plane (parallel with e_z) with one
+      drift in each region || to plane of separation whose
+      magnitude varies with the distance to the separation
+      boundary. fix_par(2:7) = [phi,l,v1,v2,dv1,dv2], where:
+      phi - azimuth angle of the normal to the separating plane,
+      l - the shortest distance from the origin to the separating
+      plane ([X,Y]*e_n(phi) == l)
+      the magnitude of convection on side where e_n*[X Y] &lt;= l is
+      v1+(l-e_n*[X,Y])*dvdl1
+      the magnitude of convection on side where e_n*[X Y] &gt;  l is
+      v2+(l-e_n*[X,Y])*dvdl2
+
+ The (var_par, indx_v_p,fix_par,... pattern makes it
+ straightforward to call the function with any number of
+ varying/variable parameters (var_par) and a complementary set of
+ fixed parameters. The paramater indx_v_p determines which
+ elements in fix_par shall be replaced with the variable
+ parameters from var_par: fix_par(indx_v_p) = var_par; It
+ obviously require that the number of elements in var_par and
+ indx_v_p be the same.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function I3D = interp3q(I_3D,dx,dy)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [I3D] = I3d_p_dI3D2(var_pars,indx_v_p,fix_par,X,Y,Z,ds,dt,tau,I3d,dI3d,convection_m,conv_pars)</a>
+0002 <span class="comment">% I3d_p_dI3D2 - Integration of continuity equation with sources</span>
+0003 <span class="comment">% loss-rates, drifts and diffusion, a pseudo-analytical scheme is</span>
+0004 <span class="comment">% used. This version models convection in a mode selected with the</span>
+0005 <span class="comment">% convection_model input parameter.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%   [I3D] = I3d_p_dI3D2(var_pars ,indx_v_p,fix_par,X,Y,Z,dt,tau,I3d,dI3d,convection_model)</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%  var_pars - free parameters for the convection, depending on the</span>
+0011 <span class="comment">%             convection model the parameterization is different</span>
+0012 <span class="comment">%  indx_v_p - the index for free parameters,</span>
+0013 <span class="comment">%  fix_par - the fixed parameters for convection, fix_par(1) is a</span>
+0014 <span class="comment">%         diffusion coefficient, the other parameters depend on the</span>
+0015 <span class="comment">%         convection model, see below.</span>
+0016 <span class="comment">%  X - spatial position of 3-D blobbs in first dimension [NxMxn]</span>
+0017 <span class="comment">%  Y - spatial position of 3-D blobbs in second dimension [NxMxn]</span>
+0018 <span class="comment">%  Z - spatial position of 3-D blobbs in third dimension [NxMxn]</span>
+0019 <span class="comment">%  dt - time step to integrate the continuity equation over, (s)</span>
+0020 <span class="comment">%  tau - lifetime of the species, same sized as X, Y, Z, (s)</span>
+0021 <span class="comment">%  I3d - concentration of speices at the beginning of the</span>
+0022 <span class="comment">%        current integration interval, at time t, same size as tau</span>
+0023 <span class="comment">%  dI3d - production of species in the inteval [t, t+dt], same size</span>
+0024 <span class="comment">%         as tau.</span>
+0025 <span class="comment">%  convection_model - I3d_p_dI3D2 can calculate convection in three</span>
+0026 <span class="comment">%                     different modes:</span>
+0027 <span class="comment">%  1 - one constant convection in the entire volume, arbitrary wind</span>
+0028 <span class="comment">%      direction. fix_par(2:4) = [vx,vy,vz]</span>
+0029 <span class="comment">%  2 - 2 regions separated by plane (parallel with e_z) with one</span>
+0030 <span class="comment">%      constant drift in each region || to plane of</span>
+0031 <span class="comment">%      separation. fix_par(2:5) = [phi,l,v1,v2], where:</span>
+0032 <span class="comment">%      phi - azimuth angle of the normal to the separating plane,</span>
+0033 <span class="comment">%      l - the shortest distance from the origin to the separating</span>
+0034 <span class="comment">%      plane ([X,Y]*e_n(phi) == l)</span>
+0035 <span class="comment">%      v1 - magnitude of convection on side where e_n*[X Y] &lt;= l</span>
+0036 <span class="comment">%      v2 - magnitude of convection on side where e_n*[X Y] &gt; l</span>
+0037 <span class="comment">%  3 - 2 regions separated by plane (parallel with e_z) with one</span>
+0038 <span class="comment">%      drift in each region || to plane of separation whose</span>
+0039 <span class="comment">%      magnitude varies with the distance to the separation</span>
+0040 <span class="comment">%      boundary. fix_par(2:7) = [phi,l,v1,v2,dv1,dv2], where:</span>
+0041 <span class="comment">%      phi - azimuth angle of the normal to the separating plane,</span>
+0042 <span class="comment">%      l - the shortest distance from the origin to the separating</span>
+0043 <span class="comment">%      plane ([X,Y]*e_n(phi) == l)</span>
+0044 <span class="comment">%      the magnitude of convection on side where e_n*[X Y] &lt;= l is</span>
+0045 <span class="comment">%      v1+(l-e_n*[X,Y])*dvdl1</span>
+0046 <span class="comment">%      the magnitude of convection on side where e_n*[X Y] &gt;  l is</span>
+0047 <span class="comment">%      v2+(l-e_n*[X,Y])*dvdl2</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">% The (var_par, indx_v_p,fix_par,... pattern makes it</span>
+0050 <span class="comment">% straightforward to call the function with any number of</span>
+0051 <span class="comment">% varying/variable parameters (var_par) and a complementary set of</span>
+0052 <span class="comment">% fixed parameters. The paramater indx_v_p determines which</span>
+0053 <span class="comment">% elements in fix_par shall be replaced with the variable</span>
+0054 <span class="comment">% parameters from var_par: fix_par(indx_v_p) = var_par; It</span>
+0055 <span class="comment">% obviously require that the number of elements in var_par and</span>
+0056 <span class="comment">% indx_v_p be the same.</span>
+0057 
+0058 
+0059 
+0060 <span class="comment">%   Copyright � 2002 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0061 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0062 
+0063 
+0064 Pars = fix_par; <span class="comment">% Set Pars to the fixed parameter array.</span>
+0065 Pars(indx_v_p) = var_pars; <span class="comment">% Overwrite the variable parameters with</span>
+0066                            <span class="comment">% var_pars.</span>
+0067 
+0068 Diff = Pars(1); <span class="comment">% Diffusion coefficient</span>
+0069 v_pars = Pars(2:end); <span class="comment">% Convection parameters.</span>
+0070 
+0071 
+0072 <span class="comment">% accounting for drift:</span>
+0073 <span class="keyword">switch</span> convection_m
+0074  <span class="keyword">case</span> 1 <span class="comment">% one constant drift in entire volume</span>
+0075   dx = v_pars(1)*dt;
+0076   dy = v_pars(2)*dt;
+0077   dz = v_pars(3)*dt;
+0078   I3D = interp3(X,Y,Z,I3d,<span class="keyword">...</span>
+0079                  X-dx,Y-dy,Z-dz);
+0080   <span class="comment">%i1 = find(~isfinite(I3D(:)));</span>
+0081   I3D(~isfinite(I3D(:))) = 0;
+0082   
+0083  <span class="keyword">case</span> 2 <span class="comment">% 2 regions separated by plane with 2 drifts || to plane of</span>
+0084         <span class="comment">% separation</span>
+0085   phi = v_pars(1);    <span class="comment">% Rotation angle of the separating plane</span>
+0086   l_sep = v_pars(2);  <span class="comment">% Shortest distance to plane from origin.</span>
+0087   v1 = v_pars(3);     <span class="comment">% convection velocity on side &lt;=</span>
+0088   v2 = v_pars(4);     <span class="comment">% convection velocity on side &gt;</span>
+0089   
+0090   e_sep = [cos(phi),sin(phi)]; <span class="comment">% unit vector for plane normal</span>
+0091   e_v   = [sin(phi),-cos(phi)];<span class="comment">% unit vector of convection</span>
+0092   l = e_sep(1)*X + e_sep(2)*Y; <span class="comment">% r dot e_n</span>
+0093   
+0094   <span class="comment">% I3D Convected with v1 on one side + I3D convected with v2 on</span>
+0095   <span class="comment">% other side.</span>
+0096   <span class="comment">%I3D = interp3(X,Y,Z,permute(I3d,[2 1 3]),...</span>
+0097   <span class="comment">%              X-v1*dt*e_v(1),Y-v1*dt*(e_v(2)),Z) .* (l &lt;= l_sep) ...</span>
+0098   <span class="comment">%      + ...</span>
+0099   <span class="comment">%      interp3(X,Y,Z,permute(I3d,[2 1 3]),...</span>
+0100   <span class="comment">%              X-v2*dt*e_v(1),Y-v2*dt*(e_v(2)),Z) .* (l &gt; l_sep);</span>
+0101   I3D = <a href="#_sub1" class="code" title="subfunction I3D = interp3q(I_3D,dx,dy)">interp3q</a>(I3d,<span class="keyword">...</span>
+0102                  v1*dt*e_v(1),v1*dt*(e_v(2))) .* (l &lt;= l_sep) <span class="keyword">...</span>
+0103         + <span class="keyword">...</span>
+0104         <a href="#_sub1" class="code" title="subfunction I3D = interp3q(I_3D,dx,dy)">interp3q</a>(I3d,<span class="keyword">...</span>
+0105                  v2*dt*e_v(1),v2*dt*(e_v(2))) .* (l &gt; l_sep);
+0106   
+0107  <span class="keyword">case</span> 3 <span class="comment">% 2 regions separated by plane with 2 drifts || to plane of</span>
+0108         <span class="comment">% separation whose magnitude varies with the distance to</span>
+0109         <span class="comment">% the separation boundary</span>
+0110   phi = v_pars(1);   <span class="comment">% Rotation angle of the separating plane</span>
+0111   l_sep = v_pars(2); <span class="comment">% Shortest distance to plane from origin.</span>
+0112   v1 = v_pars(3);    <span class="comment">% convection velocity constant on side &lt;=</span>
+0113   v2 = v_pars(4);    <span class="comment">% convection velocity constant on side &gt;</span>
+0114   dvdl1 = v_pars(5); <span class="comment">% increment in convection velocity on side &lt;=</span>
+0115   dvdl2 = v_pars(6); <span class="comment">% increment in convection velocity on side &gt;</span>
+0116   
+0117   e_sep = [cos(phi),sin(phi)]; <span class="comment">% unit vector for plane normal</span>
+0118   e_v   = [sin(phi),-cos(phi)];<span class="comment">% unit vector of convection</span>
+0119   l = e_sep(1)*X + e_sep(2)*Y; <span class="comment">% r dot e_n</span>
+0120   dl = l - l_sep;              <span class="comment">% Distance from separating plane.</span>
+0121   disp([(v1+dl*dvdl1)*dt*e_v(1) (v1+dl*dvdl1)*dt*e_v(2)])
+0122   disp([(v2+dl*dvdl2)*dt*e_v(1) (v2+dl*dvdl2)*dt*e_v(2)])
+0123   
+0124   <span class="comment">% I3D Convected with v1+dl*dvdl1 on one side + I3D convected with</span>
+0125   <span class="comment">% v2 + dl*dvdl2 on other side.</span>
+0126   I3D = interp3(X,Y,Z,I3d,<span class="keyword">...</span>
+0127                 X-(v1+dl*dvdl1)*dt*e_v(1),Y-(v1+dl*dvdl1)*dt*e_v(2),Z) .* (l &lt;= l_sep) <span class="keyword">...</span>
+0128         + <span class="keyword">...</span>
+0129         interp3(X,Y,Z,I3d,<span class="keyword">...</span>
+0130                 X-(v2+dl*dvdl2)*dt*e_v(1),Y-(v2+dl*dvdl2)*dt*e_v(2),Z) .* (l &gt; l_sep);
+0131 
+0132  <span class="keyword">case</span> 4 <span class="comment">% 2 regions separated by plane with 2 drifts || to plane of</span>
+0133         <span class="comment">% separation and one drift perpendicular</span>
+0134   phi = v_pars(1);    <span class="comment">% Rotation angle of the separating plane</span>
+0135   l_sep = v_pars(2);  <span class="comment">% Shortest distance to plane from origin.</span>
+0136   v1 = v_pars(3);     <span class="comment">% convection velocity on side &lt;=</span>
+0137   v2 = v_pars(4);     <span class="comment">% convection velocity on side &gt;</span>
+0138   v_perp = v_pars(5); <span class="comment">% convection velocity perpendicular to plane</span>
+0139   
+0140   e_sep = [cos(phi),sin(phi)]; <span class="comment">% unit vector for plane normal</span>
+0141   e_v   = [sin(phi),-cos(phi)];<span class="comment">% unit vector of convection</span>
+0142   l = e_sep(1)*X*ds + e_sep(2)*Y*ds; <span class="comment">% r dot e_n</span>
+0143   
+0144   <span class="comment">% I3D Convected with v1 on one side + I3D convected with v2 on</span>
+0145   <span class="comment">% other side.</span>
+0146   <span class="comment">%I3D = interp3(X,Y,Z,permute(I3d,[2 1 3]),...</span>
+0147   <span class="comment">%              X-v1*dt*e_v(1),Y-v1*dt*(e_v(2)),Z) .* (l &lt;= l_sep) ...</span>
+0148   <span class="comment">%      + ...</span>
+0149   <span class="comment">%      interp3(X,Y,Z,permute(I3d,[2 1 3]),...</span>
+0150   <span class="comment">%              X-v2*dt*e_v(1),Y-v2*dt*(e_v(2)),Z) .* (l &gt; l_sep);</span>
+0151   I3D = <a href="#_sub1" class="code" title="subfunction I3D = interp3q(I_3D,dx,dy)">interp3q</a>(I3d,<span class="keyword">...</span>
+0152                  v1*dt*e_v(1),v1*dt*(e_v(2))) .* (l &lt;= l_sep) <span class="keyword">...</span>
+0153         + <span class="keyword">...</span>
+0154         <a href="#_sub1" class="code" title="subfunction I3D = interp3q(I_3D,dx,dy)">interp3q</a>(I3d,<span class="keyword">...</span>
+0155                  v2*dt*e_v(1),v2*dt*(e_v(2))) .* (l &gt; l_sep);
+0156   I3D = <a href="#_sub1" class="code" title="subfunction I3D = interp3q(I_3D,dx,dy)">interp3q</a>(I3D,<span class="keyword">...</span>
+0157                  v_perp*dt*e_sep(1),v_perp*dt*(e_sep(2)));
+0158   
+0159  <span class="keyword">case</span> 5 <span class="comment">% 2 regions separated by plane with 2 drifts || to plane of</span>
+0160         <span class="comment">% separation whose magnitude varies with the distance to</span>
+0161         <span class="comment">% the separation boundary</span>
+0162   phi = v_pars(1);   <span class="comment">% Rotation angle of the separating plane</span>
+0163   l_sep = v_pars(2); <span class="comment">% Shortest distance to plane from origin.</span>
+0164   v1 = v_pars(3);    <span class="comment">% convection velocity constant on side &lt;=</span>
+0165   v2 = v_pars(4);    <span class="comment">% convection velocity constant on side &gt;</span>
+0166   dvdl1 = v_pars(5); <span class="comment">% increment in convection velocity on side &lt;=</span>
+0167   dvdl2 = v_pars(6); <span class="comment">% increment in convection velocity on side &gt;</span>
+0168   v_perp = v_pars(7); <span class="comment">% convection velocity perpendicular to plane</span>
+0169   
+0170   e_sep = [cos(phi),sin(phi)]; <span class="comment">% unit vector for plane normal</span>
+0171   e_v   = [sin(phi),-cos(phi)];<span class="comment">% unit vector of convection</span>
+0172   l = e_sep(1)*X + e_sep(2)*Y; <span class="comment">% r dot e_n</span>
+0173   dl = l - l_sep;              <span class="comment">% Distance from separating plane.</span>
+0174   
+0175   <span class="comment">% I3D Convected with v1+dl*dvdl1 on one side + I3D convected with</span>
+0176   <span class="comment">% v2 + dl*dvdl2 on other side.</span>
+0177   <span class="comment">%disp([e_sep,l_sep,e_v,v1*dt,dvdl1*dt,v2*dt,dvdl2*dt,v_perp*dt])</span>
+0178   I3D = interp3(X,Y,Z,I3d,<span class="keyword">...</span>
+0179                 X-(v1+dl*dvdl1)*dt*e_v(1),Y-(v1+dl*dvdl1)*dt*e_v(2),Z) .* (l &lt;= l_sep) <span class="keyword">...</span>
+0180         + <span class="keyword">...</span>
+0181         interp3(X,Y,Z,I3d,<span class="keyword">...</span>
+0182                 X-(v2+dl*dvdl2)*dt*e_v(1),Y-(v2+dl*dvdl2)*dt*e_v(2),Z) .* (l &gt; l_sep);
+0183   
+0184   I3D = <a href="#_sub1" class="code" title="subfunction I3D = interp3q(I_3D,dx,dy)">interp3q</a>(I3D,<span class="keyword">...</span>
+0185                  v_perp*dt*e_sep(1),v_perp*dt*(e_sep(2)));
+0186  <span class="keyword">otherwise</span>
+0187   <span class="comment">%I3D = permute(I3d,[2 1 3]); % No convection at all.</span>
+0188 <span class="keyword">end</span>
+0189 <span class="comment">%I3D = permute(I3D,[2 1 3]); % Unpermute</span>
+0190 
+0191 <span class="comment">% If there is diffusion - account for diffusion</span>
+0192 <span class="keyword">if</span> Diff &gt; 0
+0193   
+0194   V_tot = sum(I3D(:)); <span class="comment">% total emission should be conserved during</span>
+0195                        <span class="comment">% diffusion so calculate total I3D before</span>
+0196 
+0197   [x,y,z] = meshgrid(-3:3,-3:3,-3:3);
+0198   <span class="comment">% Diffusion kernel, just a 3-D Gaussian...</span>
+0199   Ixyz_diff = ( 1/(pi*Diff(end)*dt)^1.5 <span class="keyword">...</span>
+0200                 *exp(-( (x).^2 + (y).^2 + (z).^2 ) <span class="keyword">...</span>
+0201            /(Diff(end)*dt) ) );
+0202   <span class="comment">% And then convolve with it</span>
+0203   I3D = convn(I3D,Ixyz_diff/sum(Ixyz_diff(:)),<span class="string">'same'</span>);
+0204   
+0205   <span class="comment">%i1 = find(~isfinite(I3D(:)));</span>
+0206   I3D(~isfinite(I3D(:))) = 0;
+0207   V_t_d = sum(I3D(:)); <span class="comment">% and calculate total I3D after diffusion</span>
+0208   
+0209   <span class="keyword">if</span> ( V_t_d &gt; 0 )
+0210     
+0211     I3D = I3D*V_tot/V_t_d; <span class="comment">% then scale to conserve total I3D</span>
+0212     
+0213   <span class="keyword">end</span>
+0214 <span class="keyword">end</span>
+0215 
+0216 <span class="comment">% accounting for decay with appropriate lifetime.</span>
+0217 It = exp(-dt./tau);
+0218 I3D = It.*I3D;
+0219 
+0220 <span class="comment">% Add the production</span>
+0221 I3D = I3D+dI3d;
+0222 
+0223 <span class="keyword">if</span> any(I3D(:)&lt;0)
+0224   keyboard
+0225 <span class="keyword">end</span>
+0226 
+0227 <a name="_sub1" href="#_subfunctions" class="code">function I3D = interp3q(I_3D,dx,dy)</a><span class="comment">%v1*dt*e_v(1),v1*dt*(e_v(2))</span>
+0228 <span class="comment">% INTERP3Q -</span>
+0229 <span class="comment">%</span>
+0230 
+0231 ix = 1:size(I_3D,2);            <span class="comment">% get x-dimension</span>
+0232 <span class="keyword">while</span> dx &lt; 0                    <span class="comment">% on left side of separatrix</span>
+0233   ix = [1,ix(1:end-1)];         
+0234   dx = dx+1;
+0235 <span class="keyword">end</span>
+0236 <span class="keyword">while</span> dx &gt; 1                    <span class="comment">% on right side of separatrix</span>
+0237   ix = [ix(2:end),ix(end)];
+0238   dx = dx-1;
+0239 <span class="keyword">end</span>
+0240 iy = 1:size(I_3D,1);            <span class="comment">% get y-dimension</span>
+0241 <span class="keyword">while</span> dy &lt; 0
+0242   iy = [1,iy(1:end-1)];
+0243   dy = dy+1;
+0244 <span class="keyword">end</span>
+0245 <span class="keyword">while</span> dy &gt; 1
+0246   iy = [iy(2:end),iy(end)];
+0247   dy = dy-1;
+0248 <span class="keyword">end</span>
+0249 
+0250 I3D = ( I_3D(iy(1:end),ix(1:end),:)   *(1-dx) + <span class="keyword">...</span>
+0251         I_3D(iy(1:end),ix([2:<span class="keyword">end</span>,end]),:) * dx ) * (1-dy) + <span class="keyword">...</span><span class="comment">     % added comma here was I_3D(iy(1:end),ix([2:end end]),:) * dx ) * (1-dy) + ...</span>
+0252       ( I_3D(iy([2:<span class="keyword">end</span>,end]),ix(1:end),:)    * (1-dx) + <span class="keyword">...</span><span class="comment">         </span>
+0253         I_3D(iy([2:<span class="keyword">end</span>,end]),ix([2:<span class="keyword">end</span>,end]),:)*dx    )   * dy;
+0254 <span class="keyword">end</span>
+0255 
+0256 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

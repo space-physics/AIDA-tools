@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_make_askdark</title>
+  <meta name="keywords" content="ASK_make_askdark">
+  <meta name="description" content="ASK_MAKE_ASKDARK - Script that creates darks or flats.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_make_askdark
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_MAKE_ASKDARK - Script that creates darks or flats.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function ASK_make_askdark(filename,flat) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_MAKE_ASKDARK - Script that creates darks or flats.
+ Default is darks, but set keyword flat to do flats.
+ filename is for example 20061020164150d1
+ The resulting dark or flat is saved in $VIDEODIR/setup/
+
+ Calling:
+   ASK_make_askdark(filename,flat)
+ Input:
+   filename - filename of dark-mega-block setup without .txt extension
+   flat     - flag to set to one for making a &quot;flat&quot; image</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>	ASK_READ_V - Read ASK image #i1 from current camera in current "mega-block"</li><li><a href="ASK_read_vs.html" class="code" title="function vs = ASK_read_vs(num,filename,quiet)">ASK_read_vs</a>	ASK_READ_VS -  the procedure to read the videoevent setup - the new version</li><li><a href="../../tools/backup1000filesversions.html" class="code" title="function [status, message] = backup1000filesversions(filename)">backup1000filesversions</a>	BACKUP1000FILESVERSIONS - Backup files to prevent overwriting them</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_enable_datadir.html" class="code" title="function ASK_enable_datadir(datadir,smartdark,flat_tromso)">ASK_enable_datadir</a>	ASK_ENABLE_DATADIR - short routine to automatically enable</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function ASK_make_askdark(filename,flat)</a>
+0002 <span class="comment">% ASK_MAKE_ASKDARK - Script that creates darks or flats.</span>
+0003 <span class="comment">% Default is darks, but set keyword flat to do flats.</span>
+0004 <span class="comment">% filename is for example 20061020164150d1</span>
+0005 <span class="comment">% The resulting dark or flat is saved in $VIDEODIR/setup/</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%   ASK_make_askdark(filename,flat)</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%   filename - filename of dark-mega-block setup without .txt extension</span>
+0011 <span class="comment">%   flat     - flag to set to one for making a &quot;flat&quot; image</span>
+0012 
+0013 <span class="comment">% Modified from add_multi.pro</span>
+0014 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0015 <span class="comment">% GPL 3.0 or later applies</span>
+0016 
+0017 <span class="keyword">global</span> vs
+0018 
+0019 <a href="ASK_read_vs.html" class="code" title="function vs = ASK_read_vs(num,filename,quiet)">ASK_read_vs</a>([],[filename,<span class="string">'.txt'</span>],0);
+0020 <span class="comment">%For darks, 100 images</span>
+0021 
+0022 a = 1;
+0023 data = zeros(vs.dimx(vs.vsel),vs.dimy(vs.vsel),vs.vnl(vs.vsel));
+0024 <span class="comment">% discarding the data from the first five seconds:</span>
+0025 <span class="comment">% changed by Sam - 04/11/10</span>
+0026 <span class="comment">% changed to discard only first four seconds as discarding five</span>
+0027 <span class="comment">% causes problems when creating flats (image 141 does not exist in</span>
+0028 <span class="comment">% mean set of images)</span>
+0029 <span class="keyword">for</span> j1 = (vs.vnf(vs.vsel) + 4/vs.vres(vs.vsel)):vs.vnstep(vs.vsel):vs.vnl(vs.vsel),
+0030   
+0031   intensity = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>( j1, <span class="string">'raw'</span>);
+0032   data(:,:,a) = intensity;
+0033   a = a + 1;
+0034   
+0035 <span class="keyword">end</span>
+0036 
+0037 discard = fix(max([0.05*a,2.0]));
+0038 filtered_mean = zeros(vs.dimy(vs.vsel),vs.dimx(vs.vsel));
+0039 
+0040 <span class="comment">% Take mean after excluding top and bottom 5% of intensities for each pixel.</span>
+0041 <span class="keyword">for</span> i1 = 1:vs.dimx(vs.vsel),
+0042   <span class="keyword">for</span> j2 = 1:vs.dimy(vs.vsel),
+0043     sorted = sort(squeeze(data(i1,j2,:)));
+0044     filtered_mean(i1,j2) = mean( sorted(discard:(end-discard+1)) );
+0045   <span class="keyword">end</span>
+0046 <span class="keyword">end</span>
+0047 <span class="keyword">if</span> nargin &gt; 1 &amp; flat
+0048   ext = <span class="string">'.flat'</span>;
+0049 <span class="keyword">else</span>
+0050   ext=<span class="string">'.dark'</span>;
+0051 <span class="keyword">end</span>
+0052 disp([<span class="string">'Now writing file: '</span>,fullfile(vs.videodir,<span class="string">'setup'</span>,[filename,ext]),<span class="string">' for background removal.'</span>])
+0053 disp([<span class="string">'Consider renaming it to: '</span>,fullfile(vs.videodir,<span class="string">'setup'</span>,[filename,lower(ext)])])
+0054 
+0055 <span class="keyword">if</span> exist(fullfile(vs.videodir,<span class="string">'setup'</span>,[filename,ext]),<span class="string">'file'</span>) == 2
+0056   [status, message] = <a href="../../tools/backup1000filesversions.html" class="code" title="function [status, message] = backup1000filesversions(filename)">backup1000filesversions</a>(fullfile(vs.videodir,<span class="string">'setup'</span>,[filename,ext]));
+0057 <span class="keyword">end</span>
+0058 
+0059 fID = fopen(fullfile(vs.videodir,<span class="string">'setup'</span>,[filename,ext]),<span class="string">'w'</span>);
+0060 fwrite(fID,filtered_mean,<span class="string">'float'</span>);
+0061 fclose(fID);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

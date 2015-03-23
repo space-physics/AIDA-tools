@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of V_em_3d</title>
+  <meta name="keywords" content="V_em_3d">
+  <meta name="description" content="V_em_3d calculate volume emission rates by C-EQ integration with interpolated-parameters">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html I3D -->
+<h1>V_em_3d
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>V_em_3d calculate volume emission rates by C-EQ integration with interpolated-parameters</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [V_em] = V_em_3d(I0_R0_DR,X,Y,Z,tau3D,T) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> V_em_3d calculate volume emission rates by C-EQ integration with interpolated-parameters
+
+ Calling:
+  [V_em] = V_em_3d(I0_R0_DR,X,Y,Z,tau3D,T)
+ 
+ See also: <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>, <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>	I3d_p_dI3D - Integration of continuity equation with sources</li><li><a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>	dI3D_multiple - multiple 3-D generalized Gaussians</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [V_em] = V_em_3d(I0_R0_DR,X,Y,Z,tau3D,T)</a>
+0002 <span class="comment">% V_em_3d calculate volume emission rates by C-EQ integration with interpolated-parameters</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  [V_em] = V_em_3d(I0_R0_DR,X,Y,Z,tau3D,T)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% See also: dI3D_multiple, I3d_p_dI3D</span>
+0008 
+0009 
+0010 <span class="comment">%   Copyright � 2002 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0011 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0012 
+0013 V_em = zeros(size(X));
+0014 
+0015 <span class="keyword">for</span> i1 = 2:size(I0_R0_DR,1),
+0016   
+0017   Iintrp = I0_R0_DR(i1,:)*.25+I0_R0_DR(i1-1,:)*.75;
+0018   dI3d = <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>(Iintrp,X,Y,Z,2.5,tau3D);
+0019   V_em = <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>(Iintrp,X,Y,Z,I0_R0_DR(1:i1-1,:),[T(i1) T(i1)+2.5], <span class="keyword">...</span>
+0020                     T(1:i1),tau3D,V_em,dI3d);
+0021 
+0022   
+0023   Iintrp = I0_R0_DR(i1,:)*.5+I0_R0_DR(i1-1,:)*.5;
+0024   dI3d = <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>(Iintrp,X,Y,Z,2.5,tau3D);
+0025   V_em = <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>(Iintrp,X,Y,Z,I0_R0_DR(1:i1-1,:),[T(i1)+2.5 T(i1)+5], <span class="keyword">...</span>
+0026                     T(1:i1),tau3D,V_em,dI3d);
+0027   <span class="comment">%nani = find(isnan(V_em(:)));</span>
+0028   <span class="comment">%V_em(nani) = 0;</span>
+0029   V_em(isnan(V_em(:))) = 0;
+0030   
+0031   Iintrp = I0_R0_DR(i1,:)*.75+I0_R0_DR(i1-1,:)*.25;
+0032   dI3d = <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>(Iintrp,X,Y,Z,2.5,tau3D);
+0033   V_em = <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>(Iintrp,X,Y,Z,I0_R0_DR(1:i1-1,:),[T(i1)+5 T(i1)+7.5], <span class="keyword">...</span>
+0034                     T(1:i1),tau3D,V_em,dI3d);
+0035   
+0036   Iintrp = I0_R0_DR(i1,:);
+0037   dI3d = <a href="dI3D_multiple.html" class="code" title="function [V_em] = dI3D_multiple(I0_r0_dr,X,Y,Z,dt,tau,mag_ze)">dI3D_multiple</a>(Iintrp,X,Y,Z,2.5,tau3D);
+0038   V_em = <a href="I3d_p_dI3D.html" class="code" title="function [V_em] = I3d_p_dI3D(I0_r0_dr,X,Y,Z,I0_R0_DR,t_in,T,tau,I3d,dI3d)">I3d_p_dI3D</a>(Iintrp,X,Y,Z,I0_R0_DR(1:i1-1,:),[T(i1)+7.5 T(i1+1)], <span class="keyword">...</span>
+0039                     T(1:i1),tau3D,V_em,dI3d);
+0040   
+0041 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,9 @@
+Instalation.
+
+Simple. Really. 
+
+1. Put the tar file to somwhere you want your mat-files, like ~/matlab
+2. tar -xvf Skymap.tar
+3. Add the Skymap directory to your matlab-path.
+4. Set execute permission for /stars/getsp
+5. Done

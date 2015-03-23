@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sc_sizing</title>
+  <meta name="keywords" content="sc_sizing">
+  <meta name="description" content="SC_SIZING - calculates the approximate size in the image plane">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>sc_sizing
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SC_SIZING - calculates the approximate size in the image plane</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [vs] = sc_sizing(u,v,vsize) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SC_SIZING - calculates the approximate size in the image plane
+ of the projection of base functions in a simple-cubic grid
+ U and V are the image coordinates of the 3-D grid. VSIZE are the
+ size of the original 3-D grid.
+ 
+ Calling:
+ [vs] = sc_sizing(u,v,vsize)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">camera_set_up_sc</a>	CAMERA_SET_UP_SC - Calculates the projection matrix from 3-D simple cubic grid</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [vs] = sc_sizing(u,v,vsize)</a>
+0002 <span class="comment">% SC_SIZING - calculates the approximate size in the image plane</span>
+0003 <span class="comment">% of the projection of base functions in a simple-cubic grid</span>
+0004 <span class="comment">% U and V are the image coordinates of the 3-D grid. VSIZE are the</span>
+0005 <span class="comment">% size of the original 3-D grid.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">% [vs] = sc_sizing(u,v,vsize)</span>
+0009 
+0010 
+0011 <span class="comment">%   Copyright � 2001 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0012 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0013 
+0014 u3 = reshape(u,vsize);
+0015 v3 = reshape(v,vsize);
+0016 
+0017 [v1,v2,v3] = gradient(v3);
+0018 [u1,u2,u3] = gradient(u3);
+0019 <span class="comment">% Check this!!!</span>
+0020 <span class="comment">%------------------------------------------------------|</span>
+0021 <span class="comment">%                Seems to work just right!             |</span>
+0022 <span class="comment">%                                                      V</span>
+0023 vs = max(abs([u1(:),u2(:),u3(:),v1(:),v2(:),v3(:)]'))*2^.5;
+0024 <span class="comment">%vs = max(abs([u1(:),u2(:),u3(:),v1(:),v2(:),v3(:)]'))*2^.5;</span>
+0025 <span class="comment">%Mu12 = max([abs(u1(:)),abs(u2(:))],[],2);</span>
+0026 <span class="comment">%Mu3v1 = max([abs(u3(:)),abs(v1(:))],[],2);</span>
+0027 <span class="comment">%Mv23 = max([abs(v2(:)),abs(v3(:))],[],2);</span>
+0028 <span class="comment">%vs = max([Mu12,Mu3v1,Mv23]')*2^.5;</span>
+0029</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

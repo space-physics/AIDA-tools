@@ -1,0 +1,233 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of pike2obs</title>
+  <meta name="keywords" content="pike2obs">
+  <meta name="description" content="PIKE2OBS - Meta-data Obs-struct from filename">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Fits_tools --><!-- menu.html File2obs -->
+<h1>pike2obs
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>PIKE2OBS - Meta-data Obs-struct from filename</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function obs = pike2obs(filename,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> PIKE2OBS - Meta-data Obs-struct from filename
+  This function is intended to work as a &quot;try_to_be_smart_fnc&quot;
+  function handle of the typical-pre-processing struct sent as
+  the second argument to INIMG.
+  
+ Calling:
+   obs = pike2obs(filename,varargin)
+ Input:
+  filename - char array with filename. The standard Pike-imaging
+             software enumerates images sequentially.
+  varargin - a name - value sequence, where each value will be put
+             into the OBS-field of its preceeding name.
+ Output:
+  OBS - Struct with meta-data for observation
+ 
+ Example:
+  PO.try_to_be_smart_fnc = @(filename)pike2obs(filename,...
+                           'xyz',[0,0,0],...
+                           'longlat',[-145.1500,62.3930],...
+                           'station',401,...
+                           'time',[2011,03,29,6,21,02],
+                           'filter',6300...
+                           'dt',10);
+ Will calculate the time of exposure from the sequence number of
+ the image in FILENAME and DT (the time intervall between
+ consecutive exposures), starting from the first exposure
+ [2011,03,29,6,21,02].
+ 
+  PO.try_to_be_smart_fnc = @(filename)pike2obs(filename,...
+                           'xyz',[0,0,0],...
+                           'longlat',[-145.1500,62.3930],...
+                           'station',401,...
+                           'time',[2011,03,29,6,21,02],
+                           'filter',6300)
+ Without a field for DT the time of observation is taken from the
+ file creation date, which then is assumed to be the actual start
+ of observation.
+
+ AIDA_tools needs fields for TIME and LONGLAT to be be able to
+ calculate the image position in azimuth and zenith. Fields for
+ xyz with horizontal coordinates in (km) and/or station number is
+ also expected for making triangulation/tomography-like analysis
+ possible.
+
+ If the observations are done in a filter sequence changin filters
+ between observation a function handle can be given with
+ field-name 'filterfunction', that gives the filter for image N in
+ the observation sequence. If the camera is equipped with a
+ filter-wheel with filters [4278, 5577 6300 7774 8446] and the
+ observation sequence is:
+  4278, 5577, 6300, 5577, 7774, 8446
+ a function can be defined like this:
+  fV = [4278,5577,6300,7774,8446]; % Filter array
+  fseq = [1 2 3 2 4 5];            % index for full filter sequence
+  f = @(nr) fV(fseq(rem(nr,length(fseq))+1));
+ And then:
+ 
+  PO.try_to_be_smart_fnc = @(filename)pike2obs(filename,...
+                           'xyz',[0,0,0],...
+                           'longlat',[-145.1500,62.3930],...
+                           'station',401,...
+                           'time',[2011,03,29,6,21,02],
+                           'filter',6300,...
+                           'filterfunction,f);
+ This will assign the filter directly from the image number in the
+ sequence, which will proceed as if the filter-sequence was
+ without interupts and skips - which is not really reading
+ meta-data but rather guess-work, albeit systematic.
+
+ See also READ_IMG, INIMG, TRY_TO_BE_SMART</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function obs = pike2obs(filename,varargin)</a>
+0002 <span class="comment">% PIKE2OBS - Meta-data Obs-struct from filename</span>
+0003 <span class="comment">%  This function is intended to work as a &quot;try_to_be_smart_fnc&quot;</span>
+0004 <span class="comment">%  function handle of the typical-pre-processing struct sent as</span>
+0005 <span class="comment">%  the second argument to INIMG.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%   obs = pike2obs(filename,varargin)</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%  filename - char array with filename. The standard Pike-imaging</span>
+0011 <span class="comment">%             software enumerates images sequentially.</span>
+0012 <span class="comment">%  varargin - a name - value sequence, where each value will be put</span>
+0013 <span class="comment">%             into the OBS-field of its preceeding name.</span>
+0014 <span class="comment">% Output:</span>
+0015 <span class="comment">%  OBS - Struct with meta-data for observation</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Example:</span>
+0018 <span class="comment">%  PO.try_to_be_smart_fnc = @(filename)pike2obs(filename,...</span>
+0019 <span class="comment">%                           'xyz',[0,0,0],...</span>
+0020 <span class="comment">%                           'longlat',[-145.1500,62.3930],...</span>
+0021 <span class="comment">%                           'station',401,...</span>
+0022 <span class="comment">%                           'time',[2011,03,29,6,21,02],</span>
+0023 <span class="comment">%                           'filter',6300...</span>
+0024 <span class="comment">%                           'dt',10);</span>
+0025 <span class="comment">% Will calculate the time of exposure from the sequence number of</span>
+0026 <span class="comment">% the image in FILENAME and DT (the time intervall between</span>
+0027 <span class="comment">% consecutive exposures), starting from the first exposure</span>
+0028 <span class="comment">% [2011,03,29,6,21,02].</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%  PO.try_to_be_smart_fnc = @(filename)pike2obs(filename,...</span>
+0031 <span class="comment">%                           'xyz',[0,0,0],...</span>
+0032 <span class="comment">%                           'longlat',[-145.1500,62.3930],...</span>
+0033 <span class="comment">%                           'station',401,...</span>
+0034 <span class="comment">%                           'time',[2011,03,29,6,21,02],</span>
+0035 <span class="comment">%                           'filter',6300)</span>
+0036 <span class="comment">% Without a field for DT the time of observation is taken from the</span>
+0037 <span class="comment">% file creation date, which then is assumed to be the actual start</span>
+0038 <span class="comment">% of observation.</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">% AIDA_tools needs fields for TIME and LONGLAT to be be able to</span>
+0041 <span class="comment">% calculate the image position in azimuth and zenith. Fields for</span>
+0042 <span class="comment">% xyz with horizontal coordinates in (km) and/or station number is</span>
+0043 <span class="comment">% also expected for making triangulation/tomography-like analysis</span>
+0044 <span class="comment">% possible.</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">% If the observations are done in a filter sequence changin filters</span>
+0047 <span class="comment">% between observation a function handle can be given with</span>
+0048 <span class="comment">% field-name 'filterfunction', that gives the filter for image N in</span>
+0049 <span class="comment">% the observation sequence. If the camera is equipped with a</span>
+0050 <span class="comment">% filter-wheel with filters [4278, 5577 6300 7774 8446] and the</span>
+0051 <span class="comment">% observation sequence is:</span>
+0052 <span class="comment">%  4278, 5577, 6300, 5577, 7774, 8446</span>
+0053 <span class="comment">% a function can be defined like this:</span>
+0054 <span class="comment">%  fV = [4278,5577,6300,7774,8446]; % Filter array</span>
+0055 <span class="comment">%  fseq = [1 2 3 2 4 5];            % index for full filter sequence</span>
+0056 <span class="comment">%  f = @(nr) fV(fseq(rem(nr,length(fseq))+1));</span>
+0057 <span class="comment">% And then:</span>
+0058 <span class="comment">%</span>
+0059 <span class="comment">%  PO.try_to_be_smart_fnc = @(filename)pike2obs(filename,...</span>
+0060 <span class="comment">%                           'xyz',[0,0,0],...</span>
+0061 <span class="comment">%                           'longlat',[-145.1500,62.3930],...</span>
+0062 <span class="comment">%                           'station',401,...</span>
+0063 <span class="comment">%                           'time',[2011,03,29,6,21,02],</span>
+0064 <span class="comment">%                           'filter',6300,...</span>
+0065 <span class="comment">%                           'filterfunction,f);</span>
+0066 <span class="comment">% This will assign the filter directly from the image number in the</span>
+0067 <span class="comment">% sequence, which will proceed as if the filter-sequence was</span>
+0068 <span class="comment">% without interupts and skips - which is not really reading</span>
+0069 <span class="comment">% meta-data but rather guess-work, albeit systematic.</span>
+0070 <span class="comment">%</span>
+0071 <span class="comment">% See also READ_IMG, INIMG, TRY_TO_BE_SMART</span>
+0072 
+0073 <span class="keyword">for</span> i1 = 1:2:length(varargin)
+0074   obs.(varargin{i1}) =  varargin{i1+1};
+0075 <span class="keyword">end</span>
+0076 
+0077 <span class="comment">% Extract the running image number in the observation sequence,</span>
+0078 <span class="comment">% assuming it is found at the end of the filename (before the</span>
+0079 <span class="comment">% extension:)</span>
+0080 [q1,q2,q3] = fileparts(filename);
+0081 <span class="comment">% and that the character before is some kind of separator:</span>
+0082 [t1,r] = strtok(fliplr(q2),<span class="string">'-._: '</span>); 
+0083 N1 = str2num(fliplr(t1));
+0084 
+0085 <span class="keyword">if</span> ~isfield(obs,<span class="string">'dt'</span>)
+0086   <span class="comment">% If dt is not supplied in the name-value sequence just use the</span>
+0087   <span class="comment">% creation-date of the file, and hope for the best.</span>
+0088   Q = dir(filename);
+0089   obs.time = datevec(Q.datenum);
+0090 <span class="keyword">else</span>
+0091   <span class="comment">% Otherwise use time of the first exposure and add the</span>
+0092   <span class="comment">% number of incremental time-steps</span>
+0093   dt = obs.dt;
+0094   
+0095   <span class="comment">% Decimal hours:</span>
+0096   decimal_hours = obs.time(end-2:end)*[1 1/60 1/3600]' + dt*N1/3600;
+0097   <span class="comment">% Integer Hours</span>
+0098   Thour = floor(decimal_hours);
+0099   <span class="comment">% Decimal minutes</span>
+0100   decimal_minutes = 60*(decimal_hours - Thour);
+0101   <span class="comment">% Integer minutes</span>
+0102   Tminute = floor(decimal_minutes);
+0103   <span class="comment">% Seconds</span>
+0104   Tseconds = 60*(decimal_minutes - Tminute);
+0105   
+0106   <span class="comment">% obs.time(end) = obs.time(end) + dt*N1;</span>
+0107   obs.time(end-2:end) = [Thour, Tminute, Tseconds];
+0108   
+0109 <span class="keyword">end</span>
+0110 
+0111 
+0112 <span class="keyword">if</span> isfield(obs,<span class="string">'filterfunction'</span>)
+0113   obs.filter = obs.filterfunction(N1);
+0114   obs = rmfield(obs,<span class="string">'filterfunction'</span>);
+0115 <span class="keyword">end</span>
+0116 
+0117 obs.alpha = [];
+0118 obs.beta = [];
+0119 obs.az = [0];
+0120 obs.ze = [0];
+0121 obs.camnr = [39];
+0122 obs.exptime = 10;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

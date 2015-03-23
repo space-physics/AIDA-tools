@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_bias</title>
+  <meta name="keywords" content="ASK_bias">
+  <meta name="description" content="ASK_BIAS - returns the bias drift of of megablock, by measuring the">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_bias
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_BIAS - returns the bias drift of of megablock, by measuring the</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function delta = ASK_bias(file) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_BIAS - returns the bias drift of of megablock, by measuring the
+ difference between the average of the darks after the megablock
+ and the darks before the megablock. 
+ 
+ Calling:
+  delta = ASK_bias(file)
+ Input:
+  file - directory name of megablock of interest, for example
+         '20061022204134r1' 
+ Output:
+  delta - difference, bias_after - bias_before
+ 
+ Written to mimmick bias.pro made by Hanna Dahlgren on 3 Feb 2011.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_get_dark_name.html" class="code" title="function [dark_name,dark_short] = ASK_get_dark_name(dpath,BeforeOrAfter)">ASK_get_dark_name</a>	ASK_GET_DARK_NAME - get the name of the dark megablock corresponding to the</li><li><a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>	ASK_READ_V - Read ASK image #i1 from current camera in current "mega-block"</li><li><a href="ASK_read_vs.html" class="code" title="function vs = ASK_read_vs(num,filename,quiet)">ASK_read_vs</a>	ASK_READ_VS -  the procedure to read the videoevent setup - the new version</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function delta = ASK_bias(file)</a>
+0002 <span class="comment">% ASK_BIAS - returns the bias drift of of megablock, by measuring the</span>
+0003 <span class="comment">% difference between the average of the darks after the megablock</span>
+0004 <span class="comment">% and the darks before the megablock.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Calling:</span>
+0007 <span class="comment">%  delta = ASK_bias(file)</span>
+0008 <span class="comment">% Input:</span>
+0009 <span class="comment">%  file - directory name of megablock of interest, for example</span>
+0010 <span class="comment">%         '20061022204134r1'</span>
+0011 <span class="comment">% Output:</span>
+0012 <span class="comment">%  delta - difference, bias_after - bias_before</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% Written to mimmick bias.pro made by Hanna Dahlgren on 3 Feb 2011.</span>
+0015 
+0016 <span class="comment">% Modified from add_multi.pro</span>
+0017 <span class="comment">% Copyright Bjorn Gustavsson 20110131</span>
+0018 <span class="comment">% GPL 3.0 or later applies</span>
+0019 
+0020 
+0021 <span class="comment">% global hities</span>
+0022 <span class="comment">% global vs</span>
+0023 
+0024 <span class="comment">% dir = vs.videodir; % TODO - find out from where to get this!</span>
+0025 
+0026 [dark1_path,dark1_name] = <a href="ASK_get_dark_name.html" class="code" title="function [dark_name,dark_short] = ASK_get_dark_name(dpath,BeforeOrAfter)">ASK_get_dark_name</a>(dpath);
+0027 [dark2_path,dark2_name] = <a href="ASK_get_dark_name.html" class="code" title="function [dark_name,dark_short] = ASK_get_dark_name(dpath,BeforeOrAfter)">ASK_get_dark_name</a>(dpath,<span class="string">'later'</span>);
+0028 
+0029 
+0030 <a href="ASK_read_vs.html" class="code" title="function vs = ASK_read_vs(num,filename,quiet)">ASK_read_vs</a>([dark1_name,<span class="string">'.txt'</span>],<span class="string">'quiet'</span>)
+0031 
+0032 dark1 = zeros(256,256,640);
+0033 dd1 = zeros(640,1);
+0034 dd2 = zeros(640,1);
+0035 
+0036 <span class="keyword">for</span> i1 = 1:640,
+0037   
+0038   im = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(i1);
+0039   dark1(:,:,i1-1) = im;
+0040   dd1(i1-1) = mean(im(:));
+0041   
+0042 <span class="keyword">end</span>
+0043 
+0044 <a href="ASK_read_vs.html" class="code" title="function vs = ASK_read_vs(num,filename,quiet)">ASK_read_vs</a>([dark2_name,<span class="string">'.txt'</span>],<span class="string">'quiet'</span>)
+0045 
+0046 dark2 = zeros(256,256,640);
+0047 
+0048 <span class="keyword">for</span> i1 = 1:640,
+0049 
+0050   im = <a href="ASK_read_v.html" class="code" title="function img_out = ASK_read_v(i1,noImCal,RGBout,nocnv,OPS)">ASK_read_v</a>(i1);
+0051   dark2(:,:,i1) = im;
+0052   dd2(i1) = mean(im(:));
+0053   
+0054 <span class="keyword">end</span>
+0055 
+0056 <span class="comment">% Discard the highest and lowest values</span>
+0057 
+0058 sorted_dark1 = sort(dd1);
+0059 sorted_dark2 = sort(dd2);
+0060 
+0061 mean1 = mean(dd1(sorted_dark1(5:635)));
+0062 mean2 = mean(dd2(sorted_dark2(5:635)));
+0063 
+0064 delta = mean2 - mean1;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

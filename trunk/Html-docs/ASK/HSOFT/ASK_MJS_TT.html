@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_MJS_TT</title>
+  <meta name="keywords" content="ASK_MJS_TT">
+  <meta name="description" content="ASK_MJS_TT - convert modified Julian second to calender date">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_MJS_TT
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_MJS_TT - convert modified Julian second to calender date</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function varargout = ASK_MJS_TT(MJS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_MJS_TT - convert modified Julian second to calender date
+
+ Calling:
+  [DateVec] = ASK_MJS_TT(MJS)
+  [year,month,day,hour,minute,sec] = ASK_MJS_TT(MJS)
+ Input
+  MJS - modified Julian seconds (since 1950/1/1 00:00:00.00)
+ Output:
+  DateVec - array with columns for year, month, day, hour, minute,
+            second</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_megablockviewer.html" class="code" title="function ASK_megablockviewer(ASKaction)">ASK_megablockviewer</a>	ASK_MEGABLOCKVIEWER - Utility callback function for zooming around</li><li><a href="ASK_mjs_dy.html" class="code" title="function date_out = ASK_mjs_dy(MJStime)">ASK_mjs_dy</a>	ASK_MJS_DY -  convert mjs time to decimal years</li><li><a href="ASK_time_axis.html" class="code" title="function [ticks,tickn,tickv,tickm] = ASK_time_axis(StartTimeMJS,dTime,less)">ASK_time_axis</a>	ASK_TIME_AXIS - formated time onto the x-labels</li><li><a href="ASK_time_tick.html" class="code" title="function [ticks,tickn,tickv,tickm] = ASK_time_tick(StartTimeMJS,dTime,less)">ASK_time_tick</a>	ASK_TIME_AXIS - suitable settings for time tick marks and labels.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function varargout = ASK_MJS_TT(MJS)</a>
+0002 <span class="comment">% ASK_MJS_TT - convert modified Julian second to calender date</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  [DateVec] = ASK_MJS_TT(MJS)</span>
+0006 <span class="comment">%  [year,month,day,hour,minute,sec] = ASK_MJS_TT(MJS)</span>
+0007 <span class="comment">% Input</span>
+0008 <span class="comment">%  MJS - modified Julian seconds (since 1950/1/1 00:00:00.00)</span>
+0009 <span class="comment">% Output:</span>
+0010 <span class="comment">%  DateVec - array with columns for year, month, day, hour, minute,</span>
+0011 <span class="comment">%            second</span>
+0012 <span class="comment">%</span>
+0013 
+0014 <span class="comment">% Modified from MJS_TT.pro</span>
+0015 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0016 <span class="comment">% GPL 3.0 or later applies</span>
+0017 
+0018 <span class="comment">% Let the date-functions of matlab do the heavy lifting:</span>
+0019 dateVec = datevec(MJS/24/3600+datenum([1950 1 1]));
+0020 
+0021 <span class="comment">% This should split up dateVec into one output array for the YYYY,</span>
+0022 <span class="comment">% MM, DD... (as per requested) even if function is called with</span>
+0023 <span class="comment">% multiple MJS-times.</span>
+0024 <span class="keyword">if</span> nargout &gt; 1
+0025   <span class="keyword">if</span> size(dateVec,1) &gt; 1
+0026     <span class="keyword">for</span> i1 = 1:nargout
+0027       varargout{i1} = dateVec(:,i1);
+0028     <span class="keyword">end</span>
+0029   <span class="keyword">else</span>
+0030     varargout = num2cell(dateVec(1:nargout));
+0031   <span class="keyword">end</span>
+0032 <span class="keyword">else</span>
+0033   varargout{1} = dateVec;
+0034 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of callbackFcn4PointsOverImg</title>
+  <meta name="keywords" content="callbackFcn4PointsOverImg">
+  <meta name="description" content="callbackFcn4PointsOverImg - wrapping of 2 functions for ASC image overplotting">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Aurora -->
+<h1>callbackFcn4PointsOverImg
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>callbackFcn4PointsOverImg - wrapping of 2 functions for ASC image overplotting</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function callbackFcn4PointsOverImg(ImgName,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblStrs,gridstyle) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> callbackFcn4PointsOverImg - wrapping of 2 functions for ASC image overplotting
+  This function is a simple wrapping of IMREAD and IMG_OVERPLOT_LLH
+  to construct a suitable callback for making a gui that can pull
+  all-sky camera images and plot the image projection of a number
+  of desired 3-D points.
+ 
+ Calling:
+  callbackFcn4PointsOverImg(ImgName,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblStrs,gridstyle)
+ Input:
+  ImgName       - Cell array with file-names to images to read,
+                  autoupdated url-s to &quot;most recent image&quot; seems
+                  most useful.
+  long0lat0alt0 - Cell array (1 x nCams) with location [long, lat, alt]
+                  (deg, deg, km) of the imagers.
+  longlatalt    - double array [nPoints x 3] with longitude,
+                  latitude and altitude of the points to project
+                  onto the image plane (deg, deg, km)
+  optpar        - optical parameters specifying the geometric
+                  characteristics of the camera, as obtained with
+                  STARCAL 
+  imReg         - Cell array with image regions used in the star-
+                  calibration.
+  titleStr      - Cell array with title strings (typically name of
+                  site where ASC is located)
+  lableStr      - Cell array with label strings (typically
+                  number/name of overplotted points.
+  gridstyle     - [{'ll'}| 'az-ze' | ''] flag for selection of
+                  gridlines to plot, ll - longitide-latitude grid,
+                  az-ze - azimuth-zenith grid, '' (empty) no grid.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Imgtools/img_overplot_llh.html" class="code" title="function h = img_overplot_llh(ImgIn,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblstr,gridstyle)">img_overplot_llh</a>	IMG_OVERPLOT_LLH - longitude-latitude-height points projected</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="starter4PointsOverImg.html" class="code" title="function starter4PointsOverImg(varargin)">starter4PointsOverImg</a>	starter4PointsOverImg - starting function for ASC image overplotting</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function callbackFcn4PointsOverImg(ImgName,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblStrs,gridstyle)</a>
+0002 <span class="comment">% callbackFcn4PointsOverImg - wrapping of 2 functions for ASC image overplotting</span>
+0003 <span class="comment">%  This function is a simple wrapping of IMREAD and IMG_OVERPLOT_LLH</span>
+0004 <span class="comment">%  to construct a suitable callback for making a gui that can pull</span>
+0005 <span class="comment">%  all-sky camera images and plot the image projection of a number</span>
+0006 <span class="comment">%  of desired 3-D points.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">%  callbackFcn4PointsOverImg(ImgName,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblStrs,gridstyle)</span>
+0010 <span class="comment">% Input:</span>
+0011 <span class="comment">%  ImgName       - Cell array with file-names to images to read,</span>
+0012 <span class="comment">%                  autoupdated url-s to &quot;most recent image&quot; seems</span>
+0013 <span class="comment">%                  most useful.</span>
+0014 <span class="comment">%  long0lat0alt0 - Cell array (1 x nCams) with location [long, lat, alt]</span>
+0015 <span class="comment">%                  (deg, deg, km) of the imagers.</span>
+0016 <span class="comment">%  longlatalt    - double array [nPoints x 3] with longitude,</span>
+0017 <span class="comment">%                  latitude and altitude of the points to project</span>
+0018 <span class="comment">%                  onto the image plane (deg, deg, km)</span>
+0019 <span class="comment">%  optpar        - optical parameters specifying the geometric</span>
+0020 <span class="comment">%                  characteristics of the camera, as obtained with</span>
+0021 <span class="comment">%                  STARCAL</span>
+0022 <span class="comment">%  imReg         - Cell array with image regions used in the star-</span>
+0023 <span class="comment">%                  calibration.</span>
+0024 <span class="comment">%  titleStr      - Cell array with title strings (typically name of</span>
+0025 <span class="comment">%                  site where ASC is located)</span>
+0026 <span class="comment">%  lableStr      - Cell array with label strings (typically</span>
+0027 <span class="comment">%                  number/name of overplotted points.</span>
+0028 <span class="comment">%  gridstyle     - [{'ll'}| 'az-ze' | ''] flag for selection of</span>
+0029 <span class="comment">%                  gridlines to plot, ll - longitide-latitude grid,</span>
+0030 <span class="comment">%                  az-ze - azimuth-zenith grid, '' (empty) no grid.</span>
+0031 
+0032 <span class="comment">% Copyright � 20121013 Bj�n Gustavsson</span>
+0033 <span class="comment">% This is free software, licensed under GNU GPL version 3 or later.</span>
+0034 
+0035 D = imread(ImgName);
+0036 <span class="comment">%D = D(imReg(3):imReg(4),imReg(1):imReg(2),:);</span>
+0037 <a href="../Imgtools/img_overplot_llh.html" class="code" title="function h = img_overplot_llh(ImgIn,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblstr,gridstyle)">img_overplot_llh</a>(D,long0lat0alt0,longlatalt,optpar,imReg,titleStr,lblStrs,gridstyle);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

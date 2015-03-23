@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of chngheader</title>
+  <meta name="keywords" content="chngheader">
+  <meta name="description" content="CHNGHEADER - function to change header entry in fits header.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>chngheader
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>CHNGHEADER - function to change header entry in fits header.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function out_header = chngheader(in_header,key,new) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> CHNGHEADER - function to change header entry in fits header.
+
+ Calling:
+ out_header = chngheader(in_header,key,new)
+ 
+         IN_HEADER - string matrix with 80 characters
+         per line.
+         KEY - string with at the most 10 characters,
+         giving the keyword.
+         NEW the new value for the keyword.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="addheader.html" class="code" title="function out_header = addheader(in_header,add_str)">addheader</a>	ADDDHEADER - function to add header entry to fits header.</li><li><a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>	ISCHAR - return true if STR is a char-array</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function out_header = chngheader(in_header,key,new)</a>
+0002 <span class="comment">% CHNGHEADER - function to change header entry in fits header.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% out_header = chngheader(in_header,key,new)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%         IN_HEADER - string matrix with 80 characters</span>
+0008 <span class="comment">%         per line.</span>
+0009 <span class="comment">%         KEY - string with at the most 10 characters,</span>
+0010 <span class="comment">%         giving the keyword.</span>
+0011 <span class="comment">%         NEW the new value for the keyword.</span>
+0012 
+0013 
+0014 <span class="comment">%   Copyright � 19980525 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0015 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0016 
+0017 
+0018 out_header = in_header;
+0019 
+0020 <span class="keyword">for</span> i1 = size(in_header,1):-1:1,
+0021   
+0022   qw(i1) = strncmp(in_header(i1,1:8),key,length(key));
+0023   
+0024 <span class="keyword">end</span>
+0025 
+0026 <span class="keyword">if</span> ( sum(qw) == 0 )
+0027   
+0028   <span class="keyword">if</span> <a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(new)
+0029     addstr = sprintf(<span class="string">'%8s= ''%s'''</span>,key,new);
+0030   <span class="keyword">elseif</span> ( fix(new) == new)
+0031     addstr = sprintf(<span class="string">'%8s=               %d'</span>,key,new);
+0032   <span class="keyword">else</span>
+0033     addstr = sprintf(<span class="string">'%8s=               %f'</span>,key,new);
+0034   <span class="keyword">end</span>
+0035   out_header = <a href="addheader.html" class="code" title="function out_header = addheader(in_header,add_str)">addheader</a>(in_header,addstr);
+0036   
+0037 <span class="keyword">elseif</span> ( sum(qw) &gt; 1 )
+0038   
+0039   errmsg = sprintf(<span class="string">'Ambiguos key: %s, at least %d matches'</span>,key,sum(qw));
+0040   err_id = <span class="string">'Fits:chngheader:Ambigous key '</span>;
+0041   error([err_id,errmsg])
+0042   
+0043 <span class="keyword">else</span>
+0044   
+0045   indx = find(qw);
+0046   
+0047   <span class="keyword">if</span> <a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(new)
+0048     addstr = sprintf(<span class="string">'%8s= ''%s'''</span>,key,new);
+0049   <span class="keyword">else</span>
+0050     addstr = sprintf(<span class="string">'%8s=               %d'</span>,key,new);
+0051   <span class="keyword">end</span>
+0052   <span class="keyword">if</span> ( length(addstr)&lt;80)
+0053     
+0054     out_header = str2mat(in_header(1:indx-1,:),addstr);
+0055     out_header = str2mat(out_header,in_header(indx+1:<span class="keyword">end</span>,:));
+0056     
+0057   <span class="keyword">else</span>
+0058     
+0059     <span class="comment">%err_msg = sprintf('\n   keyworld too long:\n %s\n   Its length is %d and the limit is 80 characters',add_str,length(add_str));</span>
+0060     <span class="comment">%error(err_msg);</span>
+0061     error(<span class="string">'\n   keyworld too long:\n %s\n   Its length is %d and the limit is 80 characters'</span>,add_str,length(add_str));
+0062     
+0063   <span class="keyword">end</span>
+0064   
+0065 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

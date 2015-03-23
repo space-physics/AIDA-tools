@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>We should always try look on things from two sides</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+  </head>
+  
+  <body class="section-2">
+    <ul id="menu">
+      <li id="nav-1"><a href="../Documentation/index.html">AIDA-home</a>
+	<ul id="subnav-1">
+	  <li><a href="#links">Links</a></li>
+	</ul>
+      </li>
+      <li id="nav-2"><a href="../Documentation/intros.html">Image analysis (tutorial)</a>
+      </li>
+      <li id="nav-3"><a href="../Html-exmpls/index.html">Examples</a>
+      </li>
+      <li id="nav-4"><a href="../Html-docs/index.html">Matlab-src-tree</a>
+      </li>
+    </ul>
+    <div id="contents">
+    <h1>Stereoscopic triangulation</h1>
+    <h2>1 Introduction</h2>
+    <p>
+      Provided that there exist 2 images of the same object, most likely
+      clouds, taken from two locations it is possible to determine the
+      distance to various features that appear in both images. Thus it is
+      also possible to determine the altitude of the features identified.
+      This is provided that the <A HREF="optics.html">optical characteristics</a>
+      and the <A HREF="rotations.html">rotations</a> of the cameras are
+      well known. Another thing that need to be sufficiently well
+      determined are the locations of the imaging sites - at least their
+      relative positions.
+    </p>
+    <p>
+      Currently it is possible to analyze images made with optics that are
+      described by any of the following <A HREF="optics.html">optical transfer functions:</a>
+    </p>
+    <ol>
+      <li><strong>Pinhole camera model</strong><br>
+	Where <math>x<sup>2</sup>+y<sup>2</sup> = f*tan(theta)</math>
+      </li>
+      <li><strong>NIPR camera model</strong><br>
+	Where <math>x<sup>2</sup>+y<sup>2</sup> = f*sin(theta/alfa)</math>
+      </li>
+      <li><strong>ALIS camera model</strong><br>
+	Where <math>x<sup>2</sup>+y<sup>2</sup> = f*(1-alfa)*tan(theta)+f*alfa(theta)</math>
+      </li>
+      <li><strong>Kiruna all-sky camera model</strong><br>
+	With a slightly more complex function that relates the direction in space to 
+	the position ( x, y) in the image.
+      </li>
+      <li><strong>Pinhole camera with half spherical backside</strong><br>
+	Where <math>x<sup>2</sup>+y<sup>2</sup> = f*(theta)</math>
+      </li>
+    </ol>
+    <p>
+      Where theta is the angle relative to the polar axis and f is the focal width.<br>
+      For the ALIS camera model alfa is a weighting parameter.<br>
+      <img src="images/zenithmap03.jpg" ALT="Camera with its
+	coordinate system"><br clear> 
+    </p>
+    <h2>2 Working procedure</h2>
+    <img src="images/stereo01.jpg" ALT="PSC image pair"><br clear>
+    <p>
+      With images from two sites of the same object as in
+      figure 1 and figure 2 above the working procedure
+      is:
+    </p>
+    <ol>
+      <li>
+	A cross-hair appears in fig 1.
+      </li>
+      <li>
+	Identify a feature that appears in both images press
+	the left mouse button with the cross-hair above the feature. 
+      </li>
+      <li>
+	A cross-hair appears in fig 2,
+      </li>
+      <li>
+	Identify the same feature in this image press the left mouse button 
+	with the cross-hair above the feature. If the feature seems to have
+	disappeared or if you get second thoughts about the identification, then
+	this is the time to press the right mouse button to skip this point for now.
+      </li>
+      <li>
+	Then the line of sight vectors <math>e( x<sub>1</sub>, y<sub>1</sub> )</math>
+	<math>e( x<sub>2</sub>, y<sub>2</sub> )</math>
+	is determined for the identified pixels <math>(x<sub>1</sub>,y<sub>1</sub>)</math>
+	<math>(x<sub>2</sub>,y<sub>2</sub>)</math>.
+      </li>
+      <li>
+	The middle point on the shortest line connecting the two lines
+	specified by the camera positions and the lines of sight is taken
+	the "true" point in space of the identified feature.<br>
+	<img src="images/stereo02.jpg" ALT="Crossing lines-of-sight"><br clear>
+      </li>
+      <li>
+	The distance of the shortest connection is given as a
+	quality measure of the identification. If the distance
+	is far too long it seems likely that the identification
+	are somewhat doubtful and the user can skip the point.
+      </li>
+    </ol>
+    <p>
+      Repeat this procedure 1-7  until there are no more common features
+      or You are satisfied, then press the middle mouse button.
+    </p>
+    <p>
+      The set of points that are identified 
+      <math>( x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>) )
+	( x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub>) ),... ...,
+	( x<sub>n</sub>, y<sub>n</sub>, z<sub>n</sub>).</math>. can be viewed on as a set
+      of sample points from a surface. Over this set
+      of irregularly samples a Deluanay triangulation is made to get a regularly
+      spaced surface grid.
+    </p>
+    <h2>4 Results</h2>
+    <p>
+      <img src="images/stereo03.jpg" ALT="Triangulated cloud surface"><br clear>
+      The resulting altitude maps and the part of the images
+      that are enclosed by identified points is plotted in the two
+      image windows. The results are stored in file if the user
+      so wishes. The triangulated surface is returned to the
+      matlab workspace in the variables:<br>
+      x<br>
+      y<br>
+      z<br>
+      and the plots can later on be reproduced with the command sequence:<br>
+      
+    <pre>
+bxy1 = size(currmatr1);
+bx1 = bxy1(1);
+by1 = bxy1(2);
+
+xi = 1:10:bx1;
+yi = 1:10:by1;
+cm1 = currmatr1(xi,yi);
+[xi,yi] = meshgrid(xi,yi);
+xii = 1:bx1;
+yii = 1:by1;
+[xii,yii] = meshgrid(xii,yii);
+
+pcolor(x,y,cm1),shading 'flat'
+
+hold on
+[cs,h] = contour(x,y,z,'g');
+axis('equal')
+xlabel('Horizontal distance from Kiruna (km) West <-> East')
+ylabel('Horizontal distance from Kiruna (km) South <-> North')
+clabel(cs,h)
+drawnow
+    </pre>
+    <h2>Notes</h2>
+    <p>
+      Sometimes it is decidedly difficult to identify an object seen
+      from two sites when the scattering angle from the sun is quiet
+      different - as in the case showed here, where in the image from
+      Kiruna (left) the light is scattered almost 180 degrees while in
+      the other image the scattering angle is something like 30
+      degrees.
+    </p>
+    </div>
+    <address><a href="mailto:bjorn@irf.se">Bj&ouml;rn Gustavsson</a></address>
+    <!-- Created: Tue Oct  7 16:28:43 MET DST 1997 -->
+    <!-- hhmts start -->Last modified: Sun Mar 21 15:06:47 GMT 2010 <!-- hhmts end -->
+  </body>
+</html>

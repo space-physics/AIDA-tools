@@ -1,0 +1,366 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of vol3d</title>
+  <meta name="keywords" content="vol3d">
+  <meta name="description" content="H = VOL3D Volume render 3-D data.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>vol3d
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>H = VOL3D Volume render 3-D data.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [model] = vol3d(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">H = VOL3D Volume render 3-D data. 
+ VOL3D uses the orthogonal plane 2-D texture mapping technique for 
+ volume rending 3-D data in OpenGL. Use the 'texture' option to fine 
+ tune the texture mapping technique. This function is best used with
+ fast OpenGL hardware.
+
+ vol3d                   Provide a demo of functionality.
+
+ H = vol3d('CData',data) Create volume render object from input 
+                         3-D data. Use interp3 on data to increase volume
+                         rendering resolution. Returns a struct 
+                         encapsulating the pseudo-volume rendering object.
+                         XxYxZ array represents scaled colormap indices.
+                         XxYxZx3 array represents truecolor RGB values for
+                         each voxel (along the 4th dimension).
+
+ vol3d(...,'Alpha',alpha) XxYxZ array of alpha values for each voxel, in
+                          range [0,1]. Default: data (interpreted as
+                          scaled alphamap indices).
+
+ vol3d(...,'Parent',axH)  Specify parent axes. Default: gca.
+
+ vol3d(...,'XData',x)  1x2 x-axis bounds. Default: [0 size(data, 2)].
+ vol3d(...,'YData',y)  1x2 y-axis bounds. Default: [0 size(data, 1)].
+ vol3d(...,'ZData',z)  1x2 z-axis bounds. Default: [0 size(data, 3)].
+
+ vol3d(...,'texture','2D')  Only render texture planes parallel to nearest
+                            orthogonal viewing plane. Requires doing
+                            vol3d(h) to refresh if the view is rotated
+                            (i.e. using cameratoolbar).
+
+ vol3d(...,'texture','3D')  Default. Render x,y,z texture planes
+                            simultaneously. This avoids the need to
+                            refresh the view but requires faster OpenGL
+                            hardware peformance.
+
+ vol3d(H)  Refresh view. Updates rendering of texture planes 
+           to reduce visual aliasing when using the 'texture'='2D'
+           option.
+
+ NOTES
+ Use vol3dtool (from the original vol3d FEX submission) for editing the
+ colormap and alphamap. Adjusting these maps will allow you to explore
+ your 3-D volume data at various intensity levels. See documentation on 
+ alphamap and colormap for more information.
+
+ Use interp3 on input date to increase/decrease resolution of data
+
+ Examples:
+
+ % Visualizing fluid flow
+ v = flow(50);
+ h = vol3d('cdata',v,'texture','2D');
+ view(3); 
+ % Update view since 'texture' = '2D'
+ vol3d(h);  
+ alphamap('rampdown'), alphamap('decrease'), alphamap('decrease')
+ 
+ % Visualizing MRI data
+ load mri.mat
+ D = squeeze(D);
+ h = vol3d('cdata',D,'texture','3D');
+ view(3);  
+ axis tight;  daspect([1 1 .4])
+ alphamap('rampup');
+ alphamap(.06 .* alphamap);
+
+ See also alphamap, colormap, opengl, isosurface</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="vol3d.html" class="code" title="function [model] = vol3d(varargin)">vol3d</a>	H = VOL3D Volume render 3-D data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="draw3d_vem.html" class="code" title="">draw3d_vem</a>	% Use of the routine vol3d to plot ALIS formatted outputs in 3D</li><li><a href="vol3d.html" class="code" title="function [model] = vol3d(varargin)">vol3d</a>	H = VOL3D Volume render 3-D data.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [model] = localGetDefaultModel</a></li><li><a href="#_sub2" class="code">function [model,ax] = local_draw(model)</a></li><li><a href="#_sub3" class="code">function demo_vol3d</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [model] = vol3d(varargin)</a>
+0002 <span class="comment">%H = VOL3D Volume render 3-D data.</span>
+0003 <span class="comment">% VOL3D uses the orthogonal plane 2-D texture mapping technique for</span>
+0004 <span class="comment">% volume rending 3-D data in OpenGL. Use the 'texture' option to fine</span>
+0005 <span class="comment">% tune the texture mapping technique. This function is best used with</span>
+0006 <span class="comment">% fast OpenGL hardware.</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% vol3d                   Provide a demo of functionality.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% H = vol3d('CData',data) Create volume render object from input</span>
+0011 <span class="comment">%                         3-D data. Use interp3 on data to increase volume</span>
+0012 <span class="comment">%                         rendering resolution. Returns a struct</span>
+0013 <span class="comment">%                         encapsulating the pseudo-volume rendering object.</span>
+0014 <span class="comment">%                         XxYxZ array represents scaled colormap indices.</span>
+0015 <span class="comment">%                         XxYxZx3 array represents truecolor RGB values for</span>
+0016 <span class="comment">%                         each voxel (along the 4th dimension).</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% vol3d(...,'Alpha',alpha) XxYxZ array of alpha values for each voxel, in</span>
+0019 <span class="comment">%                          range [0,1]. Default: data (interpreted as</span>
+0020 <span class="comment">%                          scaled alphamap indices).</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% vol3d(...,'Parent',axH)  Specify parent axes. Default: gca.</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% vol3d(...,'XData',x)  1x2 x-axis bounds. Default: [0 size(data, 2)].</span>
+0025 <span class="comment">% vol3d(...,'YData',y)  1x2 y-axis bounds. Default: [0 size(data, 1)].</span>
+0026 <span class="comment">% vol3d(...,'ZData',z)  1x2 z-axis bounds. Default: [0 size(data, 3)].</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">% vol3d(...,'texture','2D')  Only render texture planes parallel to nearest</span>
+0029 <span class="comment">%                            orthogonal viewing plane. Requires doing</span>
+0030 <span class="comment">%                            vol3d(h) to refresh if the view is rotated</span>
+0031 <span class="comment">%                            (i.e. using cameratoolbar).</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">% vol3d(...,'texture','3D')  Default. Render x,y,z texture planes</span>
+0034 <span class="comment">%                            simultaneously. This avoids the need to</span>
+0035 <span class="comment">%                            refresh the view but requires faster OpenGL</span>
+0036 <span class="comment">%                            hardware peformance.</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">% vol3d(H)  Refresh view. Updates rendering of texture planes</span>
+0039 <span class="comment">%           to reduce visual aliasing when using the 'texture'='2D'</span>
+0040 <span class="comment">%           option.</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% NOTES</span>
+0043 <span class="comment">% Use vol3dtool (from the original vol3d FEX submission) for editing the</span>
+0044 <span class="comment">% colormap and alphamap. Adjusting these maps will allow you to explore</span>
+0045 <span class="comment">% your 3-D volume data at various intensity levels. See documentation on</span>
+0046 <span class="comment">% alphamap and colormap for more information.</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">% Use interp3 on input date to increase/decrease resolution of data</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">% Examples:</span>
+0051 <span class="comment">%</span>
+0052 <span class="comment">% % Visualizing fluid flow</span>
+0053 <span class="comment">% v = flow(50);</span>
+0054 <span class="comment">% h = vol3d('cdata',v,'texture','2D');</span>
+0055 <span class="comment">% view(3);</span>
+0056 <span class="comment">% % Update view since 'texture' = '2D'</span>
+0057 <span class="comment">% vol3d(h);</span>
+0058 <span class="comment">% alphamap('rampdown'), alphamap('decrease'), alphamap('decrease')</span>
+0059 <span class="comment">%</span>
+0060 <span class="comment">% % Visualizing MRI data</span>
+0061 <span class="comment">% load mri.mat</span>
+0062 <span class="comment">% D = squeeze(D);</span>
+0063 <span class="comment">% h = vol3d('cdata',D,'texture','3D');</span>
+0064 <span class="comment">% view(3);</span>
+0065 <span class="comment">% axis tight;  daspect([1 1 .4])</span>
+0066 <span class="comment">% alphamap('rampup');</span>
+0067 <span class="comment">% alphamap(.06 .* alphamap);</span>
+0068 <span class="comment">%</span>
+0069 <span class="comment">% See also alphamap, colormap, opengl, isosurface</span>
+0070 
+0071 <span class="comment">% Copyright Joe Conti, 2004</span>
+0072 <span class="comment">% Improvements by Oliver Woodford, 2008-2011, with permission of the</span>
+0073 <span class="comment">% copyright holder.</span>
+0074 
+0075 <span class="keyword">if</span> nargin == 0
+0076     <a href="#_sub3" class="code" title="subfunction demo_vol3d">demo_vol3d</a>;
+0077     <span class="keyword">return</span>
+0078 <span class="keyword">end</span>
+0079 
+0080 <span class="keyword">if</span> isstruct(varargin{1})
+0081     model = varargin{1};
+0082     <span class="keyword">if</span> length(varargin) &gt; 1
+0083        varargin = {varargin{2:end}};
+0084     <span class="keyword">end</span>
+0085 <span class="keyword">else</span>
+0086     model = <a href="#_sub1" class="code" title="subfunction [model] = localGetDefaultModel">localGetDefaultModel</a>;
+0087 <span class="keyword">end</span>
+0088 
+0089 <span class="keyword">if</span> length(varargin)&gt;1
+0090   <span class="keyword">for</span> n = 1:2:length(varargin)
+0091     <span class="keyword">switch</span>(lower(varargin{n}))
+0092         <span class="keyword">case</span> <span class="string">'cdata'</span>
+0093             model.cdata = varargin{n+1};
+0094         <span class="keyword">case</span> <span class="string">'parent'</span>
+0095             model.parent = varargin{n+1};
+0096         <span class="keyword">case</span> <span class="string">'texture'</span>
+0097             model.texture = varargin{n+1};
+0098         <span class="keyword">case</span> <span class="string">'alpha'</span>
+0099             model.alpha = varargin{n+1};
+0100         <span class="keyword">case</span> <span class="string">'xdata'</span>
+0101             model.xdata = varargin{n+1}([1 end]);
+0102         <span class="keyword">case</span> <span class="string">'ydata'</span>
+0103             model.ydata = varargin{n+1}([1 end]);
+0104         <span class="keyword">case</span> <span class="string">'zdata'</span>
+0105             model.zdata = varargin{n+1}([1 end]);
+0106     <span class="keyword">end</span>
+0107     
+0108   <span class="keyword">end</span>
+0109 <span class="keyword">end</span>
+0110 
+0111 <span class="keyword">if</span> isempty(model.parent)
+0112     model.parent = gca;
+0113 <span class="keyword">end</span>
+0114 
+0115 [model] = <a href="#_sub2" class="code" title="subfunction [model,ax] = local_draw(model)">local_draw</a>(model);
+0116 
+0117 <span class="comment">%------------------------------------------%</span>
+0118 <a name="_sub1" href="#_subfunctions" class="code">function [model] = localGetDefaultModel</a>
+0119 
+0120 model.cdata = [];
+0121 model.alpha = [];
+0122 model.xdata = [];
+0123 model.ydata = [];
+0124 model.zdata = [];
+0125 model.parent = [];
+0126 model.handles = [];
+0127 model.texture = <span class="string">'3D'</span>;
+0128 tag = tempname;
+0129 model.tag = [<span class="string">'vol3d_'</span> tag(end-11:end)];
+0130 
+0131 <span class="comment">%------------------------------------------%</span>
+0132 <a name="_sub2" href="#_subfunctions" class="code">function [model,ax] = local_draw(model)</a>
+0133 
+0134 cdata = model.cdata; 
+0135 siz = size(cdata);
+0136 
+0137 <span class="comment">% Define [x,y,z]data</span>
+0138 <span class="keyword">if</span> isempty(model.xdata)
+0139     model.xdata = [0 siz(2)];
+0140 <span class="keyword">end</span>
+0141 <span class="keyword">if</span> isempty(model.ydata)
+0142     model.ydata = [0 siz(1)];
+0143 <span class="keyword">end</span>
+0144 <span class="keyword">if</span> isempty(model.zdata)
+0145     model.zdata = [0 siz(3)];
+0146 <span class="keyword">end</span>
+0147 
+0148 <span class="keyword">try</span>
+0149    delete(model.handles);
+0150 <span class="keyword">catch</span>
+0151 <span class="keyword">end</span>
+0152 
+0153 ax = model.parent;
+0154 cam_dir = camtarget(ax) - campos(ax);
+0155 [m,ind] = max(abs(cam_dir));
+0156 
+0157 opts = {<span class="string">'Parent'</span>,ax,<span class="string">'cdatamapping'</span>,[],<span class="string">'alphadatamapping'</span>,[],<span class="string">'facecolor'</span>,<span class="string">'texturemap'</span>,<span class="string">'edgealpha'</span>,0,<span class="string">'facealpha'</span>,<span class="string">'texturemap'</span>,<span class="string">'tag'</span>,model.tag};
+0158 
+0159 <span class="keyword">if</span> ndims(cdata) &gt; 3
+0160     opts{4} = <span class="string">'direct'</span>;
+0161 <span class="keyword">else</span>
+0162     cdata = double(cdata);
+0163     opts{4} = <span class="string">'scaled'</span>;
+0164 <span class="keyword">end</span>
+0165 
+0166 <span class="keyword">if</span> isempty(model.alpha)
+0167     alpha = cdata;
+0168     <span class="keyword">if</span> ndims(model.cdata) &gt; 3
+0169         alpha = sqrt(sum(double(alpha).^2, 4));
+0170         alpha = alpha - min(alpha(:));
+0171         alpha = 1 - alpha / max(alpha(:));
+0172     <span class="keyword">end</span>
+0173     opts{6} = <span class="string">'scaled'</span>;
+0174 <span class="keyword">else</span>
+0175     alpha = model.alpha;
+0176     <span class="keyword">if</span> ~isequal(siz(1:3), size(alpha))
+0177         error(<span class="string">'Incorrect size of alphamatte'</span>);
+0178     <span class="keyword">end</span>
+0179     opts{6} = <span class="string">'none'</span>;
+0180 <span class="keyword">end</span>
+0181 
+0182 h = findobj(ax,<span class="string">'type'</span>,<span class="string">'surface'</span>,<span class="string">'tag'</span>,model.tag);
+0183 <span class="keyword">for</span> n = 1:length(h)
+0184   <span class="keyword">try</span>
+0185      delete(h(n));
+0186   <span class="keyword">catch</span>
+0187   <span class="keyword">end</span>
+0188 <span class="keyword">end</span>
+0189 
+0190 is3DTexture = strcmpi(model.texture,<span class="string">'3D'</span>);
+0191 handle_ind = 1;
+0192 
+0193 <span class="comment">% Create z-slice</span>
+0194 <span class="keyword">if</span>(ind==3 || is3DTexture )    
+0195   x = [model.xdata(1), model.xdata(2); model.xdata(1), model.xdata(2)];
+0196   y = [model.ydata(1), model.ydata(1); model.ydata(2), model.ydata(2)];
+0197   z = [model.zdata(1), model.zdata(1); model.zdata(1), model.zdata(1)];
+0198   diff = model.zdata(2)-model.zdata(1);
+0199   delta = diff/size(cdata,3);
+0200   <span class="keyword">for</span> n = 1:size(cdata,3)
+0201 
+0202    cslice = squeeze(cdata(:,:,n,:));
+0203    aslice = double(squeeze(alpha(:,:,n)));
+0204    h(handle_ind) = surface(x,y,z,cslice,<span class="string">'alphadata'</span>,aslice,opts{:});
+0205    z = z + delta;
+0206    handle_ind = handle_ind + 1;
+0207   <span class="keyword">end</span>
+0208 
+0209 <span class="keyword">end</span>
+0210 
+0211 <span class="comment">% Create x-slice</span>
+0212 <span class="keyword">if</span> (ind==1 || is3DTexture ) 
+0213   x = [model.xdata(1), model.xdata(1); model.xdata(1), model.xdata(1)];
+0214   y = [model.ydata(1), model.ydata(1); model.ydata(2), model.ydata(2)];
+0215   z = [model.zdata(1), model.zdata(2); model.zdata(1), model.zdata(2)];
+0216   diff = model.xdata(2)-model.xdata(1);
+0217   delta = diff/size(cdata,2);
+0218   <span class="keyword">for</span> n = 1:size(cdata,2)
+0219 
+0220    cslice = squeeze(cdata(:,n,:,:));
+0221    aslice = double(squeeze(alpha(:,n,:)));
+0222    h(handle_ind) = surface(x,y,z,cslice,<span class="string">'alphadata'</span>,aslice,opts{:});
+0223    x = x + delta;
+0224    handle_ind = handle_ind + 1;
+0225   <span class="keyword">end</span>
+0226 <span class="keyword">end</span>
+0227 
+0228 <span class="comment">% Create y-slice</span>
+0229 <span class="keyword">if</span> (ind==2 || is3DTexture)
+0230   x = [model.xdata(1), model.xdata(1); model.xdata(2), model.xdata(2)];
+0231   y = [model.ydata(1), model.ydata(1); model.ydata(1), model.ydata(1)];
+0232   z = [model.zdata(1), model.zdata(2); model.zdata(1), model.zdata(2)];
+0233   diff = model.ydata(2)-model.ydata(1);
+0234   delta = diff/size(cdata,1);
+0235   <span class="keyword">for</span> n = 1:size(cdata,1)
+0236 
+0237    cslice = squeeze(cdata(n,:,:,:));
+0238    aslice = double(squeeze(alpha(n,:,:)));
+0239    h(handle_ind) = surface(x,y,z,cslice,<span class="string">'alphadata'</span>,aslice,opts{:});
+0240    y = y + delta;
+0241    handle_ind = handle_ind + 1;
+0242   <span class="keyword">end</span>
+0243 <span class="keyword">end</span>
+0244 
+0245 model.handles = h;
+0246 
+0247 <a name="_sub3" href="#_subfunctions" class="code">function demo_vol3d</a>
+0248 figure;
+0249 load mri.mat
+0250 <a href="vol3d.html" class="code" title="function [model] = vol3d(varargin)">vol3d</a>(<span class="string">'cdata'</span>, squeeze(D), <span class="string">'xdata'</span>, [0 1], <span class="string">'ydata'</span>, [0 1], <span class="string">'zdata'</span>, [0 0.7]);
+0251 colormap(bone(256));
+0252 alphamap([0 linspace(0.1, 0, 255)]);
+0253 axis equal off
+0254 set(gcf, <span class="string">'color'</span>, <span class="string">'w'</span>);
+0255 view(3);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

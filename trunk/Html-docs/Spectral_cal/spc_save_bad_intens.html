@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of spc_save_bad_intens</title>
+  <meta name="keywords" content="spc_save_bad_intens">
+  <meta name="description" content="SPC_SAVE_BAD_INTENS - saves bad times for spectral calibration">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Spectral_cal -->
+<h1>spc_save_bad_intens
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SPC_SAVE_BAD_INTENS - saves bad times for spectral calibration</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function err = spc_save_bad_intens(gI1,gI2,gI3,gT,gX,gY,gfilter, filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SPC_SAVE_BAD_INTENS - saves bad times for spectral calibration</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/backup1000filesversions.html" class="code" title="function [status, message] = backup1000filesversions(filename)">backup1000filesversions</a>	BACKUP1000FILESVERSIONS - Backup files to prevent overwriting them</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="Spec_cal_jobb_Miracle.html" class="code" title="">Spec_cal_jobb_Miracle</a>	Spec_cal_jobb_Miracle - Example of spectral camera sensitivity calibration</li><li><a href="Spec_cal_jobb_exmplCell.html" class="code" title="">Spec_cal_jobb_exmplCell</a>	Spec_cal_jobb_exmplCell - Example of spectral camera sensitivity calibration</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function err = spc_save_bad_intens(gI1,gI2,gI3,gT,gX,gY,gfilter, filename)</a>
+0002 <span class="comment">% SPC_SAVE_BAD_INTENS - saves bad times for spectral calibration</span>
+0003 <span class="comment">%</span>
+0004 
+0005 <span class="comment">% Copyright M V</span>
+0006 
+0007 <span class="comment">% path = '.data/spc/';</span>
+0008 path = <span class="string">'./'</span>;
+0009 
+0010 err = 0;
+0011 status = -12;
+0012 message = <span class="string">''</span>;
+0013 
+0014 disp(sprintf(<span class="string">'\nWriting data to file %s...\n'</span>, filename))
+0015 
+0016 <span class="keyword">try</span>
+0017   <span class="keyword">if</span> exist(fullfile(path,filename),<span class="string">'file'</span>)
+0018     [status, message] = <a href="../tools/backup1000filesversions.html" class="code" title="function [status, message] = backup1000filesversions(filename)">backup1000filesversions</a>(fullfile(path,filename));
+0019   <span class="keyword">end</span>
+0020   save(fullfile(path,filename), <span class="string">'gI1'</span>, <span class="string">'gI2'</span>, <span class="string">'gI3'</span>, <span class="string">'gT'</span>, <span class="string">'gX'</span>, <span class="string">'gY'</span>, <span class="string">'gfilter'</span>);
+0021   disp(sprintf(<span class="string">'OK.'</span>))
+0022 <span class="keyword">catch</span>
+0023   disp(sprintf(<span class="string">'\nWriting %s failed:\n%d:%s\n'</span>, [path filename], status, message))
+0024   err = 1;
+0025 <span class="keyword">end</span>
+0026</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of isleap</title>
+  <meta name="keywords" content="isleap">
+  <meta name="description" content="ISLEAP True for leap year.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>isleap
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ISLEAP True for leap year.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function x=isleap(Year) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">ISLEAP True for leap year.
+     ISLEAP(Year) returns 1 if Year is a leap year and 0 otherwise.
+     ISLEAP is only set for gregorian calendar, so Year &gt;= 1583
+
+ Syntax:     ISLEAP(YEAR)
+      
+     Inputs:
+           YEAR - Year of interest (default = current year). 
+           You can input a vector of years.
+     Outputs:
+           Logical vector.
+
+      Example: 
+
+           Calling on Matlab the function: isleap
+
+           Answer is: 0
+
+
+           Calling on Matlab the function: x=isleap([2007 2008])
+
+           Answer is:
+           x = 0 1
+
+           Created by Giuseppe Cardillo
+           giuseppe.cardillo-edta@poste.it
+           Modified after Simon Jan suggestions
+ To cite this file, this would be an appropriate format:
+ Cardillo G. (2007) Isleap: a simple routine to test if a year is a leap
+ year.
+ http://www.mathworks.com/matlabcentral/fileexchange/14172</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ASK/HSOFT/ASK_mjs_dy.html" class="code" title="function date_out = ASK_mjs_dy(MJStime)">ASK_mjs_dy</a>	ASK_MJS_DY -  convert mjs time to decimal years</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function x=isleap(Year)</a>
+0002 <span class="comment">%ISLEAP True for leap year.</span>
+0003 <span class="comment">%     ISLEAP(Year) returns 1 if Year is a leap year and 0 otherwise.</span>
+0004 <span class="comment">%     ISLEAP is only set for gregorian calendar, so Year &gt;= 1583</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Syntax:     ISLEAP(YEAR)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%     Inputs:</span>
+0009 <span class="comment">%           YEAR - Year of interest (default = current year).</span>
+0010 <span class="comment">%           You can input a vector of years.</span>
+0011 <span class="comment">%     Outputs:</span>
+0012 <span class="comment">%           Logical vector.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%      Example:</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%           Calling on Matlab the function: isleap</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%           Answer is: 0</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%           Calling on Matlab the function: x=isleap([2007 2008])</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%           Answer is:</span>
+0024 <span class="comment">%           x = 0 1</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">%           Created by Giuseppe Cardillo</span>
+0027 <span class="comment">%           giuseppe.cardillo-edta@poste.it</span>
+0028 <span class="comment">%           Modified after Simon Jan suggestions</span>
+0029 <span class="comment">% To cite this file, this would be an appropriate format:</span>
+0030 <span class="comment">% Cardillo G. (2007) Isleap: a simple routine to test if a year is a leap</span>
+0031 <span class="comment">% year.</span>
+0032 <span class="comment">% http://www.mathworks.com/matlabcentral/fileexchange/14172</span>
+0033 
+0034 
+0035 
+0036 <span class="comment">%Input Error handling</span>
+0037 <span class="keyword">switch</span> nargin
+0038  <span class="keyword">case</span> 0
+0039   c=clock; Year=c(1); clear c
+0040  <span class="keyword">case</span> 1
+0041   <span class="keyword">if</span> ~isvector(Year) || ~all(isnumeric(Year)) || ~all(isfinite(Year)) || isempty(Year)
+0042     error(<span class="string">'Warning: Year values must be numeric and finite'</span>)
+0043   <span class="keyword">end</span>
+0044   <span class="keyword">if</span> ~isequal(Year,round(Year))
+0045     error(<span class="string">'Warning: Year values must be integer'</span>)
+0046   <span class="keyword">end</span>
+0047   L=Year-1583;
+0048   <span class="keyword">if</span> L(L&lt;0)
+0049     error(<span class="string">'Warning: Every value of Year must be &gt;1582'</span>)
+0050   <span class="keyword">end</span>
+0051  <span class="keyword">otherwise</span>
+0052   error(<span class="string">'stats:Isleap:TooMuchInputs'</span>,<span class="string">'Year must be a scalar or a vector.'</span>);
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="comment">% The Gregorian calendar has 97 leap years every 400 years:</span>
+0056 <span class="comment">% Every year divisible by 4 is a leap year.</span>
+0057 <span class="comment">% However, every year divisible by 100 is not a leap year.</span>
+0058 <span class="comment">% However, every year divisible by 400 is a leap year after all.</span>
+0059 <span class="comment">% So, 1700, 1800, 1900, 2100, and 2200 are not leap years,</span>
+0060 <span class="comment">% but 1600, 2000, and 2400 are leap years.</span>
+0061 x = ~mod(Year, 4) &amp; (mod(Year, 100) | ~mod(Year, 400)); 
+0062 <span class="keyword">return</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

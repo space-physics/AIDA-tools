@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ALIS_heating200510</title>
+  <meta name="keywords" content="ALIS_heating200510">
+  <meta name="description" content="Creates ALIS experiment set up for EISCAT Heating campaign">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html ALIS --><!-- menu.html Gopta-exps -->
+<h1>ALIS_heating200510
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Creates ALIS experiment set up for EISCAT Heating campaign</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Creates ALIS experiment set up for EISCAT Heating campaign
+ 20041MDD</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>	TO_GOPTA - Produce ALIS gopta files (experiment control files)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Creates ALIS experiment set up for EISCAT Heating campaign</span>
+0002 <span class="comment">% 20041MDD</span>
+0003 
+0004 <span class="comment">%%% Stations in operation</span>
+0005 sn =            {<span class="string">'bus'</span>,<span class="string">'kiruna'</span>,<span class="string">'optlab'</span>,<span class="string">'abisko'</span>,<span class="string">'silkimuotka'</span>,<span class="string">'tjautjas'</span>};
+0006 
+0007 <span class="comment">%%% With the following cameras</span>
+0008 mima_nr     =   [ 6        3       4        5      2       1];
+0009 <span class="comment">% And their corresponding gain-tables</span>
+0010 <span class="comment">% Behoever fixas...</span>
+0011 GTlittlenoise = {<span class="string">'2,1'</span>    <span class="string">'2,1'</span>    <span class="string">'2,1'</span>    <span class="string">'2,0'</span>  <span class="string">'2,0'</span>  <span class="string">'1,2'</span>};
+0012 GTlownoise =    {<span class="string">'3,2'</span>    <span class="string">'3,2'</span>    <span class="string">'3,2'</span>    <span class="string">'3,1'</span>  <span class="string">'3,1'</span>  <span class="string">'2,3'</span>};
+0013 
+0014 <span class="comment">%%% Start and stop times (Start just a default providing</span>
+0015 <span class="comment">%%% syncronisation)</span>
+0016 Startstop = {<span class="string">'17:30:00'</span>    <span class="string">'17:30:00'</span>    <span class="string">'17:30:00'</span>   <span class="string">'17:30:00'</span>    <span class="string">'17:30:00'</span>    <span class="string">'17:30:00'</span>
+0017              <span class="string">'21:20:00'</span>    <span class="string">'21:20:00'</span>    <span class="string">'21:20:00'</span>   <span class="string">'21:20:00'</span>    <span class="string">'21:20:00'</span>    <span class="string">'21:20:00'</span>};
+0018 
+0019 <span class="comment">%%% Basic interval time (s)</span>
+0020 interv = [6    6     6     6     6     6
+0021           6    6     6     6     6     6];
+0022 
+0023 
+0024 <span class="comment">%%% Filter sequences, Main focus is on 4278, and 4226 might just be</span>
+0025 <span class="comment">%%% usefull...</span>
+0026 filter4 = {<span class="string">'6300'</span>   <span class="string">'6300'</span>   <span class="string">'5577'</span>   <span class="string">'6300'</span>   <span class="string">'6300'</span>   <span class="string">'6300'</span> 
+0027            <span class="string">'5577'</span>   <span class="string">'6300'</span>   <span class="string">'5577'</span>   <span class="string">'5577'</span>   <span class="string">'5577'</span>   <span class="string">'5577'</span>};
+0028 
+0029 <span class="comment">%%% Length of the filter cycles</span>
+0030 c_l4 = [2 2 2 2 2 2];
+0031 
+0032 <span class="comment">%%% Exposure times (ms)</span>
+0033 exptimes = [3700   3700 3700  3700 3700 3700
+0034             3700   3700 3700  3700 3700 3700];
+0035 
+0036 
+0037 <span class="comment">%%% OPTIONS:</span>
+0038 OPS4.binning = <span class="string">'4,4'</span>;<span class="comment">%8x8...</span>
+0039 OPS4.object= <span class="string">'heatin-200503'</span>;
+0040 OPS4.observer= <span class="string">'ALIS-standing-tall'</span>;
+0041 
+0042 <span class="comment">%%% Create the gopta-scripts</span>
+0043 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'Heating2005n-1700'</span>,<span class="keyword">...</span>
+0044               sn,Startstop,<span class="keyword">...</span>
+0045               c_l4,filter4,<span class="keyword">...</span>
+0046               {<span class="string">''</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>},<span class="keyword">...</span>
+0047               exptimes-2000,interv,<span class="keyword">...</span>
+0048               GTlownoise,OPS4);
+0049 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'Heating2005n-2700'</span>,<span class="keyword">...</span>
+0050               sn,Startstop,<span class="keyword">...</span>
+0051               c_l4,filter4,<span class="keyword">...</span>
+0052               {<span class="string">''</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>},<span class="keyword">...</span>
+0053               exptimes-1000,interv,<span class="keyword">...</span>
+0054               GTlownoise,OPS4);
+0055 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'Heating2005n'</span>,<span class="keyword">...</span>
+0056               sn,Startstop,<span class="keyword">...</span>
+0057               c_l4,filter4,<span class="keyword">...</span>
+0058               {<span class="string">''</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>},<span class="keyword">...</span>
+0059               exptimes,interv,<span class="keyword">...</span>
+0060               GTlownoise,OPS4);
+0061 
+0062 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'Heating2005l-1700'</span>,<span class="keyword">...</span>
+0063               sn,Startstop,<span class="keyword">...</span>
+0064               c_l4,filter4,<span class="keyword">...</span>
+0065               {<span class="string">''</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>},<span class="keyword">...</span>
+0066               exptimes-2000,interv,<span class="keyword">...</span>
+0067               GTlittlenoise,OPS4);
+0068 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'Heating2005l-2700'</span>,<span class="keyword">...</span>
+0069               sn,Startstop,<span class="keyword">...</span>
+0070               c_l4,filter4,<span class="keyword">...</span>
+0071               {<span class="string">''</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>},<span class="keyword">...</span>
+0072               exptimes-1000,interv,<span class="keyword">...</span>
+0073               GTlittlenoise,OPS4);
+0074 OK = <a href="../../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>(<span class="string">'Heating2005l'</span>,<span class="keyword">...</span>
+0075               sn,Startstop,<span class="keyword">...</span>
+0076               c_l4,filter4,<span class="keyword">...</span>
+0077               {<span class="string">''</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>,<span class="string">'heating'</span>},<span class="keyword">...</span>
+0078               exptimes,interv,<span class="keyword">...</span>
+0079               GTlittlenoise,OPS4);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

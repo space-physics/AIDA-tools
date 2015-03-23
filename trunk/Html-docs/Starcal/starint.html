@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of starint</title>
+  <meta name="keywords" content="starint">
+  <meta name="description" content="STARINT evaluation of a 2D gaussian.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>starint
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>STARINT evaluation of a 2D gaussian.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [starintens] = starint(fv,xmin,xmax,ymin,ymax) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> STARINT evaluation of a 2D gaussian.
+ 
+ STARINT calculates a 2D gaussian on a matrix located
+ between (xmin,xmax) and (ymin,ymax) the maxintensity
+ and the spread of the gaussian is given in the array
+ FV.
+ 
+ Calling:
+ [starintens] = starint(fv,xmin,xmax,ymin,ymax)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>	x = xx( phi, lambda , alt )</li><li><a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>	y = yy( phi, lambda, alt)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Starcal/M6/autoidentify.html" class="code" title="function [idstarsok,stars_par] = autoidentify(SkMp)">autoidentify</a>	AUTOIDENTIFY - automatically identify all the stars of PLSTARS</li><li><a href="../Starcal/M6/updstraut.html" class="code" title="function [starpar] = updstraut(SkMp)">updstraut</a>	UPDSTRAUT - fit image location size and intensity of star.</li><li><a href="../Starcal/M7/autoidentify.html" class="code" title="function [idstarsok,stars_par] = autoidentify(SkMp)">autoidentify</a>	AUTOIDENTIFY - automatically identify all the stars of PLSTARS</li><li><a href="../Starcal/M7/updstraut.html" class="code" title="function [starpar] = updstraut(SkMp)">updstraut</a>	UPDSTRAUT - fit image location size and intensity of star.</li><li><a href="sort_out.html" class="code" title="function [identstars] = sort_out(in_i,in_j,in_I,bild)">sort_out</a>	SORT_OUT - finds the possible stars among the local maxima.</li><li><a href="star_minus_bg.html" class="code" title="function starint = star_minus_bg(in_starint)">star_minus_bg</a>	STAR_MINUS_BG - background reduction from star</li><li><a href="../Starcal/update/updstrman.html" class="code" title="function [starpar] = updstrman(SkMp)">updstrman</a>	UPDSTRMAN -</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [starintens] = starint(fv,xmin,xmax,ymin,ymax)</a>
+0002 <span class="comment">% STARINT evaluation of a 2D gaussian.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% STARINT calculates a 2D gaussian on a matrix located</span>
+0005 <span class="comment">% between (xmin,xmax) and (ymin,ymax) the maxintensity</span>
+0006 <span class="comment">% and the spread of the gaussian is given in the array</span>
+0007 <span class="comment">% FV.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% Calling:</span>
+0010 <span class="comment">% [starintens] = starint(fv,xmin,xmax,ymin,ymax)</span>
+0011 
+0012 
+0013 <span class="comment">%   Copyright � 19970907 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0014 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0015 
+0016 x = xmin:xmax;
+0017 y = ymin:ymax;
+0018 [<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>,<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>] = meshgrid(x,y);
+0019 <span class="comment">% xx = xx;</span>
+0020 <span class="comment">% yy = yy;</span>
+0021 
+0022 <span class="keyword">if</span> ( length(fv) &gt; 6 )
+0023   g = fv(7);
+0024 <span class="keyword">else</span>
+0025   g = 2;
+0026 <span class="keyword">end</span>
+0027 
+0028 starintens = fv(3)*exp(-abs(fv(4)*(<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>-fv(1)).^2 + <span class="keyword">...</span>
+0029                             2*fv(5)*(<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>-fv(1)).*(<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>-fv(2)) + <span class="keyword">...</span>
+0030                             fv(6)*(<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>-fv(2)).^2).^(g/2));</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

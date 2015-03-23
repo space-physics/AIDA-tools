@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_overlay</title>
+  <meta name="keywords" content="ASK_overlay">
+  <meta name="description" content="ASK_OVERLAY - short procedure to overlay three images">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_overlay
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_OVERLAY - short procedure to overlay three images</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function rgb = ASK_overlay(D1,D2,D3,R1,R2,R3) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_OVERLAY - short procedure to overlay three images 
+   into a true color image. Due to matlabs restrictions for
+   displaying RGB images the intensities of the input images is
+   cropped to the intensity range [R1(1) R1(2)] (cycl.) and scaled
+   to [0-1]
+   
+ Calling:
+   rgb = ASK_overlay(D1,D2,D3,R1,R2,R3)
+ Input:
+   D1 - image to be put into the R-plane of RGB image [ny x nx]
+   D2 - image to be put into the G-plane of RGB image [ny x nx]
+   D3 - image to be put into the B-plane of RGB image [ny x nx]
+   R1 - range to crop-n-scale D1 into [0-1]
+   R2 - range to crop-n-scale D2 into [0-1]
+   R3 - range to crop-n-scale D3 into [0-1]</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function rgb = ASK_overlay(D1,D2,D3,R1,R2,R3)</a>
+0002 <span class="comment">% ASK_OVERLAY - short procedure to overlay three images</span>
+0003 <span class="comment">%   into a true color image. Due to matlabs restrictions for</span>
+0004 <span class="comment">%   displaying RGB images the intensities of the input images is</span>
+0005 <span class="comment">%   cropped to the intensity range [R1(1) R1(2)] (cycl.) and scaled</span>
+0006 <span class="comment">%   to [0-1]</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">%   rgb = ASK_overlay(D1,D2,D3,R1,R2,R3)</span>
+0010 <span class="comment">% Input:</span>
+0011 <span class="comment">%   D1 - image to be put into the R-plane of RGB image [ny x nx]</span>
+0012 <span class="comment">%   D2 - image to be put into the G-plane of RGB image [ny x nx]</span>
+0013 <span class="comment">%   D3 - image to be put into the B-plane of RGB image [ny x nx]</span>
+0014 <span class="comment">%   R1 - range to crop-n-scale D1 into [0-1]</span>
+0015 <span class="comment">%   R2 - range to crop-n-scale D2 into [0-1]</span>
+0016 <span class="comment">%   R3 - range to crop-n-scale D3 into [0-1]</span>
+0017 
+0018 <span class="comment">% Modified from overlay.pro</span>
+0019 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0020 <span class="comment">% GPL 3.0 or later applies</span>
+0021 
+0022 
+0023 sz1 = size(D1);
+0024 sz2 = size(D2);
+0025 sz3 = size(D3);
+0026 
+0027 <span class="keyword">if</span> ~all(sz1==sz2) |  ~all(sz1==sz3)
+0028   error(sprintf(<span class="string">'All sizes of D1, D2 and D3 must be equal, are now: [%d, %d], [%d, %d], [%d, %d],'</span>,sz1,sz2,sz3))
+0029 <span class="keyword">end</span>
+0030 
+0031 rgb(:,:,3) = min(1,max(0,(D3-R3(1))/(R3(2)-R3(1))));
+0032 rgb(:,:,2) = min(1,max(0,(D2-R2(1))/(R2(2)-R2(1))));
+0033 rgb(:,:,1) = min(1,max(0,(D1-R1(1))/(R1(2)-R1(1))));</pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

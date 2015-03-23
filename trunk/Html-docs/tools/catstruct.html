@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of catstruct</title>
+  <meta name="keywords" content="catstruct">
+  <meta name="description" content="CATSTRUCT - concatenate structures">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>catstruct
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>CATSTRUCT - concatenate structures</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function A = catstruct(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> CATSTRUCT - concatenate structures
+
+   X = CATSTRUCT(S1,S2,S3,...) concates the structures S1, S2, ... into one
+   structure X.
+
+   A.name = 'Me' ; 
+   B.income = 99999 ; 
+   X = CATSTRUCT(A,B) -&gt;
+     X.name = 'Me' ;
+     X.income = 99999 ;
+
+   CATSTRUCT(S1,S2,'sorted') will sort the fieldnames alphabetically.
+
+   If a fieldname occurs more than once in the argument list, only the last
+   occurence is used, and the fields are alphabetically sorted.
+
+   To sort the fieldnames of a structure A use:
+   A = CATSTRUCT(A,'sorted') ;
+
+   See also CAT, STRUCT, FIELDNAMES, STRUCT2CELL</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/AVOK/alis_overviewmovie.html" class="code" title="function OK = alis_overviewmovie(moviename,Filenames,POs,mOpts)">alis_overviewmovie</a>	ALIS_OVERVIEWMOVIE - Makes movies of images in files</li><li><a href="../ASK/IC/askChem2em_AVplot.html" class="code" title="function [ph,emissions] = askChem2em_AVplot(emissions,OPS,varargin)">askChem2em_AVplot</a>	ASKCHEM2EM_AVPLOT - plot altitude variation of emission rates</li><li><a href="../ASK/IC/askChem2em_CERplot.html" class="code" title="function [ph,CER,emissions] = askChem2em_CERplot(emissions,OPS,varargin)">askChem2em_CERplot</a>	ASKCHEM2EM_CERPLOT - plot column emission rates from SOTON Chemistry model emission-file/struct</li><li><a href="../ASK/IC/askChem2em_TAVplot.html" class="code" title="function [ph,Ems,emissions] = askChem2em_TAVplot(emissions,OPS,varargin)">askChem2em_TAVplot</a>	ASKCHEM2EM_AVPLOT - plot time-altitude variation of emission rates</li><li><a href="../ASK/IC/sotonChem2em_AVplot.html" class="code" title="function [ph,emissions] = sotonChem2em_AVplot(emissions,OPS,varargin)">sotonChem2em_AVplot</a>	sotonChem2em_AVplot - plot altitude variation of emission rates</li><li><a href="../ASK/IC/sotonChem2em_CERplot.html" class="code" title="function [ph,CER,emissions] = sotonChem2em_CERplot(emissions,OPS,varargin)">sotonChem2em_CERplot</a>	sotonChem2em_CERplot - plot column emission rates from SOTON Chemistry model emission-file/struct</li><li><a href="../ASK/IC/sotonChem2em_TAVplot.html" class="code" title="function [ph,Ems,emissions] = sotonChem2em_TAVplot(emissions,OPS,varargin)">sotonChem2em_TAVplot</a>	sotonChem2em_TAVplot - plot time-altitude variation of emission rates</li><li><a href="../Camera/triangulate.html" class="code" title="function [xtr,ytr,ztr,tu1,tv1,tu2,tv2,minl] = triangulate(img1,r1,img2,r2,cm1,cm2,PO,Opts)">triangulate</a>	TRIANGULATE - stereoscopic triangulation from a pair of images</li><li><a href="../Imgtools/errFcnAuroralFlow.html" class="code" title="function varargout = errFcnAuroralFlow(varpars,ind4v_p,par0,I1,I2,nPoints,OPS)">errFcnAuroralFlow</a>	errFcnAuroralFlow - error function for auroral motion estimate</li><li><a href="../Imgtools/symnin_filter.html" class="code" title="function img_out = symnin_filter(img_in,n,OPS)">symnin_filter</a>	SYMNIN_FILTER - symmetric nearest intensity neighbour filter</li><li><a href="../Tomography/tomo_setup4reduced2D.html" class="code" title="function [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS)">tomo_setup4reduced2D</a>	tomo_setup4reduced2D - Set up coordinates and projection matrices</li><li><a href="../Tomography/trmtr3Dto1D.html" class="code" title="function [trmtr,fi_out,debug_m] = trmtr3Dto1D(X,Y,Z,r0,e_pix,dL,OPS)">trmtr3Dto1D</a>	trmtr3Dto1D - make projection matrix from 3-D to 1-D image cuts</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function A = catstruct(varargin)</a>
+0002 <span class="comment">% CATSTRUCT - concatenate structures</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   X = CATSTRUCT(S1,S2,S3,...) concates the structures S1, S2, ... into one</span>
+0005 <span class="comment">%   structure X.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   A.name = 'Me' ;</span>
+0008 <span class="comment">%   B.income = 99999 ;</span>
+0009 <span class="comment">%   X = CATSTRUCT(A,B) -&gt;</span>
+0010 <span class="comment">%     X.name = 'Me' ;</span>
+0011 <span class="comment">%     X.income = 99999 ;</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   CATSTRUCT(S1,S2,'sorted') will sort the fieldnames alphabetically.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   If a fieldname occurs more than once in the argument list, only the last</span>
+0016 <span class="comment">%   occurence is used, and the fields are alphabetically sorted.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   To sort the fieldnames of a structure A use:</span>
+0019 <span class="comment">%   A = CATSTRUCT(A,'sorted') ;</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   See also CAT, STRUCT, FIELDNAMES, STRUCT2CELL</span>
+0022 
+0023 <span class="comment">% for Matlab R13</span>
+0024 <span class="comment">% version 2.0 (sep 2007)</span>
+0025 <span class="comment">% (c) Jos van der Geest</span>
+0026 <span class="comment">% email: jos@jasen.nl</span>
+0027 
+0028 <span class="comment">% History</span>
+0029 <span class="comment">% Created:  2005</span>
+0030 <span class="comment">% Revisions</span>
+0031 <span class="comment">%   2.0 (sep 2007) removed bug when dealing with fields containing cell arrays (Thanks to Rene Willemink)</span>
+0032 
+0033 
+0034 
+0035 N = nargin ;
+0036 
+0037 error(nargchk(1,Inf,N)) ;
+0038 
+0039 <span class="keyword">if</span> ~isstruct(varargin{end}),
+0040     <span class="keyword">if</span> isequal(varargin{end},<span class="string">'sorted'</span>),
+0041         sorted = 1 ;
+0042         N = N-1 ;
+0043         <span class="keyword">if</span> N &lt; 1,
+0044             A = [] ;
+0045             <span class="keyword">return</span>
+0046         <span class="keyword">end</span>
+0047     <span class="keyword">else</span>
+0048         error(<span class="string">'Last argument should be a structure, or the string &quot;sorted&quot;.'</span>) ;
+0049     <span class="keyword">end</span>
+0050 <span class="keyword">else</span>
+0051     sorted = 0 ;
+0052 <span class="keyword">end</span>
+0053 
+0054 <span class="keyword">for</span> ii=1:N,
+0055     X = varargin{ii} ;
+0056     <span class="keyword">if</span> ~isstruct(X),
+0057         error([<span class="string">'Argument #'</span> num2str(ii) <span class="string">' is not a structure.'</span>]) ;
+0058     <span class="keyword">end</span>
+0059     FN{ii} = fieldnames(X) ;
+0060     VAL{ii} = struct2cell(X) ;
+0061 <span class="keyword">end</span>
+0062 
+0063 FN = cat(1,FN{:}) ;
+0064 VAL = cat(1,VAL{:}) ;
+0065 [UFN,ind] = unique(FN) ;
+0066 
+0067 <span class="keyword">if</span> numel(UFN) ~= numel(FN),
+0068     warning(<span class="string">'Duplicate fieldnames found. Last value is used and fields are sorted'</span>) ;
+0069     sorted = 1 ;
+0070 <span class="keyword">end</span>
+0071 
+0072 <span class="keyword">if</span> sorted,
+0073     VAL = VAL(ind) ;
+0074     FN = FN(ind) ;
+0075 <span class="keyword">end</span>
+0076 
+0077 <span class="comment">% This deals correctly with cell arrays</span>
+0078 A = cell2struct(VAL, FN);
+0079 
+0080 
+0081</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

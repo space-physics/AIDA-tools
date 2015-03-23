@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_cal</title>
+  <meta name="keywords" content="tomo_cal">
+  <meta name="description" content="tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_cal
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [CalFactors,stns,calimgs] = tomo_cal(stns,XfI,YfI,ZfI,OPS) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b
+ 
+ Calling:
+   [CalFactors,stns] = tomo_cal(stns,XfI,YfI,ZfI)
+
+ See also TOMO_INP_CAMERA, <a href="camera_set_up_sc.html" class="code" title="function [uv,d,l_cl,bfk,ds] = camera_set_up_sc(r,xi,yi,zi,optpar,robs,imgsize,nr_layers,cmtr,ds)">CAMERA_SET_UP_SC</a>, <a href="make_tomo_ops.html" class="code" title="function tomo_ops = make_tomo_ops(stns)">MAKE_TOMO_OPS</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>	CAMERA_INVMODEL - line-of-sight azimuthal and polar angles PHI THETA</li><li><a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>	FASTPROJECTION - project the volume emission VEM down to image IMG_OUT.</li><li><a href="../tools/max2D.html" class="code" title="function [Imax,i1,i2] = max2D(Iin)">max2D</a>	max2D - maximum element and its indices in a 2-D array</li><li><a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>	MERGE_STRUCTS - Merge all fields of S2 into S1.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [CalFactors,stns,calimgs] = tomo_cal(stns,XfI,YfI,ZfI,OPS)</a>
+0002 <span class="comment">% tomo_cal - estimate calibration factor for fastprojection of 3D b-o-b</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   [CalFactors,stns] = tomo_cal(stns,XfI,YfI,ZfI)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% See also TOMO_INP_CAMERA, CAMERA_SET_UP_SC, MAKE_TOMO_OPS</span>
+0008 <span class="comment">%</span>
+0009 
+0010 <span class="comment">%   Copyright � 20050110 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0011 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0012 
+0013 dOPS.disp3D = 0;
+0014 <span class="keyword">if</span> nargin &gt; 4
+0015   dOPS = <a href="../tools/merge_structs.html" class="code" title="function S_out = merge_structs(S1,S2)">merge_structs</a>(dOPS,OPS);
+0016 <span class="keyword">end</span>
+0017 
+0018 
+0019 <span class="comment">% 1</span>
+0020 Vem = 1e9*ones(size(XfI));
+0021 <span class="comment">% 2 im = fastprojection(...</span>
+0022 <span class="keyword">for</span> i0 = 1:length(stns),
+0023   
+0024   stns(1).proj = <a href="fastprojection.html" class="code" title="function img_out = fastprojection(Vem,uv,d,l_cl,bfk,imgsize,sens_mtr)">fastprojection</a>(Vem, <span class="keyword">...</span>
+0025                                 stns(1).uv, <span class="keyword">...</span>
+0026                                 stns(1).d, <span class="keyword">...</span>
+0027                                 stns(1).l_cl, <span class="keyword">...</span>
+0028                                 stns(1).bfk, <span class="keyword">...</span>
+0029                                 size(stns(1).img));
+0030   <span class="comment">% 3</span>
+0031   [i1,i1,i2] = <a href="../tools/max2D.html" class="code" title="function [Imax,i1,i2] = max2D(Iin)">max2D</a>(stns(i0).C);
+0032   <span class="comment">% 4 [az,ze,phi,theta] of im(i0,i2)</span>
+0033   [phi,theta] = <a href="../Camera/camera_invmodel.html" class="code" title="function [phi,theta] = camera_invmodel(u,v,optpar,optmod,imsiz)">camera_invmodel</a>(i1,i2,v,stns(i0).optpar,stns(i0).optpar(9),size(stns(i0).img));
+0034   <span class="comment">% 4</span>
+0035   l_int = (ZfI(1,1,end)-ZfI(1,1,1))*(size(ZfI,3)+1)/size(ZfI,3);
+0036   <span class="comment">% 5 Correct for cos(theta) &amp; cos(phi)??</span>
+0037   <span class="comment">% 5a nope, those corrections shouldn't be made.</span>
+0038   <span class="comment">% 5b, well l_int should be made to be the total length, not only</span>
+0039   <span class="comment">%     the height of the block of blobs!</span>
+0040   l_int = l_int/cos(theta);
+0041   <span class="comment">% 7 C_Rayleighs = im/l*DittenDatten, unit of size dimensions has to</span>
+0042   <span class="comment">%   be taken into account. most common km!</span>
+0043   L_int(i0) = l_int;
+0044   Theta(i0) = theta;
+0045   ind1(i0) = i1;
+0046   
+0047 <span class="keyword">end</span>
+0048</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

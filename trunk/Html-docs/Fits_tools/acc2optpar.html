@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of acc2optpar</title>
+  <meta name="keywords" content="acc2optpar">
+  <meta name="description" content="ACC2OPTPAR - Convert ACC-formated optical parameters to standart optpar">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>acc2optpar
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ACC2OPTPAR - Convert ACC-formated optical parameters to standart optpar</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function optpar = acc2optpar(acc) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ACC2OPTPAR - Convert ACC-formated optical parameters to standart optpar
+   
+ Calling:
+  optpar = acc2optpar(acc)
+ Input:
+  acc - acc-formated array: [stn,az,ze,date1,date2,optmod,optpar,0]
+ Outut:
+  optpar - [focalU,focalV,rot1,rot2,rot3,dx,dy,alpha,optmod,0]</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Spectral_cal/Spec_cal_jobb_Miracle.html" class="code" title="">Spec_cal_jobb_Miracle</a>	Spec_cal_jobb_Miracle - Example of spectral camera sensitivity calibration</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function optpar = acc2optpar(acc)</a>
+0002 <span class="comment">% ACC2OPTPAR - Convert ACC-formated optical parameters to standart optpar</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  optpar = acc2optpar(acc)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  acc - acc-formated array: [stn,az,ze,date1,date2,optmod,optpar,0]</span>
+0008 <span class="comment">% Outut:</span>
+0009 <span class="comment">%  optpar - [focalU,focalV,rot1,rot2,rot3,dx,dy,alpha,optmod,0]</span>
+0010 
+0011 <span class="comment">% Copyright Bjorn Gustavsson 20100715</span>
+0012 
+0013 optpar = [acc([7:14,6]),0];</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

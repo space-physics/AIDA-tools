@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of saveerrordata</title>
+  <meta name="keywords" content="saveerrordata">
+  <meta name="description" content="SAVEERRORDATA - saves error data">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>saveerrordata
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SAVEERRORDATA - saves error data</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function  [SkMp] = saveerrordata(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SAVEERRORDATA - saves error data
+
+ SYNOPSIS:
+         [SkMp] = saveerrordata(SkMp)
+         saveerrordata(SkMp)
+
+ DESCRIPTION
+         saveerrordata saves error data to a file STNyymmdd_hhmmss_error.mat
+         and to SkMp.error_data (if output parameter is given) for easier access
+         saved data: horizontal, vertical, radial and angular error.
+
+         does not override old error files, but renames them to STNyymmdd_hhmmss_error.mat.001
+         and so on. it must be noted though, that there is no information as to which error file
+         corresponds with a specific set of optical parameters and identified stars, the user
+         must be careful and keep this in mind.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>	PROJECT_DIRECTIONS - calculates the image positions [UA,WA] from (AZ,ZE)</li><li><a href="../tools/genfilename.html" class="code" title="function filename = genfilename(SkMp, n)">genfilename</a>	GENFILENAME - generates starcal formated filenames</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function  [SkMp] = saveerrordata(SkMp)</a>
+0002 <span class="comment">% SAVEERRORDATA - saves error data</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% SYNOPSIS:</span>
+0005 <span class="comment">%         [SkMp] = saveerrordata(SkMp)</span>
+0006 <span class="comment">%         saveerrordata(SkMp)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% DESCRIPTION</span>
+0009 <span class="comment">%         saveerrordata saves error data to a file STNyymmdd_hhmmss_error.mat</span>
+0010 <span class="comment">%         and to SkMp.error_data (if output parameter is given) for easier access</span>
+0011 <span class="comment">%         saved data: horizontal, vertical, radial and angular error.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%         does not override old error files, but renames them to STNyymmdd_hhmmss_error.mat.001</span>
+0014 <span class="comment">%         and so on. it must be noted though, that there is no information as to which error file</span>
+0015 <span class="comment">%         corresponds with a specific set of optical parameters and identified stars, the user</span>
+0016 <span class="comment">%         must be careful and keep this in mind.</span>
+0017 <span class="comment">%</span>
+0018 
+0019 <span class="comment">% Copyright M V</span>
+0020 
+0021 u  = SkMp.identstars(:, 3); <span class="comment">% horizontal image coordinate</span>
+0022 v  = SkMp.identstars(:, 4); <span class="comment">% vertical image coordinate</span>
+0023 r  = ((u-size(SkMp.img,2)/2).^2+(v-size(SkMp.img,1)/2).^2).^.5; <span class="comment">% radial image coordinate</span>
+0024 fi = atan2((u-size(SkMp.img,2)/2),(v-size(SkMp.img,1)/2))*180/pi; <span class="comment">% angular image coordinate</span>
+0025 
+0026 [ua, va] = <a href="../Camera/project_directions.html" class="code" title="function [ua,wa] = project_directions(az,ze,optpar,optmod,imgsiz)">project_directions</a>(SkMp.identstars(:,1), SkMp.identstars(:,2), SkMp.optpar, SkMp.optmod, size(SkMp.img));
+0027 ra       = ((ua-size(SkMp.img,2)/2).^2+(va-size(SkMp.img,1)/2).^2).^.5;
+0028 fia      = atan2((ua-size(SkMp.img,2)/2),(va-size(SkMp.img,1)/2))*180/pi;
+0029 
+0030 error_horiz = u-ua;
+0031 error_verti = v-va;
+0032 error_radia = r-ra;
+0033 error_angul = fi-fia;
+0034 
+0035 SkMp.error_data.horizontal = error_horiz;
+0036 SkMp.error_data.vertical   = error_verti;
+0037 SkMp.error_data.radial     = error_radia;
+0038 SkMp.error_data.angular    = error_angul;
+0039 
+0040 <span class="comment">%fn_length = size(SkMp.obs.filename);</span>
+0041 <span class="comment">%if fn_length(2) == 25</span>
+0042 <span class="comment">%    errorfile = SkMp.obs.filename(1:16);</span>
+0043 <span class="comment">%elseif fn_length(2) == 27</span>
+0044 <span class="comment">%    errorfile = SkMp.obs.filename(1:22);</span>
+0045 <span class="comment">%end</span>
+0046 <span class="comment">%errorfile = [errorfile, '_error.mat']</span>
+0047 errorfile = <a href="../tools/genfilename.html" class="code" title="function filename = genfilename(SkMp, n)">genfilename</a>(SkMp, 3);
+0048 
+0049 Wmessg = sprintf(<span class="string">'\nWriting error data to file %s...\n'</span>, errorfile);
+0050 disp(Wmessg)
+0051 
+0052 <span class="keyword">try</span>
+0053   <span class="keyword">if</span> exist(errorfile,<span class="string">'file'</span>)
+0054     sprintf(<span class="string">'\nBacking up the old file as...'</span>)
+0055     counter = <span class="string">'001'</span>;
+0056     <span class="keyword">while</span> exist([errorfile, <span class="string">'.'</span>, counter],<span class="string">'file'</span>)
+0057       counter = num2str(sprintf(<span class="string">'%03d'</span>, str2num(counter)+1));
+0058     <span class="keyword">end</span>
+0059     sprintf(<span class="string">'%s'</span>, [errorfile, <span class="string">'.'</span>, counter])
+0060     [status, message] = movefile(errorfile, [errorfile, <span class="string">'.'</span>, counter]);
+0061   <span class="keyword">end</span>
+0062   save(errorfile, <span class="string">'error_horiz'</span>, <span class="string">'error_verti'</span>, <span class="string">'error_radia'</span>, <span class="string">'error_angul'</span>);
+0063   disp(<span class="string">'OK.'</span>)
+0064 <span class="keyword">catch</span>
+0065   Wmessg = sprintf(<span class="string">'\nWriting %s failed:\n%d:%s\n'</span>, errorfile, status, message);
+0066   disp(Wmessg)
+0067 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

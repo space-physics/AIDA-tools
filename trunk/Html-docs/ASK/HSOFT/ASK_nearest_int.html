@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_nearest_int</title>
+  <meta name="keywords" content="ASK_nearest_int">
+  <meta name="description" content="ASK_NEAREST_INT - finds the interval starting at t1 closest to mjs1">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_nearest_int
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_NEAREST_INT - finds the interval starting at t1 closest to mjs1</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [nearest_indx] = ASK_nearest_int(t1,mjs1) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_NEAREST_INT - finds the interval starting at t1 closest to mjs1
+   
+ this procedure finds which of the intervals with starting times t1
+ is closest to mjs1. t1 are a time arrays - t1 is the
+ start times for each file  (for example). mjs1 are a single
+ value, and are the start times of the period you are looking for. In the file
+ example start_indx is the index for the closest entry in t1.
+
+ t1, mjs1 are inputs.
+ nearest_indx is the output.
+
+ If the hardBoundaries keyword is set then greater than and less
+ than conditions are used instead of &quot;or equal to&quot; versions.
+ This prevents finding periods which are just touching the search
+ period.
+
+ This routine is usually used for searching lookup tables for the
+ desired period. 
+
+ indices of the nearest intervals are returned in
+ NEAREST_INDX 
+
+ Calling:
+   [start_indx] = ASK_nearest_int(t1,mjs1)
+ Input:
+   t1   - array of mega-block start times (in MJS)
+   mjs1 - start time for interval 
+ Output:
+   neaerest_indx - index to the entry in t1 closest to mjs1</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [nearest_indx] = ASK_nearest_int(t1,mjs1)</a>
+0002 <span class="comment">% ASK_NEAREST_INT - finds the interval starting at t1 closest to mjs1</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% this procedure finds which of the intervals with starting times t1</span>
+0005 <span class="comment">% is closest to mjs1. t1 are a time arrays - t1 is the</span>
+0006 <span class="comment">% start times for each file  (for example). mjs1 are a single</span>
+0007 <span class="comment">% value, and are the start times of the period you are looking for. In the file</span>
+0008 <span class="comment">% example start_indx is the index for the closest entry in t1.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% t1, mjs1 are inputs.</span>
+0011 <span class="comment">% nearest_indx is the output.</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% If the hardBoundaries keyword is set then greater than and less</span>
+0014 <span class="comment">% than conditions are used instead of &quot;or equal to&quot; versions.</span>
+0015 <span class="comment">% This prevents finding periods which are just touching the search</span>
+0016 <span class="comment">% period.</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% This routine is usually used for searching lookup tables for the</span>
+0019 <span class="comment">% desired period.</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">% indices of the nearest intervals are returned in</span>
+0022 <span class="comment">% NEAREST_INDX</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% Calling:</span>
+0025 <span class="comment">%   [start_indx] = ASK_nearest_int(t1,mjs1)</span>
+0026 <span class="comment">% Input:</span>
+0027 <span class="comment">%   t1   - array of mega-block start times (in MJS)</span>
+0028 <span class="comment">%   mjs1 - start time for interval</span>
+0029 <span class="comment">% Output:</span>
+0030 <span class="comment">%   neaerest_indx - index to the entry in t1 closest to mjs1</span>
+0031 
+0032 <span class="comment">% Modified from locate_int.pro</span>
+0033 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0034 <span class="comment">% GPL 3.0 or later applies</span>
+0035 
+0036 
+0037 
+0038 <span class="comment">% start_indx = -1;</span>
+0039 <span class="comment">% stop_indx = -1;</span>
+0040 
+0041 [dt,nearest_indx] = min(abs(t1 - mjs1));
+0042</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

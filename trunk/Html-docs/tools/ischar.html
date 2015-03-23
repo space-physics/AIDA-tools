@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ischar</title>
+  <meta name="keywords" content="ischar">
+  <meta name="description" content="ISCHAR - return true if STR is a char-array">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>ischar
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ISCHAR - return true if STR is a char-array</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function TrueOrFalse = ischar(str) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ISCHAR - return true if STR is a char-array
+   This is a compatibility insurance function. Mathworks is making
+   ISSTR obsolete, so I have replaced calls to ISSTR with ISCHAR;
+   however ISCHAR might not exist on older versions of matlab. So
+   this is included to cover that case.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/alis_imgs_movie_r.html" class="code" title="function [M,Tstrs,caxout,exptimes,wl] = alis_imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,rgbFilters)">alis_imgs_movie_r</a>	ALIS_IMGS_MOVIE_R - produce a matlab movie M from a series of image files.</li><li><a href="../ALIS/alis_imgs_movie_rgb.html" class="code" title="function [M] = alis_imgs_movie_rgb(files,reg,cax,opptp,PREPROC_OPS,rgbFilters)">alis_imgs_movie_rgb</a>	ALIS_IMGS_MOVIE_RGB - produce a matlab movie M from a series of image files.</li><li><a href="../ALIS/to_gopta.html" class="code" title="function OK = to_gopta(experiment_name,stations,start_stop,cycle_lengths,filter_seq,postitions,exptimes,img_intervals,GT,ops)">to_gopta</a>	TO_GOPTA - Produce ALIS gopta files (experiment control files)</li><li><a href="../EARTH/gtopo2maps.html" class="code" title="function varargout = gtopo2maps(gtopo_file,gtopo_hdr,ops)">gtopo2maps</a>	GTOPO2MAPS - Parse gtopo digital elevation models</li><li><a href="../Fits_tools/chngheader.html" class="code" title="function out_header = chngheader(in_header,key,new)">chngheader</a>	CHNGHEADER - function to change header entry in fits header.</li><li><a href="../Fits_tools/fits_header2infostruct.html" class="code" title="function info = fits_header2infostruct(header,filename2parseheader)">fits_header2infostruct</a>	FITS_HEADER2INFOSTRUCT - parse fits header, make struct of meta-data</li><li><a href="../Fits_tools/read_PGIASC.html" class="code" title="function [D,o] = read_PGIASC(filename,frames,precision)">read_PGIASC</a>	READ_PGIASC - read PGI All Sky Images.</li><li><a href="../Fits_tools/read_arl_keo.html" class="code" title="function [d,o] = read_arl_keo(filename)">read_arl_keo</a>	READ_ARL_KEO - reads Airforce research labs (Todd Pedersen's) KEO image format</li><li><a href="../Fits_tools/read_arl_raw.html" class="code" title="function [d,o] = read_arl_raw(filename)">read_arl_raw</a>	READ_ARL_RAW - reads Airforce research labs (Todd Pedersen's) raw image format</li><li><a href="../Fits_tools/try_to_be_smart.html" class="code" title="function [obs] = try_to_be_smart(img_head,ALIS_FITS,PO)">try_to_be_smart</a>	TRY_TO_BE_SMART parses an (ALIS) fits header for observation info</li><li><a href="../Imgtools/imgs_movie_r.html" class="code" title="function [M,Tstrs,caxout,exptimes,wl] = imgs_movie_r(files,reg,cax,opptp,PREPROC_OPS,movie_ops,avi_ops)">imgs_movie_r</a>	imgs_movie_r - produce a matlab movie M from a series of image files.</li><li><a href="../Imgtools/imgs_plot.html" class="code" title="function out_var = imgs_plot(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot</a>	imgs_plot - Plot a row of images</li><li><a href="../Imgtools/imgs_plot_bg_red.html" class="code" title="function out_var = imgs_plot_bg_red(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot_bg_red</a>	imgs_plot_bg_red - Plot a row of images with background reduction</li><li><a href="../Imgtools/imgs_plot_bg_red1l.html" class="code" title="function out_var = imgs_plot_bg_red1l(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot_bg_red1l</a>	imgs_plot_bg_red1l - Plot a row of  background reduced images, one colorlabel</li><li><a href="../Imgtools/imgs_plot_bg_red_clall.html" class="code" title="function out_var = imgs_plot_bg_red_clall(files,PO,nrrows,rownr,nr_imgs_per_row,ff,img_reg,u1,v1,cax,outvartype)">imgs_plot_bg_red_clall</a>	imgs_plot_bg_red - Plot a row of background reduced images with colorbars</li><li><a href="../Skymap/loadstars2.html" class="code" title="function [possiblestars,catalog] = loadstars2(pos0,date,time0)">loadstars2</a>	LOADSTARS2 load stars from the: Bright Star Catalogue, 5th Revised</li><li><a href="../Skymap/read_all_astro_catalogs.html" class="code" title="function star_list = read_all_astro_catalogs(catalog_file_nm,readme_file_nm,get_these_fields,nr_lines)">read_all_astro_catalogs</a>	READ_ALL_ASTRO_CATALOGS - generic astronomic catalog reader function</li><li><a href="../Skymap/read_bjg.html" class="code" title="function [star_list] = read_bjg(fp,star_pos)">read_bjg</a>	READ_BJG builds STAR_LIST containing star information</li><li><a href="../Skymap/read_bsc.html" class="code" title="function [star_list] = read_bsc(catalog,star_pos)">read_bsc</a>	READ_BSC reads Bright Star Catalog, makes STAR_LIST of information</li><li><a href="../Skymap/read_ybs.html" class="code" title="function [star_list] = read_ybs(fp,star_pos)">read_ybs</a>	[star_list] = read_ybs(fp,star_pos)</li><li><a href="../Spectral_cal/spc_cal_bad_intens.html" class="code" title="function [gI1,gI2,gI3,gT,gX,gY,gFilter] = spc_cal_bad_intens(inI1,inI2,inI3,inT,inX,inY,inFilter,checkfilters,OPTS)">spc_cal_bad_intens</a>	SPC_CAL_BAD_INTENS - Select intensity limits for each star, and</li><li><a href="../Spectral_cal/spc_cal_bad_times.html" class="code" title="function [BadTimes,sis] = spc_cal_bad_times(IDSTARS,time_s,filtnr,optpar,OPTS)">spc_cal_bad_times</a>	SPC_CAL_BAD_TIMES - Screen out bad time periods for each star</li><li><a href="ImageViewer.html" class="code" title="">ImageViewer</a>	</li><li><a href="cline.html" class="code" title="function h=cline(x,y,z,c,cmap)">cline</a>	CLINE - plots a 3D curve (x,y,z) encoded with scalar color data (c)</li><li><a href="in_def2.html" class="code" title="function y = in_def2(question,default_value)">in_def2</a>	IN_DEF2 - input, with default value</li><li><a href="magnifyOnFigure.html" class="code" title="function magnifyOnFigure( varargin )">magnifyOnFigure</a>	magnifyOnFigure - interactive zooming in inset subaxes</li><li><a href="mtit.html" class="code" title="function	par=mtit(varargin)">mtit</a>	MTIT		creates a major title in a figure with many axes</li><li><a href="progmeter.html" class="code" title="function progmeter(x, message)">progmeter</a>	PROGMETER displays the progress of completion of a task in the MATLAB</li><li><a href="strim.html" class="code" title="function s1 = strim(s)">strim</a>	STRIM(S) strip the trailing and leading blanks of a string.</li><li><a href="unplot.html" class="code" title="function unplot(arg)">unplot</a>	UNPLOT Delete the most recently created graphics object(s).</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function TrueOrFalse = ischar(str)</a>
+0002 <span class="comment">% ISCHAR - return true if STR is a char-array</span>
+0003 <span class="comment">%   This is a compatibility insurance function. Mathworks is making</span>
+0004 <span class="comment">%   ISSTR obsolete, so I have replaced calls to ISSTR with ISCHAR;</span>
+0005 <span class="comment">%   however ISCHAR might not exist on older versions of matlab. So</span>
+0006 <span class="comment">%   this is included to cover that case.</span>
+0007 
+0008 <span class="comment">%   Copyright � 2011 Bjorn Gustavsson &lt;bjorn.gustavsson@irf.se&gt;,</span>
+0009 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0010 
+0011 
+0012 TrueOrFalse = isstr(str);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

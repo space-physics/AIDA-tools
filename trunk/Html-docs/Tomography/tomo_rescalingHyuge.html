@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tomo_rescalingHyuge</title>
+  <meta name="keywords" content="tomo_rescalingHyuge">
+  <meta name="description" content="TOMO_RESCALINGHYUGE - rescale volume emission rate to correct l-o-s intensity">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>tomo_rescalingHyuge
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TOMO_RESCALINGHYUGE - rescale volume emission rate to correct l-o-s intensity</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [C,I_los] = tomo_rescalingHyuge(I_img,e_los,I3D,X,Y,Z,r0) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TOMO_RESCALINGHYUGE - rescale volume emission rate to correct l-o-s intensity
+   
+ Calling:
+  C = tomo_rescaling(I_img,I3D,X,Y,Z,r0,e_los)
+ 
+ Input:
+  I_img - image intensity in Rayleighs
+  I3D</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Geometry/point_on_line.html" class="code" title="function  [r_out] = point_on_line(r_0,e_l,l)">point_on_line</a>	POINT_ON_LINE calculates the vector to a point R_OUT</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [C,I_los] = tomo_rescalingHyuge(I_img,e_los,I3D,X,Y,Z,r0)</a>
+0002 <span class="comment">% TOMO_RESCALINGHYUGE - rescale volume emission rate to correct l-o-s intensity</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  C = tomo_rescaling(I_img,I3D,X,Y,Z,r0,e_los)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Input:</span>
+0008 <span class="comment">%  I_img - image intensity in Rayleighs</span>
+0009 <span class="comment">%  I3D</span>
+0010 <span class="comment">%</span>
+0011 
+0012 <span class="comment">%   Copyright � 2008 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0013 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0014 
+0015 
+0016 <span class="keyword">for</span> i1 = 1:size(Z,3),
+0017   
+0018   l = (Z(1,1,i1)-r0(3))/e_los(3);
+0019   L(i1) = l;
+0020   r_los = <a href="../Geometry/point_on_line.html" class="code" title="function  [r_out] = point_on_line(r_0,e_l,l)">point_on_line</a>(r0,e_los,l);
+0021   
+0022   <span class="comment">% I_los = interp3(X,Y,Z,I3D,r_los(1,:),r_los(2,:),r_los(3,:));</span>
+0023   I_los(i1) = interp2(X(:,:,i1),Y(:,:,i1),I3D(:,:,i1),r_los(1),r_los(2));
+0024   
+0025 <span class="keyword">end</span>
+0026 I_los(~isfinite(I_los)) = 0;
+0027 
+0028 I_col = sum(I_los.*gradient(L*1e3));
+0029 
+0030 C = 1e10*I_img/I_col;</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

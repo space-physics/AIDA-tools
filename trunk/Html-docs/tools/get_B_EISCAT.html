@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of get_B_EISCAT</title>
+  <meta name="keywords" content="get_B_EISCAT">
+  <meta name="description" content="GET_B_EISCAT - get geomagnteic fields for the EISACT sites.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>get_B_EISCAT
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>GET_B_EISCAT - get geomagnteic fields for the EISACT sites.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [Bout] = get_B_EISCAT(SiteNames) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> GET_B_EISCAT - get geomagnteic fields for the EISACT sites.
+   
+ Calling:
+  B = get_B_EISCAT(SiteNames)
+ Output:
+  B - Geomagnetic field at Troms� Kiruna, Sodankyl� Longyearbyen</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ASK/HSOFT/ASK_slice2trmtr.html" class="code" title="function [trmtrs,eMfan,Vem,X,Y,Z,U,V] = ASK_slice2trmtr(phi_slice,Ops)">ASK_slice2trmtr</a>	ASK_SLICE2TRMTR - projection matrix from blobs in slice || B to ASK-image</li><li><a href="../Tomography/tomo_setup4reduced2D.html" class="code" title="function [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS)">tomo_setup4reduced2D</a>	tomo_setup4reduced2D - Set up coordinates and projection matrices</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [Bout] = get_B_EISCAT(SiteNames)</a>
+0002 <span class="comment">% GET_B_EISCAT - get geomagnteic fields for the EISACT sites.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  B = get_B_EISCAT(SiteNames)</span>
+0006 <span class="comment">% Output:</span>
+0007 <span class="comment">%  B - Geomagnetic field at Troms� Kiruna, Sodankyl� Longyearbyen</span>
+0008 <span class="comment">%</span>
+0009 
+0010 <span class="comment">%   Copyright � 2011 Bjorn Gustavsson &lt;bjorn.gustavsson@irf.se&gt;,</span>
+0011 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0012 
+0013 fp = fopen(<span class="string">'B-fields-EISCAT-sites.dat'</span>,<span class="string">'r'</span>);
+0014 EISCAT_sites = textscan(fp,<span class="string">'%s%s%s%s%s'</span>,1);
+0015 B_cell = textscan(fp,<span class="string">'%f%f%f%f%f%f%s\n'</span>,14);
+0016 B_type = B_cell{end};
+0017 
+0018 
+0019 
+0020 <span class="keyword">for</span> i1 = 1:4
+0021   
+0022   sitename = EISCAT_sites{i1};
+0023   B(i1).sitename = sitename{1};
+0024   <span class="keyword">for</span> i2 = 1:length(B_type),
+0025     
+0026     B(i1).(B_type{i2})(B_cell{5}(i2)) = B_cell{i1}(i2);
+0027     B(i1).alt(B_cell{5}(i2))  = B_cell{6}(i2);
+0028     
+0029   <span class="keyword">end</span>
+0030   B(i1).B = [B(i1).Beast',B(i1).Bnorth',B(i1).Bup'];
+0031   FirstChar(i1) = B(i1).sitename(1);
+0032   
+0033 <span class="keyword">end</span>
+0034 fclose(fp);
+0035 B = rmfield(B,{<span class="string">'Beast'</span>,<span class="string">'Bnorth'</span>,<span class="string">'Bup'</span>});
+0036 
+0037 <span class="keyword">if</span> nargin &amp; ~isempty(SiteNames)
+0038   <span class="keyword">for</span> i1 = 1:length(SiteNames)
+0039     
+0040     iIn2Out = findstr(lower(SiteNames{i1}(1)),lower(FirstChar));
+0041     <span class="keyword">if</span> ~isempty(iIn2Out)
+0042       Bout(i1) = B(iIn2Out);
+0043     <span class="keyword">end</span>
+0044   <span class="keyword">end</span>
+0045 <span class="keyword">else</span>
+0046   Bout = B;
+0047 <span class="keyword">end</span>
+0048</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of detrend</title>
+  <meta name="keywords" content="detrend">
+  <meta name="description" content="DETREND Remove a linear trend from a vector, usually for FFT processing.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>detrend
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>DETREND Remove a linear trend from a vector, usually for FFT processing.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [y,trend] = detrend(x,o,bp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">DETREND Remove a linear trend from a vector, usually for FFT processing.
+   [Y,trend] = DETREND(X) removes the best straight-line fit linear trend from 
+   the data in vector X and returns it in vector Y.  If X is a matrix,
+   DETREND removes the trend from each column of the matrix.
+
+   [Y,trend] = DETREND(X,'constant') removes just the mean value from the vector X,
+   or the mean value from each column, if X is a matrix.
+
+   [Y,trend] = DETREND(X,'linear',BP) removes a continuous, piecewise linear trend.
+   Breakpoint indices for the linear trend are contained in the vector BP.
+   The default is no breakpoints, such that one single straight line is
+   removed from each column of X.
+
+   Class support for inputs X,BP:
+      float: double, single
+
+ Modified to also output the trend - so that it can be re-inserted
+ later. BG
+
+   See also MEAN</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="detrend.html" class="code" title="function [y,trend] = detrend(x,o,bp)">detrend</a>	DETREND Remove a linear trend from a vector, usually for FFT processing.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Fits_tools/rem_vert_interference.html" class="code" title="function imgout = rem_vert_interference(imgin,notch_lines,nrregs)">rem_vert_interference</a>	REM_VERT_INTERFERENCE - Notch filter to remove vertical</li><li><a href="../Fits_tools/vert_interference_pattern.html" class="code" title="function imgout = vert_interference_pattern(imgin,notch_lines,nrregs)">vert_interference_pattern</a>	VERT_INTERFERENCE_PATTERN - Isolates vertical interferens from images.</li><li><a href="detrend.html" class="code" title="function [y,trend] = detrend(x,o,bp)">detrend</a>	DETREND Remove a linear trend from a vector, usually for FFT processing.</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [y,trend] = detrend(x,o,bp)</a>
+0002 <span class="comment">%DETREND Remove a linear trend from a vector, usually for FFT processing.</span>
+0003 <span class="comment">%   [Y,trend] = DETREND(X) removes the best straight-line fit linear trend from</span>
+0004 <span class="comment">%   the data in vector X and returns it in vector Y.  If X is a matrix,</span>
+0005 <span class="comment">%   DETREND removes the trend from each column of the matrix.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   [Y,trend] = DETREND(X,'constant') removes just the mean value from the vector X,</span>
+0008 <span class="comment">%   or the mean value from each column, if X is a matrix.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   [Y,trend] = DETREND(X,'linear',BP) removes a continuous, piecewise linear trend.</span>
+0011 <span class="comment">%   Breakpoint indices for the linear trend are contained in the vector BP.</span>
+0012 <span class="comment">%   The default is no breakpoints, such that one single straight line is</span>
+0013 <span class="comment">%   removed from each column of X.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Class support for inputs X,BP:</span>
+0016 <span class="comment">%      float: double, single</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% Modified to also output the trend - so that it can be re-inserted</span>
+0019 <span class="comment">% later. BG</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   See also MEAN</span>
+0022 
+0023 <span class="comment">%   Copyright 1984-2004 The MathWorks, Inc.</span>
+0024 <span class="comment">%   $Revision: 1.9.4.2 $  $Date: 2004/03/09 16:16:16 $</span>
+0025 
+0026 <span class="keyword">if</span> nargin &lt; 2, o  = 1; <span class="keyword">end</span>
+0027 <span class="keyword">if</span> nargin &lt; 3, bp = 0; <span class="keyword">end</span>
+0028 
+0029 n = size(x,1);
+0030 <span class="keyword">if</span> n == 1,
+0031   x = x(:);            <span class="comment">% If a row, turn into column vector</span>
+0032 <span class="keyword">end</span>
+0033 N = size(x,1);
+0034 
+0035 <span class="keyword">switch</span> o
+0036 <span class="keyword">case</span> {0,<span class="string">'c'</span>,<span class="string">'constant'</span>}
+0037   y = x - ones(N,1)*mean(x);    <span class="comment">% Remove just mean from each column</span>
+0038 
+0039 <span class="keyword">case</span> {1,<span class="string">'l'</span>,<span class="string">'linear'</span>}
+0040   bp = unique([0;double(bp(:));N-1]);    <span class="comment">% Include both endpoints</span>
+0041   lb = length(bp)-1;
+0042   <span class="comment">% Build regressor with linear pieces + DC</span>
+0043   a  = [zeros(N,lb,class(x)) ones(N,1,class(x))];
+0044   <span class="keyword">for</span> kb = 1:lb
+0045     M = N - bp(kb);
+0046     a((1:M)+bp(kb),kb) = (1:M)'/M;
+0047   <span class="keyword">end</span>
+0048   y = x - a*(a\x);        <span class="comment">% Remove best fit</span>
+0049 
+0050 <span class="keyword">otherwise</span>
+0051   <span class="comment">% This should eventually become an error.</span>
+0052   warning(<span class="string">'MATLAB:detrend:InvalidTrendType'</span>, <span class="keyword">...</span>
+0053       <span class="string">'Invalid trend type ''%s''.. assuming ''linear''.'</span>,num2str(o));
+0054   y = <a href="detrend.html" class="code" title="function [y,trend] = detrend(x,o,bp)">detrend</a>(x,1,bp); 
+0055 
+0056 <span class="keyword">end</span>
+0057 
+0058 <span class="keyword">if</span> n == 1
+0059   y = y.';
+0060 <span class="keyword">end</span>
+0061 
+0062 <span class="keyword">if</span> nargout == 2
+0063   trend = x-y;
+0064 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

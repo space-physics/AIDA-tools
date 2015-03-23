@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of KoschSBIG_HIPAS2007</title>
+  <meta name="keywords" content="KoschSBIG_HIPAS2007">
+  <meta name="description" content="LANCS_APOGEE_FITS parses an fits header for observation info">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html Fits_tools --><!-- menu.html File2obs -->
+<h1>KoschSBIG_HIPAS2007
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>LANCS_APOGEE_FITS parses an fits header for observation info</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [obs] = KoschSBIG_HIPAS2007(img_head) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> LANCS_APOGEE_FITS parses an fits header for observation info
+ such as exposure time, time and date of exposure et al.
+ This has stuff hard-coded for a HIPAS-campaign
+
+ Outdated! use: sbig2AIDAobs instead!
+ 
+ Calling:
+    [obs] = try_to_be_smart(img_head,ALIS_FITS)
+ 
+ INPUT: 
+   img_head - a FITS header, char array.
+ 
+ OUTPUT:
+    OBS the output is a struct with some relevant key parameters
+    such as camera rotation, exposure time, time and date of
+    exposure filter camera number, camera position.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Fits_tools/fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>	FITSFINDINHEADER finds string S in fitsheader H</li><li><a href="../../Fits_tools/fitsfindkey_strmhead.html" class="code" title="function [j_out] = fitsfindkey_strmhead(H,S)">fitsfindkey_strmhead</a>	fitsfindkey_strmhead - Searches a FITS header H for keyword S</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../Tomography/hh_tomo1234_New01.html" class="code" title="">hh_tomo1234_New01</a>	HH_TOMO1234_NEW01 - script for tomographing 2007 HIPAS-observations</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function outstr = ddeblank(in_str)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [obs] = KoschSBIG_HIPAS2007(img_head)</a>
+0002 <span class="comment">% LANCS_APOGEE_FITS parses an fits header for observation info</span>
+0003 <span class="comment">% such as exposure time, time and date of exposure et al.</span>
+0004 <span class="comment">% This has stuff hard-coded for a HIPAS-campaign</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Outdated! use: sbig2AIDAobs instead!</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% Calling:</span>
+0009 <span class="comment">%    [obs] = try_to_be_smart(img_head,ALIS_FITS)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% INPUT:</span>
+0012 <span class="comment">%   img_head - a FITS header, char array.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% OUTPUT:</span>
+0015 <span class="comment">%    OBS the output is a struct with some relevant key parameters</span>
+0016 <span class="comment">%    such as camera rotation, exposure time, time and date of</span>
+0017 <span class="comment">%    exposure filter camera number, camera position.</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%</span>
+0020 
+0021 
+0022 <span class="comment">%       Bjorn Gustavsson 2007-06-16</span>
+0023 <span class="comment">%       Copyright (c) 2001 by Bjorn Gustavsson</span>
+0024 
+0025 <span class="keyword">global</span> FITS_HOME
+0026 <span class="keyword">persistent</span> Station_names
+0027 <span class="keyword">persistent</span> stationpos
+0028 <span class="keyword">persistent</span> ktransf
+0029 
+0030 load ktransf.dat
+0031 load stationpos.dat
+0032 
+0033 FITS_HOME = which(<span class="string">'inimg'</span>);
+0034 FITS_HOME = fileparts(FITS_HOME);
+0035 
+0036 
+0037 delimiters = [9:13 32];
+0038 delimiters = [delimiters,<span class="string">'~=+*/^()[]{}&lt;&gt;,;:'''</span>];
+0039 
+0040 obs.time = [];
+0041 obs.pos = [];
+0042 obs.station = [];
+0043 obs.alpha = [];
+0044 obs.beta = [];
+0045 obs.az = [];
+0046 obs.ze = [];
+0047 obs.camnr = [];
+0048 obs.exptime = [];
+0049 obs.filter = [];
+0050 
+0051 H = img_head';
+0052 
+0053 hindx = <a href="../../Fits_tools/fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(img_head,<span class="string">'DATE-OBS'</span>);
+0054 <span class="keyword">if</span> ~isempty(hindx)
+0055   delimiters = [delimiters,<span class="string">'-T'</span>];
+0056   timestr = img_head(hindx,11:end);
+0057   [year,timestr] = strtok(timestr,delimiters);
+0058   [month,timestr] = strtok(timestr,delimiters);
+0059   [day,timestr] = strtok(timestr,delimiters);
+0060   [hour,timestr] = strtok(timestr,delimiters);
+0061   [minute,timestr] = strtok(timestr,delimiters);
+0062   <span class="comment">%[sec,timestr] = strtok(timestr,delimiters);</span>
+0063   [sec] = strtok(timestr,delimiters);
+0064   obs.time = [str2num(year) str2num(month) str2num(day) str2num(hour) str2num(minute) str2num(sec)];
+0065   <span class="keyword">if</span> length(obs.time) &lt; 6
+0066     hindx = <a href="../../Fits_tools/fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(img_head,<span class="string">'TIME-OBS'</span>);
+0067     timestr = img_head(hindx,11:end);
+0068     [hour,timestr] = strtok(timestr,delimiters);
+0069     [minute,timestr] = strtok(timestr,delimiters);
+0070     <span class="comment">%[sec,timestr] = strtok(timestr,delimiters);</span>
+0071     [sec] = strtok(timestr,delimiters);
+0072     obs.time = [obs.time str2num(hour) str2num(minute) str2num(sec)];
+0073   <span class="keyword">end</span>
+0074   
+0075 <span class="keyword">else</span>
+0076   
+0077   <span class="comment">% when everything else fails ask...</span>
+0078   datestr = <span class="string">'Date of observation (YYYY , MM , DD)'</span>;
+0079   timestr = <span class="string">'Time of observation (UT) (HH , MM , SS.dd)'</span>;
+0080   defll = {<span class="string">'1990 12 24'</span>,<span class="string">'15  07  12'</span>};
+0081   title = <span class="string">'OBSERVATION TIME?'</span>;
+0082   lineNo=1;
+0083   answer=inputdlg({datestr,timestr},title,lineNo,defll);
+0084   <span class="comment">%obs.time = [ str2num(char(answer{1})) str2num(char(answer{2}))];</span>
+0085   obs.time = [ str2num(answer{1}) str2num(answer{2})];
+0086   
+0087 <span class="keyword">end</span>
+0088 obs.time(end) = obs.time(end)-1;
+0089 <span class="comment">% look for exposure time</span>
+0090 <span class="comment">%cmnrindx = findstr(H(:)','EXPTIME');</span>
+0091 cmnrindx = <a href="../../Fits_tools/fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(img_head,<span class="string">'EXPTIME'</span>);
+0092 <span class="keyword">if</span> ~isempty(cmnrindx)
+0093   
+0094   <span class="comment">%obs.exptime = str2num(strtok(H(cmnrindx+10:cmnrindx+79)));</span>
+0095   obs.exptime = str2num(strtok(img_head(cmnrindx,10:end)));
+0096   
+0097 <span class="keyword">else</span>
+0098   
+0099   cmnrindx = findstr(H(:)',<span class="string">'EXPOSURE'</span>);
+0100   <span class="keyword">if</span> ~isempty(cmnrindx)
+0101     obs.exptime = str2num(strtok(H(cmnrindx+10:cmnrindx+79)));
+0102   <span class="keyword">else</span> <span class="comment">% Something missing badly!</span>
+0103     obs.exptime = -1;
+0104     warning([<span class="string">'Missing exposure time in fits header (try_to_be_smart) for image at: '</span>,num2str(obs.time,<span class="string">'%02d:%02d:%02d'</span>)])
+0105   <span class="keyword">end</span>
+0106 <span class="keyword">end</span>  
+0107 
+0108 
+0109 
+0110 obs.station = 450; <span class="comment">% HIPAS is station 450 in the AIDA station enumeration.</span>
+0111 station = obs.station;
+0112 obs.pos = [-146.842017 64.872];
+0113 obs.longlat = [-146.842017 64.872];
+0114 obs.cmtr = eye(3);
+0115 
+0116 filt_indx = <a href="../../Fits_tools/fitsfindkey_strmhead.html" class="code" title="function [j_out] = fitsfindkey_strmhead(H,S)">fitsfindkey_strmhead</a>(img_head,<span class="string">'FILTER'</span>);
+0117 <span class="keyword">if</span> ~isempty(filt_indx)
+0118   
+0119   [a1] = strfind(img_head(filt_indx,:),<span class="string">'='</span>);
+0120   obs.filter = str2num(img_head(filt_indx,a1+1:end));
+0121   
+0122 <span class="keyword">end</span>
+0123 
+0124 temp_indx = <a href="../../Fits_tools/fitsfindkey_strmhead.html" class="code" title="function [j_out] = fitsfindkey_strmhead(H,S)">fitsfindkey_strmhead</a>(img_head,<span class="string">'CCD-TEMP'</span>);
+0125 <span class="keyword">if</span> ~isempty(temp_indx)
+0126   obs.ccdtemp = str2num(strtok(img_head(temp_indx,10:end)));
+0127 <span class="keyword">end</span>
+0128 bz_indx = <a href="../../Fits_tools/fitsfindkey_strmhead.html" class="code" title="function [j_out] = fitsfindkey_strmhead(H,S)">fitsfindkey_strmhead</a>(img_head,<span class="string">'BZERO'</span>);
+0129 <span class="keyword">if</span> ~isempty(temp_indx)
+0130   obs.BZERO = str2num(strtok(img_head(bz_indx,10:end)));
+0131 <span class="keyword">end</span>
+0132 bsc_indx = <a href="../../Fits_tools/fitsfindkey_strmhead.html" class="code" title="function [j_out] = fitsfindkey_strmhead(H,S)">fitsfindkey_strmhead</a>(img_head,<span class="string">'BSCALE'</span>);
+0133 <span class="keyword">if</span> ~isempty(temp_indx)
+0134   obs.bscale = str2num(strtok(img_head(bsc_indx,10:end)));
+0135 <span class="keyword">end</span>
+0136 
+0137 <span class="comment">% Some functions related to the geometric calibrations benefits</span>
+0138 <span class="comment">% from getting azimuth and zenith (or alpha and beta) angles. But</span>
+0139 <span class="comment">% as none is in the header it is just to set them all to 0.</span>
+0140 obs.az = 0;
+0141 obs.ze = 0;
+0142 obs.alpha = 0;
+0143 obs.beta = 0;
+0144 <span class="comment">% Some image correction/pre-processing steps require information</span>
+0145 <span class="comment">% about which ccd it is - ALIS bias correction and bad-pixel fixing</span>
+0146 <span class="comment">% have images and maps for bias and bad pixels. As long as the</span>
+0147 <span class="comment">% camnr doesnt match it should be OK.</span>
+0148 obs.camnr = -12;
+0149 
+0150 <a name="_sub1" href="#_subfunctions" class="code">function outstr = ddeblank(in_str)</a>
+0151 <span class="comment">% DDEBLANK -</span>
+0152 <span class="comment">%</span>
+0153 
+0154 outstr = fliplr(deblank(fliplr(deblank(in_str))));</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

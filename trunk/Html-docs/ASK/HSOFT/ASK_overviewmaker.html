@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_overviewmaker</title>
+  <meta name="keywords" content="ASK_overviewmaker">
+  <meta name="description" content="ASK_overviewmaker - Create mega-block overlayed-keogram for overview">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # ASK --><!-- menu.html HSOFT -->
+<h1>ASK_overviewmaker
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ASK_overviewmaker - Create mega-block overlayed-keogram for overview</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function MegaBlocksDone = ASK_overviewmaker(MegaBlocksDone,data_dir) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_overviewmaker - Create mega-block overlayed-keogram for overview
+   This function creates overview-plots in keogram-overlayed style
+   for megablocks in the ask-data directory that have data from
+   all three cameras. The overviews created will consist of 1
+   figure spanning the entire time period of the mega-block and 20
+   figures covering 1-minute periods. The directory will work
+   through all directories, but if a cell-array of directory names
+   of directories with camera #1 is given those will be skipped.
+ 
+ Calling:
+   MegaBlocksDone = ASK_overviewmaker(MegaBlocksDone,data_dir)
+ Input:
+  MegaBlocksDone - cell-array with directory names for camera #1
+                   for megablocks allready done. Defaults to {''}
+                   if none is given.
+  data_dir       - path to data directory, optional, defaults to:
+                   /stp/raid2/ask/data</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>	ASK_INDX2DATEVEC - Convert a frame index into a [yyyy,mm,dd,HH,MM,SS.FFF]</li><li><a href="ASK_keo_autoprint.html" class="code" title="function ASK_keo_autoprint(spPos,outputformat)">ASK_keo_autoprint</a>	ASK_KEO_AUTOPRINT -</li><li><a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>	ASK_KEOGRAM_OVERLAYED - to plot an overlayed keogram, ASK images, and</li><li><a href="ASK_read_vs.html" class="code" title="function vs = ASK_read_vs(num,filename,quiet)">ASK_read_vs</a>	ASK_READ_VS -  the procedure to read the videoevent setup - the new version</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function MegaBlocksDone = ASK_overviewmaker(MegaBlocksDone,data_dir)</a>
+0002 <span class="comment">% ASK_overviewmaker - Create mega-block overlayed-keogram for overview</span>
+0003 <span class="comment">%   This function creates overview-plots in keogram-overlayed style</span>
+0004 <span class="comment">%   for megablocks in the ask-data directory that have data from</span>
+0005 <span class="comment">%   all three cameras. The overviews created will consist of 1</span>
+0006 <span class="comment">%   figure spanning the entire time period of the mega-block and 20</span>
+0007 <span class="comment">%   figures covering 1-minute periods. The directory will work</span>
+0008 <span class="comment">%   through all directories, but if a cell-array of directory names</span>
+0009 <span class="comment">%   of directories with camera #1 is given those will be skipped.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Calling:</span>
+0012 <span class="comment">%   MegaBlocksDone = ASK_overviewmaker(MegaBlocksDone,data_dir)</span>
+0013 <span class="comment">% Input:</span>
+0014 <span class="comment">%  MegaBlocksDone - cell-array with directory names for camera #1</span>
+0015 <span class="comment">%                   for megablocks allready done. Defaults to {''}</span>
+0016 <span class="comment">%                   if none is given.</span>
+0017 <span class="comment">%  data_dir       - path to data directory, optional, defaults to:</span>
+0018 <span class="comment">%                   /stp/raid2/ask/data</span>
+0019 <span class="comment">%</span>
+0020 
+0021 <span class="comment">% Copyright B Gustavsson 20101119 &lt;bjorn@irf.se&gt;</span>
+0022 <span class="comment">% This is free software, licensed under GNU GPL version 2 or later</span>
+0023 
+0024 
+0025 <span class="comment">%% Script to make overlaye-keograms of all mega-blocks in /stp/raid2/ask/data</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% For which there are setup-files.</span>
+0028 
+0029 <span class="comment">% Make sure that the global VS structure is visible in the workspace:</span>
+0030 <span class="keyword">global</span> vs
+0031 
+0032 <span class="keyword">if</span> nargin == 0 | isempty(MegaBlocksDone)
+0033   MegaBlocksDone{1} = <span class="string">''</span>;
+0034 <span class="keyword">end</span>
+0035 iMegaBlocksDone = length(MegaBlocksDone);
+0036 
+0037 <span class="keyword">if</span> nargin &lt; 2 | isempty(data_dir)
+0038   <span class="comment">% Data directory:</span>
+0039   data_directory = <span class="string">'/stp/raid2/ask/data/'</span>;
+0040 <span class="keyword">end</span>
+0041 <span class="comment">% Go there</span>
+0042 cd(data_directory)
+0043 <span class="comment">% List all mega-block directories:</span>
+0044 q3 = dir(<span class="string">'*r3'</span>);
+0045 q1 = dir(<span class="string">'*r1'</span>);
+0046 q2 = dir(<span class="string">'*r2'</span>);
+0047 
+0048 <span class="comment">% Collect the mega-blocks where we have data from all three</span>
+0049 <span class="comment">% cameras, and store away those directories:</span>
+0050 iAllThree = 1;
+0051 <span class="keyword">for</span> i3 = 1:length(q3),
+0052   <span class="comment">% Should not matter whichever one we choose here #1, #2 or #3:</span>
+0053   Q3DateObs = (q3(i3).name(1:end-2)); <span class="comment">% This should be datetime of</span>
+0054                                       <span class="comment">% mega-block start</span>
+0055   Q2DateObs = [Q3DateObs,<span class="string">'r2'</span>];       <span class="comment">% name of mega-block #1</span>
+0056   Q1DateObs = [Q3DateObs,<span class="string">'r1'</span>];       <span class="comment">% and #2</span>
+0057   i2exist = strcmp(Q2DateObs,{q2(:).name}); <span class="comment">% search for them among</span>
+0058   i1exist = strcmp(Q1DateObs,{q1(:).name}); <span class="comment">% the data-directories.</span>
+0059   <span class="keyword">if</span> any(i2exist) &amp; any(i1exist)
+0060     <span class="comment">% If there are directories from all three cameras then we store</span>
+0061     <span class="comment">% them for later processing:</span>
+0062     ThreeDirs{iAllThree} = {q1(i1exist).name, q2(i2exist).name, q3(i3).name};       
+0063     iAllThree = 1 + iAllThree;
+0064     <span class="comment">% Yeah, yeah, successive memmory allocation and blablabla.</span>
+0065     <span class="comment">% This works and the time it might wast is _nothing_ compared to</span>
+0066     <span class="comment">% the hours it takes to work through all data.</span>
+0067   <span class="keyword">end</span>
+0068   
+0069 <span class="keyword">end</span>
+0070 
+0071 clf
+0072 <span class="comment">% This sets the figure size for printing to tall which is necessary</span>
+0073 <span class="comment">% for decent-looking figures when printed to file:</span>
+0074 orient tall
+0075 <span class="comment">% Setting of the default options:</span>
+0076 ops4keoO = <a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>;
+0077 <span class="comment">% Use 9 images in the row of images:</span>
+0078 ops4keoO.subplot4imgs = [5,9,10];
+0079 <span class="comment">% Image filtering:</span>
+0080 ops4keoO.filtertype = {<span class="string">'sigma'</span>,<span class="string">'median'</span>};
+0081 ops4keoO.filterArgs = {{[3,3]},{[3,3],<span class="string">'symmetric'</span>}};
+0082 <span class="comment">% Only show the RGB-composite:</span>
+0083 ops4keoO.oneImg = 4;
+0084 <span class="comment">% Make the time-label a bit smaller to avoid overlapping:</span>
+0085 ops4keoO.imrowFontsize = 10;
+0086 ops4keoO.quiet = 1;
+0087 
+0088 iFiles = 1;
+0089 
+0090 <span class="comment">% Check all mega-blocks</span>
+0091 <span class="keyword">while</span> iFiles &lt;= length(ThreeDirs)
+0092   
+0093   <span class="keyword">try</span>
+0094     <span class="comment">% Combine the names of the mega-block directories from the</span>
+0095     <span class="comment">% three cameras:</span>
+0096     filenames = str2mat([ThreeDirs{iFiles}{1},<span class="string">'.txt'</span>],[ThreeDirs{iFiles}{2},<span class="string">'.txt'</span>],[ThreeDirs{iFiles}{3},<span class="string">'.txt'</span>]);
+0097     <span class="comment">% If overview-plots of mega-block haven't been done</span>
+0098     <span class="keyword">if</span> sum(strcmp(MegaBlocksDone,filenames(1,:))) == 0
+0099       <span class="comment">% then do it now!</span>
+0100       <span class="comment">% Read the set-up files for the mega-block:</span>
+0101       <a href="ASK_read_vs.html" class="code" title="function vs = ASK_read_vs(num,filename,quiet)">ASK_read_vs</a>(1,filenames)
+0102       <span class="comment">% if we have unequal number of frames in the megablock</span>
+0103       <span class="comment">% directories from the 3 cameras just skip it for</span>
+0104       <span class="comment">% simplicity.</span>
+0105       <span class="comment">% TODO - fix this so that we can get the partial</span>
+0106       <span class="comment">% overlayedkeograms done as well. Left for cleaning up</span>
+0107       <span class="comment">% stage...</span>
+0108       <span class="keyword">if</span> max(abs(diff(vs.vnl)))
+0109         iFiles = iFiles + 1; 
+0110         <span class="keyword">continue</span>
+0111       <span class="keyword">end</span>
+0112       <span class="comment">% Get the start time of mega-block:</span>
+0113       startTime = <a href="ASK_indx2datevec.html" class="code" title="function time_V = ASK_indx2datevec(indx)">ASK_indx2datevec</a>(1);
+0114       <span class="comment">% Make name of directory to save plots in:</span>
+0115       Cdir = [data_directory,<span class="string">'MegablockOverviews/'</span>,sprintf(<span class="string">'%d/%02d/%02d'</span>,startTime(1:3))];
+0116       <span class="comment">% Make that directory:</span>
+0117       mkdirstring = [<span class="string">'mkdir -p '</span>,Cdir]
+0118       [qOK,qKO] = system(mkdirstring);
+0119       <span class="comment">% Go there:</span>
+0120       cd(Cdir)
+0121       <span class="comment">% Make keogram of full megablock:</span>
+0122       <span class="comment">% This will crash for megablocks with less than 1000 images,</span>
+0123       <span class="comment">% this would correspond to exposure-times larger than 1.2 s</span>
+0124       clf
+0125       <span class="comment">%Was: [keo,imstack,timeV] = ASK_keogram_overlayed(1,vs.vnl(vs.vsel),round(vs.vnl(vs.vsel)/1000),[0 0 0],9,128,128,90,ops4keoO);</span>
+0126       <a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>(1,vs.vnl(vs.vsel),round(vs.vnl(vs.vsel)/1000),[0 0 0],9,128,128,90,ops4keoO);
+0127       <span class="comment">% Print the figure:</span>
+0128       <a href="ASK_keo_autoprint.html" class="code" title="function ASK_keo_autoprint(spPos,outputformat)">ASK_keo_autoprint</a>(ops4keoO.subplot4ASK3keo)
+0129       <span class="comment">% Number of frames in megablock:</span>
+0130       lastframe = vs.vnl(vs.vsel);
+0131       <span class="comment">% Frames in a minute:</span>
+0132       framesPerminute = round(lastframe/20);
+0133       <span class="keyword">for</span> i1 = 1:framesPerminute:lastframe,
+0134         <span class="comment">% Make an overlayed-keogram covering a minute:</span>
+0135         clf
+0136         <span class="comment">%Was: [keo,imstack,timeV] = ASK_keogram_overlayed(i1,min(vs.vnl(vs.vsel),i1+framesPerminute),1,...</span>
+0137         <span class="comment">%                                                [0 0 0],9,128,128,90,ops4keoO);</span>
+0138         <a href="ASK_keogram_overlayed.html" class="code" title="function [keos,imstack,timeV] = ASK_keogram_overlayed(fir,las,ste,shft,width,x0,y0,angle,OPS)">ASK_keogram_overlayed</a>(i1,min(vs.vnl(vs.vsel),i1+framesPerminute),1,<span class="keyword">...</span>
+0139                               [0 0 0],9,128,128,90,ops4keoO);
+0140         <span class="comment">% and print them out:</span>
+0141         <a href="ASK_keo_autoprint.html" class="code" title="function ASK_keo_autoprint(spPos,outputformat)">ASK_keo_autoprint</a>(ops4keoO.subplot4ASK3keo)
+0142       <span class="keyword">end</span>
+0143       <span class="comment">% Store away the mega-block name for camera #1:</span>
+0144       MegaBlocksDone{iMegaBlocksDone} = filenames(1,:);
+0145       iMegaBlocksDone = iMegaBlocksDone + 1; <span class="comment">% increase the index.</span>
+0146       save([data_directory,<span class="string">'OverViewMegaBlocksDone.mat'</span>], <span class="string">'MegaBlocksDone'</span>)
+0147     <span class="keyword">end</span>
+0148     iFiles = iFiles + 1; <span class="comment">% increase the index.</span>
+0149   <span class="keyword">catch</span>
+0150     iFiles = iFiles + 1; <span class="comment">% increase the index.</span>
+0151   <span class="keyword">end</span>
+0152   
+0153 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of draw3d_vem</title>
+  <meta name="keywords" content="draw3d_vem">
+  <meta name="description" content="% Use of the routine vol3d to plot ALIS formatted outputs in 3D">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>draw3d_vem
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>% Use of the routine vol3d to plot ALIS formatted outputs in 3D</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">% Use of the routine vol3d to plot ALIS formatted outputs in 3D
+ Stand-alone script, using the functions vol3d.m and vold3dtool.m
+
+ The *.mat file used in input has the structure from the tomography-like ALIS script:
+     save(['tomo-',sprintf('%03d',i_T(i2)),'_new_MART_xyz.mat'],'Vem','zalis','XfI','YfI','ZfI');
+
+ C. Simon Wedlund et al. (2011)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="vol3d.html" class="code" title="function [model] = vol3d(varargin)">vol3d</a>	H = VOL3D Volume render 3-D data.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%% Use of the routine vol3d to plot ALIS formatted outputs in 3D</span>
+0002 <span class="comment">% Stand-alone script, using the functions vol3d.m and vold3dtool.m</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% The *.mat file used in input has the structure from the tomography-like ALIS script:</span>
+0005 <span class="comment">%     save(['tomo-',sprintf('%03d',i_T(i2)),'_new_MART_xyz.mat'],'Vem','zalis','XfI','YfI','ZfI');</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% C. Simon Wedlund et al. (2011)</span>
+0008 
+0009 <span class="comment">%% Loading ALIS mat file</span>
+0010 load(<span class="string">'tomo-003_new_MART_xyz.mat'</span>);
+0011 
+0012 <span class="comment">%% Definition of the indices of the boundary</span>
+0013 ix(1) = 20; <span class="comment">%30</span>
+0014 ix(2) = 70; <span class="comment">%50</span>
+0015 
+0016 iy(1) = 30; <span class="comment">%50</span>
+0017 iy(2) = 80; <span class="comment">%80</span>
+0018 
+0019 iz(1) = 15;
+0020 iz(2) = 50;
+0021 
+0022 <span class="comment">%% Selecting only the relevant VEM coordinates</span>
+0023 Vem_orig=Vem(iy(1):iy(2),ix(1):ix(2),iz(1):iz(2));
+0024 <span class="comment">%Vem_interp3=interp3(Vem(iy(1):iy(2),ix(1):ix(2),iz(1):iz(2)),2); % Interpolation</span>
+0025 
+0026 close; 
+0027 
+0028 <span class="comment">%% Draw in 3D the VEM from ALIS</span>
+0029 fig1 = figure;
+0030 h2 = <a href="vol3d.html" class="code" title="function [model] = vol3d(varargin)">vol3d</a>(<span class="string">'cdata'</span>,Vem_orig,<span class="string">'texture'</span>,<span class="string">'3D'</span>);
+0031 <span class="comment">% Orientation of the 3D volume</span>
+0032 view(3); 
+0033 daspect([1 1 .4]); 
+0034 <span class="comment">% Transparency to be set up by user</span>
+0035 alphamap(<span class="string">'rampdown'</span>);alphamap(1. .* alphamap); 
+0036 cbar = colorbar; 
+0037 grid on;
+0038 
+0039 <span class="comment">% Set up the axes</span>
+0040 h2.ydata=[XfI(iy(1),ix(1),1) XfI(iy(2),ix(2),1)];
+0041 h2.xdata=[YfI(iy(1),ix(1),1) YfI(iy(2),ix(2),1)];
+0042 h2.zdata=[zalis(iz(1)) zalis(iz(2))];
+0043 
+0044 <span class="comment">% Refresh twice to redraw the volume</span>
+0045 <a href="vol3d.html" class="code" title="function [model] = vol3d(varargin)">vol3d</a>(h2);<a href="vol3d.html" class="code" title="function [model] = vol3d(varargin)">vol3d</a>(h2);
+0046 
+0047 xlabel(<span class="string">'S-N of Kiruna (km)'</span>);
+0048 ylabel(<span class="string">'E-W of Kiruna (km)'</span>);
+0049 zlabel(<span class="string">'Altitude (km)'</span>);
+0050 
+0051 ylabel(cbar,<span class="string">'Volume Emission Rate (cm^{-3} s^{-1})'</span>);
+0052 zoom(0.65);
+0053 
+0054 <span class="comment">% Repositioning and size of figure</span>
+0055 scnsize=get(0,<span class="string">'ScreenSize'</span>);
+0056 position = get(fig1,<span class="string">'Position'</span>);
+0057 outerpos = get(fig1,<span class="string">'OuterPosition'</span>);
+0058 borders = outerpos - position;
+0059         
+0060 edge = -borders(1)/2;
+0061 pos1 = [edge, scnsize(4)*(1./4), scnsize(3)/2 - edge, scnsize(4)/1.5];
+0062 set(fig1,<span class="string">'Position'</span>,pos1);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

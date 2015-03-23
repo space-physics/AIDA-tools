@@ -1,0 +1,130 @@
+III/201             Pulkovo Spectrophotometric Catalog   (Alekseeva+ 1997)
+================================================================================
+The Pulkovo spectrophotometric catalog of bright stars in the range
+from 320 to 1080nm
+     Alekseeva G.A., Arkharov A.A. , Galkin V.D. , Hagen-Thorn E.I.,
+     Nikanorova I.N., Novikov V.V., Novopashenny V.B., Pakhomov V.P.,
+     Ruban E.V., Shchegolev D.E.
+    <Baltic Astron. 5, 603 (1996); 6, 481 (1997)>
+    =1996BaltA...5..603A
+    =1997BaltA...6..481A
+================================================================================
+ADC_Keywords: Spectrophotometry ; Stars, bright
+
+Abstract:
+    A  spectrophotometric  catalog  is  presented,  combining  results  of
+    numerous observations  by Pulkovo  astronomers at  different observing
+    sites. The catalog  consists of  three parts:  the first  contains the
+    data of 602 stars in the spectral range 320-735 nm with a resolution 5
+    nm; the second one  contains  285  stars  in  the  spectral  range  of
+    500-1080  nm with resolution10 nm and the third one contains 278 stars
+    combined from  the preceding  catalogs in  spectral range  320-1080 nm
+    with resolution  10 nm. The data are  presented in the absolute energy
+    units  W/mm, with step of 2.5 nm and with an accuracy no more than 1.5
+    - 2.0%.
+
+Description:
+    A complete list of the  observed  stars  is  given  in  Table  4.  The
+    following information about the stars is given: HR and HD numbers, the
+    Bayer's name,  the   number   of independent   scans  of  the spectrum
+    (short-/long-wavelength range),  equatorial  coordinates  for  2000.0,
+    spectral type from the 1982 version of the BS catalog, magnitude V and
+    color  index B-V  from the  same source.  Information on  binarity and
+    variability  is given in the remarks following Table 4. For the visual
+    binaries, the  separation and m are  taken also from the  BS . For the
+    variables,  variability type and magnitudes at the maximum and minimum
+    light and the  period are from  the General Catalog  of Variable Stars
+    (Kholopov et al. 1985-1990) and its three Supplements (Inf. Bull. Var.
+    Stars  Nos. 2681, 3058, and 3323).  The final energy distribution data
+    in the  range 320-1080 nm with a step  2.5 nm, expressed in W/m2/m (or
+    10^-6^arg/cm^2^/s/nm in cgs) given  in Tables  5, 5a  and 6.  Tables 5
+    contains  the combined data  covering the wavelengths  320-1080 nm and
+    Table 5a  is for the stars having data  only in the 500-1080 nm range.
+    All the data  are for the  same effective spectral  broadening, 10 nm.
+    The data covering only the  wavelengths  320-735  nm  (with  effective
+    spectral broadening of 5 nm) are presented in Table 6.
+
+
+File Summary:
+--------------------------------------------------------------------------------
+ FileName    Lrecl    Records    Explanations
+--------------------------------------------------------------------------------
+ReadMe          80          .    This file
+stars.dat       80        609    List of stars (table4 of paper I)
+notes.dat       80        510    Notes to stars.dat
+table5.dat      76      12240   *Absolute fluxes, range 320-1080nm (paper I)
+table5a.dat     76        234   *Absolute fluxes, range 500-1080nm (paper I)
+table6.dat      75      14448   *Absolute fluxes, range 320-735nm (paper I)
+getsp           71         73   *C-shell script to get fluxes on Unix machines
+--------------------------------------------------------------------------------
+Note on table5.dat, table5a.dat, table6.dat:
+     The flux files contain blocks of data for 7 stars, introduced by
+     at least 8 blanks and the list of the 7 HR numbers; the lines
+     which follow are mode of 8 columns containing the wavelength (in nm)
+     followed by the absolute fluxes (in W/m2/m = 10-6 erg/cm2/s/nm)
+     of each of the 7 stars.
+Note on getsp:
+     This file is a short script in Unix C-shell which, given a HR
+     number, lists the spectrophotometry from the flux files.
+--------------------------------------------------------------------------------
+
+See also:
+    II/85 : Absolute Calibration of Stellar Spectrophotometry (Johnson 1980)
+    III/202 : Spectrophotometric Catalogue of Stars (Kharitonov+, 1988)
+
+Byte-by-byte Description of file: stars.dat
+--------------------------------------------------------------------------------
+   Bytes Format Units   Label     Explanations
+--------------------------------------------------------------------------------
+   1-  4  I4    ---     HR        Designation of the star in the Bright
+                                    Star Catalog <V/50>
+   5-  6  A2    ---     m_HR      [/0-9] Multiplicity
+   8- 16  A9    ---     HD        Designation in the Hentry Draper Catalog
+                                    <III/135>
+  17- 27  A11   ---     Name      Star name
+  29- 31  I3    ---    Ns(short)  ? Number of scans (short wavelength)
+  33- 35  I3    ---     Ns(long)  ? Number of scans (long wavelength)
+  37- 38  I2    h       RAh       Right Ascension J2000 (hours)
+  40- 41  I2    min     RAm       Right Ascension J2000 (minutes)
+  43- 44  I2    s       RAs       Right Ascension J2000 (seconds)
+      46  A1    ---     DE-       Declination J2000 (sign)
+  47- 48  I2    deg     DEd       Declination J2000 (degrees)
+  50- 53  F4.1  arcmin  DEm       Declination J2000 (minutes)
+  55- 67  A13   ---     SpType    MK Spectral Classification
+  69- 72  F4.2  mag     Vmag      V magnitude
+  74- 78  F5.2  mag     B-V       color index
+      79  A1    ---     table    *[56ab] Table containing the spectrophotometry
+      80  A1    ---     Note      [*] note detailed in file notes.dat
+--------------------------------------------------------------------------------
+Note on table: the spectrophotometry is in tables:
+     5 : spectrophotometry in table5.dat  (range 320-1080nm)
+     6 : spectrophotometry in table6.dat  (range 500-1080nm)
+     a : spectrophotometry in table5a.dat (range 320-735nm)
+     b : spectrophotometry in both table5.dat and table6.dat
+--------------------------------------------------------------------------------
+
+Byte-by-byte Description of file: notes.dat
+--------------------------------------------------------------------------------
+   Bytes Format Units   Label     Explanations
+--------------------------------------------------------------------------------
+   1-  4  I4    ---     HR        Designation of the star as in table4.dat
+   5-  7  A3    ---     m_HR      [ /0-9A-DP'] Multiplicity
+       8  A1    ---     about     [VD] Note about Variability or Duplicity
+       9  A1    ---     ---       [:] Colon
+  11- 80  A70   ---     Text     *Text of note
+--------------------------------------------------------------------------------
+Note on Text: the following abbreviations are used:
+     ExtSt = Standard for definitions of atmospheric extinction.
+       NSV = number from "New Catalogue of Suspected Variable Stars"
+             (catalog <II/140>, 1982)
+       PSt = Primary standard;
+       SSt = Secondary standard;
+       TSt = Tertiary standard;
+--------------------------------------------------------------------------------
+
+Acknowledgements:
+    It is a pleasure to thank Dr Victor Novikov <novikov@pulobs.spb.su>
+    Pulkovo Observatory, St. Petersburg, Russia
+    who provided the data to CDS in September 1997.
+================================================================================
+(End)                                     Francois Ochsenbein [CDS]  30-Sep-1997

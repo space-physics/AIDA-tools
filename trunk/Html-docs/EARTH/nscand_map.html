@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of nscand_map</title>
+  <meta name="keywords" content="nscand_map">
+  <meta name="description" content="NSCAND_MAP - plot topographic mat over northern Scandinavia">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html EARTH -->
+<h1>nscand_map
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>NSCAND_MAP - plot topographic mat over northern Scandinavia</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function PH = nscand_map(latlong_or_xyz,axlim) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> NSCAND_MAP - plot topographic mat over northern Scandinavia
+   
+ Calling:
+  PH = nscand_map(latlong_or_xyz,axlim)
+ Input:
+  latlong_or_xyz - string/flag 'l' for plotting the map on
+                   lat-long grid, otherwise on cartesian
+                   coordinates
+  axlim          - [long1 long2 lat1 lat2] (degrees) or 
+                   [xmin xmax ymin ymax] (km) defined by user as
+                   appropriate.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/tcolor.html" class="code" title="function H=tcolor(x,y,c,varargin)">tcolor</a>	TCOLOR - truecolor version of pcolor</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/ALISstdpos_visvol.html" class="code" title="function hndl = ALISstdpos_visvol(stnNRs,AZstn,ZEstn,ALTstn,FOVstn,OPS)">ALISstdpos_visvol</a>	ALISSTDPOS_VISVOL - Display ALIS f-o-v ontop of topographic map</li><li><a href="../ALIS/OldPosPlots/pos4index20051024_north.html" class="code" title="">pos4index20051024_north</a>	pos4index20051024_north - ALIS fields-of-view for position: INDEX-rocket</li><li><a href="../ALIS/OldPosPlots/pos4index20051029.html" class="code" title="">pos4index20051029</a>	pos4index20051029 - ALIS fields-of-view for position: INDEX-rocket</li><li><a href="../ALIS/pos4index20051024_north.html" class="code" title="">pos4index20051024_north</a>	pos4index20051024_north - ALIS fields-of-view for position: INDEX-rocket</li><li><a href="../ALIS/pos4index20051029.html" class="code" title="">pos4index20051029</a>	pos4index20051029 - ALIS fields-of-view for position: INDEX-rocket</li><li><a href="../ALIS/stdposEISCAT2_200506.html" class="code" title="">stdposEISCAT2_200506</a>	stdposEISCAT2_200506 - ALIS fields-of-view for position: EISCAT2</li><li><a href="../ALIS/stdposEISCAT_comparison.html" class="code" title="">stdposEISCAT_comparison</a>	stdposEISCAT_comparison - Compare ALIS-positions EISCAT and EISCAT2</li><li><a href="../ALIS/stdposPEERA.html" class="code" title="">stdposPEERA</a>	</li><li><a href="../ALIS/stdpos_Andoya.html" class="code" title="">stdpos_Andoya</a>	</li><li><a href="../ALIS/tetropov.html" class="code" title="">tetropov</a>	</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function PH = nscand_map(latlong_or_xyz,axlim)</a>
+0002 <span class="comment">% NSCAND_MAP - plot topographic mat over northern Scandinavia</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  PH = nscand_map(latlong_or_xyz,axlim)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%  latlong_or_xyz - string/flag 'l' for plotting the map on</span>
+0008 <span class="comment">%                   lat-long grid, otherwise on cartesian</span>
+0009 <span class="comment">%                   coordinates</span>
+0010 <span class="comment">%  axlim          - [long1 long2 lat1 lat2] (degrees) or</span>
+0011 <span class="comment">%                   [xmin xmax ymin ymax] (km) defined by user as</span>
+0012 <span class="comment">%                   appropriate.</span>
+0013 
+0014 <span class="comment">%   Copyright � 2005 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0015 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0016 <span class="comment">%   CSW 201203, minor bug in limits to build up relevant matrices</span>
+0017 
+0018 <span class="comment">%Was: if nargin &amp; strcmp(lower(latlong_or_xyz(1)),'l')</span>
+0019 <span class="keyword">if</span> nargin &amp; strcmpi(latlong_or_xyz(1),<span class="string">'l'</span>)
+0020   load NS-geography.mat Long_Nscand Lat_Nscand Nscand
+0021   <span class="keyword">if</span> nargin == 2 &amp; ~isempty(axlim)
+0022     
+0023     <span class="comment">% Find indices for longitude/latitude to build up the corresponding</span>
+0024     <span class="comment">% matrices</span>
+0025     [rte, indlon1] = min(abs(Long_Nscand(1,:) - axlim(1)));
+0026     [rte, indlon2] = min(abs(Long_Nscand(1,:) - axlim(2)));
+0027     [rte, indlat1] = min(abs(Lat_Nscand(:,1) - axlim(3)));
+0028     [rte, indlat2] = min(abs(Lat_Nscand(:,1) - axlim(4)));
+0029     Long2plot_Nscand = Long_Nscand(indlat2:indlat1,indlon1:indlon2);
+0030     Lat2plot_Nscand  = Lat_Nscand(indlat2:indlat1,indlon1:indlon2);
+0031     Nscand2plot      = Nscand(indlat2:indlat1,indlon1:indlon2);
+0032     
+0033     <span class="comment">% Long2plot_Nscand = Long_Nscand(axlim(3)&lt;Lat_Nscand&amp;Lat_Nscand&lt;axlim(4),axlim(1)&lt;Long_Nscand&amp;Long_Nscand&lt;axlim(2));</span>
+0034     <span class="comment">% Lat2plot_Nscand  = Lat_Nscand(axlim(3)&lt;Lat_Nscand&amp;Lat_Nscand&lt;axlim(4),axlim(1)&lt;Long_Nscand&amp;Long_Nscand&lt;axlim(2));</span>
+0035     <span class="comment">% Nscand2plot      = Nscand(axlim(3)&lt;Lat_Nscand&amp;Lat_Nscand&lt;axlim(4),axlim(1)&lt;Long_Nscand&amp;Long_Nscand&lt;axlim(2));</span>
+0036     ph = <a href="../tools/tcolor.html" class="code" title="function H=tcolor(x,y,c,varargin)">tcolor</a>(Long2plot_Nscand,Lat2plot_Nscand,Nscand2plot);shading flat
+0037   <span class="keyword">else</span>
+0038     ph = <a href="../tools/tcolor.html" class="code" title="function H=tcolor(x,y,c,varargin)">tcolor</a>(Long_Nscand,Lat_Nscand,Nscand);shading flat
+0039   <span class="keyword">end</span>
+0040 <span class="keyword">else</span> <span class="comment">%if nargin &amp; strcmpi(latlong_or_xyz(1),'c')</span>
+0041   load NS-geography.mat Nscand xNscand yNscand <span class="comment">%zNscand</span>
+0042   <span class="keyword">if</span> nargin == 2 &amp; ~isempty(axlim)
+0043     <span class="comment">% Find indices for x/y to build up the corresponding</span>
+0044     <span class="comment">% matrices</span>
+0045     [rte, indx1] = min(abs(xNscand(1,:) - axlim(1)));
+0046     [rte, indx2] = min(abs(xNscand(1,:) - axlim(2)));
+0047     [rte, indy1] = min(abs(yNscand(:,1) - axlim(3)));
+0048     [rte, indy2] = min(abs(yNscand(:,1) - axlim(4)));
+0049     xNscand2p = xNscand(indy2:indy1,indx1:indx2);
+0050     yNscand2p = yNscand(indy2:indy1,indx1:indx2);
+0051     Nscand2p  = Nscand(indy2:indy1,indx1:indx2);
+0052     
+0053     <span class="comment">% xNscand2p = xNscand(axlim(3)&lt;yNscand&amp;yNscand&lt;axlim(4),axlim(1)&lt;xNscand&amp;xNscand&lt;axlim(2));</span>
+0054     <span class="comment">% yNscand2p = yNscand(axlim(3)&lt;yNscand&amp;yNscand&lt;axlim(4),axlim(1)&lt;xNscand&amp;xNscand&lt;axlim(2));</span>
+0055     <span class="comment">% Nscand2p  = Nscand( axlim(3)&lt;yNscand&amp;yNscand&lt;axlim(4),axlim(1)&lt;xNscand&amp;xNscand&lt;axlim(2));</span>
+0056     ph = <a href="../tools/tcolor.html" class="code" title="function H=tcolor(x,y,c,varargin)">tcolor</a>(xNscand2p,yNscand2p,Nscand2p);shading flat
+0057   <span class="keyword">else</span>
+0058     ph = <a href="../tools/tcolor.html" class="code" title="function H=tcolor(x,y,c,varargin)">tcolor</a>(xNscand,yNscand,Nscand);shading flat
+0059   <span class="keyword">end</span>
+0060 <span class="keyword">end</span>
+0061 <span class="keyword">if</span> nargout
+0062   PH = ph;
+0063 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

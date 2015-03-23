@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ASK_sph_dist</title>
+  <meta name="keywords" content="ASK_sph_dist">
+  <meta name="description" content="ASK_SPH_DIST -  Calculating angle between two points on a sphere.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html HSOFT -->
+<h1>ASK_sph_dist
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ASK_SPH_DIST -  Calculating angle between two points on a sphere.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function SphDist = ASK_sph_dist(ra1,decl1,ra2,decl2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ASK_SPH_DIST -  Calculating angle between two points on a sphere. 
+ the inputs and outputs are in radians
+ dec1 and dec2 are like latitudes, and ra1 and ra2 are like longitudes
+ Works for arrays, if all inputs correspond.
+
+ Calling:
+   SphDist = ASK_sph_dist(ra1,decl1,ra2,decl2)
+ Input:
+   ra1   - Rect ascension 1
+   decl1 - Declination 1
+   ra2   - Rect ascension 2
+   decl2 - Declination 2
+ Output:
+   SphDist - great circle angle between the two points</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function SphDist = ASK_sph_dist(ra1,decl1,ra2,decl2)</a>
+0002 <span class="comment">% ASK_SPH_DIST -  Calculating angle between two points on a sphere.</span>
+0003 <span class="comment">% the inputs and outputs are in radians</span>
+0004 <span class="comment">% dec1 and dec2 are like latitudes, and ra1 and ra2 are like longitudes</span>
+0005 <span class="comment">% Works for arrays, if all inputs correspond.</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Calling:</span>
+0008 <span class="comment">%   SphDist = ASK_sph_dist(ra1,decl1,ra2,decl2)</span>
+0009 <span class="comment">% Input:</span>
+0010 <span class="comment">%   ra1   - Rect ascension 1</span>
+0011 <span class="comment">%   decl1 - Declination 1</span>
+0012 <span class="comment">%   ra2   - Rect ascension 2</span>
+0013 <span class="comment">%   decl2 - Declination 2</span>
+0014 <span class="comment">% Output:</span>
+0015 <span class="comment">%   SphDist - great circle angle between the two points</span>
+0016 
+0017 
+0018 <span class="comment">% Written to replicate functionality of sph_dist.pro</span>
+0019 <span class="comment">% Copyright Bjorn Gustavsson 20110128</span>
+0020 <span class="comment">% GPL 3.0 or later applies</span>
+0021 
+0022 e1 = [sin(ra1).*sin(decl1),cos(ra1).*sin(decl1),cos(decl1)];
+0023 e2 = [sin(ra2).*sin(decl2),cos(ra2).*sin(decl2),cos(decl2)];
+0024 SphDist = atan2(norm(cross(e1,e2)),dot(e1,e2));</pre></div>
+<hr><address>Generated on Mon 01-Aug-2011 01:13:58 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

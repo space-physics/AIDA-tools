@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of sk_make_rgb</title>
+  <meta name="keywords" content="sk_make_rgb">
+  <meta name="description" content="SK_MAKE_RGB - transform Pulkovo spectra into RGB triplet">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Skymap -->
+<h1>sk_make_rgb
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SK_MAKE_RGB - transform Pulkovo spectra into RGB triplet</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function RGB = sk_make_rgb(BSNR) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SK_MAKE_RGB - transform Pulkovo spectra into RGB triplet
+   
+ Calling:
+  RGB = sk_make_rgb(BSNR)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="getspec.html" class="code" title="function [wavelengths,energyfluxes] = getspec(bright_star_nr,verbosity)">getspec</a>	GETSPEC - high resolution stellar spectras around visible wavelengths.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="read_bsc.html" class="code" title="function [star_list] = read_bsc(catalog,star_pos)">read_bsc</a>	READ_BSC reads Bright Star Catalog, makes STAR_LIST of information</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function RGB = sk_make_rgb(BSNR)</a>
+0002 <span class="comment">% SK_MAKE_RGB - transform Pulkovo spectra into RGB triplet</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%  RGB = sk_make_rgb(BSNR)</span>
+0006 
+0007 
+0008 <span class="comment">%   Copyright � 2005 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0009 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0010 
+0011 
+0012 Lb = [395.3125
+0013       400.0000
+0014       411.9792
+0015       439.0625
+0016       450.0000
+0017       460.9375
+0018       489.0625
+0019       512.3762
+0020       535.6436];
+0021 eye_b = [0.0212
+0022          0.0377
+0023          0.1274
+0024          0.9552
+0025          0.9835
+0026          0.9316
+0027          0.3042
+0028          0.0896
+0029          0.0071];
+0030 Lg = [423.9583
+0031       470.8333
+0032       495.3125
+0033       517.8218
+0034       544.0594
+0035       578.4946
+0036       600.0000
+0037       630.0971
+0038       658.3333];
+0039 eye_g = [0.0118
+0040          0.0967
+0041          0.2241
+0042          0.4764
+0043          0.6627
+0044          0.4481
+0045          0.2476
+0046          0.0377
+0047          0.0047];
+0048 Lr = [405.7292
+0049       439.0625
+0050       467.7083
+0051       500.4950
+0052       534.6535
+0053       565.0538
+0054       587.0968
+0055       618.4466
+0056       641.2621
+0057       671.6667
+0058       701.6667];
+0059 eye_r = [0.0142
+0060          0.0401
+0061          0.0189
+0062          0.1014
+0063          0.3632
+0064          0.5212
+0065          0.5637
+0066          0.3986
+0067          0.1863
+0068          0.0472
+0069          0.0047];
+0070 
+0071 [wavelengths,energyfluxes] = <a href="getspec.html" class="code" title="function [wavelengths,energyfluxes] = getspec(bright_star_nr,verbosity)">getspec</a>(BSNR,0);
+0072 i_max = find(diff(wavelengths)&lt;0);
+0073 <span class="keyword">if</span> min(size(i_max)) == 0
+0074   i_max = length(energyfluxes);
+0075 <span class="keyword">end</span>
+0076 
+0077 rgb{1} = interp1(Lr,eye_r,wavelengths(1:i_max),<span class="string">'pchip'</span>,0).*energyfluxes(1:i_max);
+0078 rgb{1}(~isfinite(rgb{1})) = 0;
+0079 rgb{2} = interp1(Lg,eye_g,wavelengths(1:i_max),<span class="string">'pchip'</span>,0).*energyfluxes(1:i_max);
+0080 rgb{2}(~isfinite(rgb{2})) = 0;
+0081 rgb{3} = interp1(Lb,eye_b,wavelengths(1:i_max),<span class="string">'pchip'</span>,0).*energyfluxes(1:i_max);
+0082 rgb{3}(~isfinite(rgb{3})) = 0;
+0083 
+0084 RGB = [sum(rgb{1}),sum(rgb{2}),sum(rgb{3})];
+0085 RGB = RGB/max(RGB);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

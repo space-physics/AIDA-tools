@@ -1,0 +1,567 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of try_to_be_smart</title>
+  <meta name="keywords" content="try_to_be_smart">
+  <meta name="description" content="TRY_TO_BE_SMART parses an (ALIS) fits header for observation info">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>try_to_be_smart
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TRY_TO_BE_SMART parses an (ALIS) fits header for observation info</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [obs] = try_to_be_smart(img_head,ALIS_FITS,PO) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> TRY_TO_BE_SMART parses an (ALIS) fits header for observation info
+ such as exposure time, time and date of exposure et al.
+ 
+ INPUT: 
+   img_head - a FITS header, char array.
+   ALIS_FITS - bolean, 1 if the header follow &quot;any&quot; fits
+   standard... 
+ 
+ OUTPUT:
+    OBS the output is a struct with some relevant key parameters
+    such as camera rotation, exposure time, time and date of
+    exposure filter camera number, camera position.
+ 
+ Calling:
+   obs = try_to_be_smart(img_head)
+   obs = try_to_be_smart(img_head,ALIS_FITS)
+ Input:
+   img_head - image header, string array
+ Output:
+   obs - obs struct with fields for various meta-data, fields
+         needed are:
+         obs.time    - [yyyy mm dd HH MM ss.ddd]
+         obs.pos     - [depreciated]
+         obs.longlat - [longitude, latitude] (degrees)
+         obs.station - Station number, in ALIS, Miracle and
+                       HAARPOON stations have a designated number
+         obs.alpha   - rotation around east-west axis.
+         obs.beta    - rotation around north-south axis.
+         obs.az      - Azimuth rotation angle, clock-wise from
+                       north (degrees)
+         obs.ze      - Zenith rotation angle (degrees)
+         obs.camnr   - ALIS has cameras numbered (for bad-pixel
+                       maps and intensity calibration and such)
+         obs.exptime - exposure time (s)
+         obs.filter  - Filter, emission wavelength (� or nm)
+ 
+ Some of these are needed for different purposes, time, pos (and
+ to some extent az &amp; ze) are needed for running the STARCAL
+ geometric calibrations.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>	FITSFINDINHEADER finds string S in fitsheader H</li><li><a href="fitsfindkey_strmhead.html" class="code" title="function [j_out] = fitsfindkey_strmhead(H,S)">fitsfindkey_strmhead</a>	fitsfindkey_strmhead - Searches a FITS header H for keyword S</li><li><a href="../Skymap/date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>	DATE2JULIANDATE calculates the julian date at 0h UT</li><li><a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>	ISCHAR - return true if STR is a char-array</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../ALIS/AVOK/alis_img_overview.html" class="code" title="function [scrhndl] = alis_img_overview(ov_filename,f_filename,PO,print_or_what)">alis_img_overview</a>	ALIS_IMG_OVERVIEW - make ALIS data overview-plots by scanning OVERVIEW-files and INDEX-files</li><li><a href="read_img.html" class="code" title="function [img_out,img_head,obs] = read_img(filename,PREPRO_OPS)">read_img</a>	READ_IMG - reads image data and process header info.</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [stnnr] = fix_stationpos(obs)</a></li><li><a href="#_sub2" class="code">function outstr = ddeblank(in_str)</a></li><li><a href="#_sub3" class="code">function stn_nr = header2stnnr_v5(header_line)</a></li><li><a href="#_sub4" class="code">function site = header2site_v5(header_line)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [obs] = try_to_be_smart(img_head,ALIS_FITS,PO)</a>
+0002 <span class="comment">% TRY_TO_BE_SMART parses an (ALIS) fits header for observation info</span>
+0003 <span class="comment">% such as exposure time, time and date of exposure et al.</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% INPUT:</span>
+0006 <span class="comment">%   img_head - a FITS header, char array.</span>
+0007 <span class="comment">%   ALIS_FITS - bolean, 1 if the header follow &quot;any&quot; fits</span>
+0008 <span class="comment">%   standard...</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">% OUTPUT:</span>
+0011 <span class="comment">%    OBS the output is a struct with some relevant key parameters</span>
+0012 <span class="comment">%    such as camera rotation, exposure time, time and date of</span>
+0013 <span class="comment">%    exposure filter camera number, camera position.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% Calling:</span>
+0016 <span class="comment">%   obs = try_to_be_smart(img_head)</span>
+0017 <span class="comment">%   obs = try_to_be_smart(img_head,ALIS_FITS)</span>
+0018 <span class="comment">% Input:</span>
+0019 <span class="comment">%   img_head - image header, string array</span>
+0020 <span class="comment">% Output:</span>
+0021 <span class="comment">%   obs - obs struct with fields for various meta-data, fields</span>
+0022 <span class="comment">%         needed are:</span>
+0023 <span class="comment">%         obs.time    - [yyyy mm dd HH MM ss.ddd]</span>
+0024 <span class="comment">%         obs.pos     - [depreciated]</span>
+0025 <span class="comment">%         obs.longlat - [longitude, latitude] (degrees)</span>
+0026 <span class="comment">%         obs.station - Station number, in ALIS, Miracle and</span>
+0027 <span class="comment">%                       HAARPOON stations have a designated number</span>
+0028 <span class="comment">%         obs.alpha   - rotation around east-west axis.</span>
+0029 <span class="comment">%         obs.beta    - rotation around north-south axis.</span>
+0030 <span class="comment">%         obs.az      - Azimuth rotation angle, clock-wise from</span>
+0031 <span class="comment">%                       north (degrees)</span>
+0032 <span class="comment">%         obs.ze      - Zenith rotation angle (degrees)</span>
+0033 <span class="comment">%         obs.camnr   - ALIS has cameras numbered (for bad-pixel</span>
+0034 <span class="comment">%                       maps and intensity calibration and such)</span>
+0035 <span class="comment">%         obs.exptime - exposure time (s)</span>
+0036 <span class="comment">%         obs.filter  - Filter, emission wavelength (� or nm)</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">% Some of these are needed for different purposes, time, pos (and</span>
+0039 <span class="comment">% to some extent az &amp; ze) are needed for running the STARCAL</span>
+0040 <span class="comment">% geometric calibrations.</span>
+0041 
+0042 
+0043 <span class="comment">%   Copyright � 20050804 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0044 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0045 
+0046 <span class="keyword">global</span> FITS_HOME
+0047 <span class="keyword">persistent</span> Station_names
+0048 
+0049 <span class="comment">% The logic here is that with ALIS-images there is a known, and</span>
+0050 <span class="comment">% somewhat meandering evolution, of the meta-data evolution so to</span>
+0051 <span class="comment">% handle that the second input argument, ALIS_FITS, should be set</span>
+0052 <span class="comment">% to 1. If there is</span>
+0053 <span class="keyword">if</span> nargin &lt; 2
+0054   ALIS_FITS = 0;
+0055 <span class="keyword">end</span>
+0056 <span class="comment">% To make it convenient to both get STARCAL to query for</span>
+0057 <span class="comment">% observation time and location and all other functions not to</span>
+0058 <span class="comment">% bother with that (e.g. keogram and time-series stuff where</span>
+0059 <span class="comment">% multiple images are read) the default setting of SKIP-DIALOGS</span>
+0060 <span class="comment">% will be 1 (skip the dialogs and just get on with it) but if there</span>
+0061 <span class="comment">% is a field 'skip_dialogs' in the submitted 3rd input argument</span>
+0062 <span class="comment">% then that value will be used. In STARCAL PO.skip_dialogs is set</span>
+0063 <span class="comment">% to 0 - in order to do the geometric star-calibration time and</span>
+0064 <span class="comment">% location is critically needed...</span>
+0065 <span class="keyword">if</span> nargin &gt; 2
+0066   skip_dialogs = PO.skip_dialogs;
+0067 <span class="keyword">else</span>
+0068   skip_dialogs = 1;
+0069 <span class="keyword">end</span>
+0070 <span class="keyword">if</span> isempty(Station_names)
+0071   Station_names = textread(<span class="string">'station.name'</span>,<span class="string">'%s'</span>,<span class="string">'delimiter'</span>,<span class="string">'\n'</span>,<span class="string">'whitespace'</span>,<span class="string">''</span>);
+0072 <span class="keyword">end</span>
+0073 
+0074 FITS_HOME = which(<span class="string">'inimg'</span>);
+0075 FITS_HOME = fileparts(FITS_HOME);
+0076 
+0077 
+0078 delimiters = [9:13 32];
+0079 delimiters = [delimiters,<span class="string">'~=+*/^()[]{}&lt;&gt;,;:'''</span>];
+0080 
+0081 <span class="comment">% Initiate the OBS struct with all the meta-data fields needed.</span>
+0082 obs.time = [];
+0083 obs.pos = [];
+0084 obs.longlat = [];
+0085 obs.station = [];
+0086 obs.alpha = [];
+0087 obs.beta = [];
+0088 obs.az = [];
+0089 obs.ze = [];
+0090 obs.camnr = [];
+0091 obs.exptime = [];
+0092 obs.filter = [];
+0093 
+0094 H = img_head';
+0095 
+0096 <span class="comment">% This is the date the ALIS station #1 was moved from Swedish</span>
+0097 <span class="comment">% Institute of Space Physics to the Knutstorp building:</span>
+0098 To_Knutstorp_time = [1999 8 1 0 0 0];
+0099 
+0100 <span class="comment">%Determination of date and time of observation</span>
+0101 <span class="comment">% 1 Look for standard (post 1998 something )time key-word</span>
+0102 <span class="comment">% 'DATE-OBS'</span>
+0103 hindx = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(img_head,<span class="string">'DATE-OBS'</span>);
+0104 
+0105 <span class="keyword">if</span> ~isempty(hindx)
+0106   delimiters = [delimiters,<span class="string">'-T'</span>];
+0107   timestr = img_head(hindx,11:end);
+0108   [year,timestr] = strtok(timestr,delimiters);
+0109   [month,timestr] = strtok(timestr,delimiters);
+0110   [day,timestr] = strtok(timestr,delimiters);
+0111   [hour,timestr] = strtok(timestr,delimiters);
+0112   [minute,timestr] = strtok(timestr,delimiters);
+0113   [sec] = strtok(timestr,delimiters);
+0114   obs.time = [str2num(year) str2num(month) str2num(day) str2num(hour) str2num(minute) str2num(sec)];
+0115   <span class="keyword">if</span> length(obs.time) &lt; 6
+0116     hindx = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(img_head,<span class="string">'TIME-OBS'</span>);
+0117     timestr = img_head(hindx,11:end);
+0118     [hour,timestr] = strtok(timestr,delimiters);
+0119     [minute,timestr] = strtok(timestr,delimiters);
+0120     [sec] = strtok(timestr,delimiters);
+0121     obs.time = [obs.time str2num(hour) str2num(minute) str2num(sec)];
+0122   <span class="keyword">end</span>
+0123   
+0124 <span class="keyword">else</span>
+0125   
+0126   <span class="comment">% Didn't find 'DATE-OBS' keyword now looking for old nonstandard</span>
+0127   <span class="comment">% time keyword used by 'ALIS' pre 1998 something...</span>
+0128   hindx = findstr(H(:)',<span class="string">'ALIS-UTC'</span>);
+0129   <span class="keyword">if</span> ~isempty(hindx)
+0130     timestr = H(hindx+11:hindx+79);
+0131     [gps_class,timestr] = strtok(timestr,<span class="string">':'</span>);
+0132     [year,timestr] = strtok(timestr,delimiters);
+0133     [month,timestr] = strtok(timestr,delimiters);
+0134     [day,timestr] = strtok(timestr,delimiters);
+0135     [hour,timestr] = strtok(timestr,delimiters);
+0136     [minute,timestr] = strtok(timestr,delimiters);
+0137     [sec] = strtok(timestr,delimiters);
+0138     obs.time = [1900+str2num(year) str2num(month) str2num(day) str2num(hour) str2num(minute) str2num(sec)];
+0139     
+0140   <span class="keyword">else</span>
+0141     <span class="comment">% when everything else fails ask...</span>
+0142     datestr = <span class="string">'Date of observation (YYYY , MM , DD)'</span>;
+0143     timestr = <span class="string">'Time of observation (UT) (HH , MM , SS.dd)'</span>;
+0144     defll = {<span class="string">'1990 12 24'</span>,<span class="string">'15  07  12'</span>};
+0145     title = <span class="string">'OBSERVATION TIME?'</span>;
+0146     lineNo=1;
+0147     <span class="keyword">if</span> skip_dialogs == 0
+0148       answer=inputdlg({datestr,timestr},title,lineNo,defll);
+0149       obs.time = [ str2num(answer{1}) str2num(answer{2})];
+0150     <span class="keyword">else</span>
+0151       obs.time = (datevec(now,<span class="string">'yyyy mm dd HH MM SS'</span>));
+0152     <span class="keyword">end</span>
+0153   <span class="keyword">end</span>
+0154   
+0155 <span class="keyword">end</span>
+0156 
+0157 <span class="comment">% look for exposure time</span>
+0158 cmnrindx = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(img_head,<span class="string">'EXPTIME'</span>);
+0159 <span class="keyword">if</span> ~isempty(cmnrindx)
+0160   
+0161   obs.exptime = str2num(strtok(img_head(cmnrindx,10:end)));
+0162   
+0163 <span class="keyword">else</span>
+0164   <span class="comment">% or the old version</span>
+0165   cmnrindx = findstr(H(:)',<span class="string">'ALIS-EXP'</span>);
+0166   <span class="keyword">if</span> ~isempty(cmnrindx)
+0167     obs.exptime = str2num(strtok(H(cmnrindx+10:cmnrindx+79)))/1000;
+0168   <span class="keyword">else</span>
+0169     cmnrindx = findstr(H(:)',<span class="string">'EXPOSURE'</span>);
+0170     <span class="keyword">if</span> ~isempty(cmnrindx)
+0171       obs.exptime = str2num(strtok(H(cmnrindx+10:cmnrindx+79)));
+0172     <span class="keyword">else</span> <span class="comment">% Something missing badly!</span>
+0173       obs.exptime = -1;
+0174       warning([<span class="string">'Missing exposure time in fits header (try_to_be_smart) for image at: '</span>,num2str(obs.time,<span class="string">'%02d:%02d:%02d'</span>)]);
+0175     <span class="keyword">end</span>
+0176   <span class="keyword">end</span>  
+0177 <span class="keyword">end</span>
+0178 
+0179 
+0180 hindx = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(img_head,<span class="string">'ALISSTD'</span>);
+0181 <span class="comment">%TBR:? alis_header_version = [];</span>
+0182 <span class="keyword">if</span> ~isempty(hindx)
+0183   alis_header_version = str2num(strtok(img_head(hindx,11:end)));
+0184 <span class="keyword">else</span>
+0185   hindx = <a href="fitsfindinheader.html" class="code" title="function [j_out] = fitsfindinheader(H,s)">fitsfindinheader</a>(img_head,<span class="string">'MIMASTD'</span>);
+0186   alis_header_version = [];
+0187   <span class="keyword">if</span> ~isempty(hindx)
+0188     alis_header_version = str2num(strtok(img_head(hindx,11:end)));
+0189   <span class="keyword">end</span>
+0190   
+0191 <span class="keyword">end</span>
+0192 
+0193 <span class="keyword">if</span> alis_header_version &gt;= 5
+0194 <span class="comment">% $$$   [FITS_HOME,'header_v5_2_obs.txt']</span>
+0195   VersionParserFile = [<span class="string">'header_v'</span>,num2str(alis_header_version),<span class="string">'_obs.txt'</span>];
+0196   fp = fopen(fullfile(FITS_HOME,VersionParserFile),<span class="string">'r'</span>);
+0197   <span class="keyword">if</span> fp == -1
+0198     fp = fopen([FITS_HOME,<span class="string">'header_v5_2_obs.txt'</span>],<span class="string">'r'</span>);
+0199   <span class="keyword">end</span>
+0200   <span class="keyword">while</span> ~feof(fp)
+0201     curr_line = fgetl(fp);
+0202     <span class="keyword">if</span> <a href="../tools/ischar.html" class="code" title="function TrueOrFalse = ischar(str)">ischar</a>(curr_line)
+0203       [fieldname,curr_line] = strtok(curr_line,<span class="string">':'</span>);
+0204       [field_fits_key,curr_line] = strtok(curr_line(2:end),<span class="string">'='</span>);
+0205       [key_Evalue_string,curr_line] = strtok(curr_line(2:end),<span class="string">' '</span>);
+0206       hindx = <a href="fitsfindkey_strmhead.html" class="code" title="function [j_out] = fitsfindkey_strmhead(H,S)">fitsfindkey_strmhead</a>(img_head,<a href="#_sub2" class="code" title="subfunction outstr = ddeblank(in_str)">ddeblank</a>(field_fits_key));
+0207       
+0208       <span class="keyword">if</span> ~isempty(hindx)
+0209         key_val = eval(key_Evalue_string);
+0210         obs = setfield(obs,fieldname,key_val);
+0211       <span class="keyword">else</span>
+0212         obs = setfield(obs,fieldname,0);<span class="comment">%%% Fixa fixen senare...</span>
+0213         warning(<span class="string">'MATLAB:try_to_be_smart'</span>,[<span class="string">'missing header info for?: '</span>,fieldname]);
+0214       <span class="keyword">end</span>
+0215     <span class="keyword">end</span>
+0216   <span class="keyword">end</span>
+0217   <span class="keyword">switch</span> obs.site(1)
+0218    <span class="keyword">case</span> <span class="string">'K'</span> <span class="comment">% Knutstorp</span>
+0219     obs.station = 7;
+0220    <span class="keyword">case</span> <span class="string">'O'</span> <span class="comment">% Optics Lab IRF</span>
+0221     obs.station = 1;
+0222    <span class="keyword">case</span> <span class="string">'Q'</span> <span class="comment">% Calibration Img</span>
+0223     obs.station = 1;
+0224    <span class="keyword">case</span> <span class="string">'M'</span> <span class="comment">% Merasjarvi</span>
+0225     obs.station = 2;
+0226    <span class="keyword">case</span> <span class="string">'S'</span> <span class="comment">% Silkimuotka</span>
+0227     obs.station = 3;
+0228    <span class="keyword">case</span> <span class="string">'T'</span> <span class="comment">% Tjautjas</span>
+0229     obs.station = 4;
+0230    <span class="keyword">case</span> <span class="string">'A'</span> <span class="comment">% Abisko</span>
+0231     obs.station = 5;
+0232    <span class="keyword">case</span> <span class="string">'N'</span> <span class="comment">% Nikkaluokta</span>
+0233     obs.station = 6;
+0234    <span class="keyword">case</span> <span class="string">'B'</span> <span class="comment">% SkiBotn (Bus)</span>
+0235     obs.station = 10;
+0236    <span class="keyword">case</span> <span class="string">'R'</span> <span class="comment">% Ramfjord</span>
+0237     obs.station = 11;
+0238    <span class="keyword">case</span> <span class="string">'L'</span> <span class="comment">% Longyearbyen</span>
+0239     obs.station = 12;
+0240    <span class="keyword">otherwise</span>
+0241     <span class="comment">% do nothing</span>
+0242   <span class="keyword">end</span>
+0243   fclose(fp);
+0244   [stnnr] = <a href="#_sub1" class="code" title="subfunction [stnnr] = fix_stationpos(obs)">fix_stationpos</a>(obs);
+0245   
+0246 <span class="keyword">else</span>
+0247   
+0248   <span class="comment">%determination of observation site (long,lat)</span>
+0249   <span class="keyword">if</span> ALIS_FITS
+0250     
+0251     load ktransf.dat
+0252     
+0253     hindx = findstr(H(:)',<span class="string">'ALIS-STN'</span>);
+0254     <span class="keyword">if</span> isempty(hindx)
+0255       obs.station = 0; <span class="comment">% Dont know for now.</span>
+0256     <span class="keyword">else</span>
+0257       station = sscanf(strtok(H(hindx+9:hindx+79),delimiters),<span class="string">'%d'</span>);
+0258       obs.station = station;
+0259       <span class="keyword">if</span> ( obs.station == 1 ) &amp;&amp; <span class="keyword">...</span>
+0260             ( <a href="../Skymap/date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>(obs.time) &gt;  <a href="../Skymap/date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>(To_Knutstorp_time) )
+0261         obs.station = 7;
+0262       <span class="keyword">end</span>
+0263     <span class="keyword">end</span>
+0264   <span class="keyword">else</span>
+0265     stn_found = 0;
+0266     hindx = findstr(H(:)',<span class="string">'ORIGIN'</span>); 
+0267    <span class="keyword">if</span> ~isempty(hindx)
+0268       station = strtok(H(hindx+11:hindx+79),[9:13 32]);
+0269       station = strmatch(station(1:5),Station_names);
+0270       <span class="keyword">if</span> ~isempty(station)
+0271         stn_found = 1;
+0272       <span class="keyword">end</span>
+0273     <span class="keyword">end</span>
+0274     <span class="keyword">if</span> ~stn_found <span class="comment">% if everything else fails ask</span>
+0275       latstr = <span class="string">'Latitude of observation site (+ north)'</span>;
+0276       longstr = <span class="string">'Longitude of observation site (+ east)'</span>;
+0277       defll = {<span class="string">'0'</span>,<span class="string">'0'</span>};
+0278       title = <span class="string">'Position of observation site?'</span>;
+0279       lineNo = 1;
+0280       <span class="keyword">if</span> skip_dialogs == 0
+0281         answer = inputdlg({latstr,longstr},title,lineNo,defll);
+0282         pos = [sscanf(answer{2},<span class="string">'%f'</span>) sscanf(answer{1},<span class="string">'%f'</span>)];
+0283         obs.longlat = pos;
+0284         obs.pos = obs.longlat;
+0285       <span class="keyword">else</span>
+0286         obs.longlat = [0,0];
+0287         obs.pos = obs.longlat;
+0288       <span class="keyword">end</span>
+0289     <span class="keyword">end</span>
+0290     
+0291   <span class="keyword">end</span>
+0292   
+0293   <span class="comment">% looking for something like camera rotation</span>
+0294   <span class="comment">%AZIMUTH =              346.007 / POSITIVE EAST (CW)</span>
+0295   <span class="comment">%ZEANGLE =               36.995 / ZENITH ANGLE 90 DEG - ELEV</span>
+0296   <span class="comment">%POSALFA =                 -413 / ALFA AXIS (COUNTS)</span>
+0297   <span class="comment">%POSBETA =                -1429 / BETA AXIS (COUNTS)</span>
+0298   alfaindx = findstr(H(:)',<span class="string">'POSALFA'</span>);
+0299   <span class="keyword">if</span> ~isempty(alfaindx)
+0300     
+0301     alpha = sscanf(H(alfaindx+11:alfaindx+79),<span class="string">'%d'</span>);
+0302     betaindx = findstr(H(:)',<span class="string">'POSBETA'</span>);
+0303     beta = sscanf(H(betaindx+11:betaindx+79),<span class="string">'%d'</span>);
+0304     obs.alpha = rem(alpha,360);
+0305     obs.beta = rem(beta,360);
+0306     
+0307   <span class="keyword">end</span>
+0308   
+0309   azindx = findstr(H(:)',<span class="string">'AZIMUTH'</span>);
+0310   <span class="keyword">if</span> ~isempty(azindx)
+0311     
+0312     azimuth = sscanf(H(azindx+11:azindx+79),<span class="string">'%f'</span>);
+0313     obs.az = azimuth;
+0314   <span class="keyword">end</span>
+0315   zeindx = findstr(H(:)',<span class="string">'ZEANGLE'</span>);
+0316   <span class="keyword">if</span> ~isempty(zeindx)
+0317     
+0318     zenith = sscanf(H(zeindx+11:zeindx+79),<span class="string">'%f'</span>);
+0319     obs.ze = zenith;
+0320   <span class="keyword">end</span>
+0321   
+0322   <span class="keyword">if</span> isempty(azindx)
+0323     <span class="comment">% if nothing found this far - look for the old version.</span>
+0324     pindx = findstr(H(:)',<span class="string">'ALIS-POS'</span>);
+0325     <span class="keyword">if</span> ~isempty(pindx)
+0326       pstr = H(pindx:pindx+79);
+0327       [q,pstr] = strtok(H(pindx-5:pindx+79-6));
+0328       [q,pstr] = strtok(pstr,delimiters);
+0329       [q,pstr] = strtok(pstr,delimiters);
+0330       az = str2num(q);
+0331       <span class="keyword">if</span> isempty(az) <span class="comment">% we really should not end up here</span>
+0332         az = 0;
+0333       <span class="keyword">end</span>
+0334       [q,pstr] = strtok(pstr,delimiters);
+0335       [q,pstr] = strtok(pstr,delimiters);
+0336       ze = str2num(q);
+0337       <span class="keyword">if</span> isempty(ze) <span class="comment">% we really should not end up here</span>
+0338         ze = 0;
+0339       <span class="keyword">end</span>
+0340       obs.az = az;
+0341       obs.ze = ze;
+0342     <span class="keyword">else</span>
+0343       obs.az = 0;
+0344       obs.ze = 0;
+0345       disp([<span class="string">'No alisposinfo for stn: '</span>,num2str(obs.station),<span class="string">', at: '</span>,num2str(obs.time,<span class="string">'%02d'</span>)])
+0346     <span class="keyword">end</span>
+0347   <span class="keyword">end</span>
+0348   
+0349   obs.camnr = 0; <span class="comment">% unknown</span>
+0350                  <span class="comment">% look for camera number...</span>
+0351   cmnrindx = findstr(H(:)',<span class="string">'ALIS-CCD'</span>);
+0352   <span class="keyword">if</span> ~isempty(cmnrindx)
+0353     
+0354     obs.camnr = str2num(strtok(H(cmnrindx+10:cmnrindx+79)));
+0355     <span class="keyword">if</span> isempty(obs.camnr)
+0356       qwe = H(cmnrindx+10:cmnrindx+79);
+0357       aqsd = regexp(qwe,<span class="string">'/[\d]/'</span>);
+0358       obs.camnr = str2num(qwe(aqsd(1)+1));
+0359     <span class="keyword">end</span>
+0360   <span class="keyword">else</span>
+0361     <span class="comment">% or the old version</span>
+0362     cmnrindx = findstr(H(:)',<span class="string">'ALIS-CAM'</span>);
+0363     <span class="keyword">if</span> ~isempty(cmnrindx)
+0364       <span class="keyword">if</span> ~isempty(findstr(H(cmnrindx:cmnrindx+79-6),<span class="string">'0'</span>))
+0365         obs.camnr = 0;
+0366       <span class="keyword">elseif</span> ~isempty(findstr(H(cmnrindx:cmnrindx+79-6),<span class="string">'1'</span>))
+0367         obs.camnr = 1;
+0368       <span class="keyword">elseif</span> ~isempty(findstr(H(cmnrindx:cmnrindx+79-6),<span class="string">'2'</span>))
+0369         obs.camnr = 2;
+0370       <span class="keyword">elseif</span> ~isempty(findstr(H(cmnrindx:cmnrindx+79-6),<span class="string">'3'</span>))
+0371         obs.camnr = 3;
+0372       <span class="keyword">elseif</span> ~isempty(findstr(H(cmnrindx:cmnrindx+79-6),<span class="string">'4'</span>))
+0373         obs.camnr = 4;
+0374       <span class="keyword">elseif</span> ~isempty(findstr(H(cmnrindx:cmnrindx+79-6),<span class="string">'5'</span>))
+0375         obs.camnr = 5;
+0376       <span class="keyword">elseif</span> ~isempty(findstr(H(cmnrindx:cmnrindx+79-6),<span class="string">'6'</span>))
+0377         obs.camnr = 6;
+0378       <span class="keyword">elseif</span> ~isempty(findstr(H(cmnrindx:cmnrindx+79-6),<span class="string">'7'</span>))
+0379         obs.camnr = 7;
+0380       <span class="keyword">end</span>
+0381     <span class="keyword">else</span>
+0382       cmnrindx = <a href="fitsfindkey_strmhead.html" class="code" title="function [j_out] = fitsfindkey_strmhead(H,S)">fitsfindkey_strmhead</a>(img_head,<span class="string">'INSTRUME'</span>);
+0383       <span class="keyword">if</span> ~isempty(cmnrindx)
+0384         obs.camnr = str2num(strtok(fliplr(img_head(cmnrindx,12:end)),<span class="string">' abcdefghijklmnopqrstuvwxyz'''</span>));
+0385       <span class="keyword">end</span>
+0386     <span class="keyword">end</span>
+0387     
+0388   <span class="keyword">end</span>
+0389   
+0390   
+0391   cmnrindx = findstr(H(:)',<span class="string">'FILTER  ='</span>);
+0392   <span class="keyword">if</span> ~isempty(cmnrindx)
+0393     
+0394     [q,w] = strtok(H(cmnrindx:cmnrindx+79-6));
+0395     <span class="keyword">if</span> ~isempty(findstr(lower(w),<span class="string">'white'</span>))
+0396       obs.filter = 0;
+0397     <span class="keyword">elseif</span> ~isempty(findstr(lower(w),<span class="string">'none'</span>))
+0398       obs.filter = 0;
+0399     <span class="keyword">elseif</span> ~isempty(findstr(lower(w),<span class="string">'redbg'</span>))
+0400       obs.filter = 632;
+0401     <span class="keyword">else</span>
+0402       [w,q] = strtok(w,delimiters);
+0403       obs.filter = str2num(w);
+0404     <span class="keyword">end</span>
+0405   <span class="keyword">end</span>
+0406 <span class="keyword">end</span>
+0407 
+0408 
+0409 <span class="comment">%function [stnnr,pos,cmtr] = fix_stationpos(obs)</span>
+0410 <a name="_sub1" href="#_subfunctions" class="code">function [stnnr] = fix_stationpos(obs)</a>
+0411 <span class="comment">% FIX_STATIONPOS -</span>
+0412 <span class="comment">%</span>
+0413 
+0414 To_Knutstorp_time = [2000 8 1 0 0 0];
+0415 
+0416 <span class="keyword">if</span> ( obs.station == 1 ) &amp;&amp; <span class="keyword">...</span>
+0417       ( <a href="../Skymap/date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>(obs.time) &gt;  <a href="../Skymap/date2juldate.html" class="code" title="function [jd] = date2juldate(date)">date2juldate</a>(To_Knutstorp_time) )
+0418   stnnr = 7;
+0419 <span class="keyword">else</span>
+0420   stnnr = obs.station;
+0421 <span class="keyword">end</span>
+0422 
+0423 <span class="keyword">if</span> ~isempty(obs.site)
+0424   <span class="keyword">switch</span> obs.site(1)
+0425    <span class="keyword">case</span> <span class="string">'K'</span> <span class="comment">% Knutstorp</span>
+0426     stnnr = 7;
+0427    <span class="keyword">case</span> <span class="string">'O'</span> <span class="comment">% Optics lab IRF Kiruna</span>
+0428     stnnr = 1;
+0429    <span class="keyword">case</span> <span class="string">'M'</span> <span class="comment">% Merasjarvi</span>
+0430     stnnr = 2;
+0431    <span class="keyword">case</span> <span class="string">'S'</span> <span class="comment">% Silkimuotka</span>
+0432     stnnr = 3;
+0433    <span class="keyword">case</span> <span class="string">'T'</span> <span class="comment">% Tjautjas</span>
+0434     stnnr = 4;
+0435    <span class="keyword">case</span> <span class="string">'A'</span> <span class="comment">% Abisko</span>
+0436     stnnr = 5;
+0437    <span class="keyword">case</span> <span class="string">'N'</span> <span class="comment">% Nikkaloukta</span>
+0438     stnnr = 6;
+0439    <span class="keyword">case</span> <span class="string">'B'</span> <span class="comment">% Bus guess that it is in Skibotn</span>
+0440     stnnr = 10;
+0441    <span class="keyword">case</span> <span class="string">'R'</span> <span class="comment">% Ramfjord</span>
+0442     stnnr = 11;
+0443    <span class="keyword">otherwise</span>
+0444     stnnr = 0;
+0445   <span class="keyword">end</span>
+0446 
+0447 <span class="keyword">end</span>
+0448 
+0449 <span class="keyword">if</span> obs.station == 0
+0450   pos = [];
+0451   cmtr = [];
+0452   stnnr = [];
+0453 <span class="keyword">else</span>
+0454   station = obs.station;
+0455   station = stnnr;
+0456 <span class="keyword">end</span>
+0457 
+0458 <a name="_sub2" href="#_subfunctions" class="code">function outstr = ddeblank(in_str)</a>
+0459 <span class="comment">% DDEBLANK -</span>
+0460 <span class="comment">%</span>
+0461 
+0462 outstr = strtrim(in_str);
+0463 
+0464 <a name="_sub3" href="#_subfunctions" class="code">function stn_nr = header2stnnr_v5(header_line)</a>
+0465 <span class="comment">% HEADER2STNNR -</span>
+0466 <span class="comment">%</span>
+0467 
+0468 
+0469 <span class="comment">%' /etc/aniara/mima6 ' / name of instrument</span>
+0470 <span class="comment">%4 debug?: header_line;</span>
+0471 nums = <span class="string">'1234567890'</span>;
+0472 <span class="keyword">for</span> i1 = 1:10,
+0473   isnum = findstr(nums(i1),header_line);
+0474   <span class="keyword">if</span> ~isempty(isnum)
+0475     <span class="keyword">break</span>
+0476   <span class="keyword">end</span>
+0477 <span class="keyword">end</span>
+0478 stn_nr = i1;
+0479 
+0480 <a name="_sub4" href="#_subfunctions" class="code">function site = header2site_v5(header_line)</a>
+0481 <span class="comment">% HEADER2SITE_V5 -</span>
+0482 <span class="comment">%</span>
+0483 
+0484 
+0485 [site] = <a href="#_sub2" class="code" title="subfunction outstr = ddeblank(in_str)">ddeblank</a>(strtok(header_line,<span class="string">''''</span>));</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

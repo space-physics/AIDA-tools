@@ -1,0 +1,10 @@
+bitpix:  BITPIX  =  str2num(img_head(hindx,11:31)) 
+station: EMPTY   =  PO.station  / Station number. DEPRECIATED!                   
+site:    EMPTY   =  PO.station_name    'Ramfjordmoen'       / name of measurement site                       
+time:    FRAME   =  datevec(img_head(hindx,12:34),'yyyy-mm-ddTHH:MM:SS.FFF')
+camnr:   SERNO   =  str2num(img_head(hindx,11:31))
+interval_t: KCT     =  str2num(img_head(hindx,11:31))
+exptime: EXPOSURE=  str2num(img_head(hindx,11:31))            9.99326 / Total Exposure Time
+az:      EMPTY   =  0
+ze:      EMPTY   =  0
+BZERO:   BZERO   =  str2num(img_head(hindx,11:31))

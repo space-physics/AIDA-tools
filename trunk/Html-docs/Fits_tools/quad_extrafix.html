@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of quad_extrafix</title>
+  <meta name="keywords" content="quad_extrafix">
+  <meta name="description" content="QUAD_EXTRAFIX - extra balancing of quadrants">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Fits_tools -->
+<h1>quad_extrafix
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>QUAD_EXTRAFIX - extra balancing of quadrants</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function Img = quad_extrafix(Img) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> QUAD_EXTRAFIX - extra balancing of quadrants
+ 
+ Calling:
+   Img = quad_extrafix(Img)
+ INPUT: IMG image that will have quadrants balanced - the
+ difference between the lines/columns separating the four halves
+ will be subtracted/added. The function takes the average
+ difference between the bordering columns and rows and calculates
+ the optimal corrections needed to minimize those differences.
+  
+  See also <a href="quadfix3.html" class="code" title="function [img_out] = quadfix3(img_in,strips,stripsize)">QUADFIX3</a> <a href="removerscanstrip.html" class="code" title="function img_out = removerscanstrip(in_img,strips,stripsize)">REMOVERSCANSTRIP</a></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="pre_proc_img.html" class="code" title="function img_out = pre_proc_img(img_in,obs,PREPRO_OPS)">pre_proc_img</a>	PRE_PROC_IMG - systematic image correction and preprocessing of</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function Img = quad_extrafix(Img)</a>
+0002 <span class="comment">% QUAD_EXTRAFIX - extra balancing of quadrants</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   Img = quad_extrafix(Img)</span>
+0006 <span class="comment">% INPUT: IMG image that will have quadrants balanced - the</span>
+0007 <span class="comment">% difference between the lines/columns separating the four halves</span>
+0008 <span class="comment">% will be subtracted/added. The function takes the average</span>
+0009 <span class="comment">% difference between the bordering columns and rows and calculates</span>
+0010 <span class="comment">% the optimal corrections needed to minimize those differences.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%  See also QUADFIX3 REMOVERSCANSTRIP</span>
+0013 
+0014 
+0015 <span class="comment">%   Copyright � 20101119 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0016 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0017 
+0018 
+0019 
+0020 
+0021 Img = Img;
+0022 delta12 = mean(Img(1:end/2,end/2) - Img(1:end/2,end/2+1));
+0023 delta34 = mean(Img(end/2+1:<span class="keyword">end</span>,end/2) - Img(end/2+1:<span class="keyword">end</span>,end/2+1));
+0024 
+0025 delta13 = mean(Img(end/2,1:end/2)-Img(end/2+1,1:end/2));
+0026 delta24 = mean(Img(end/2,end/2+1:end)-Img(end/2+1,end/2+1:end));
+0027 
+0028 M = [1,-1, 0, 0;
+0029      1, 0,-1, 0;
+0030      0, 1, 0, -1;
+0031      0, 0, 1, -1];
+0032 
+0033 DeltaI = pinv(M)*[delta12;delta13;delta24;delta34];
+0034 
+0035 Img(1:end/2,1:end/2)         = Img(1:end/2,1:end/2)         - DeltaI(1);
+0036 Img(1:end/2,1+end/2:end)     = Img(1:end/2,1+end/2:end)     - DeltaI(2);
+0037 Img(1+end/2:<span class="keyword">end</span>,1:end/2)     = Img(1+end/2:<span class="keyword">end</span>,1:end/2)     - DeltaI(3);
+0038 Img(1+end/2:<span class="keyword">end</span>,1+end/2:end) = Img(1+end/2:<span class="keyword">end</span>,1+end/2:end) - DeltaI(4);
+0039</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

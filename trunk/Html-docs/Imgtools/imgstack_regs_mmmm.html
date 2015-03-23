@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of imgstack_regs_mmmm</title>
+  <meta name="keywords" content="imgstack_regs_mmmm">
+  <meta name="description" content="imgstack_regs_mmmm - max, mean, median and min from regions in an image-stack">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Imgtools -->
+<h1>imgstack_regs_mmmm
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>imgstack_regs_mmmm - max, mean, median and min from regions in an image-stack</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function [I_max,I_mean,I_median,I_min] = imgstack_regs_mmmm(img_stack,regs) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> imgstack_regs_mmmm - max, mean, median and min from regions in an image-stack
+ 
+ Calling:
+ [I_max,I_mean,I_median,I_min] = imgstack_regs_mmmm(img_stack,regs)
+ 
+ Iput arguments:
+   FILES  - char array of image files, full or relative path, readable 
+   REGS   - image regions (Nx4) of [xmin xmax ymin ymax] to get stats from
+   
+   Very little or no argument checking is preformed
+
+  See also: STARCAL, CAMERA, TYPICAL_PRE_PROC_OPS</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [I_max,I_mean,I_median,I_min] = imgstack_regs_mmmm(img_stack,regs)</a>
+0002 <span class="comment">% imgstack_regs_mmmm - max, mean, median and min from regions in an image-stack</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">% [I_max,I_mean,I_median,I_min] = imgstack_regs_mmmm(img_stack,regs)</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">% Iput arguments:</span>
+0008 <span class="comment">%   FILES  - char array of image files, full or relative path, readable</span>
+0009 <span class="comment">%   REGS   - image regions (Nx4) of [xmin xmax ymin ymax] to get stats from</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   Very little or no argument checking is preformed</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%  See also: STARCAL, CAMERA, TYPICAL_PRE_PROC_OPS</span>
+0014 <span class="comment">%</span>
+0015 
+0016 
+0017 <span class="comment">%   Copyright � 20080505 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0018 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0019 
+0020 I_mean = zeros([size(img_stack,3),size(regs,1)]);
+0021 I_median = I_mean;
+0022 I_min = I_mean; 
+0023 I_max = I_mean;
+0024 
+0025 <span class="keyword">for</span> i1 = 1:size(img_stack,3),
+0026   
+0027   <span class="keyword">for</span> j2 = size(regs,1):-1:1,
+0028     
+0029     data1 = img_stack(regs(j2,3):regs(j2,4),regs(j2,1):regs(j2,2),i1);
+0030     I_mean(i1,j2) = mean(data1(:));
+0031     I_median(i1,j2) = median(data1(:));
+0032     I_min(i1,j2) = min(data1(:));
+0033     I_max(i1,j2) = max(data1(:));
+0034     
+0035   <span class="keyword">end</span>
+0036   
+0037 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

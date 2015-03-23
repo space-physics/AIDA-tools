@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of tvdenoise</title>
+  <meta name="keywords" content="tvdenoise">
+  <meta name="description" content="TVDENOISE  Total variation image denoising">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html tools -->
+<h1>tvdenoise
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>TVDENOISE  Total variation image denoising</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function u = tvdenoise(f,lambda,NumSteps,u) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment">TVDENOISE  Total variation image denoising
+   u = TVDENOISE(f,lambda,NumSteps) denoises the input image f over
+   NumSteps number of iterations.  The larger the parameter lambda, the
+   stronger the denoising.  The output u approximately minimizes the
+   Rudin-Osher-Fatemi (ROF) denoising model
+       || f - u ||^2_L^2  +  lambda*TV(u)
+   where TV(u) is the total variation of u.
+
+   TVDENOISE(...,u0) specifies the initial image u0.  By default, u0 = f.
+
+   Example: Run TVDENOISE without any inputs for a demo
+   &gt;&gt; tvdenoise</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="tvdenoise.html" class="code" title="function u = tvdenoise(f,lambda,NumSteps,u)">tvdenoise</a>	TVDENOISE  Total variation image denoising</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="tvdenoise.html" class="code" title="function u = tvdenoise(f,lambda,NumSteps,u)">tvdenoise</a>	TVDENOISE  Total variation image denoising</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function u = tvdenoise(f,lambda,NumSteps,u)</a>
+0002 <span class="comment">%TVDENOISE  Total variation image denoising</span>
+0003 <span class="comment">%   u = TVDENOISE(f,lambda,NumSteps) denoises the input image f over</span>
+0004 <span class="comment">%   NumSteps number of iterations.  The larger the parameter lambda, the</span>
+0005 <span class="comment">%   stronger the denoising.  The output u approximately minimizes the</span>
+0006 <span class="comment">%   Rudin-Osher-Fatemi (ROF) denoising model</span>
+0007 <span class="comment">%       || f - u ||^2_L^2  +  lambda*TV(u)</span>
+0008 <span class="comment">%   where TV(u) is the total variation of u.</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   TVDENOISE(...,u0) specifies the initial image u0.  By default, u0 = f.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   Example: Run TVDENOISE without any inputs for a demo</span>
+0013 <span class="comment">%   &gt;&gt; tvdenoise</span>
+0014 
+0015 <span class="comment">% Pascal Getreuer 2007</span>
+0016 
+0017 <span class="keyword">if</span> nargin &lt; 2 | isempty(lambda)
+0018   lambda = max(f(:))/10
+0019 <span class="keyword">end</span>
+0020 <span class="keyword">if</span> nargin &lt; 3 | isempty(NumSteps)
+0021   NumSteps = 10;
+0022 <span class="keyword">end</span>
+0023 <span class="keyword">if</span> nargin &lt; 4
+0024   <span class="keyword">if</span> nargin == 0
+0025     <span class="comment">%%% Demo %%%</span>
+0026     
+0027     <span class="comment">% Generate image</span>
+0028     [x,y] = meshgrid(linspace(-1,1,250),linspace(-1,1,250));
+0029     [th,r] = cart2pol(x,y);
+0030     f = (sqrt(2)-r).^2.*(sin(12*r + 4*th) &gt; 0 | r &lt; 0.05)*255;
+0031     f = conv2(f,ones(5)/25,<span class="string">'same'</span>);
+0032     f = f(3:5:<span class="keyword">end</span>,3:5:end);
+0033     f = f + randn(size(f))*30;  <span class="comment">% Add noise</span>
+0034     
+0035     <span class="comment">% Denoise the image with lambda=400 and 25 iterations</span>
+0036     v = <a href="tvdenoise.html" class="code" title="function u = tvdenoise(f,lambda,NumSteps,u)">tvdenoise</a>(f,400,25);
+0037     
+0038     <span class="comment">% Plots</span>
+0039     subplot(1,2,1);
+0040     image(f);
+0041     title(<span class="string">'Noisy Image'</span>);
+0042     axis image; axis off; colormap(gray(256));        
+0043     subplot(1,2,2);
+0044     image(v);
+0045     title(<span class="string">'Denoised Image'</span>);        
+0046     axis image; axis off; colormap(gray(256));
+0047     shg;
+0048     
+0049     <span class="keyword">return</span>;
+0050   <span class="keyword">end</span>
+0051   u = f;
+0052 <span class="keyword">elseif</span> any(size(f) ~= size(u))
+0053   error(<span class="string">'u0 must have the same size as f.'</span>);
+0054 <span class="keyword">end</span>
+0055 
+0056 EpsSqr = 1e-6;
+0057 dt = 0.25;
+0058 
+0059 a = dt*lambda/2;
+0060 [N1,N2] = size(u);
+0061 il = [1,1:N2-1];
+0062 ir = [2:N2,N2];
+0063 iu = [1,1:N1-1];
+0064 id = [2:N1,N1];
+0065 
+0066 <span class="keyword">for</span> k = 1:NumSteps
+0067   ul = u(:,il);
+0068   ur = u(:,ir);
+0069   uu = u(iu,:);
+0070   ud = u(id,:);
+0071   c = a./sqrt(EpsSqr + (ur - u).^2 + (ud - u).^2);
+0072   cl = c(:,il);
+0073   cu = c(iu,:);
+0074   u = (u + dt*f + c.*(ur + ud) + cl.*ul + cu.*uu) <span class="keyword">...</span>
+0075       ./ (1 + dt + 2*c + cl + cu);
+0076 <span class="keyword">end</span>
+0077 
+0078</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

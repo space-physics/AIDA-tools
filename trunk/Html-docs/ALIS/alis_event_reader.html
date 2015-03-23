@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of alis_event_reader</title>
+  <meta name="keywords" content="alis_event_reader">
+  <meta name="description" content="ALIS_EVENT_READER - parse event-list for automatic data-processing">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html ALIS -->
+<h1>alis_event_reader
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>ALIS_EVENT_READER - parse event-list for automatic data-processing</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function events = alis_event_reader(filename) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ALIS_EVENT_READER - parse event-list for automatic data-processing
+   
+ Calling:
+   events = alis_event_reader(filename)
+ Input:
+   filename - filename of event listing
+ Output:
+   events - struct array with dates, start and stop time, stations
+            with observations and description
+
+ Sample event file format:
+ 
+ # date   start-t stop-t        ALIS-data Description-ASK
+ 20061020171700  20061020171900 ABSKOT   bright arc
+ 20061020170000  20061020170200 X        Low energy arc</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/cline.html" class="code" title="function h=cline(x,y,z,c,cmap)">cline</a>	CLINE - plots a 3D curve (x,y,z) encoded with scalar color data (c)</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Tomography/tomo20061212ariel3.html" class="code" title="">tomo20061212ariel3</a>	TOMO20061212ARIEL3 - script for tomographing ALIS 20061212 event</li><li><a href="../Tomography/tomo20080305FinalIR_082011.html" class="code" title="">tomo20080305FinalIR_082011</a>	TOMO20080305FinalIR_082011 - script for tomographing ALIS 20080305 event, 18:40 UT</li><li><a href="../Tomography/tomo20080305NewBeginnings.html" class="code" title="">tomo20080305NewBeginnings</a>	TOMO20080305NewBeginnings - script for tomographing ALIS 20080305 event, 18:40 UT</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function events = alis_event_reader(filename)</a>
+0002 <span class="comment">% ALIS_EVENT_READER - parse event-list for automatic data-processing</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% Calling:</span>
+0005 <span class="comment">%   events = alis_event_reader(filename)</span>
+0006 <span class="comment">% Input:</span>
+0007 <span class="comment">%   filename - filename of event listing</span>
+0008 <span class="comment">% Output:</span>
+0009 <span class="comment">%   events - struct array with dates, start and stop time, stations</span>
+0010 <span class="comment">%            with observations and description</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% Sample event file format:</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% # date   start-t stop-t        ALIS-data Description-ASK</span>
+0015 <span class="comment">% 20061020171700  20061020171900 ABSKOT   bright arc</span>
+0016 <span class="comment">% 20061020170000  20061020170200 X        Low energy arc</span>
+0017 
+0018 
+0019 
+0020 <span class="comment">%   Copyright � 2007 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0021 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0022 
+0023 fp = fopen(filename,<span class="string">'r'</span>);
+0024 
+0025 events = [];
+0026 <span class="keyword">while</span> ~feof(fp)
+0027   
+0028   <a href="../tools/cline.html" class="code" title="function h=cline(x,y,z,c,cmap)">cline</a> = fgetl(fp);
+0029   <span class="keyword">if</span> ~isempty(<a href="../tools/cline.html" class="code" title="function h=cline(x,y,z,c,cmap)">cline</a>)
+0030     <span class="keyword">if</span> <a href="../tools/cline.html" class="code" title="function h=cline(x,y,z,c,cmap)">cline</a>(1) == <span class="string">'#'</span>
+0031       <span class="comment">% Comment</span>
+0032     <span class="keyword">else</span>
+0033       [date1,<a href="../tools/cline.html" class="code" title="function h=cline(x,y,z,c,cmap)">cline</a>] = strtok(<a href="../tools/cline.html" class="code" title="function h=cline(x,y,z,c,cmap)">cline</a>,<span class="string">' '</span>);
+0034       [date2,<a href="../tools/cline.html" class="code" title="function h=cline(x,y,z,c,cmap)">cline</a>] = strtok(<a href="../tools/cline.html" class="code" title="function h=cline(x,y,z,c,cmap)">cline</a>,<span class="string">' '</span>);
+0035       [stns,<a href="../tools/cline.html" class="code" title="function h=cline(x,y,z,c,cmap)">cline</a>] = strtok(<a href="../tools/cline.html" class="code" title="function h=cline(x,y,z,c,cmap)">cline</a>,<span class="string">' '</span>);
+0036       <span class="keyword">if</span> ~strcmp(stns,<span class="string">'X'</span>)
+0037         events(end+1).date = sscanf(date1(1:8),<span class="string">'%4d%2d%2d'</span>)';
+0038         events(end).start_time = sscanf(date1,<span class="string">'%4d%2d%2d%2d%2d%2d'</span>)';
+0039         events(end).stop_time = sscanf(date2,<span class="string">'%4d%2d%2d%2d%2d%2d'</span>)';
+0040         events(end).stns = deblank(stns);
+0041       <span class="keyword">end</span>
+0042     <span class="keyword">end</span>
+0043   <span class="keyword">end</span>
+0044 <span class="keyword">end</span>
+0045 fclose(fp);</pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of GACT_snippet</title>
+  <meta name="keywords" content="GACT_snippet">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Tomography -->
+<h1>GACT_snippet
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../Camera/inv_project_points.html" class="code" title="function [xx,yy,zz] = inv_project_points(px,py,img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_points</a>	INV_PROJECT_POINTS - maps points (PX,PY) in image IMG_IN to a plane</li><li><a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>	x = xx( phi, lambda , alt )</li><li><a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>	y = yy( phi, lambda, alt)</li><li><a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>	z = zz( phi, lambda, alt )</li><li><a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>	INIMG - reads and pre-process an image.</li><li><a href="tomo_err4sliceGACT.html" class="code" title="function res = tomo_err4sliceGACT(Par,var_pars,par0,M2Dto1D,Ie2H,E,ImgCuts,X2D,Y2D,Z2D,biasAmplitudes,biasVals,out_arg_type,z_max,OPS)">tomo_err4sliceGACT</a>	tomo_err4sliceGACT - error function for estimating electron spectra</li><li><a href="tomo_setup4reduced2D.html" class="code" title="function [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS)">tomo_setup4reduced2D</a>	tomo_setup4reduced2D - Set up coordinates and projection matrices</li><li><a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>	FMINSEARCHBND: FMINSEARCH, but with bound constraints by transformation</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 OPS4red2D = <a href="tomo_setup4reduced2D.html" class="code" title="function [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS)">tomo_setup4reduced2D</a>;
+0002 OPS4red2D.PlotStuff = 0;
+0003 OPS4red2D.ds = 1;
+0004 [trmtrs,U,V,X,Y,Z] = <a href="tomo_setup4reduced2D.html" class="code" title="function [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS)">tomo_setup4reduced2D</a>(stns(1:2),OPS4red2D);
+0005 [trmtrs{[1,3]},U{[1,3]},V{[1,3]}] = <a href="tomo_setup4reduced2D.html" class="code" title="function [trmtrs,U,V,X,Y,Z] = tomo_setup4reduced2D(stns,OPS)">tomo_setup4reduced2D</a>(stns([1,3]),<span class="keyword">...</span>
+0006                                                   OPS4red2D);
+0007 
+0008 
+0009 <span class="keyword">for</span> i2 = length(i_T):-1:1,
+0010   
+0011   i_stns = [1,2,3,6];
+0012 
+0013   <span class="keyword">for</span> i3 = 1:length(i_stns)
+0014     [d,h,o] = <a href="../Fits_tools/inimg.html" class="code" title="function [img_out,img_head,obs] = inimg(filename,PREPRO_OPS)">inimg</a>(dFiles{i_stns(i3)}(i_T(i2),:),POs(i_stns(i3)));
+0015     stns(i3).img = d;
+0016     <span class="keyword">if</span> i3 == 3
+0017       stns(i3).img(227,195:197) = mean(stns(i3).img(227,[193,199])); 
+0018       stns(i3).img(228,195:197) = mean(stns(i3).img(228,[193,199])); 
+0019       stns(i3).img(229,195:197) = mean(stns(i3).img(229,[193,199])); 
+0020       stns(i3).img(230,195:197) = mean(stns(i3).img(230,[193,199])); 
+0021     <span class="keyword">end</span>
+0022     disp([i3 i_stns(i3) o.time, o.filter])
+0023     <span class="keyword">if</span> i3 &lt; 4
+0024       I_cuts{i3} = interp2(stns(i3).img,U{i3},V{i3});
+0025     <span class="keyword">end</span>
+0026   <span class="keyword">end</span>
+0027   <span class="comment">%%% Too difficult!</span>
+0028   <span class="comment">% * Identify local maxima in image cuts here</span>
+0029   <span class="comment">%for i3 = [1, 2/3],</span>
+0030   <span class="comment">%  iPeaks = peakfinder(I_cuts{i3});</span>
+0031   <span class="comment">%  % Determine line-of-sight to all local maxima</span>
+0032   <span class="comment">%  epix{i3} = inv_project_LineOfSightVectors(U{i3}(iPeaks),...</span>
+0033   <span class="comment">%                                            U{i3}(iPeaks),...</span>
+0034   <span class="comment">%                                            stns(i3).img,1,...</span>
+0035   <span class="comment">%                                            stns(i3).obs.optpar(9),...</span>
+0036   <span class="comment">%                                            stns(i3).optpar,...</span>
+0037   <span class="comment">%                                            [0 0 1],10,...</span>
+0038   <span class="comment">%                                            stns.obs.trmtr);%'?, or eye(3))</span>
+0039   <span class="comment">%end</span>
+0040   <span class="comment">% * triangulate those to get rough altitude estimate</span>
+0041   <span class="comment">% for i3 = [1,2/or/3]</span>
+0042   <span class="comment">%   [r,l,mindiff] = stereoscopic(r1,e1,r2,e2);</span>
+0043   <span class="comment">%   iPeaks = peakfinder(I_cuts{i3});</span>
+0044   <span class="comment">% Determine line-of-sight to all local maxima</span>
+0045   <span class="comment">%   epix{i3} = inv_project_LineOfSightVectors(U{i3}(iPeaks),...</span>
+0046   <span class="comment">%                                          V{i3}(iPeaks),...</span>
+0047   <span class="comment">%                                          stns(i3).img,1,...</span>
+0048   <span class="comment">%                                          stns(i3).obs.optpar(9),...</span>
+0049   <span class="comment">%                                          stns(i3).optpar,...</span>
+0050   <span class="comment">%                                          [0 0 1],10,...</span>
+0051   <span class="comment">%                                          stns.obs.trmtr);%'?, or eye(3))</span>
+0052   <span class="comment">% end</span>
+0053   <span class="comment">% Simpler just project the local peaks to the approximate</span>
+0054   <span class="comment">% altitude and use those positions for the horizontal start guess</span>
+0055   <span class="comment">% :</span>
+0056   i3 = 1;
+0057   [iPeaks,IPeaks] = peakfinder(I_cuts{i3});
+0058   [<a href="../EARTH/xx.html" class="code" title="function x = xx( phi, lambda , alt )">xx</a>,<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>,<a href="../EARTH/zz.html" class="code" title="function z = zz( phi, lambda, alt )">zz</a>] = <a href="../Camera/inv_project_points.html" class="code" title="function [xx,yy,zz] = inv_project_points(px,py,img_in,r,optmod,optpar,e_n,l_0,cmtr)">inv_project_points</a>(U{i3}(iPeaks),<span class="keyword">...</span>
+0059                                   V{i3}(iPeaks),<span class="keyword">...</span>
+0060                                   stns(i3).img,<span class="keyword">...</span>
+0061                                   stns(i3).obs.xyz,<span class="keyword">...</span>
+0062                                   stns(i3).obs.optpar(9),<span class="keyword">...</span>
+0063                                   stns(i3).optpar,<span class="keyword">...</span>
+0064                                   [0 0 1],peakAlt(iFilter),<span class="keyword">...</span>
+0065                                   stns.obs.trmtr);<span class="comment">%'?, or eye(3))</span>
+0066   I0 = zeros(length(<a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>)+1,9);
+0067   I0(1:end-1,1) = IPeaks; <span class="comment">% let the peak electron flux vbe</span>
+0068                           <span class="comment">% proportional to the peak brightness</span>
+0069   I0(1:end-1,2) = <a href="../EARTH/yy.html" class="code" title="function y = yy( phi, lambda, alt)">yy</a>;     <span class="comment">% north-south position, km.</span>
+0070   I0(1:end-1,3) = 3;      <span class="comment">% Width in km</span>
+0071   I0(1:end-1,4) = 2;      <span class="comment">% Gaussian exponent</span>
+0072   I0(1:end-1,5) = 2;      <span class="comment">% E0, Gaussian centre energy</span>
+0073   I0(1:end-1,6) = 0.4;    <span class="comment">% width in energy</span>
+0074   I0(1:end-1,7) = 2;      <span class="comment">% Gaussian exponent, energy</span>
+0075   I0(1:end-1,8) = 0;      <span class="comment">% dDy</span>
+0076   I0(1:end-1,9) = 0.5;    <span class="comment">% E-exponent</span>
+0077   <span class="comment">% Diffuse precipitation differently parameterized:</span>
+0078   I0(<span class="keyword">end</span>,:) = [min(IPeaks),0,0,0,1,0,2,0,0];
+0079   
+0080   
+0081   v_p = zeros(size(I0));
+0082   v_p(<span class="keyword">end</span>,[1,5,7]) = 1;
+0083   v_p(1:end-1,[1 2 3 5 6]) = 1;
+0084   Iconst = I0;
+0085   I0 = I0(logical(v_p));
+0086   [Ip{i2},fv(i2),exitflag(i2)] = <a href="../tools/fminsearchbnd.html" class="code" title="function [x,fval,exitflag,output] = fminsearchbnd(fun,x0,LB,UB,options,varargin)">fminsearchbnd</a>(@(I) <a href="tomo_err4sliceGACT.html" class="code" title="function res = tomo_err4sliceGACT(Par,var_pars,par0,M2Dto1D,Ie2H,E,ImgCuts,X2D,Y2D,Z2D,biasAmplitudes,biasVals,out_arg_type,z_max,OPS)">tomo_err4sliceGACT</a>(I,v_p,Iconst,<span class="keyword">...</span>
+0087                                                     M2Dto1D,Ie2H,E,<span class="keyword">...</span>
+0088                                                     ImgCuts,X,Y,Z,<span class="keyword">...</span>
+0089                                                     [],[],1,z_max),<span class="keyword">...</span>
+0090                                                I0,Ilower,Iupper,fmsOPS);
+0091   I2D{i2} = <a href="tomo_err4sliceGACT.html" class="code" title="function res = tomo_err4sliceGACT(Par,var_pars,par0,M2Dto1D,Ie2H,E,ImgCuts,X2D,Y2D,Z2D,biasAmplitudes,biasVals,out_arg_type,z_max,OPS)">tomo_err4sliceGACT</a>(Ip{i2},v_p,Iconst,<span class="keyword">...</span>
+0092                                M2Dto1D,Ie2H,E,<span class="keyword">...</span>
+0093                                ImgCuts,X,Y,Z,<span class="keyword">...</span>
+0094                                [],[],1,z_max);
+0095 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

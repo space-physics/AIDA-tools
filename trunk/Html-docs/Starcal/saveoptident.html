@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of saveoptident</title>
+  <meta name="keywords" content="saveoptident">
+  <meta name="description" content="SAVEOPTIDENT - writes preliminary optical parameters and identified stars">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html Starcal -->
+<h1>saveoptident
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>SAVEOPTIDENT - writes preliminary optical parameters and identified stars</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function err = saveoptident(SkMp) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SAVEOPTIDENT - writes preliminary optical parameters and identified stars
+ to STNyymmdd_hhmmss_param.mat
+
+ SYNOPSIS
+         err = saveoptindent(SkMp)
+
+ to make sure loading is safe, data will be stored in variables
+ SkMp.optpar -&gt; optpar_saved
+ SkMp.optmod -&gt; optmod_saved
+ SkMp.identstars -&gt; identstars_saved
+
+ returns 0 on successful run
+
+savefile = [SkMp.obs.filename(1:16),'_param.mat'];</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+<li><a href="../tools/genfilename.html" class="code" title="function filename = genfilename(SkMp, n)">genfilename</a>	GENFILENAME - generates starcal formated filenames</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function err = saveoptident(SkMp)</a>
+0002 <span class="comment">% SAVEOPTIDENT - writes preliminary optical parameters and identified stars</span>
+0003 <span class="comment">% to STNyymmdd_hhmmss_param.mat</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% SYNOPSIS</span>
+0006 <span class="comment">%         err = saveoptindent(SkMp)</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% to make sure loading is safe, data will be stored in variables</span>
+0009 <span class="comment">% SkMp.optpar -&gt; optpar_saved</span>
+0010 <span class="comment">% SkMp.optmod -&gt; optmod_saved</span>
+0011 <span class="comment">% SkMp.identstars -&gt; identstars_saved</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% returns 0 on successful run</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%savefile = [SkMp.obs.filename(1:16),'_param.mat'];</span>
+0016 
+0017 <span class="comment">%   Copyright � 2011 Bjorn Gustavsson, &lt;bjorn.gustavsson@irf.se&gt;</span>
+0018 <span class="comment">%   This is free software, licensed under GNU GPL version 2 or later</span>
+0019 
+0020 savefile = <a href="../tools/genfilename.html" class="code" title="function filename = genfilename(SkMp, n)">genfilename</a>(SkMp, 2);
+0021 fprintf(<span class="string">'\nSaving %s...\n'</span>, savefile);
+0022 err = 0;
+0023 <span class="keyword">try</span>
+0024   optpar_saved = SkMp.optpar;
+0025   optmod_saved = SkMp.optmod;
+0026   identstars_saved = SkMp.identstars;
+0027   <span class="comment">% do not overwrite old files, instead keep them renamed as file.mat.001 file.mat.002 osv</span>
+0028   <span class="keyword">if</span> exist(savefile,<span class="string">'file'</span>)
+0029     sprintf(<span class="string">'\nBacking up the old file as...'</span>);
+0030     counter = <span class="string">'001'</span>;
+0031     <span class="keyword">while</span> exist([savefile, <span class="string">'.'</span>, counter],<span class="string">'file'</span>)
+0032       counter = num2str(sprintf(<span class="string">'%03d'</span>, str2num(counter)+1));
+0033     <span class="keyword">end</span>
+0034     sprintf(<span class="string">'%s'</span>, [savefile, <span class="string">'.'</span>, counter]);
+0035     [status, message] = movefile(savefile, [savefile, <span class="string">'.'</span>, counter]);
+0036   <span class="keyword">end</span>
+0037   save(savefile, <span class="string">'optpar_saved'</span>, <span class="string">'optmod_saved'</span>, <span class="string">'identstars_saved'</span>);
+0038 <span class="keyword">catch</span>
+0039   err = -1;
+0040   sprintf(<span class="string">'\nWriting %s failed:\n%d:%s\n'</span>, savefile, status, message);
+0041 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Sat 09-Feb-2013 12:20:36 by <strong>B.&nbsp;Gustavsson</strong> with <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

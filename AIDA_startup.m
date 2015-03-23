@@ -20,8 +20,8 @@ global stardir
 
 
 % Determine which matlab version that is running
-M_v = ver('matlab');
-M_ver = floor(str2num(M_v.Version));
+M_v = version;
+M_ver = floor(str2num(M_v(1)));
 
 AIDA_matlabdir = fullfile(AIDA_root,'AIDA_tools');
 path(path,AIDA_matlabdir)

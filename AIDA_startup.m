@@ -1,9 +1,6 @@
 % This is the only customization needed.
 % Set this path to where the AIDA_tools reside:
-AIDA_root = fullfile('/home','bgu001');
-% For those that work under non-unix OSes I think that you would
-% have to modify the '/home' part above - but I have no such
-% experience, so I cant help out.
+AIDA_root = '~/code/AIDA-tools/trunk/';
 
 
 %%% These are just to set the display format to something more

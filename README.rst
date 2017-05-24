@@ -13,9 +13,7 @@ Git mirror of original Gustavsson/Brandstrom et al AIDA analysis toolset for ALI
 
 Basic Uses
 ==========
-I have made a couple patches to support Octave, but most of the program still requires Matlab::
-
-    git clone https://github.com/scienceopen/AIDA-tools
+I have made a couple patches to support Octave, but most of the program still requires Matlab.
 
 Computing ionospheric production rates from incident particle flux
 -------------------------------------------------------------------
@@ -42,6 +40,6 @@ More of an example to those wanting to do this for other SVNs that have enormous
     git init
     git add .
     git commit -m "cutover from SVN"
-    git remote add origin https://github.com/scienceopen/AIDA-tools
+    git remote add origin https://github.com/scivision/AIDA-tools
     git pull
     git push origin master
